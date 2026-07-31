@@ -1,0 +1,19 @@
+[Unit]
+Description=personal internet
+After=network.target
+
+[Service]
+User=leybovich-nikita
+# e.g. $HOME = /home/leybovich-nikita
+# e.g. $PROJECT = /potyk-io
+# e.g. $PORT = 5008
+WorkingDirectory=/home/leybovich-nikita/potyk-io
+EnvironmentFile=/home/leybovich-nikita/potyk-io/.env
+ExecStart=/home/leybovich-nikita/potyk-io/.venv/bin/flask run --host=0.0.0.0 --port=5008
+Restart=always
+RestartSec=10
+StandardOutput=file:/home/leybovich-nikita/potyk-io/logs/flask.log
+StandardError=file:/home/leybovich-nikita/potyk-io/logs/flask.error.log
+
+[Install]
+WantedBy=multi-user.target
