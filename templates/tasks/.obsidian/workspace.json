@@ -1,0 +1,210 @@
+{
+  "main": {
+    "id": "9a7edd367a572ce5",
+    "type": "split",
+    "children": [
+      {
+        "id": "2bf92494da2848c3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "98e4285b50c85e68",
+            "type": "leaf",
+            "state": {
+              "type": "bases",
+              "state": {
+                "file": "potyk-io-tasks.base",
+                "viewName": "Table"
+              },
+              "icon": "columns",
+              "title": "potyk-io-tasks"
+            }
+          },
+          {
+            "id": "72a26434df5b22df",
+            "type": "leaf",
+            "state": {
+              "type": "bases",
+              "state": {
+                "file": "potyk-io-tasks.base",
+                "viewName": "Table"
+              },
+              "icon": "columns",
+              "title": "potyk-io-tasks"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "97e1e1edcd7635af",
+    "type": "split",
+    "children": [
+      {
+        "id": "1eb43b1e44ec7a20",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6c9a1356bf324680",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "7819e98a2055fb78",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "ed91d190bfa3d73a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "afe7636a06f27ab8",
+    "type": "split",
+    "children": [
+      {
+        "id": "4e8f25d7c358c659",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2bdabaf8055a6513",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "msk-food-guide-2026.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for msk-food-guide-2026"
+            }
+          },
+          {
+            "id": "c8f19661aa6165db",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "msk-food-guide-2026.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from msk-food-guide-2026"
+            }
+          },
+          {
+            "id": "f006177b84b9cdbd",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "ed0d27db11f8d4e3",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "bbc27d12f072adde",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "msk-food-guide-2026.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of msk-food-guide-2026"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "72a26434df5b22df",
+  "lastOpenFiles": [
+    "Музыка 2к26.md",
+    "potyk-io-tasks.base",
+    "Екат Воспоминания.md",
+    "Clippings/Рецепт Жаркое из курицы с картошкой на RussianFood.com.md",
+    "Clippings",
+    "Перенос potyk-io на flask + caddy.md",
+    "Кино прими свою судьбу.md",
+    "msk-food-guide-2026.md"
+  ]
+}

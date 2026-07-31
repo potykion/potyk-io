@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>potyk.io</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="../../static/css/index.css">
+
+</head>
+<body>
+<main class="main">
+    <h1 class="title">potyk.io</h1>
+    <div class="subtitle center">Делаю свой интернет <img src="../../static/img/globe.gif" id="globe"></div>
+
+    <!-- Контент-Проекты -->
+    <div class="card card-header">
+        <h2> <small>📝</small> Контент</h2>•
+        <div class="subtitle card-subtitle">Пишу, пощу, все удалить хочу</div>
+    </div>
+    <div class="chips" id="projects"></div>
+
+    <!-- Таблички -->
+    <div class="card card-header">
+        <h2> <small>📊</small> Таблички</h2>•
+        <div class="subtitle card-subtitle">Бич, я молодой PLUSHкин</div>
+    </div>
+    <div class="chips" id="tables"></div>
+
+    <!-- Кодинг-Проекты -->
+    <div class="card card-header">
+        <h2> <small>🤖</small> Прога</h2>•
+        <div class="subtitle card-subtitle">Coding shit × smoking weed</div>
+    </div>
+    <div class="chips" id="coding-projects"></div>
+
+
+
+</main>
+
+<footer style="text-align: center;">
+    <a href="https://github.com/potykion/potykion.github.io">Гитхаб</a>
+</footer>
+
+</body>
+<script>
+    /**
+     * @typedef {Object} Project
+     * @property {string} title
+     * @property {string} [subtitle]
+     * @property {string} url
+     * @property {string} [icon]
+     */
+
+    // <!-- @formatter:off -->
+
+    /** @type {Project[]} */
+    const projects = [
+        {title: "potyk-io", subtitle: 'Эта страница', url: "/toc", icon: '🏠'},
+        {title: "potyk-food", subtitle: 'Ворую рецепты', url: "https://potyk.io/potyk-food/", icon: '🍕'},
+        {title: "potyk-art", subtitle: 'Рисую чертей по фану', url: "https://www.instagram.com/potyk.art", icon: '🖼️'},
+        {title: "potyk-dreams", subtitle: 'Потребление', url: "http://84.201.131.244:5002", icon: '✨'},
+        {title: "potyk-ai", subtitle: 'ИИ приколы', url: "https://github.com/potykion/potyk-ai"},
+        {title: "potyk-arch", subtitle: 'Software architecture thoughts', url: "https://github.com/potykion/potyk-arch"},
+        {title: "potyk-food-guide", subtitle: 'What & where to eat', url: "https://github.com/potykion/potyk-food-guide"},
+        {title: "potyk-mu", subtitle: 'Loved music collection', url: "http://84.201.131.244:5004/"},
+    ]
+
+    /** @type {Project[]} */
+    const codingProjects = [
+        {title: "flask-proj-templ", subtitle: "Template for simple flask apps like potyk-dreams", url: "https://github.com/potykion/flask-proj-templ"},
+        {title: "lines", subtitle: 'Simply find lines within file without grep brain fvck', url: "https://github.com/potykion/lines"},
+        {title: "potyk-assistant", subtitle: 'Telegram bot & api for routine stuff like tracking weight', url: "https://github.com/potykion/potyk-assistant"},
+        {title: "sqlite-api", subtitle: '<code>Select * from table as json</code>', url: "https://github.com/potykion/sqlite-api"},
+        {title: "src-e", subtitle: "BitBucket (Non-Sucking) Client", url: "http://84.201.131.244:5001/"},
+        {title: "potyk-self-2", subtitle: "Дневниковое", url: "http://84.201.131.244:5005"},
+        {title: "potyk-stats", subtitle: 'Abandoned daily stats', url: "http://84.201.131.244:5003"},
+    ]
+
+    /** @type {Project[]} */
+    const tables = [
+        {title: 'Музык ', url: 'https://docs.google.com/spreadsheets/d/1Dy9fxDgLzxy84PsIAoyappVB9xfTYHls1rn9KNe4gDs/edit?usp=sharing', icon: '🎵'},
+        {title: 'Софт/Сервисы ', url: 'https://docs.google.com/spreadsheets/d/13xf7UHVDKiCf6rbHeHe2rsgwOlWaNRhUYDqAU5M3ULk/edit?usp=sharing', icon: '⚙'},
+        {title: 'ЮТ-каналы ', url: 'https://docs.google.com/spreadsheets/d/1BLWN5txwatQdyRSHt0Jl2IWUqIbm-dcAMkEMXIiyTqg/edit?usp=sharing', icon: '📹'},
+        {title: "Телеграм Каналы ", url: "https://docs.google.com/spreadsheets/d/1C0RXi9eChoP_AfyLda1jM_aC0aSuLr-fBaJLpaZ34Kw/edit?usp=sharing", icon: '📣'},
+        {title: "Театры/Мюзиклы ", url: "https://docs.google.com/spreadsheets/d/1pT59i5SuDrjovAKZXybnOzNWIn1SSljU24STSjIs8tk/edit?usp=sharing", icon: '🎭'},
+        {title: 'Пиво Россия ', url: 'https://docs.google.com/spreadsheets/d/1JdhEktmNFFrolieF7O4pkmlic3urTROx8Fq8C2RNWY4/edit?usp=sharing', icon: '🍺'},
+        {title: 'Рестики/Кафешки Россия ', url: 'https://docs.google.com/spreadsheets/d/1h56SxxWjZCJmGULhlzVsRvT4KSU4rWoYBEWhQvrecGk/edit?usp=sharing', icon: '🐷'},
+        {title: 'Сладости', url: 'https://docs.google.com/spreadsheets/d/1qreMshjaTWnI5GhAEc-CIJafXcK9iwUC16RaG7gYCsM/edit?usp=sharing', icon: '🍪'},
+
+    ]
+
+    // <!-- @formatter:on -->
+
+    /**
+     * @param {Project[]} projects
+     */
+    function makeProjectCards(projects, marked = false) {
+        return projects.map(p => {
+            let cardClass = `card`;
+            if (marked) {
+                cardClass = `${cardClass} card-marked`
+            }
+
+            let icon = '';
+            if (p.icon) {
+                icon = `<div>
+                        ${p.icon}
+                    </div>`
+            }
+
+            let subtitle = ''
+            if (p.subtitle) {
+                console.log(p)
+                subtitle = `<small class="card-subtitle">
+                            ${p.subtitle}
+                        </small>`
+            }
+
+            return `
+                <a href="${p.url}" class="${cardClass}">
+                    ${icon}
+                    <div>
+                        <div>
+                            ${p.title}
+                        </div>
+
+                        ${subtitle}
+                    </div>
+                </a>
+            `
+        }).join("");
+    }
+
+    function makeChipsHtml(projects) {
+        return projects.map(
+            proj => {
+                let title = `${proj.title}`;
+                if (proj.icon) {
+                    title = `${proj.icon} ${title}`
+                }
+                if (proj.mark) {
+                    title = `<mark>${title}</mark>`
+                }
+
+                return `<a class="chip" target="_blank" href="${proj.url}">${title}</a>`;
+            }
+        ).join(' • ');
+    }
+
+    function makeProjectsHtml(projects) {
+        return projects.map(
+            proj => ` <a class="card" href="${proj.url}">
+                <div class="">${proj.title}</div>
+                <small class="card-subtitle">${proj.subtitle}</small>
+            </a>`
+        ).join('');
+    }
+
+    document.querySelector('#projects').innerHTML = makeProjectCards(projects);
+
+    document.querySelector('#tables').innerHTML = makeProjectCards(tables);
+
+    document.querySelector('#coding-projects').innerHTML = makeProjectCards(codingProjects);
+</script>
+</html>
