@@ -20,7 +20,9 @@
                 aria-controls="sidebar"
                 aria-expanded="true"
                 aria-label="Меню">≡</button>
+        {% if request.path != '/' %}
         <a href="/" class="sidebar-brand">potyk.io</a>
+        {% endif %}
     </div>
 
     <nav class="sidebar-nav" id="sidebar-nav">
