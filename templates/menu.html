@@ -1,0 +1,292 @@
+{% extends "_base.html" %}
+
+{% block style %}
+    <link rel="stylesheet" href="/static/css/index.css">
+{% endblock %}
+
+{% block main %}
+    <h1>potyk.io</h1>
+    <div class="flex-center" style=" color: #9f9f9f; ">
+            <span style="border-bottom: 1px dotted gray; cursor: zoom-in"
+                  title="Занимаюсь хуйнёй">Делаю свой интернет</span> <img src="../static/img/globe.gif" id="globe">
+    </div>
+
+    <div style="margin-bottom: 24px"></div>
+
+    <div class="grid" id="cards"></div>
+{% endblock %}
+
+{% block script %}
+    <script>
+
+        /**
+         * @typedef {Object} CardItem
+         * @property {string} icon
+         * @property {string} title
+         * @property {string} link
+         */
+
+        /**
+         * @typedef {Object} Card
+         * @property {string} title
+         * @property {CardItem[]} items
+         */
+
+        /** @type {CardItem[]} */
+        const icons = [
+            {
+                title: 'potyk.art',
+                icon: '🖼️',
+                link: 'https://www.instagram.com/potyk.art'
+            },
+            {
+                title: '/feed',
+                icon: '📜',
+                link: '/feed'
+            },
+            {
+                title: '/toc',
+                icon: '📦',
+                link: '/toc'
+            },
+            {
+                title: 'github',
+                icon: '👩‍💻',
+                link: 'https://github.com/potykion/potyk-io'
+            },
+        ];
+
+        /** @type {Card[]} */
+        let cards = [
+            {
+                title: "Еда",
+                items: [
+                    {
+                        icon: '📃',
+                        title: 'Рецептики',
+                        link: 'https://potyk.io/potyk-food/'
+                    },
+                    {
+                        icon: '🧠',
+                        title: 'Размышления',
+                        link: '/thoughts/food'
+                    },
+                    {
+                        title: 'Отзывы на ресты',
+                        link: 'https://yandex.ru/maps/user/potyk-io',
+                        icon: '📝'
+                    },
+                    {
+                        title: 'Корзинка',
+                        link: 'https://docs.google.com/spreadsheets/d/1qreMshjaTWnI5GhAEc-CIJafXcK9iwUC16RaG7gYCsM/edit?usp=sharing',
+                        icon: '📊'
+                    },
+                    {
+                        icon: '📊',
+                        title: 'Рестики и кафешки',
+                        link: 'https://docs.google.com/spreadsheets/d/1h56SxxWjZCJmGULhlzVsRvT4KSU4rWoYBEWhQvrecGk/edit?usp=sharing',
+                    },
+                    {
+                        icon: '🔗',
+                        title: 'potyk-eats',
+                        link: 'https://t.me/potyk_eats',
+                    },
+
+                ]
+            },
+            {
+                title: 'Музыка/Кино',
+                items: [
+                    {
+                        icon: '📝',
+                        title: 'Музыка в 2к26',
+                        link: '/mu/2026',
+                    },
+                    {
+                        icon: '📊',
+                        title: 'Альбомы: стата',
+                        link: 'https://docs.google.com/spreadsheets/d/1Dy9fxDgLzxy84PsIAoyappVB9xfTYHls1rn9KNe4gDs/edit?usp=sharing',
+                    },
+                    {
+                        icon: '📊',
+                        title: 'Кино-подпорочки',
+                        link: '/collections/movies',
+                    },
+                    {
+                        icon: '📝',
+                        title: "Скачать музыку",
+                        link: "/guides/music",
+                    },
+                    {
+                        title: 'танцевальное',
+                        link: 'https://www.youtube.com/playlist?list=PLdb8DVmvU9i5bGINNz10f-ga_bqD41O4q',
+                        icon: '📺'
+                    },
+                    {
+                        icon: '🤝',
+                        title: "Го дружить в RYM",
+                        link: "https://rateyourmusic.com/~potykion",
+                    },
+
+                ]
+            },
+            {
+                title: 'Тревел',
+                items: [
+                    {
+                        icon: '📝',
+                        title: "Хау ту тревел",
+                        link: "/travel/how-to",
+                    },
+                    {
+                        icon: '📝',
+                        title: "Планы",
+                        link: "/travel/plans",
+                    },
+                    {
+                        icon: '📝',
+                        title: "Впечатлы",
+                        link: "/travel/memories",
+                    },
+                ],
+            },
+            {
+                title: "Прога",
+                items: [
+                    {
+                        icon: '👨‍💻',
+                        title: 'Резюме',
+                        link: '/n/cv'
+                    },
+                    {
+                        title: 'Софт/Сервисы ',
+                        link: 'https://docs.google.com/spreadsheets/d/13xf7UHVDKiCf6rbHeHe2rsgwOlWaNRhUYDqAU5M3ULk/edit?usp=sharing',
+                        icon: '📊'
+                    },
+                    {
+                        title: 'Мой кодинг',
+                        link: '/code',
+                        icon: '📝'
+                    }, {
+                        title: 'Разговоры с ии',
+                        link: 'https://t.me/potyk_ai',
+                        icon: '🔗'
+                    },
+                ]
+            },
+            {
+                title: "Алко",
+                items: [
+                    {
+                        icon: '📊',
+                        title: 'Винный погребок',
+                        link: '/collections/wine'
+                    },
+                    {
+                        icon: '📊',
+                        title: 'Пив холодильник',
+                        link: '/collections/beer'
+                    },
+                    {
+                        title: 'Пиво Россия',
+                        link: 'https://docs.google.com/spreadsheets/d/1JdhEktmNFFrolieF7O4pkmlic3urTROx8Fq8C2RNWY4/edit?usp=sharing',
+                        icon: '📊'
+                    },
+                ]
+            }, {
+                title: "Бабло",
+                items: [
+                    {
+                        icon: '📊',
+                        title: 'Инвестиции',
+                        link: 'https://docs.google.com/spreadsheets/d/1yXDk5eYpNwTvzPYGVoBTnETeaTwqY3b7uyPzNPwPpng/edit?usp=sharing'
+                    },
+                    {
+                        icon: '📊',
+                        title: 'Траты',
+                        link: 'http://84.201.131.244:5007'
+                    },
+                    {
+                        icon: '📝',
+                        title: 'Пассивный доход',
+                        link: '/guides/passive-income'
+                    },
+                ]
+            }, {
+                title: "Писс ссанина",
+                items: [
+                    {
+                        icon: '📝',
+                        title: 'Кулстори',
+                        link: '/cool-stories'
+                    },
+                    {
+                        icon: '🔗',
+                        title: 'потик пишет...',
+                        link: 'https://t.me/potyk_writes'
+                    },
+
+                ]
+            }, {
+                title: "Отношач",
+                items: [
+                    {
+                        icon: '🧠',
+                        title: 'Размышления',
+                        link: '/thoughts/relationships'
+                    },
+                    {
+                        icon: '📝',
+                        title: 'State',
+                        link: '/n/relationships'
+                    }, {
+                        icon: '📝',
+                        title: 'Как найти девушку',
+                        link: '/guides/find-gf'
+                    },
+
+                ]
+            }, {
+                title: "Селф",
+                items: [
+                    {
+                        icon: '📝',
+                        title: 'Обо мне',
+                        link: '/n'
+                    },
+                    {
+                        icon: '📔',
+                        title: 'Днев',
+                        link: '/diary'
+                    },
+                ]
+            },
+        ];
+
+
+        const iconsHtml = icons.map(icon => {
+            return `<a style="text-decoration: none" href="${icon.link}">
+            <div class="flex-center flex-col icon">
+                <div style="">${icon.icon}</div>
+                <div style="text-decoration: underline"><small>${icon.title}</small></div>
+            </div>
+        </a>`
+        }).join('')
+
+        /** @type {string} */
+        const cardsHtml = cards.map(card => {
+            const cardItemsHtml = card.items.map(cardItem => {
+                return `<li>
+                <small>${cardItem.icon}</small> <a href="${cardItem.link}">${cardItem.title}</a>
+            </li>`
+            }).join('')
+
+            return `<div class="card">
+            <h2>${card.title}</h2>
+            <ul>${cardItemsHtml}</ul>
+        </div>`
+        }).join('')
+
+        document.querySelector('#cards').innerHTML = iconsHtml + cardsHtml;
+    </script>
+{% endblock %}

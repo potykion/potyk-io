@@ -27,7 +27,14 @@ def create_app():
 
     @app.route("/")
     def index():
-        return flask.render_template("index.html")
+        return flask.render_template(
+            "index.html",
+            random_notes=random_note_previews(3),
+        )
+
+    @app.route("/menu")
+    def menu():
+        return flask.render_template("menu.html")
 
     @app.route("/<path:page_path>")
     def page(page_path: str):
@@ -49,7 +56,7 @@ def create_app():
 
         template_name = str(file.relative_to(TEMPLATES_DIR)).replace("\\", "/")
         ctx = {}
-        if template_name == "index-08-26.html":
+        if template_name == "index.html":
             ctx["random_notes"] = random_note_previews(3)
         return flask.render_template(template_name, **ctx)
 
@@ -198,9 +205,7 @@ def render_body_html(body: str, meta: dict[str, str]) -> str:
         output_format="html",
     )
     show_header = str(meta.get("header", "true")).strip().lower() not in FALSEY
-    return flask.render_template(
-        "page.html", content=content, show_header=show_header
-    )
+    return flask.render_template("page.html", content=content, show_header=show_header)
 
 
 def note_card_html(path: Path, limit: int = PREVIEW_LEN) -> str | None:
@@ -221,7 +226,9 @@ def note_card_html(path: Path, limit: int = PREVIEW_LEN) -> str | None:
     return truncate_html(inner, limit)
 
 
-def random_note_previews(count: int = 3, limit: int = PREVIEW_LEN) -> list[dict[str, str]]:
+def random_note_previews(
+    count: int = 3, limit: int = PREVIEW_LEN
+) -> list[dict[str, str]]:
     notes = iter_notes()
     random.shuffle(notes)
 
@@ -271,7 +278,7 @@ def resolve_page(page_path: str) -> Path | None:
         TEMPLATES_DIR / f"{page_path}.md",
         TEMPLATES_DIR / page_path / "index.md",
         TEMPLATES_DIR / f"{page_path}.html",
-        TEMPLATES_DIR / page_path / "index.html",
+        TEMPLATES_DIR / page_path / "menu.html",
     ]
 
     templates_root = TEMPLATES_DIR.resolve()
