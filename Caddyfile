@@ -6,9 +6,9 @@
 	encode gzip
 
 	# potyk-fin → :5007  (/fin prefix stripped)
-	handle_path /fin* {
-		reverse_proxy 127.0.0.1:5007
-	}
+    handle /fin* {
+        reverse_proxy 127.0.0.1:5007
+    }
 
 	# potyk-io → :5008
 	handle {
