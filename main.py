@@ -23,10 +23,6 @@ def create_app():
             random_notes=random_note_previews(3),
         )
 
-    @app.route("/menu")
-    def menu():
-        return flask.render_template("menu.html")
-
     @app.route("/<path:page_path>")
     def page(page_path: str):
         file = resolve_page(page_path)

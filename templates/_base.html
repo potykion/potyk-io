@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap"
           rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/sidebar.css">
 
 <style>
      body {
@@ -51,36 +52,95 @@
 </head>
 
 <body>
-    {% if show_header|default(true) %}
-    <header>
-        <div class="header-left"></div>
-        <div class="header-center">
-            {% if request.path != '/' %}
-            <a href="/">potyk.io</a>
-            {% endif %}
-        </div>
-        <div class="header-right">
-            {% if request.path != '/menu' %}
-            <a href="/menu">Меню</a>
-            {% endif %}
-        </div>
-    </header>
-    {% endif %}
-    <main>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <div class="layout">
+        {% include "_sidebar.html" %}
 
+        <div class="layout-main">
+            {% if show_header|default(true) %}
+            <header>
+                <div class="header-left"></div>
+                <div class="header-center">
+                    {% if request.path != '/' %}
+                    <a href="/">potyk.io</a>
+                    {% endif %}
+                </div>
+                <div class="header-right"></div>
+            </header>
+            {% endif %}
 
-        {% block main %}
-        {% endblock %}
-    </main>
+            <main>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block main %}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var body = document.body;
+            var toggle = document.getElementById('menu-toggle');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            var mq = window.matchMedia('(max-width: 767px)');
+
+            function isMobile() {
+                return mq.matches;
+            }
+
+            function isVisible() {
+                if (isMobile()) return body.classList.contains('menu-open');
+                return !body.classList.contains('menu-collapsed');
+            }
+
+            function syncAria() {
+                var open = isVisible();
+                if (toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                if (backdrop) backdrop.hidden = !(isMobile() && open);
+            }
+
+            function setVisible(open) {
+                if (isMobile()) {
+                    body.classList.toggle('menu-open', open);
+                    body.classList.remove('menu-collapsed');
+                } else {
+                    body.classList.toggle('menu-collapsed', !open);
+                    body.classList.remove('menu-open');
+                }
+                syncAria();
+            }
+
+            function toggleMenu() {
+                setVisible(!isVisible());
+            }
+
+            function closeMenu() {
+                setVisible(false);
+            }
+
+            if (toggle) toggle.addEventListener('click', toggleMenu);
+            if (backdrop) backdrop.addEventListener('click', closeMenu);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeMenu();
+            });
+
+            mq.addEventListener('change', function () {
+                body.classList.remove('menu-open');
+                body.classList.remove('menu-collapsed');
+                syncAria();
+            });
+
+            syncAria();
+        })();
+    </script>
+    {% block script %}
+    {% endblock %}
 </body>
-
-{% block script %}
-{% endblock %}
 </html>
