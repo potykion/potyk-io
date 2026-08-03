@@ -9,6 +9,13 @@ potyk.io {
 		reverse_proxy 127.0.0.1:5007
 	}
 
+	# potyk-food → GitHub Pages
+	handle /potyk-food* {
+		reverse_proxy https://potykion.github.io {
+			header_up Host potykion.github.io
+		}
+	}
+
 	# potyk-io → :5008
 	handle {
 		reverse_proxy 127.0.0.1:5008
