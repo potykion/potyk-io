@@ -198,6 +198,18 @@ def truncate_html(fragment: str, limit: int) -> str:
     return "".join(truncator.parts)
 
 
+def demote_headings(html: str, levels: int = 1) -> str:
+    """Shift heading levels down (h1→h2, h2→h3, …), capped at h6."""
+    for n in range(6, 0, -1):
+        html = re.sub(
+            rf"(</?)h{n}\b",
+            rf"\1h{min(n + levels, 6)}",
+            html,
+            flags=re.IGNORECASE,
+        )
+    return html
+
+
 def render_body_html(body: str, meta: dict[str, str]) -> str:
     content = markdown.markdown(
         body,
@@ -216,14 +228,14 @@ def note_card_html(path: Path, limit: int = PREVIEW_LEN) -> str | None:
         parts: list[str] = []
         h1 = extract_h1(body)
         if h1:
-            parts.append(f"<h1>{html_module.escape(h1)}</h1>")
+            parts.append(f"<h2>{html_module.escape(h1)}</h2>")
         parts.append(f"<p>{html_module.escape(preview_meta)}</p>")
         return "".join(parts)
 
     inner = main_inner_html(render_body_html(body, meta))
     if not html_text(inner):
         return None
-    return truncate_html(inner, limit)
+    return demote_headings(truncate_html(inner, limit))
 
 
 def random_note_previews(
