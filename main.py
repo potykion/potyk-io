@@ -10,7 +10,7 @@ import markdown
 from flask import Flask, abort
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
-MD_EXTENSIONS = ["extra", "sane_lists", "nl2br"]
+MD_EXTENSIONS = ["extra", "sane_lists", "nl2br", "pymdownx.magiclink"]
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 FALSEY = {"false", "0", "no", "off"}
 PREVIEW_LEN = 200

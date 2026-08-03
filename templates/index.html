@@ -353,10 +353,7 @@
                 ]
             },
         ];
-        cards.forEach(card => {
-            card.items.sort(() => Math.random() - 0.5)
-        })
-        cards.sort(() => Math.random() - 0.5)
+
 
         const iconsHtml = icons.map(icon => {
             return `<a style="text-decoration: none" href="${icon.link}">
