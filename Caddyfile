@@ -1,0 +1,17 @@
+# potyk-io reverse proxy
+# Now: http://84.201.131.244
+# Later: replace :80 with  potyk.io, www.potyk.io  (auto HTTPS)
+
+:80 {
+	encode gzip
+
+	# potyk-fin → :5007  (/fin prefix stripped)
+	handle_path /fin* {
+		reverse_proxy 127.0.0.1:5007
+	}
+
+	# potyk-io → :5008
+	handle {
+		reverse_proxy 127.0.0.1:5008
+	}
+}

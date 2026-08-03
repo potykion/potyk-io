@@ -31,6 +31,24 @@ sudo cp ./potyk-io.service /etc/systemd/system/potyk-io.service
 sudo chmod 644 /etc/systemd/system/potyk-io.service
 sudo systemctl enable --now potyk-io.service
 
+# Caddy (reverse proxy :80 → :5008, /fin → :5007)
+sudo apt update
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
+  | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
+  | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+sudo apt update
+sudo apt install -y caddy
+
+# конфиг из репо (caddy должен уметь читать путь)
+chmod o+x /home/leybovich-nikita
+chmod 644 /home/leybovich-nikita/potyk-io/Caddyfile
+sudo ln -sf /home/leybovich-nikita/potyk-io/Caddyfile /etc/caddy/Caddyfile
+sudo caddy validate --config /etc/caddy/Caddyfile
+sudo systemctl enable --now caddy
+sudo systemctl reload caddy
+
 ```
 
 ### Update
@@ -44,4 +62,5 @@ source ./.venv/bin/activate
 pip install -r requirements.txt 
 
 sudo systemctl restart potyk-io.service
+sudo systemctl reload caddy
 ```
