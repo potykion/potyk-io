@@ -87,7 +87,6 @@
         (function () {
             var body = document.body;
             var toggle = document.getElementById('menu-toggle');
-            var backdrop = document.getElementById('sidebar-backdrop');
             var mq = window.matchMedia('(max-width: 767px)');
 
             function isMobile() {
@@ -100,9 +99,7 @@
             }
 
             function syncAria() {
-                var open = isVisible();
-                if (toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-                if (backdrop) backdrop.hidden = !(isMobile() && open);
+                if (toggle) toggle.setAttribute('aria-expanded', isVisible() ? 'true' : 'false');
             }
 
             function setVisible(open) {
@@ -125,7 +122,6 @@
             }
 
             if (toggle) toggle.addEventListener('click', toggleMenu);
-            if (backdrop) backdrop.addEventListener('click', closeMenu);
 
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') closeMenu();

@@ -12,7 +12,7 @@
 </a>
 {%- endmacro %}
 
-<aside class="sidebar" id="sidebar" aria-label="Меню">
+<div class="sidebar-shell" id="sidebar" aria-label="Меню">
     <div class="sidebar-bar">
         <button type="button"
                 class="menu-toggle"
@@ -23,7 +23,7 @@
         <a href="/" class="sidebar-brand">potyk.io</a>
     </div>
 
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" id="sidebar-nav">
         <div class="sidebar-quick">
             {{ nav_link('🖼️', 'potyk.art', 'https://www.instagram.com/potyk.art') }}
             {{ nav_link('📜', '/feed', '/feed') }}
@@ -117,5 +117,4 @@
             </div>
         </section>
     </nav>
-</aside>
-<div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
+</div>
