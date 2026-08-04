@@ -1,0 +1,35 @@
+{% extends "_base.html" %}
+
+{% block style %}
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/md-content.css">
+    <link rel="stylesheet" href="/static/css/search.css">
+{% endblock %}
+
+{% block main %}
+    <h1>Поиск</h1>
+
+    <form class="search-page-form" action="/search" method="get" role="search">
+        <input type="search"
+               name="q"
+               value="{{ q }}"
+               placeholder="Поиск заметок…"
+               autocomplete="off"
+               enterkeyhint="search"
+               autofocus>
+        <button type="submit">Найти</button>
+    </form>
+
+    {% if q %}
+        {% if results %}
+            <p class="search-meta">Найдено: {{ results|length }}</p>
+            <div class="notes">
+                {% with notes=results, has_more=false %}
+                    {% include "_notes_batch.html" %}
+                {% endwith %}
+            </div>
+        {% else %}
+            <p class="search-meta">Ничего не найдено по «{{ q }}»</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}

@@ -29,6 +29,25 @@
         {% include "_sidebar.html" %}
 
         <div class="layout-main">
+            <div class="search-shell" id="search-shell">
+                <form class="search-bar" id="search-bar" action="/search" method="get" role="search">
+                    <input type="search"
+                           class="search-input"
+                           id="search-input"
+                           name="q"
+                           value="{{ request.args.get('q', '') }}"
+                           placeholder="Поиск заметок…"
+                           autocomplete="off"
+                           enterkeyhint="search">
+                </form>
+                <button type="button"
+                        class="search-toggle"
+                        id="search-toggle"
+                        aria-controls="search-bar"
+                        aria-expanded="false"
+                        aria-label="Поиск">⌕</button>
+            </div>
+
             <main class="{% block main_class %}{% endblock %}">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
@@ -49,6 +68,8 @@
             var STORAGE_KEY = 'menu-open';
             var body = document.body;
             var toggle = document.getElementById('menu-toggle');
+            var searchToggle = document.getElementById('search-toggle');
+            var searchInput = document.getElementById('search-input');
             var mq = window.matchMedia('(max-width: 767px)');
 
             function isMobile() {
@@ -108,15 +129,49 @@
                 setVisible(stored === null ? defaultVisible() : stored, false);
             }
 
+            function isSearchOpen() {
+                return body.classList.contains('search-open');
+            }
+
+            function setSearchOpen(open) {
+                body.classList.toggle('search-open', open);
+                if (searchToggle) {
+                    searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    searchToggle.setAttribute('aria-label', open ? 'Закрыть поиск' : 'Поиск');
+                }
+                if (open && searchInput) {
+                    requestAnimationFrame(function () {
+                        searchInput.focus();
+                        searchInput.select();
+                    });
+                }
+            }
+
             if (toggle) toggle.addEventListener('click', toggleMenu);
 
+            if (searchToggle) {
+                searchToggle.addEventListener('click', function () {
+                    setSearchOpen(!isSearchOpen());
+                });
+            }
+
             document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') closeMenu();
+                if (e.key === 'Escape') {
+                    if (isSearchOpen()) {
+                        setSearchOpen(false);
+                        return;
+                    }
+                    closeMenu();
+                }
             });
 
             mq.addEventListener('change', applyStoredOrDefault);
 
             applyStoredOrDefault();
+
+            if (searchInput && searchInput.value) {
+                setSearchOpen(true);
+            }
         })();
     </script>
     {% block script %}

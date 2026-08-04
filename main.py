@@ -3,7 +3,7 @@ import os
 import flask
 from flask import Flask, abort
 
-from potyk_io_back.feed import random_note_batch
+from potyk_io_back.feed import random_note_batch, search_notes
 from potyk_io_back.md_rendering import (
     TEMPLATES_DIR,
     render_body_html,
@@ -46,6 +46,12 @@ def create_app():
             has_more=has_more,
             exclude=[*exclude, *(n["url"] for n in notes)],
         )
+
+    @app.route("/search")
+    def search():
+        q = flask.request.args.get("q", "").strip()
+        results = search_notes(q) if q else []
+        return flask.render_template("search.html", q=q, results=results)
 
     @app.route("/<path:page_path>")
     def page(page_path: str):
