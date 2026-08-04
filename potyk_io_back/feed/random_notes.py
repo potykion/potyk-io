@@ -14,6 +14,7 @@ from potyk_io_back.md_rendering import (
     unquote_meta,
     unwrap_links,
 )
+from potyk_io_back.menu import is_external_url, iter_menu_items
 
 PREVIEW_LEN = 200
 
@@ -94,13 +95,50 @@ def random_note_previews(
     return result
 
 
+def menu_link_cards(
+    exclude: set[str] | frozenset[str] | None = None,
+) -> list[dict]:
+    skip = exclude or set()
+    cards: list[dict] = []
+    for item in iter_menu_items():
+        url = item["url"]
+        if url in skip:
+            continue
+        title = html_module.escape(item["title"])
+        icon = html_module.escape(item["icon"])
+        cards.append(
+            {
+                "url": url,
+                "preview": f"<h2>{icon} {title}</h2>",
+                "name": item["title"],
+                "kind": "link",
+                "external": is_external_url(url),
+            }
+        )
+    return cards
+
+
 def random_note_batch(
     count: int = 3,
     limit: int = PREVIEW_LEN,
     exclude: set[str] | frozenset[str] | None = None,
-) -> tuple[list[dict[str, str]], bool]:
+) -> tuple[list[dict], bool]:
     skip = set(exclude or ())
-    batch = random_note_previews(count + 1, limit=limit, exclude=skip)
-    notes = batch[:count]
-    has_more = len(batch) > count
-    return notes, has_more
+    notes = random_note_previews(count + 1, limit=limit, exclude=skip)
+    for note in notes:
+        note.setdefault("kind", "note")
+        note.setdefault("external", False)
+
+    links = menu_link_cards(exclude=skip)
+    random.shuffle(links)
+    # ~1 link на 2 слота, чтобы заметки оставались основой ленты
+    link_budget = max(1, (count + 1) // 2) if links else 0
+    pool = notes + links[:link_budget]
+    random.shuffle(pool)
+
+    batch = pool[:count]
+    used = {item["url"] for item in batch}
+    has_more = any(n["url"] not in used for n in notes) or any(
+        link["url"] not in used for link in links
+    )
+    return batch, has_more

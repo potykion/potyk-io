@@ -130,3 +130,9 @@ h1 {
 .notes-more {
     min-height: 48px;
 }
+
+.card-link h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}

@@ -27,96 +27,20 @@
 
     <nav class="sidebar-nav" id="sidebar-nav">
         <div class="sidebar-quick">
-            {{ nav_link('🖼️', 'potyk.art', 'https://www.instagram.com/potyk.art') }}
-            {{ nav_link('📜', '/feed', '/feed') }}
-            {{ nav_link('📦', '/toc', '/toc') }}
-            {{ nav_link('👩‍💻', 'github', 'https://github.com/potykion/potyk-io') }}
+            {% for item in menu_quick %}
+                {{ nav_link(item.icon, item.title, item.url) }}
+            {% endfor %}
         </div>
 
+        {% for group in menu_groups %}
         <section class="sidebar-group">
-            <h2 class="sidebar-group-title">Еда</h2>
+            <h2 class="sidebar-group-title">{{ group.title }}</h2>
             <div class="sidebar-group-links">
-                {{ nav_link('📃', 'Рецептики', 'https://potyk.io/potyk-food/') }}
-                {{ nav_link('🧠', 'Размышления', '/thoughts/food') }}
-                {{ nav_link('📝', 'Отзывы на ресты', 'https://yandex.ru/maps/user/potyk-io') }}
-                {{ nav_link('📊', 'Корзинка', 'https://docs.google.com/spreadsheets/d/1qreMshjaTWnI5GhAEc-CIJafXcK9iwUC16RaG7gYCsM/edit?usp=sharing') }}
-                {{ nav_link('📊', 'Рестики и кафешки', 'https://docs.google.com/spreadsheets/d/1h56SxxWjZCJmGULhlzVsRvT4KSU4rWoYBEWhQvrecGk/edit?usp=sharing') }}
-                {{ nav_link('🔗', 'potyk-eats', 'https://t.me/potyk_eats') }}
+                {% for item in group.links %}
+                    {{ nav_link(item.icon, item.title, item.url) }}
+                {% endfor %}
             </div>
         </section>
-
-        <section class="sidebar-group">
-            <h2 class="sidebar-group-title">Музыка/Кино</h2>
-            <div class="sidebar-group-links">
-                {{ nav_link('📝', 'Музыка в 2к26', '/mu/2026') }}
-                {{ nav_link('📊', 'Альбомы: стата', 'https://docs.google.com/spreadsheets/d/1Dy9fxDgLzxy84PsIAoyappVB9xfTYHls1rn9KNe4gDs/edit?usp=sharing') }}
-                {{ nav_link('📊', 'Кино-подпорочки', '/collections/movies') }}
-                {{ nav_link('📝', 'Скачать музыку', '/guides/music') }}
-                {{ nav_link('📺', 'танцевальное', 'https://www.youtube.com/playlist?list=PLdb8DVmvU9i5bGINNz10f-ga_bqD41O4q') }}
-                {{ nav_link('🤝', 'Го дружить в RYM', 'https://rateyourmusic.com/~potykion') }}
-            </div>
-        </section>
-
-        <section class="sidebar-group">
-            <h2 class="sidebar-group-title">Тревел</h2>
-            <div class="sidebar-group-links">
-                {{ nav_link('📝', 'Хау ту тревел', '/travel/how-to') }}
-                {{ nav_link('📝', 'Планы', '/travel/plans') }}
-                {{ nav_link('📝', 'Впечатлы', '/travel/memories') }}
-            </div>
-        </section>
-
-        <section class="sidebar-group">
-            <h2 class="sidebar-group-title">Прога</h2>
-            <div class="sidebar-group-links">
-                {{ nav_link('👨‍💻', 'Резюме', '/n/cv') }}
-                {{ nav_link('📊', 'Софт/Сервисы', 'https://docs.google.com/spreadsheets/d/13xf7UHVDKiCf6rbHeHe2rsgwOlWaNRhUYDqAU5M3ULk/edit?usp=sharing') }}
-                {{ nav_link('📝', 'Мой кодинг', '/code') }}
-                {{ nav_link('🔗', 'Разговоры с ии', 'https://t.me/potyk_ai') }}
-            </div>
-        </section>
-
-        <section class="sidebar-group">
-            <h2 class="sidebar-group-title">Алко</h2>
-            <div class="sidebar-group-links">
-                {{ nav_link('📊', 'Винный погребок', '/collections/wine') }}
-                {{ nav_link('📊', 'Пив холодильник', '/collections/beer') }}
-                {{ nav_link('📊', 'Пиво Россия', 'https://docs.google.com/spreadsheets/d/1JdhEktmNFFrolieF7O4pkmlic3urTROx8Fq8C2RNWY4/edit?usp=sharing') }}
-            </div>
-        </section>
-
-        <section class="sidebar-group">
-            <h2 class="sidebar-group-title">Бабло</h2>
-            <div class="sidebar-group-links">
-                {{ nav_link('📊', 'Инвестиции', 'https://docs.google.com/spreadsheets/d/1yXDk5eYpNwTvzPYGVoBTnETeaTwqY3b7uyPzNPwPpng/edit?usp=sharing') }}
-                {{ nav_link('📊', 'Траты', 'http://84.201.131.244:5007') }}
-                {{ nav_link('📝', 'Пассивный доход', '/guides/passive-income') }}
-            </div>
-        </section>
-
-        <section class="sidebar-group">
-            <h2 class="sidebar-group-title">Писс ссанина</h2>
-            <div class="sidebar-group-links">
-                {{ nav_link('📝', 'Кулстори', '/cool-stories') }}
-                {{ nav_link('🔗', 'потик пишет...', 'https://t.me/potyk_writes') }}
-            </div>
-        </section>
-
-        <section class="sidebar-group">
-            <h2 class="sidebar-group-title">Отношач</h2>
-            <div class="sidebar-group-links">
-                {{ nav_link('🧠', 'Размышления', '/thoughts/relationships') }}
-                {{ nav_link('📝', 'State', '/n/relationships') }}
-                {{ nav_link('📝', 'Как найти девушку', '/guides/find-gf') }}
-            </div>
-        </section>
-
-        <section class="sidebar-group">
-            <h2 class="sidebar-group-title">Селф</h2>
-            <div class="sidebar-group-links">
-                {{ nav_link('📝', 'Обо мне', '/n') }}
-                {{ nav_link('📔', 'Днев', '/diary') }}
-            </div>
-        </section>
+        {% endfor %}
     </nav>
 </div>

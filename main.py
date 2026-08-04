@@ -10,11 +10,19 @@ from potyk_io_back.md_rendering import (
     resolve_page,
     split_frontmatter,
 )
+from potyk_io_back.menu import MENU_GROUPS, MENU_QUICK
 
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = os.environ["FLASK_SECRET"]
+
+    @app.context_processor
+    def inject_menu():
+        return {
+            "menu_quick": MENU_QUICK,
+            "menu_groups": MENU_GROUPS,
+        }
 
     @app.route("/")
     def index():
