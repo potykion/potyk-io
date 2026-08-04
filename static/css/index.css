@@ -11,7 +11,7 @@ main {
 }
 
 main {
-    max-width: 640px;
+    max-width: 1264px;
     padding:  16px;
 }
 
@@ -37,8 +37,13 @@ h1 {
 }
 
 .notes .card {
-    display: block;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    padding: 0;
+    overflow: hidden;
     color: inherit;
     text-decoration: none;
     transition: box-shadow 0.15s ease, transform 0.15s ease;
@@ -49,6 +54,41 @@ h1 {
         0 8px 20px rgba(120, 70, 30, 0.12),
         0 16px 36px rgba(120, 70, 30, 0.1);
     transform: translateY(-1px);
+}
+
+.notes .card.card-text {
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.notes .card.card-text .note-preview {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+    overflow: hidden;
+}
+
+.notes .card:not(.card-text) .note-cover {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    object-fit: cover;
+}
+
+.notes .card:not(.card-text) .note-preview {
+    flex-shrink: 0;
+    padding: 10px 14px 12px;
+}
+
+.notes .card:not(.card-text) .note-preview h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.3;
+}
+
+.notes .card:not(.card-text) .note-preview > :not(h2) {
+    display: none;
 }
 
 .grid {
@@ -97,13 +137,23 @@ h1 {
 }
 
 .notes {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 400px));
+    justify-content: center;
     gap: 16px;
+    align-items: stretch;
+}
+
+.note-cover {
+    display: block;
+    width: 100%;
+    object-fit: cover;
 }
 
 .note-preview {
     line-height: 1.5;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .note-preview > :first-child {
@@ -128,7 +178,14 @@ h1 {
 }
 
 .notes-more {
+    grid-column: 1 / -1;
     min-height: 48px;
+}
+
+@media screen and (max-width: 767px) {
+    .notes {
+        grid-template-columns: minmax(0, 400px);
+    }
 }
 
 .card-link h2 {

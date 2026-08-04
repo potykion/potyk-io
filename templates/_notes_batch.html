@@ -1,7 +1,10 @@
 {% for note in notes %}
-    <a class="card{% if note.kind == 'link' %} card-link{% endif %}"
+    <a class="card{% if note.kind == 'link' %} card-link{% endif %}{% if not note.cover %} card-text{% endif %}"
        href="{{ note.url }}"
        {% if note.external %}target="_blank" rel="noopener"{% endif %}>
+        {% if note.cover %}
+            <img class="note-cover" src="{{ note.cover }}" alt="" loading="lazy">
+        {% endif %}
         <div class="note-preview md-content">{{ note.preview | safe }}</div>
     </a>
 {% endfor %}

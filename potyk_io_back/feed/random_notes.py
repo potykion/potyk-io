@@ -17,6 +17,7 @@ from potyk_io_back.md_rendering import (
 from potyk_io_back.menu import is_external_url, iter_menu_items
 
 PREVIEW_LEN = 200
+BATCH_SIZE = 9
 
 
 HIDDEN_NOTE_DIRS = {"Шаблоны", "tasks"}
@@ -48,8 +49,19 @@ def note_url(path: Path) -> str:
     return f"/{rel}"
 
 
-def note_card_html(path: Path, limit: int = PREVIEW_LEN) -> str | None:
-    meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
+def note_cover(meta: dict[str, str]) -> str:
+    return unquote_meta(meta.get("cover", ""))
+
+
+def note_card_html(
+    path: Path,
+    limit: int = PREVIEW_LEN,
+    *,
+    meta: dict[str, str] | None = None,
+    body: str | None = None,
+) -> str | None:
+    if meta is None or body is None:
+        meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
     preview_meta = unquote_meta(meta.get("preview", ""))
     title = path.stem
 
@@ -67,38 +79,42 @@ def note_card_html(path: Path, limit: int = PREVIEW_LEN) -> str | None:
 
 
 def random_note_previews(
-    count: int = 3,
+    count: int = BATCH_SIZE,
     limit: int = PREVIEW_LEN,
     exclude: set[str] | frozenset[str] | None = None,
-) -> list[dict[str, str]]:
+) -> list[dict]:
     skip = exclude or set()
     notes = iter_notes()
     random.shuffle(notes)
 
-    result: list[dict[str, str]] = []
+    result: list[dict] = []
     for path in notes:
         if len(result) >= count:
             break
         url = note_url(path)
         if url in skip:
             continue
-        preview = note_card_html(path, limit)
+        meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
+        preview = note_card_html(path, limit, meta=meta, body=body)
         if not preview:
             continue
-        result.append(
-            {
-                "url": url,
-                "preview": preview,
-                "name": path.name,
-            }
-        )
+        card = {
+            "url": url,
+            "preview": preview,
+            "name": path.name,
+        }
+        cover = note_cover(meta)
+        if cover:
+            card["cover"] = cover
+        result.append(card)
     return result
 
 
 def menu_link_cards(
     exclude: set[str] | frozenset[str] | None = None,
 ) -> list[dict]:
-    skip = exclude or set()
+    skip = set(exclude or ())
+    skip.update(note_url(path) for path in iter_notes())
     cards: list[dict] = []
     for item in iter_menu_items():
         url = item["url"]
@@ -121,7 +137,7 @@ def menu_link_cards(
 
 
 def random_note_batch(
-    count: int = 3,
+    count: int = BATCH_SIZE,
     limit: int = PREVIEW_LEN,
     exclude: set[str] | frozenset[str] | None = None,
 ) -> tuple[list[dict], bool]:

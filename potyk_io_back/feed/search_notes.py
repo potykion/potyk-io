@@ -1,7 +1,7 @@
 import html as html_module
 import re
 
-from potyk_io_back.feed.random_notes import iter_notes, note_url
+from potyk_io_back.feed.random_notes import iter_notes, note_cover, note_url
 from potyk_io_back.md_rendering import extract_h1, split_frontmatter, unquote_meta
 
 SNIPPET_RADIUS = 80
@@ -82,6 +82,9 @@ def search_notes(query: str) -> list[dict]:
             "external": False,
             "title": title,
         }
+        cover = note_cover(meta)
+        if cover:
+            card["cover"] = cover
         if in_title:
             title_hits.append(card)
         else:
