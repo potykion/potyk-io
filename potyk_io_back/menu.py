@@ -85,7 +85,7 @@ MENU_GROUPS = [
                 "title": "Инвестиции",
                 "url": "https://docs.google.com/spreadsheets/d/1yXDk5eYpNwTvzPYGVoBTnETeaTwqY3b7uyPzNPwPpng/edit?usp=sharing",
             },
-            {"icon": "📊", "title": "Траты", "url": "http://84.201.131.244:5007"},
+            {"icon": "📊", "title": "Траты", "url": "/fin"},
             {"icon": "📝", "title": "Пассивный доход", "url": "/guides/passive-income"},
         ],
     },
