@@ -17,14 +17,23 @@ from potyk_io_back.md_rendering import (
 PREVIEW_LEN = 200
 
 
+HIDDEN_NOTE_DIRS = {"Шаблоны", "tasks"}
+HIDDEN_NOTE_STEMS = {"toc"}
+
+
 def iter_notes() -> list[Path]:
     notes: list[Path] = []
     for path in TEMPLATES_DIR.rglob("*.md"):
+        rel_parts = path.relative_to(TEMPLATES_DIR).parts
         if any(part.startswith(".") or part.startswith("_") for part in path.parts):
             continue
         if path.name.startswith(".") or path.name.startswith("_"):
             continue
         if path.name == "index.md":
+            continue
+        if any(part in HIDDEN_NOTE_DIRS for part in rel_parts):
+            continue
+        if path.stem in HIDDEN_NOTE_STEMS:
             continue
         notes.append(path)
     return notes
