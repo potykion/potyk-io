@@ -29,6 +29,20 @@ def _snippet(text: str, query: str) -> str:
     return chunk
 
 
+def _highlight(text: str, query: str) -> str:
+    if not query:
+        return html_module.escape(text)
+    pattern = re.compile(re.escape(query), re.IGNORECASE)
+    parts: list[str] = []
+    last = 0
+    for match in pattern.finditer(text):
+        parts.append(html_module.escape(text[last : match.start()]))
+        parts.append(f"<mark>{html_module.escape(match.group())}</mark>")
+        last = match.end()
+    parts.append(html_module.escape(text[last:]))
+    return "".join(parts)
+
+
 def search_notes(query: str) -> list[dict]:
     q = query.strip().lower()
     if not q:
@@ -56,9 +70,9 @@ def search_notes(query: str) -> list[dict]:
         else:
             snippet = preview_meta or _snippet(plain, q)
 
-        parts = [f"<h2>{html_module.escape(title)}</h2>"]
+        parts = [f"<h2>{_highlight(title, q)}</h2>"]
         if snippet:
-            parts.append(f"<p>{html_module.escape(snippet)}</p>")
+            parts.append(f"<p>{_highlight(snippet, q)}</p>")
 
         card = {
             "url": note_url(path),

@@ -41,3 +41,10 @@
     margin: 0 0 1rem;
     text-align: center;
 }
+
+.notes mark {
+    background: #ffe566;
+    color: inherit;
+    padding: 0 0.1em;
+    border-radius: 0.15em;
+}
