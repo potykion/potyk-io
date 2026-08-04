@@ -120,3 +120,9 @@ def demote_headings(html: str, levels: int = 1) -> str:
             flags=re.IGNORECASE,
         )
     return html
+
+
+def unwrap_links(html: str) -> str:
+    """Remove <a> wrappers so previews can sit inside a card link."""
+    html = re.sub(r"<a\b[^>]*>", "", html, flags=re.IGNORECASE)
+    return re.sub(r"</a>", "", html, flags=re.IGNORECASE)

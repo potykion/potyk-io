@@ -3,6 +3,7 @@ from potyk_io_back.md_rendering.html_preview import (
     html_text,
     main_inner_html,
     truncate_html,
+    unwrap_links,
 )
 from potyk_io_back.md_rendering.render import (
     extract_h1,
@@ -23,4 +24,5 @@ __all__ = [
     "split_frontmatter",
     "truncate_html",
     "unquote_meta",
+    "unwrap_links",
 ]

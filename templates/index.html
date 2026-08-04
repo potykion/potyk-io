@@ -14,10 +14,10 @@
     <div style="margin-bottom: 24px"></div>
 
     <div class="notes">
-        {% for note in random_notes %}
-            <a class="card" href="{{ note.url }}">
-                <div class="note-preview">{{ note.preview | safe }}</div>
-            </a>
-        {% endfor %}
+        {% include "_notes_batch.html" %}
     </div>
+{% endblock %}
+
+{% block script %}
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 {% endblock %}

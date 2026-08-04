@@ -12,6 +12,7 @@ from potyk_io_back.md_rendering import (
     split_frontmatter,
     truncate_html,
     unquote_meta,
+    unwrap_links,
 )
 
 PREVIEW_LEN = 200
@@ -61,12 +62,15 @@ def note_card_html(path: Path, limit: int = PREVIEW_LEN) -> str | None:
     inner = main_inner_html(render_body_html(body, meta, title=title))
     if not html_text(inner):
         return None
-    return demote_headings(truncate_html(inner, limit))
+    return unwrap_links(demote_headings(truncate_html(inner, limit)))
 
 
 def random_note_previews(
-    count: int = 3, limit: int = PREVIEW_LEN
+    count: int = 3,
+    limit: int = PREVIEW_LEN,
+    exclude: set[str] | frozenset[str] | None = None,
 ) -> list[dict[str, str]]:
+    skip = exclude or set()
     notes = iter_notes()
     random.shuffle(notes)
 
@@ -74,14 +78,29 @@ def random_note_previews(
     for path in notes:
         if len(result) >= count:
             break
+        url = note_url(path)
+        if url in skip:
+            continue
         preview = note_card_html(path, limit)
         if not preview:
             continue
         result.append(
             {
-                "url": note_url(path),
+                "url": url,
                 "preview": preview,
                 "name": path.name,
             }
         )
     return result
+
+
+def random_note_batch(
+    count: int = 3,
+    limit: int = PREVIEW_LEN,
+    exclude: set[str] | frozenset[str] | None = None,
+) -> tuple[list[dict[str, str]], bool]:
+    skip = set(exclude or ())
+    batch = random_note_previews(count + 1, limit=limit, exclude=skip)
+    notes = batch[:count]
+    has_more = len(batch) > count
+    return notes, has_more

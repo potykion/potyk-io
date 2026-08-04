@@ -3,7 +3,7 @@ import os
 import flask
 from flask import Flask, abort
 
-from potyk_io_back.feed import random_note_previews
+from potyk_io_back.feed import random_note_batch
 from potyk_io_back.md_rendering import (
     TEMPLATES_DIR,
     render_body_html,
@@ -18,9 +18,25 @@ def create_app():
 
     @app.route("/")
     def index():
+        notes, has_more = random_note_batch(3)
         return flask.render_template(
             "index.html",
-            random_notes=random_note_previews(3),
+            notes=notes,
+            has_more=has_more,
+            exclude=[n["url"] for n in notes],
+        )
+
+    @app.route("/feed/more")
+    def feed_more():
+        exclude = {
+            u for u in flask.request.args.get("exclude", "").split(",") if u
+        }
+        notes, has_more = random_note_batch(3, exclude=exclude)
+        return flask.render_template(
+            "_notes_batch.html",
+            notes=notes,
+            has_more=has_more,
+            exclude=[*exclude, *(n["url"] for n in notes)],
         )
 
     @app.route("/<path:page_path>")
@@ -36,7 +52,12 @@ def create_app():
         template_name = str(file.relative_to(TEMPLATES_DIR)).replace("\\", "/")
         ctx = {}
         if template_name == "index.html":
-            ctx["random_notes"] = random_note_previews(3)
+            notes, has_more = random_note_batch(3)
+            ctx.update(
+                notes=notes,
+                has_more=has_more,
+                exclude=[n["url"] for n in notes],
+            )
         return flask.render_template(template_name, **ctx)
 
     return app
