@@ -30,6 +30,10 @@
 
         <div class="layout-main">
             <div class="search-shell" id="search-shell">
+                <button type="button"
+                        class="search-back"
+                        id="search-back"
+                        aria-label="Закрыть поиск">←</button>
                 <form class="search-bar" id="search-bar" action="/search" method="get" role="search">
                     <input type="search"
                            class="search-input"
@@ -68,8 +72,11 @@
             var STORAGE_KEY = 'menu-open';
             var body = document.body;
             var toggle = document.getElementById('menu-toggle');
+            var searchShell = document.getElementById('search-shell');
             var searchToggle = document.getElementById('search-toggle');
+            var searchBack = document.getElementById('search-back');
             var searchInput = document.getElementById('search-input');
+            var searchBar = document.getElementById('search-bar');
             var mq = window.matchMedia('(max-width: 767px)');
 
             function isMobile() {
@@ -137,7 +144,6 @@
                 body.classList.toggle('search-open', open);
                 if (searchToggle) {
                     searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-                    searchToggle.setAttribute('aria-label', open ? 'Закрыть поиск' : 'Поиск');
                 }
                 if (open && searchInput) {
                     requestAnimationFrame(function () {
@@ -155,6 +161,25 @@
                 });
             }
 
+            if (searchBack) {
+                searchBack.addEventListener('click', function () {
+                    setSearchOpen(false);
+                });
+            }
+
+            if (searchBar) {
+                searchBar.addEventListener('submit', function () {
+                    setSearchOpen(false);
+                });
+            }
+
+            document.addEventListener('pointerdown', function (e) {
+                if (!isSearchOpen() || isMobile()) return;
+                if (searchShell && !searchShell.contains(e.target)) {
+                    setSearchOpen(false);
+                }
+            });
+
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') {
                     if (isSearchOpen()) {
@@ -168,10 +193,6 @@
             mq.addEventListener('change', applyStoredOrDefault);
 
             applyStoredOrDefault();
-
-            if (searchInput && searchInput.value) {
-                setSearchOpen(true);
-            }
         })();
     </script>
     {% block script %}
