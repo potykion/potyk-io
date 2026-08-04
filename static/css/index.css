@@ -37,7 +37,18 @@ h1 {
 }
 
 .notes .card {
+    display: block;
     padding: 20px;
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.notes .card:hover {
+    box-shadow: 0 2px 4px rgba(120, 70, 30, 0.08),
+        0 8px 20px rgba(120, 70, 30, 0.12),
+        0 16px 36px rgba(120, 70, 30, 0.1);
+    transform: translateY(-1px);
 }
 
 .grid {
@@ -103,15 +114,10 @@ h1 {
     margin-bottom: 0;
 }
 
-.hint {
-    margin-top: 12px;
-    margin-bottom: 0;
-    color: #9f9f9f;
-    font-size: 0.75rem;
-}
-
-.hint a {
+.notes .card .note-preview a {
+    pointer-events: none;
     color: inherit;
+    text-decoration: inherit;
 }
 
 .footer-hint {

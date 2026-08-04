@@ -15,10 +15,9 @@
 
     <div class="notes">
         {% for note in random_notes %}
-            <div class="card">
+            <a class="card" href="{{ note.url }}">
                 <div class="note-preview">{{ note.preview | safe }}</div>
-                <p class="hint"><a href="{{ note.url }}">{{ note.name }}</a></p>
-            </div>
+            </a>
         {% endfor %}
     </div>
 {% endblock %}
