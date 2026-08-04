@@ -105,11 +105,13 @@ def menu_link_cards(
         if url in skip:
             continue
         title = html_module.escape(item["title"])
-        icon = html_module.escape(item["icon"])
+        parts = [f"<h2>{title}</h2>"]
+        if item.get("description"):
+            parts.append(f"<p>{html_module.escape(item['description'])}</p>")
         cards.append(
             {
                 "url": url,
-                "preview": f"<h2>{icon} {title}</h2>",
+                "preview": "".join(parts),
                 "name": item["title"],
                 "kind": "link",
                 "external": is_external_url(url),
