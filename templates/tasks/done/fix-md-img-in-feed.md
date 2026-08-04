@@ -1,5 +1,5 @@
 ---
-status: new
+status: done
 ---
 
 Из page.html вынеси 

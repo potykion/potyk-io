@@ -2,7 +2,7 @@
     <a class="card{% if note.kind == 'link' %} card-link{% endif %}"
        href="{{ note.url }}"
        {% if note.external %}target="_blank" rel="noopener"{% endif %}>
-        <div class="note-preview">{{ note.preview | safe }}</div>
+        <div class="note-preview md-content">{{ note.preview | safe }}</div>
     </a>
 {% endfor %}
 {% if has_more %}

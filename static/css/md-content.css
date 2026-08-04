@@ -1,0 +1,22 @@
+.md-content {
+    margin: auto;
+    max-width: 600px;
+}
+
+.md-content h4 {
+    margin: 0;
+}
+
+.md-content ul {
+    padding: 0 20px;
+}
+
+.md-content blockquote {
+    border-left: 5px solid #e8e8e8;
+    padding-left: 10px;
+    margin-left: 0;
+}
+
+.md-content img {
+    width: 100%;
+}
