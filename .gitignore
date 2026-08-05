@@ -4,4 +4,8 @@ out
 gen
 .venv
 .env
-__pycache__
+*.db
+instance/
+__pycache__/
+*.pyc
+logs/
