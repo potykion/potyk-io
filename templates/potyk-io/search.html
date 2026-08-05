@@ -1,4 +1,4 @@
-{% extends "_base.html" %}
+{% extends "potyk-io/_base.html" %}
 
 {% block style %}
     <link rel="stylesheet" href="/static/css/index.css">
@@ -25,7 +25,7 @@
             <p class="search-meta">Найдено: {{ results|length }}</p>
             <div class="notes">
                 {% with notes=results, has_more=false %}
-                    {% include "_notes_batch.html" %}
+                    {% include "potyk-io/_notes_batch.html" %}
                 {% endwith %}
             </div>
         {% else %}

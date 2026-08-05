@@ -28,7 +28,7 @@ def create_app():
     def index():
         notes, has_more = random_note_batch(BATCH_SIZE)
         return flask.render_template(
-            "index.html",
+            "potyk-io/index.html",
             notes=notes,
             has_more=has_more,
             exclude=[n.get("id", n["url"]) for n in notes],
@@ -41,7 +41,7 @@ def create_app():
         }
         notes, has_more = random_note_batch(BATCH_SIZE, exclude=exclude)
         return flask.render_template(
-            "_notes_batch.html",
+            "potyk-io/_notes_batch.html",
             notes=notes,
             has_more=has_more,
             exclude=[*exclude, *(n.get("id", n["url"]) for n in notes)],
@@ -51,7 +51,7 @@ def create_app():
     def search():
         q = flask.request.args.get("q", "").strip()
         results = search_notes(q) if q else []
-        return flask.render_template("search.html", q=q, results=results)
+        return flask.render_template("potyk-io/search.html", q=q, results=results)
 
     @app.route("/<path:page_path>")
     def page(page_path: str):
@@ -63,9 +63,9 @@ def create_app():
             meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
             return render_body_html(body, meta, title=file.stem)
 
-        template_name = str(file.relative_to(TEMPLATES_DIR)).replace("\\", "/")
+        template_name = f"potyk-io/{file.relative_to(TEMPLATES_DIR).as_posix()}"
         ctx = {}
-        if template_name == "index.html":
+        if file == TEMPLATES_DIR / "index.html":
             notes, has_more = random_note_batch(BATCH_SIZE)
             ctx.update(
                 notes=notes,

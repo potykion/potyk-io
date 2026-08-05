@@ -53,4 +53,6 @@ def render_body_html(body: str, meta: dict[str, str], title: str | None = None) 
         output_format="html",
     )
     show_header = str(meta.get("header", "true")).strip().lower() not in FALSEY
-    return flask.render_template("page.html", content=content, show_header=show_header)
+    return flask.render_template(
+        "potyk-io/page.html", content=content, show_header=show_header
+    )

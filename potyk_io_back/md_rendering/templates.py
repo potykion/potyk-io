@@ -1,6 +1,6 @@
 from pathlib import Path
 
-TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates"
+TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "potyk-io"
 
 
 def resolve_page(page_path: str) -> Path | None:
