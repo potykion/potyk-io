@@ -31,7 +31,7 @@ def create_app():
             "index.html",
             notes=notes,
             has_more=has_more,
-            exclude=[n["url"] for n in notes],
+            exclude=[n.get("id", n["url"]) for n in notes],
         )
 
     @app.route("/feed/more")
@@ -44,7 +44,7 @@ def create_app():
             "_notes_batch.html",
             notes=notes,
             has_more=has_more,
-            exclude=[*exclude, *(n["url"] for n in notes)],
+            exclude=[*exclude, *(n.get("id", n["url"]) for n in notes)],
         )
 
     @app.route("/search")
@@ -70,7 +70,7 @@ def create_app():
             ctx.update(
                 notes=notes,
                 has_more=has_more,
-                exclude=[n["url"] for n in notes],
+                exclude=[n.get("id", n["url"]) for n in notes],
             )
         return flask.render_template(template_name, **ctx)
 

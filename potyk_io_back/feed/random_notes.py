@@ -1,5 +1,6 @@
 import html as html_module
 import random
+import re
 from pathlib import Path
 
 from potyk_io_back.md_rendering import (
@@ -19,6 +20,8 @@ from potyk_io_back.menu import is_external_url, iter_menu_items
 PREVIEW_LEN = 200
 BATCH_SIZE = 9
 
+# Разделитель записей внутри дневника (после frontmatter): строка ---
+DIARY_ENTRY_SEP_RE = re.compile(r"\r?\n---\s*\r?\n")
 
 HIDDEN_NOTE_DIRS = {"Шаблоны", "tasks"}
 HIDDEN_NOTE_STEMS = {"toc"}
@@ -47,6 +50,39 @@ def note_url(path: Path) -> str:
     if rel.endswith("/index"):
         rel = rel[: -len("/index")]
     return f"/{rel}"
+
+
+def is_diary_note(path: Path) -> bool:
+    return path.relative_to(TEMPLATES_DIR).parts[:1] == ("diary",)
+
+
+def split_diary_entries(body: str) -> list[str]:
+    return [part.strip() for part in DIARY_ENTRY_SEP_RE.split(body) if part.strip()]
+
+
+def expand_note_entries(path: Path) -> list[tuple[str, str, dict[str, str], str]]:
+    """Один файл → карточки ленты. Diary режется по --- на отдельные записи.
+
+    Возвращает (card_id, url, meta, body): url — ссылка на день/страницу,
+    card_id — уникальный ключ для exclude в ленте.
+    """
+    meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
+    base_url = note_url(path)
+    if not is_diary_note(path):
+        return [(base_url, base_url, meta, body)]
+
+    entries = split_diary_entries(body)
+    if not entries:
+        return []
+    if len(entries) == 1:
+        return [(base_url, base_url, meta, entries[0])]
+    return [
+        (f"{base_url}~{i}", base_url, meta, entry) for i, entry in enumerate(entries)
+    ]
+
+
+def card_id(card: dict) -> str:
+    return card.get("id", card["url"])
 
 
 def note_cover(meta: dict[str, str]) -> str:
@@ -84,21 +120,23 @@ def random_note_previews(
     exclude: set[str] | frozenset[str] | None = None,
 ) -> list[dict]:
     skip = exclude or set()
-    notes = iter_notes()
-    random.shuffle(notes)
+    candidates: list[tuple[Path, str, str, dict[str, str], str]] = []
+    for path in iter_notes():
+        for cid, url, meta, body in expand_note_entries(path):
+            if cid in skip:
+                continue
+            candidates.append((path, cid, url, meta, body))
+    random.shuffle(candidates)
 
     result: list[dict] = []
-    for path in notes:
+    for path, cid, url, meta, body in candidates:
         if len(result) >= count:
             break
-        url = note_url(path)
-        if url in skip:
-            continue
-        meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
         preview = note_card_html(path, limit, meta=meta, body=body)
         if not preview:
             continue
         card = {
+            "id": cid,
             "url": url,
             "preview": preview,
             "name": path.name,
@@ -126,6 +164,7 @@ def menu_link_cards(
             parts.append(f"<p>{html_module.escape(item['description'])}</p>")
         cards.append(
             {
+                "id": url,
                 "url": url,
                 "preview": "".join(parts),
                 "name": item["title"],
@@ -155,8 +194,8 @@ def random_note_batch(
     random.shuffle(pool)
 
     batch = pool[:count]
-    used = {item["url"] for item in batch}
-    has_more = any(n["url"] not in used for n in notes) or any(
-        link["url"] not in used for link in links
+    used = {card_id(item) for item in batch}
+    has_more = any(card_id(n) not in used for n in notes) or any(
+        card_id(link) not in used for link in links
     )
     return batch, has_more

@@ -1,8 +1,8 @@
 import html as html_module
 import re
 
-from potyk_io_back.feed.random_notes import iter_notes, note_cover, note_url
-from potyk_io_back.md_rendering import extract_h1, split_frontmatter, unquote_meta
+from potyk_io_back.feed.random_notes import expand_note_entries, iter_notes, note_cover
+from potyk_io_back.md_rendering import extract_h1, unquote_meta
 
 SNIPPET_RADIUS = 80
 
@@ -52,43 +52,44 @@ def search_notes(query: str) -> list[dict]:
     body_hits: list[dict] = []
 
     for path in iter_notes():
-        meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
-        title = extract_h1(body) or path.stem
-        preview_meta = unquote_meta(meta.get("preview", ""))
-        plain = _plain_body(body)
+        for cid, url, meta, body in expand_note_entries(path):
+            title = extract_h1(body) or path.stem
+            preview_meta = unquote_meta(meta.get("preview", ""))
+            plain = _plain_body(body)
 
-        in_title = q in title.lower() or q in path.stem.lower()
-        in_preview = bool(preview_meta) and q in preview_meta.lower()
-        in_body = q in plain.lower() or in_preview
-        if not in_title and not in_body:
-            continue
+            in_title = q in title.lower() or q in path.stem.lower()
+            in_preview = bool(preview_meta) and q in preview_meta.lower()
+            in_body = q in plain.lower() or in_preview
+            if not in_title and not in_body:
+                continue
 
-        if in_preview:
-            snippet = preview_meta
-        elif in_body:
-            snippet = _snippet(plain, q)
-        else:
-            snippet = preview_meta or _snippet(plain, q)
+            if in_preview:
+                snippet = preview_meta
+            elif in_body:
+                snippet = _snippet(plain, q)
+            else:
+                snippet = preview_meta or _snippet(plain, q)
 
-        parts = [f"<h2>{_highlight(title, q)}</h2>"]
-        if snippet:
-            parts.append(f"<p>{_highlight(snippet, q)}</p>")
+            parts = [f"<h2>{_highlight(title, q)}</h2>"]
+            if snippet:
+                parts.append(f"<p>{_highlight(snippet, q)}</p>")
 
-        card = {
-            "url": note_url(path),
-            "preview": "".join(parts),
-            "name": path.name,
-            "kind": "note",
-            "external": False,
-            "title": title,
-        }
-        cover = note_cover(meta)
-        if cover:
-            card["cover"] = cover
-        if in_title:
-            title_hits.append(card)
-        else:
-            body_hits.append(card)
+            card = {
+                "id": cid,
+                "url": url,
+                "preview": "".join(parts),
+                "name": path.name,
+                "kind": "note",
+                "external": False,
+                "title": title,
+            }
+            cover = note_cover(meta)
+            if cover:
+                card["cover"] = cover
+            if in_title:
+                title_hits.append(card)
+            else:
+                body_hits.append(card)
 
     title_hits.sort(key=lambda c: c["title"].lower())
     body_hits.sort(key=lambda c: c["title"].lower())
