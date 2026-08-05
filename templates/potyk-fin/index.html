@@ -100,7 +100,63 @@
     });
   });
 
+  const evalFormula = (raw) => {
+    const s = String(raw).trim().replace(/^=/, "").replace(/\s+/g, "");
+    if (!s || !/^[\d.+\-*/()]+$/.test(s)) return null;
+    try {
+      const result = Function(`"use strict"; return (${s})`)();
+      if (typeof result !== "number" || !Number.isFinite(result)) return null;
+      return Math.round(result);
+    } catch {
+      return null;
+    }
+  };
+
+  const applyCalc = (field) => {
+    const panel = field.querySelector(".calc-panel");
+    const formula = field.querySelector(".calc-formula");
+    const amount = field.querySelector('[name="amount"]');
+    if (!panel || !formula || !amount) return;
+    const value = evalFormula(formula.value);
+    if (value === null || value < 1) {
+      panel.classList.add("is-invalid");
+      formula.focus();
+      return;
+    }
+    panel.classList.remove("is-invalid");
+    amount.value = value;
+    panel.hidden = true;
+    const toggle = field.querySelector(".calc-toggle");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+    amount.focus();
+  };
+
   document.addEventListener("click", (e) => {
+    const calcToggle = e.target.closest(".calc-toggle");
+    if (calcToggle) {
+      const field = calcToggle.closest(".amount-field");
+      if (!field) return;
+      const panel = field.querySelector(".calc-panel");
+      const formula = field.querySelector(".calc-formula");
+      if (!panel) return;
+      const open = panel.hidden;
+      panel.hidden = !open;
+      calcToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open && formula) {
+        panel.classList.remove("is-invalid");
+        formula.focus();
+        formula.select();
+      }
+      return;
+    }
+
+    const calcEq = e.target.closest(".calc-eq");
+    if (calcEq) {
+      const field = calcEq.closest(".amount-field");
+      if (field) applyCalc(field);
+      return;
+    }
+
     const saveBtn = e.target.closest(".add-saving-day");
     if (saveBtn) {
       const panel = document.querySelector('details[data-panel="saving"]');
@@ -132,6 +188,15 @@
     panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
     const amount = form.querySelector('[name="amount"]');
     if (amount) amount.focus();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    const formula = e.target.closest(".calc-formula");
+    if (!formula) return;
+    e.preventDefault();
+    const field = formula.closest(".amount-field");
+    if (field) applyCalc(field);
   });
 })();
 </script>

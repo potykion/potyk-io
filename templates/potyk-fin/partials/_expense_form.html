@@ -6,9 +6,16 @@
       hx-target="#expense-form"
       hx-swap="outerHTML">
     {{ expense_form.hidden_tag() }}
-    <label>
+    <label class="amount-field">
         {{ expense_form.amount.label.text }}
-        {{ expense_form.amount(min=1, step=1, required=true, autofocus=true) }}
+        <div class="amount-row">
+            {{ expense_form.amount(min=1, step=1, required=true, autofocus=true) }}
+            <button type="button" class="calc-toggle" title="Калькулятор" aria-label="Калькулятор" aria-expanded="false">🧮</button>
+        </div>
+        <div class="calc-panel" hidden>
+            <input type="text" class="calc-formula" placeholder="123+456" inputmode="decimal" autocomplete="off" aria-label="Формула">
+            <button type="button" class="calc-eq" title="Посчитать">=</button>
+        </div>
         {% for error in expense_form.amount.errors %}
         <span class="field-error">{{ error }}</span>
         {% endfor %}
