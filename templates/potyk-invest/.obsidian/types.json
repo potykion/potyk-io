@@ -1,0 +1,13 @@
+{
+  "types": {
+    "aliases": "aliases",
+    "cssclasses": "multitext",
+    "tags": "tags",
+    "datetime": "datetime",
+    "datetime close": "datetime",
+    "datetime open": "datetime",
+    "Срок": "datetime",
+    "Сектор": "multitext",
+    "Зависимости": "multitext"
+  }
+}

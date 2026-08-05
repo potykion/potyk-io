@@ -1,0 +1,17 @@
+views:
+  - type: table
+    name: Таблица
+    filters:
+      and:
+        - file.inFolder("Сделки")
+    groupBy:
+      property: status
+      direction: DESC
+    order:
+      - file.name
+      - status
+      - datetime open
+      - ticker
+      - PROFIT/LOSS
+      - Мысли
+    columnSize: {}
