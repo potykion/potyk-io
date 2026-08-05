@@ -1,0 +1,65 @@
+<section class="day" id="day-{{ day.date.isoformat() }}">
+    <div class="day-head">
+        <span class="date">{{ day.date.isoformat() }}{% if day.date == today %} · сегодня{% endif %}</span>
+        <span class="meta">
+            старт {{ day.start_available | rub }}
+            {% if day.carry_in %}· долг вчера −{{ day.carry_in | rub }}{% endif %}
+        </span>
+        <span class="badges">
+            <span class="badge spent">потрачено {{ day.spent | rub }}</span>
+            <button type="button" class="add-expense-day"
+                    data-date="{{ day.date.isoformat() }}"
+                    title="Добавить трату на этот день">+</button>
+            {% if day.end_balance < 0 %}
+            <span class="badge bad">долг {{ day.carry_out | rub }}</span>
+            {% else %}
+            <span class="badge ok">остаток {{ day.eod_remainder | rub }}</span>
+            <button type="button" class="add-saving-day"
+                    data-amount="{{ day.eod_remainder }}"
+                    data-date="{{ day.date.isoformat() }}"
+                    title="Зафиксировать сейв на этот день">+</button>
+            {% endif %}
+            {% if day.saved %}
+            <span class="badge saved">сейв {{ day.saved | rub }}</span>
+            {% endif %}
+        </span>
+    </div>
+
+    {% if day.expenses %}
+    <div class="table-wrap">
+    <table>
+        <thead>
+        <tr>
+            <th>Сумма</th>
+            <th>Категория</th>
+            <th>Описание</th>
+            <th class="num">Баланс</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for e in day.expenses %}
+        <tr>
+            <td data-label="Сумма">{{ e.amount | rub }}</td>
+            <td data-label="Категория">{{ e.category }}</td>
+            <td class="muted" data-label="Описание">{{ e.description or '—' }}</td>
+            <td class="num balance {% if e.running_balance < 0 %}bad{% elif e.running_balance > 0 %}ok{% endif %}"
+                data-label="Баланс">
+                {{ e.running_balance | rub }}
+            </td>
+            <td>
+                <form class="inline-form" method="post" action="{{ url_for('fin.delete_expense', expense_id=e.id) }}"
+                      onsubmit="return confirm('Удалить трату?')">
+                    {{ delete_form.hidden_tag() }}
+                    {{ delete_form.submit(class_='danger') }}
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <p class="empty">Трат нет</p>
+    {% endif %}
+</section>

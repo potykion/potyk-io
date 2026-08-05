@@ -4,11 +4,6 @@
 potyk.io {
 	encode gzip
 
-	# potyk-fin → :5007
-	handle /fin* {
-		reverse_proxy 127.0.0.1:5007
-	}
-
 	# potyk-food → GitHub Pages
 	handle /potyk-food* {
 		reverse_proxy https://potykion.github.io {

@@ -1,0 +1,138 @@
+{% extends 'potyk-fin/_base.html' %}
+
+{% block main %}
+<h1>Сегодня, {{ today.isoformat() }}</h1>
+
+<div id="summary-wrap">
+{% include "potyk-fin/partials/_summary.html" %}
+</div>
+
+<div class="panel">
+    <details data-panel="budget" {% if open_panel == 'budget' %}open{% endif %}>
+        <summary>Изменить бюджет на день</summary>
+        <form class="grid cols-2" method="post" action="{{ url_for('fin.update_budget') }}">
+            {{ budget_form.hidden_tag() }}
+            <label class="full">
+                {{ budget_form.daily_budget.label.text }}
+                {{ budget_form.daily_budget(min=1, step=1, required=true) }}
+            </label>
+            <div class="full">
+                {{ budget_form.submit() }}
+            </div>
+        </form>
+    </details>
+</div>
+
+<div class="panel">
+    <details data-panel="expense" {% if open_panel == 'expense' %}open{% endif %}>
+        <summary>Добавить трату</summary>
+        {% include "potyk-fin/partials/_expense_form.html" %}
+    </details>
+</div>
+
+<div class="panel">
+    <details data-panel="saving" {% if open_panel == 'saving' %}open{% endif %}>
+        <summary>Зафиксировать сейв</summary>
+        <p class="muted">Когда реально перевёл на накопительный в банке</p>
+        <form class="grid cols-2" method="post" action="{{ url_for('fin.add_saving') }}">
+            {{ saving_form.hidden_tag() }}
+            <label>
+                {{ saving_form.amount.label.text }}
+                {{ saving_form.amount(min=1, step=1, required=true) }}
+            </label>
+            <label>
+                {{ saving_form.date.label.text }}
+                {{ saving_form.date(required=true) }}
+            </label>
+            <label class="full">
+                {{ saving_form.note.label.text }}
+                {{ saving_form.note(placeholder='накопительный счёт') }}
+            </label>
+            <div class="full">
+                {{ saving_form.submit() }}
+            </div>
+        </form>
+
+        {% if savings %}
+        <ul class="savings-list">
+            {% for s in savings %}
+            <li>
+                <span class="muted">{{ s.date.isoformat() }}</span>
+                <span class="amt">{{ s.amount | rub }}</span>
+                <span class="note">{{ s.note or '—' }}</span>
+                <form class="inline-form" method="post" action="{{ url_for('fin.delete_saving', saving_id=s.id) }}"
+                      onsubmit="return confirm('Удалить сейв?')">
+                    {{ delete_form.hidden_tag() }}
+                    {{ delete_form.submit(class_='danger') }}
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </details>
+</div>
+
+<h2>Лента</h2>
+{% include "potyk-fin/partials/_feed.html" %}
+
+<script>
+(() => {
+  const key = "potyk-fin:panels";
+  const load = () => {
+    try { return JSON.parse(localStorage.getItem(key) || "{}"); }
+    catch { return {}; }
+  };
+  const save = (state) => localStorage.setItem(key, JSON.stringify(state));
+
+  document.querySelectorAll("details[data-panel]").forEach((el) => {
+    const id = el.dataset.panel;
+    const state = load();
+    if (el.open) {
+      state[id] = true;
+      save(state);
+    } else if (state[id]) {
+      el.open = true;
+    }
+    el.addEventListener("toggle", () => {
+      const next = load();
+      next[id] = el.open;
+      save(next);
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    const saveBtn = e.target.closest(".add-saving-day");
+    if (saveBtn) {
+      const panel = document.querySelector('details[data-panel="saving"]');
+      if (!panel) return;
+      panel.open = true;
+      const form = panel.querySelector("form");
+      if (!form) return;
+      const amount = form.querySelector('[name="amount"]');
+      const date = form.querySelector('[name="date"]');
+      if (amount) {
+        const raw = Number(saveBtn.dataset.amount) || 0;
+        amount.value = Math.round(raw / 1000) * 1000;
+      }
+      if (date) date.value = saveBtn.dataset.date;
+      panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (amount) amount.focus();
+      return;
+    }
+
+    const addBtn = e.target.closest(".add-expense-day");
+    if (!addBtn) return;
+    const panel = document.querySelector('details[data-panel="expense"]');
+    if (!panel) return;
+    panel.open = true;
+    const form = panel.querySelector("form");
+    if (!form) return;
+    const date = form.querySelector('[name="date"]');
+    if (date) date.value = addBtn.dataset.date;
+    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    const amount = form.querySelector('[name="amount"]');
+    if (amount) amount.focus();
+  });
+})();
+</script>
+{% endblock %}

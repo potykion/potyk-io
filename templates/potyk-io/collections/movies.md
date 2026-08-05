@@ -1,4 +1,4 @@
-﻿<h1>Кино</h1>
+<h1>Кино</h1>
 
 - [🔫 Пацаны ебланят 🔫](#pacany)
 - [🥴 Фильмы когда убитый 🥴](#ubitiy)
@@ -15,10 +15,10 @@
 
 <table>
   <tr>
-    <td style="text-align:center"><img src="/static/img/movies/la-haine.webp" alt="la-haine.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/awaydays.webp" alt="awaydays.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/cidade-de-deus.webp" alt="cidade-de-deus.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/menace-ii-society.webp" alt="menace-ii-society.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/la-haine.webp" alt="la-haine.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/awaydays.webp" alt="awaydays.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/cidade-de-deus.webp" alt="cidade-de-deus.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/menace-ii-society.webp" alt="menace-ii-society.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
   </tr>
   <tr>
     <td style="text-align:center"><a href="https://www.kinopoisk.ru/film/9448/">Ненависть / La Haine (1995)</a></td>
@@ -44,10 +44,10 @@
 
 <table>
   <tr>
-    <td style="text-align:center"><img src="/static/img/movies/climax.webp" alt="climax.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/enter-the-void.webp" alt="enter-the-void.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/midsommar.webp" alt="midsommar.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/eyes-wide-shut.webp" alt="eyes-wide-shut.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/climax.webp" alt="climax.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/enter-the-void.webp" alt="enter-the-void.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/midsommar.webp" alt="midsommar.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/eyes-wide-shut.webp" alt="eyes-wide-shut.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
   </tr>
   <tr>
     <td style="text-align:center"><a href="https://www.kinopoisk.ru/film/1118214/">Экстаз / Climax (2018)</a></td>
@@ -61,9 +61,9 @@
 
 <table>
   <tr>
-    <td style="text-align:center"><img src="/static/img/movies/down-house.png" alt="down-house.png" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/dmb.png" alt="dmb.png" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/rusalka.webp" alt="rusalka.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/down-house.png" alt="down-house.png" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/dmb.png" alt="dmb.png" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/rusalka.webp" alt="rusalka.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
   </tr>
   <tr>
     <td style="text-align:center"><a href="https://www.kinopoisk.ru/film/41149/">Даун-Хаус (2001)</a></td>
@@ -76,9 +76,9 @@
 
 <table>
   <tr>
-    <td style="text-align:center"><img src="/static/img/movies/butterfly-effect.webp" alt="butterfly-effect.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/coraline.webp" alt="coraline.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
-    <td style="text-align:center"><img src="/static/img/movies/lilja-4-ever.webp" alt="lilja-4-ever.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/butterfly-effect.webp" alt="butterfly-effect.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/coraline.webp" alt="coraline.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
+    <td style="text-align:center"><img src="/static/potyk-io/img/movies/lilja-4-ever.webp" alt="lilja-4-ever.webp" width="200" height="300" style="width:200px; max-width:200px; height:300px; object-fit:cover; display:block; margin:0 auto"></td>
   </tr>
   <tr>
     <td style="text-align:center"><a href="https://www.kinopoisk.ru/film/5167/">Эффект бабочки / Butterfly Effect (2003)</a></td>

@@ -75,9 +75,9 @@
 - [🎵 УННВ — RAP 2026](https://music.yandex.ru/album/39946538/track/146645672)
 - [📹 Disco Elysium — Дневник русской озвучки №1](https://www.youtube.com/watch?v=FMwK7x1D6kI)
 - 🖼 Денёк
-![denek.png](../static/img/feed/IMG_0646.png)
+![denek.png](/static/potyk-io/img/feed/IMG_0646.png)
 - 🖼️ потик.арт ирл
-![potyk-art-irl.jpg](../static/img/feed/potyk-art-irl.jpg) ![blame.jpg](../static/img/feed/blame.jpg)
+![potyk-art-irl.jpg](/static/potyk-io/img/feed/potyk-art-irl.jpg) ![blame.jpg](/static/potyk-io/img/feed/blame.jpg)
 
 ## 2026-06-29 - 2026-07-05
 
@@ -85,11 +85,11 @@
 - [📹 kriper2004 и Влад Кунякин \| Первый подкаст](https://m.youtube.com/watch?v=PRJnv60SP00)
 - [📹 pen_pal — Жизнь вне стриминговых сервисов](https://youtu.be/YsvxDukEJF4)
 - 🖼️ Huesos в мультике Тайна Коко
-![huesos.jpg](../static/img/feed/huesos.jpg)
+![huesos.jpg](/static/potyk-io/img/feed/huesos.jpg)
 
 ## 2026-06-11
 
 - [🎵 мс улыбочка - бретелька (music video)](https://www.youtube.com/watch?v=a3iGY7BoUvY)
 - 🖼️ Созвон с Игорем, я - черт ебаный
-![igor.jpg](../static/img/feed/igor.jpg)
+![igor.jpg](/static/potyk-io/img/feed/igor.jpg)
 

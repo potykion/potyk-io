@@ -10,7 +10,7 @@
 
 #### [Digma F4](https://ozon.ru/t/aHVJ4Y5)
 
-![digma-f4.jpg](../../static/img/digma-f4.jpg)
+![digma-f4.jpg](/static/potyk-io/img/digma-f4.jpg)
 
 - Срок эксплуатации: 2026-06-05 - ...
 - Цена: 7000₽

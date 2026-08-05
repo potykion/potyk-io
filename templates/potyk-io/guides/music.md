@@ -1,10 +1,10 @@
 ---
-cover: /static/img/covers/music-download.png
+cover: /static/potyk-io/img/covers/music-download.png
 ---
 
 # Скачать музыку бесплатно и без смс
 
-![music-download.png](/static/img/covers/music-download.png)
+![music-download.png](/static/potyk-io/img/covers/music-download.png)
 
 ## YouTube
 

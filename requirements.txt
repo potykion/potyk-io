@@ -2,3 +2,6 @@ flask
 python-dotenv
 markdown
 pymdown-extensions
+flask-sqlalchemy
+flask-login
+flask-wtf
