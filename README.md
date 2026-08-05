@@ -8,6 +8,9 @@
 
 ## Prod Setup
 
+- ВМ (Yandex Cloud): 2 vCPU (100%), 2 ГБ RAM, 20 ГБ диск, Intel Ice Lake.  
+- Gunicorn: `workers=2` / `threads=4` / `gthread` — под 2 ядра и SQLite (см. `gunicorn.conf.py`).
+
 ### First
 
 ```shell
@@ -24,11 +27,13 @@ cd potyk-io
 python3 -m venv ".venv"
 source ./.venv/bin/activate
 pip install -r requirements.txt
-# fill env w FLASK_APP=main & FLASK_SECRET=...
+# fill env w FLASK_SECRET=...
+# (локально: FLASK_APP=main:create_app для flask run)
 nano .env
 
 sudo cp ./potyk-io.service /etc/systemd/system/potyk-io.service
 sudo chmod 644 /etc/systemd/system/potyk-io.service
+sudo systemctl daemon-reload
 sudo systemctl enable --now potyk-io.service
 
 # Caddy (reverse proxy :80 → :5008, /fin → :5007)
@@ -61,6 +66,8 @@ git pull
 source ./.venv/bin/activate
 pip install -r requirements.txt 
 
+sudo cp ./potyk-io.service /etc/systemd/system/potyk-io.service
+sudo systemctl daemon-reload
 sudo systemctl restart potyk-io.service
 sudo systemctl reload caddy
 ```

@@ -9,11 +9,11 @@ User=leybovich-nikita
 # e.g. $PORT = 5008
 WorkingDirectory=/home/leybovich-nikita/potyk-io
 EnvironmentFile=/home/leybovich-nikita/potyk-io/.env
-ExecStart=/home/leybovich-nikita/potyk-io/.venv/bin/flask run --host=0.0.0.0 --port=5008
+ExecStart=/home/leybovich-nikita/potyk-io/.venv/bin/gunicorn -c gunicorn.conf.py main:app
 Restart=always
 RestartSec=10
-StandardOutput=file:/home/leybovich-nikita/potyk-io/logs/flask.log
-StandardError=file:/home/leybovich-nikita/potyk-io/logs/flask.error.log
+StandardOutput=file:/home/leybovich-nikita/potyk-io/logs/gunicorn.log
+StandardError=file:/home/leybovich-nikita/potyk-io/logs/gunicorn.error.log
 
 [Install]
 WantedBy=multi-user.target

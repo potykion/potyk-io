@@ -37,3 +37,6 @@ def create_app():
 
     app.register_blueprint(potyk_io_bp)
     return app
+
+
+app = create_app()
