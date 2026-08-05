@@ -1,17 +1,17 @@
-from potyk_io_back.md_rendering.html_preview import (
+from potyk_io_back.potyk_io.md_rendering.html_preview import (
     demote_headings,
     html_text,
     main_inner_html,
     truncate_html,
     unwrap_links,
 )
-from potyk_io_back.md_rendering.render import (
+from potyk_io_back.potyk_io.md_rendering.render import (
     extract_h1,
     render_body_html,
     split_frontmatter,
     unquote_meta,
 )
-from potyk_io_back.md_rendering.templates import TEMPLATES_DIR, resolve_page
+from potyk_io_back.potyk_io.md_rendering.templates import TEMPLATES_DIR, resolve_page
 
 __all__ = [
     "TEMPLATES_DIR",

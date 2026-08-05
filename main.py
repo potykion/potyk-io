@@ -3,14 +3,14 @@ import os
 import flask
 from flask import Flask, abort
 
-from potyk_io_back.feed import BATCH_SIZE, random_note_batch, search_notes
-from potyk_io_back.md_rendering import (
+from potyk_io_back.potyk_io.feed import BATCH_SIZE, random_note_batch, search_notes
+from potyk_io_back.potyk_io.md_rendering import (
     TEMPLATES_DIR,
     render_body_html,
     resolve_page,
     split_frontmatter,
 )
-from potyk_io_back.menu import MENU_GROUPS, MENU_QUICK
+from potyk_io_back.potyk_io.menu import MENU_GROUPS, MENU_QUICK
 
 
 def create_app():

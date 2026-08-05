@@ -1,8 +1,8 @@
 import html as html_module
 import re
 
-from potyk_io_back.feed.random_notes import expand_note_entries, iter_notes, note_cover
-from potyk_io_back.md_rendering import extract_h1, unquote_meta
+from potyk_io_back.potyk_io.feed.random_notes import expand_note_entries, iter_notes, note_cover
+from potyk_io_back.potyk_io.md_rendering import extract_h1, unquote_meta
 
 SNIPPET_RADIUS = 80
 

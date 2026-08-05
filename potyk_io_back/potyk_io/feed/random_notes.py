@@ -3,7 +3,7 @@ import random
 import re
 from pathlib import Path
 
-from potyk_io_back.md_rendering import (
+from potyk_io_back.potyk_io.md_rendering import (
     TEMPLATES_DIR,
     demote_headings,
     extract_h1,
@@ -15,7 +15,7 @@ from potyk_io_back.md_rendering import (
     unquote_meta,
     unwrap_links,
 )
-from potyk_io_back.menu import is_external_url, iter_menu_items
+from potyk_io_back.potyk_io.menu import is_external_url, iter_menu_items
 
 PREVIEW_LEN = 200
 BATCH_SIZE = 9
