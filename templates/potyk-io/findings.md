@@ -20,7 +20,7 @@
 
 #### Олег Кармунин
 
-- [📹 БЫТЬ НЕФОРОМ. Флекс и нищета русских субкультур](https://www.youtube.com/watch?v=lhRR76v9ang)
+ 
 - [📹 КОНЕЦ КЛИПОВ: как в России погибла целая индустрия](https://www.youtube.com/watch?v=XI0JU_1yLzk)
 
 #### Дрон инкорпорейтед
@@ -35,6 +35,8 @@
 
 - [🎵 SLAM BAND - PEEWEE JERKIN (Featuring Filth, Official Video)](https://www.youtube.com/watch?v=vhzLh84iElg)
 - [📹 Убежище Кунякина — нейросети из советских мультиков](https://www.youtube.com/watch?v=xWiqNVJsYTw)
+- [📹 Олег Кармунин — БЫТЬ НЕФОРОМ. Флекс и нищета русских субкультур](https://www.youtube.com/watch?v=lhRR76v9ang)
+  - [🥳 Камышинский Арбузный фестиваль](https://arbuzfest.ru)
 
 ## 2026-07-27 — 2026-08-02
 
