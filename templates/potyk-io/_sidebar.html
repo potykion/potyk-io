@@ -26,12 +26,6 @@
     </div>
 
     <nav class="sidebar-nav" id="sidebar-nav">
-        <div class="sidebar-quick">
-            {% for item in menu_quick %}
-                {{ nav_link(item.icon, item.title, item.url) }}
-            {% endfor %}
-        </div>
-
         {% for group in menu_groups %}
         <section class="sidebar-group">
             <h2 class="sidebar-group-title">{{ group.title }}</h2>

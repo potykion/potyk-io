@@ -21,7 +21,6 @@ class MenuFeedItem(TypedDict):
     group: str
 
 
-MENU_QUICK: list[MenuItem] = []
 MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "Проекты",

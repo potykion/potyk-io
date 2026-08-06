@@ -170,15 +170,6 @@ body.search-open .search-shell {
     padding: 0 0.75rem 2rem;
 }
 
-.sidebar-quick {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    margin-bottom: 1.25rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e8e8e8;
-}
-
 .sidebar-group {
     margin-bottom: 1.1rem;
 }

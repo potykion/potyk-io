@@ -8,7 +8,7 @@ from potyk_io_back.potyk_io.md_rendering import (
     resolve_page,
     split_frontmatter,
 )
-from potyk_io_back.potyk_io.menu import MENU_GROUPS, MENU_QUICK
+from potyk_io_back.potyk_io.menu import MENU_GROUPS
 
 potyk_io_bp = Blueprint("potyk_io", __name__)
 
@@ -16,7 +16,6 @@ potyk_io_bp = Blueprint("potyk_io", __name__)
 @potyk_io_bp.context_processor
 def inject_menu():
     return {
-        "menu_quick": MENU_QUICK,
         "menu_groups": MENU_GROUPS,
     }
 
