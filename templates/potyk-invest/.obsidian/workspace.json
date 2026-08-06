@@ -11,14 +11,13 @@
             "id": "43ee2378591649a1",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "bases",
               "state": {
-                "file": "Новости.md",
-                "mode": "preview",
-                "source": true
+                "file": "Сделки.base",
+                "viewName": "Таблица"
               },
-              "icon": "lucide-file",
-              "title": "Новости"
+              "icon": "lucide-table",
+              "title": "Сделки"
             }
           }
         ]
@@ -186,8 +185,13 @@
       "bases:Create new base": false
     }
   },
-  "active": "7ee435876669e5e1",
+  "active": "43ee2378591649a1",
   "lastOpenFiles": [
+    "Сделки/2026-08-10 - RAGR -.md",
+    "Сделки.base",
+    "Сделки/2026-07-11 - POSI -.md",
+    "Новости.md",
+    "Посмотреть позже.md",
     "Заметки/Invest faq.md",
     "ИИ Обзоры/2026-08-02 Недельный обзор.md",
     "ИИ Обзоры",
@@ -211,12 +215,6 @@
     "Тикеры/DOMRF ДомРФ.md",
     "Тикеры/YDEX Яндекс.md",
     "Новости/2026-07-31 ДнС T.md",
-    "Новости/2026-07-31 ДнС TATNP.md",
-    "Новости/2026-07-31 ДнС CIAN.md",
-    "Новости/2026-07-31 ДнС HEAD.md",
-    "Новости/2026-07-31 ДнС MOEX.md",
-    "Новости/2026-07-31 ДнС MGNT.md",
-    "Сделки.base",
     "Clippings",
     "Сделки",
     "Идеи по уровням",

@@ -21,24 +21,27 @@ class MenuFeedItem(TypedDict):
     group: str
 
 
-MENU_QUICK: list[MenuItem] = [
-    {
-        "icon": "🖼️",
-        "title": "potyk.art",
-        "url": "https://www.instagram.com/potyk.art",
-        "description": "",
-    },
-    {"icon": "📜", "title": "/feed", "url": "/feed", "description": ""},
-    {"icon": "📦", "title": "/toc", "url": "/toc", "description": ""},
-    {
-        "icon": "👩‍💻",
-        "title": "github",
-        "url": "https://github.com/potykion/potyk-io",
-        "description": "",
-    },
-]
-
+MENU_QUICK: list[MenuItem] = []
 MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "Проекты",
+        "links": [
+            {
+                "icon": "🖼️",
+                "title": "potyk.art",
+                "url": "https://www.instagram.com/potyk.art",
+                "description": "",
+            },
+            {"icon": "📜", "title": "/feed", "url": "/feed", "description": ""},
+            {"icon": "📦", "title": "/toc", "url": "/toc", "description": ""},
+            {
+                "icon": "👩‍💻",
+                "title": "github",
+                "url": "https://github.com/potykion/potyk-io",
+                "description": "",
+            },
+        ],
+    },
     {
         "title": "Еда",
         "links": [
