@@ -31,6 +31,10 @@
 - [📹 Глубокий лор «Что? Где? Когда?» Часть 1](https://www.youtube.com/watch?v=OSiwDWyEiK8)
 - [📹 Глубокий лор «Что? Где? Когда?» Часть 2](https://youtu.be/FwKNv6xz16c?si=3kJTE64p-8vQJEw3)
 
+## 2026-08-03 — 2026-08-09
+
+- [🎵 SLAM BAND - PEEWEE JERKIN (Featuring Filth, Official Video)](https://www.youtube.com/watch?v=vhzLh84iElg)
+
 ## 2026-07-27 — 2026-08-02
 
 ### Pick of the Week
