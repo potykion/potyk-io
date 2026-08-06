@@ -34,6 +34,7 @@
 ## 2026-08-03 — 2026-08-09
 
 - [🎵 SLAM BAND - PEEWEE JERKIN (Featuring Filth, Official Video)](https://www.youtube.com/watch?v=vhzLh84iElg)
+- [📹 Убежище Кунякина — нейросети из советских мультиков](https://www.youtube.com/watch?v=xWiqNVJsYTw)
 
 ## 2026-07-27 — 2026-08-02
 
