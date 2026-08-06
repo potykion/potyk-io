@@ -9,6 +9,7 @@ from potyk_io_back.core.db import db
 from potyk_io_back.fin.auth import setup_login
 from potyk_io_back.fin.entities import get_settings
 from potyk_io_back.fin.pres import fin_bp
+from potyk_io_back.invest import invest_bp
 from potyk_io_back.potyk_io.pres import potyk_io_bp
 
 
@@ -35,6 +36,7 @@ def create_app():
     def rub_filter(value: int) -> str:
         return f"{value:,}".replace(",", " ")
 
+    app.register_blueprint(invest_bp)
     app.register_blueprint(potyk_io_bp)
     return app
 

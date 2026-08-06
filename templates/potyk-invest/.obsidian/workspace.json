@@ -11,13 +11,14 @@
             "id": "43ee2378591649a1",
             "type": "leaf",
             "state": {
-              "type": "bases",
+              "type": "markdown",
               "state": {
-                "file": "Сделки.base",
-                "viewName": "Таблица"
+                "file": "Новости.md",
+                "mode": "preview",
+                "source": false
               },
-              "icon": "lucide-table",
-              "title": "Сделки"
+              "icon": "lucide-file",
+              "title": "Новости"
             }
           }
         ]
@@ -188,8 +189,10 @@
   },
   "active": "43ee2378591649a1",
   "lastOpenFiles": [
-    "_TEMPLATES/Сделка.md",
+    "news.html",
+    "index.html",
     "Сделки.base",
+    "_TEMPLATES/Сделка.md",
     "Сделки/2026-08-10 - RAGR -.md",
     "Сделки/2026-07-11 - POSI -.md",
     "Новости.md",
@@ -216,13 +219,11 @@
     "Тикеры/HEAD Хэдхантер.md",
     "Тикеры/DOMRF ДомРФ.md",
     "Тикеры/YDEX Яндекс.md",
-    "Новости/2026-07-31 ДнС T.md",
     "Clippings",
     "Сделки",
     "Идеи по уровням",
     "Источники/Деньги не спят",
     "potyk-invest.base",
-    "Новости.base",
-    "_TEMPLATES"
+    "Новости.base"
   ]
 }
