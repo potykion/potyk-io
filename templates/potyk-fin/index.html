@@ -44,31 +44,10 @@
                 {{ saving_form.date.label.text }}
                 {{ saving_form.date(required=true) }}
             </label>
-            <label class="full">
-                {{ saving_form.note.label.text }}
-                {{ saving_form.note(placeholder='накопительный счёт') }}
-            </label>
             <div class="full">
                 {{ saving_form.submit() }}
             </div>
         </form>
-
-        {% if savings %}
-        <ul class="savings-list">
-            {% for s in savings %}
-            <li>
-                <span class="muted">{{ s.date.isoformat() }}</span>
-                <span class="amt">{{ s.amount | rub }}</span>
-                <span class="note">{{ s.note or '—' }}</span>
-                <form class="inline-form" method="post" action="{{ url_for('fin.delete_saving', saving_id=s.id) }}"
-                      onsubmit="return confirm('Удалить сейв?')">
-                    {{ delete_form.hidden_tag() }}
-                    {{ delete_form.submit(class_='danger') }}
-                </form>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
     </details>
 </div>
 
