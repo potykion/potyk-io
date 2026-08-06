@@ -29,15 +29,33 @@ MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🖼️",
                 "title": "potyk.art",
                 "url": "https://www.instagram.com/potyk.art",
-                "description": "",
+                "description": "Рисую чертей по фану",
             },
-            {"icon": "📜", "title": "/feed", "url": "/feed", "description": ""},
-            {"icon": "📦", "title": "/toc", "url": "/toc", "description": ""},
+            {"icon": "📜", "title": "Лента", "url": "/feed", "description": ""},
+            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
+            {
+                "icon": "💰",
+                "title": "potyk-fin",
+                "url": "/fin",
+                "description": "Простой учет расходов и сберижений",
+            },
             {
                 "icon": "👩‍💻",
                 "title": "github",
                 "url": "https://github.com/potykion/potyk-io",
                 "description": "",
+            },
+            {
+                "icon": "🔗",
+                "title": "Бесконечный потик",
+                "url": "https://t.me/potyk_eternal",
+                "description": "Обещаю, это последний мой тг канал",
+            },
+            {
+                "icon": "📁",
+                "title": "Папочка с моими старыми тг каналами",
+                "url": "https://t.me/addlist/jMUGZkWRI-85ZjJi",
+                "description": "Ох, ребята, перечитываю канальчик и да, пиздато всё-таки вышло, не надо забрасывать свой фристайл",
             },
         ],
     },
@@ -74,12 +92,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "https://docs.google.com/spreadsheets/d/1h56SxxWjZCJmGULhlzVsRvT4KSU4rWoYBEWhQvrecGk/edit?usp=sharing",
                 "description": "",
             },
-            {
-                "icon": "🔗",
-                "title": "potyk-eats",
-                "url": "https://t.me/potyk_eats",
-                "description": "",
-            },
         ],
     },
     {
@@ -111,9 +123,9 @@ MENU_GROUPS: list[MenuGroup] = [
             },
             {
                 "icon": "📺",
-                "title": "танцевальное",
+                "title": "танцевальное по лайту",
                 "url": "https://www.youtube.com/playlist?list=PLdb8DVmvU9i5bGINNz10f-ga_bqD41O4q",
-                "description": "",
+                "description": "хорошо заходит в нетрезвом виде",
             },
             {
                 "icon": "🤝",
@@ -157,12 +169,7 @@ MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {"icon": "📝", "title": "Мой кодинг", "url": "/code", "description": ""},
-            {
-                "icon": "🔗",
-                "title": "Разговоры с ии",
-                "url": "https://t.me/potyk_ai",
-                "description": "",
-            },
+
         ],
     },
     {
@@ -184,41 +191,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "icon": "📊",
                 "title": "Пиво Россия",
                 "url": "https://docs.google.com/spreadsheets/d/1JdhEktmNFFrolieF7O4pkmlic3urTROx8Fq8C2RNWY4/edit?usp=sharing",
-                "description": "",
-            },
-        ],
-    },
-    {
-        "title": "Бабло",
-        "links": [
-            {
-                "icon": "📊",
-                "title": "Инвестиции",
-                "url": "https://docs.google.com/spreadsheets/d/1yXDk5eYpNwTvzPYGVoBTnETeaTwqY3b7uyPzNPwPpng/edit?usp=sharing",
-                "description": "",
-            },
-            {"icon": "📊", "title": "Траты", "url": "/fin", "description": ""},
-            {
-                "icon": "📝",
-                "title": "Пассивный доход",
-                "url": "/guides/passive-income",
-                "description": "Описание инструментов, приносящих (почти) регулярные выплаты",
-            },
-        ],
-    },
-    {
-        "title": "Писс ссанина",
-        "links": [
-            {
-                "icon": "📝",
-                "title": "Кулстори",
-                "url": "/cool-stories",
-                "description": "",
-            },
-            {
-                "icon": "🔗",
-                "title": "потик пишет...",
-                "url": "https://t.me/potyk_writes",
                 "description": "",
             },
         ],
@@ -251,6 +223,12 @@ MENU_GROUPS: list[MenuGroup] = [
         "links": [
             {"icon": "📝", "title": "Обо мне", "url": "/n", "description": ""},
             {"icon": "📔", "title": "Днев", "url": "/diary", "description": ""},
+            {
+                "icon": "📝",
+                "title": "Кулстори",
+                "url": "/cool-stories",
+                "description": "",
+            },
         ],
     },
 ]

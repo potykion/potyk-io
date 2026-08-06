@@ -79,7 +79,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 370.5
+    "width": 370.5,
+    "collapsed": true
   },
   "right": {
     "id": "ae47ff314d0bf9c8",
@@ -187,8 +188,9 @@
   },
   "active": "43ee2378591649a1",
   "lastOpenFiles": [
-    "Сделки/2026-08-10 - RAGR -.md",
+    "_TEMPLATES/Сделка.md",
     "Сделки.base",
+    "Сделки/2026-08-10 - RAGR -.md",
     "Сделки/2026-07-11 - POSI -.md",
     "Новости.md",
     "Посмотреть позже.md",

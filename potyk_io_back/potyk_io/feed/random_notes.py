@@ -98,7 +98,9 @@ def note_card_html(
 ) -> str | None:
     if meta is None or body is None:
         meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
-    preview_meta = unquote_meta(meta.get("preview", ""))
+    preview_meta = unquote_meta(meta.get("preview", "")) or unquote_meta(
+        meta.get("description", "")
+    )
     title = path.stem
 
     if preview_meta:
