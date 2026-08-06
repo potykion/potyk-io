@@ -31,7 +31,7 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "https://www.instagram.com/potyk.art",
                 "description": "Рисую чертей по фану",
             },
-            {"icon": "📜", "title": "Лента", "url": "/feed", "description": ""},
+            {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
             {
                 "icon": "💰",

@@ -1,9 +1,8 @@
-# [📜 Лента](https://potyk.io/feed)
+# 📜 Находки
 
 > У меня иногда возникает желание что-то запостить, но тг канал - это не мой интернет, а я ведь делаю сво й и вот крч
 
-- [📝 РЕДАКТИРОВАТЬ НА ГИТХАБ](https://github.com/potykion/potykion.github.io/edit/master/feed.md)
-
+- [📝 РЕДАКТИРОВАТЬ НА ГИТХАБ](https://github.com/potykion/potyk-io/edit/master/templates/potyk-io/findings.md)
 
 ## Обозначения и мета
 
