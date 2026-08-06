@@ -40,19 +40,25 @@ MENU_GROUPS: list[MenuGroup] = [
                 "description": "Простой учет расходов и сберижений",
             },
             {
+                "icon": "💰",
+                "title": "potyk-invest",
+                "url": "/invest",
+                "description": "Новостюшки про рашн фондю",
+            },
+            {
                 "icon": "👩‍💻",
                 "title": "github",
                 "url": "https://github.com/potykion/potyk-io",
                 "description": "",
             },
             {
-                "icon": "🔗",
+                "icon": "??",
                 "title": "Бесконечный потик",
                 "url": "https://t.me/potyk_eternal",
                 "description": "Обещаю, это последний мой тг канал",
             },
             {
-                "icon": "📁",
+                "icon": "??",
                 "title": "Папочка с моими старыми тг каналами",
                 "url": "https://t.me/addlist/jMUGZkWRI-85ZjJi",
                 "description": "Ох, ребята, перечитываю канальчик и да, пиздато всё-таки вышло, не надо забрасывать свой фристайл",
@@ -169,7 +175,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {"icon": "📝", "title": "Мой кодинг", "url": "/code", "description": ""},
-
         ],
     },
     {
