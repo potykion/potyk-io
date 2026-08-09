@@ -30,37 +30,49 @@
     {% endblock %}
 </head>
 
-<body>
+<body class="menu-collapsed">
+    <header class="top-bar">
+        <button type="button"
+                class="menu-toggle"
+                id="menu-toggle"
+                aria-controls="sidebar"
+                aria-expanded="false"
+                aria-label="Меню">≡</button>
+        {% if request.path != '/' %}
+        <a href="/" class="top-bar-brand">potyk.io</a>
+        {% endif %}
+        <div class="top-bar-spacer"></div>
+        <div class="search-shell" id="search-shell">
+            <button type="button"
+                    class="search-back"
+                    id="search-back"
+                    aria-label="Закрыть поиск">←</button>
+            <form class="search-bar" id="search-bar" action="/search" method="get" role="search">
+                <input type="search"
+                       class="search-input"
+                       id="search-input"
+                       name="q"
+                       value="{{ request.args.get('q', '') }}"
+                       placeholder="Поиск заметок…"
+                       autocomplete="off"
+                       enterkeyhint="search">
+                <button type="submit"
+                        class="search-submit"
+                        aria-label="Найти">⌕</button>
+            </form>
+            <button type="button"
+                    class="search-toggle"
+                    id="search-toggle"
+                    aria-controls="search-bar"
+                    aria-expanded="false"
+                    aria-label="Поиск">⌕</button>
+        </div>
+    </header>
+
     <div class="layout">
         {% include "potyk-io/_sidebar.html" %}
 
         <div class="layout-main">
-            <div class="search-shell" id="search-shell">
-                <button type="button"
-                        class="search-back"
-                        id="search-back"
-                        aria-label="Закрыть поиск">←</button>
-                <form class="search-bar" id="search-bar" action="/search" method="get" role="search">
-                    <input type="search"
-                           class="search-input"
-                           id="search-input"
-                           name="q"
-                           value="{{ request.args.get('q', '') }}"
-                           placeholder="Поиск заметок…"
-                           autocomplete="off"
-                           enterkeyhint="search">
-                    <button type="submit"
-                            class="search-submit"
-                            aria-label="Найти">⌕</button>
-                </form>
-                <button type="button"
-                        class="search-toggle"
-                        id="search-toggle"
-                        aria-controls="search-bar"
-                        aria-expanded="false"
-                        aria-label="Поиск">⌕</button>
-            </div>
-
             <main class="{% block main_class %}{% endblock %}">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
@@ -93,7 +105,7 @@
             }
 
             function defaultVisible() {
-                return !isMobile();
+                return false;
             }
 
             function readStored() {

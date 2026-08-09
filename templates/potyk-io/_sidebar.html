@@ -13,18 +13,6 @@
 {%- endmacro %}
 
 <div class="sidebar-shell" id="sidebar" aria-label="Меню">
-    <div class="sidebar-bar">
-        <button type="button"
-                class="menu-toggle"
-                id="menu-toggle"
-                aria-controls="sidebar"
-                aria-expanded="true"
-                aria-label="Меню">≡</button>
-        {% if request.path != '/' %}
-        <a href="/" class="sidebar-brand">potyk.io</a>
-        {% endif %}
-    </div>
-
     <nav class="sidebar-nav" id="sidebar-nav">
         {% for group in menu_groups %}
         <section class="sidebar-group">
