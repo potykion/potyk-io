@@ -6,6 +6,13 @@
       hx-target="#expense-form"
       hx-swap="outerHTML">
     {{ expense_form.hidden_tag() }}
+    <label>
+        {{ expense_form.date.label.text }}
+        {{ expense_form.date(required=true) }}
+        {% for error in expense_form.date.errors %}
+        <span class="field-error">{{ error }}</span>
+        {% endfor %}
+    </label>
     <label class="amount-field">
         {{ expense_form.amount.label.text }}
         <div class="amount-row">
@@ -17,13 +24,6 @@
             <button type="button" class="calc-eq" title="Посчитать">=</button>
         </div>
         {% for error in expense_form.amount.errors %}
-        <span class="field-error">{{ error }}</span>
-        {% endfor %}
-    </label>
-    <label>
-        {{ expense_form.date.label.text }}
-        {{ expense_form.date(required=true) }}
-        {% for error in expense_form.date.errors %}
         <span class="field-error">{{ error }}</span>
         {% endfor %}
     </label>

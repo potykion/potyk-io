@@ -27,11 +27,11 @@ def _yesterday() -> date:
 
 
 class ExpenseForm(FlaskForm):
+    date = DateField("Дата", validators=[DataRequired()], default=_yesterday)
     amount = IntegerField(
         "Сумма",
         validators=[InputRequired(), NumberRange(min=1, message="Укажи положительную сумму")],
     )
-    date = DateField("Дата", validators=[DataRequired()], default=_yesterday)
     category = StringField(
         "Категория",
         validators=[DataRequired(message="Укажи категорию"), Length(max=64)],
