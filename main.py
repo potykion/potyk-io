@@ -5,8 +5,8 @@ from flask import Flask
 
 load_dotenv()
 
+from potyk_io_back.auth import auth_bp, setup_login
 from potyk_io_back.core.db import db
-from potyk_io_back.fin.auth import setup_login
 from potyk_io_back.fin.entities import get_settings
 from potyk_io_back.fin.pres import fin_bp
 from potyk_io_back.invest import invest_bp
@@ -25,7 +25,8 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
-    setup_login(app, fin_bp)
+    setup_login(app)
+    app.register_blueprint(auth_bp)
     app.register_blueprint(fin_bp)
 
     with app.app_context():
