@@ -93,6 +93,7 @@
             var STORAGE_KEY = 'menu-open';
             var body = document.body;
             var toggle = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('sidebar');
             var searchShell = document.getElementById('search-shell');
             var searchToggle = document.getElementById('search-toggle');
             var searchBack = document.getElementById('search-back');
@@ -175,6 +176,13 @@
             }
 
             if (toggle) toggle.addEventListener('click', toggleMenu);
+
+            if (sidebar) {
+                sidebar.addEventListener('click', function (e) {
+                    if (!isMobile()) return;
+                    if (e.target.closest('a.sidebar-link')) closeMenu();
+                });
+            }
 
             if (searchToggle) {
                 searchToggle.addEventListener('click', function () {
