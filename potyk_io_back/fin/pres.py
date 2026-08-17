@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
@@ -20,6 +20,29 @@ def flash_form_errors(form) -> None:
 
 def is_htmx() -> bool:
     return request.headers.get("HX-Request") == "true"
+
+
+def category_stats_for_period(
+    expenses: list[Expense],
+    date_from: date,
+    date_to: date,
+) -> tuple[list[dict], int]:
+    totals: dict[str, int] = {}
+    display: dict[str, str] = {}
+    for expense in expenses:
+        if expense.date < date_from or expense.date > date_to:
+            continue
+        key = expense.category.casefold()
+        totals[key] = totals.get(key, 0) + expense.amount
+        if key not in display:
+            display[key] = expense.category
+
+    rows = [
+        {"category": display[key], "total": total}
+        for key, total in totals.items()
+    ]
+    rows.sort(key=lambda r: (-r["total"], r["category"].casefold()))
+    return rows, sum(r["total"] for r in rows)
 
 
 def index_context(
@@ -53,6 +76,23 @@ def index_context(
 
     days_desc = list(reversed(days))
     today = date.today()
+    stats_to = today
+    stats_from = today - timedelta(days=6)
+
+    stats_from_raw = request.args.get("stats_from")
+    stats_to_raw = request.args.get("stats_to")
+    if stats_from_raw and stats_to_raw:
+        try:
+            stats_from = date.fromisoformat(stats_from_raw)
+            stats_to = date.fromisoformat(stats_to_raw)
+            if stats_from > stats_to:
+                stats_from, stats_to = stats_to, stats_from
+        except ValueError:
+            pass
+
+    category_stats, stats_total = category_stats_for_period(
+        expenses, stats_from, stats_to
+    )
     today_state = next((d for d in days if d.date == today), None)
     total_saved = db.session.scalar(select(func.coalesce(func.sum(Saving.amount), 0))) or 0
     auto_remainder_total = sum(d.eod_remainder for d in days if d.date < today)
@@ -68,6 +108,10 @@ def index_context(
         "savings": savings,
         "total_saved": total_saved,
         "auto_remainder_total": auto_remainder_total,
+        "stats_from": stats_from,
+        "stats_to": stats_to,
+        "category_stats": category_stats,
+        "stats_total": stats_total,
         "categories": categories,
         "expense_form": expense_form or ExpenseForm(),
         "saving_form": saving_form or SavingForm(),

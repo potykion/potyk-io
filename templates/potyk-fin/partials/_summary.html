@@ -1,29 +1,40 @@
-<div id="summary" class="summary">
-    <div class="stat">
-        <span class="label">Бюджет / день</span>
-        <span class="value">{{ settings.daily_budget | rub }}</span>
-    </div>
-    <div class="stat">
-        <span class="label">Доступно сегодня</span>
-        {% if today_state %}
-        <span class="value {% if today_state.end_balance < 0 %}bad{% elif today_state.end_balance > 0 %}ok{% endif %}">
-            {{ today_state.end_balance | rub }}
-        </span>
-        {% else %}
-        <span class="value">{{ settings.daily_budget | rub }}</span>
-        {% endif %}
-    </div>
-    <div class="stat">
-        <span class="label">Авто-остатки (прошлые дни)</span>
-        <span class="value ok">{{ auto_remainder_total | rub }}</span>
-    </div>
-    <div class="stat">
-        <span class="label">Засейвил (вручную)</span>
-        <span class="value ok">{{ total_saved | rub }}</span>
-    </div>
+<div id="summary" class="stats-panel">
+    <form class="stats-period" method="get" action="{{ url_for('fin.index') }}">
+        <label>
+            <span class="label">С</span>
+            <input type="date" name="stats_from" value="{{ stats_from.isoformat() }}" required>
+        </label>
+        <label>
+            <span class="label">По</span>
+            <input type="date" name="stats_to" value="{{ stats_to.isoformat() }}" required>
+        </label>
+        <button type="submit" class="secondary">Показать</button>
+    </form>
+
+    {% if category_stats %}
+    <table class="stats-table">
+        <thead>
+        <tr>
+            <th>Категория</th>
+            <th class="num">Сумма</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in category_stats %}
+        <tr>
+            <td>{{ row.category }}</td>
+            <td class="num">{{ row.total | rub }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>Итого</th>
+            <td class="num">{{ stats_total | rub }}</td>
+        </tr>
+        </tfoot>
+    </table>
+    {% else %}
+    <p class="empty">За выбранный период трат нет</p>
+    {% endif %}
 </div>
-{% if today_state and today_state.carry_in %}
-<p id="carry-note" class="muted">С прошлого дня висит перерасход: −{{ today_state.carry_in | rub }}</p>
-{% else %}
-<p id="carry-note" class="muted" hidden></p>
-{% endif %}

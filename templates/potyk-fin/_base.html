@@ -157,6 +157,56 @@
         .stat .value.ok { color: var(--ok); }
         .stat .value.bad { color: var(--bad); }
 
+        .stats-panel {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stats-period {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: flex-end;
+            margin-bottom: 14px;
+        }
+
+        .stats-period label {
+            flex: 1 1 120px;
+            min-width: 0;
+        }
+
+        .stats-period button {
+            flex: 0 0 auto;
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+        }
+
+        .stats-table tfoot th,
+        .stats-table tfoot td {
+            border-bottom: none;
+            font-weight: 600;
+            padding-top: 10px;
+        }
+
+        .stats-table .num {
+            text-align: right;
+        }
+
         .panel {
             background: var(--card);
             border: 1px solid var(--line);
