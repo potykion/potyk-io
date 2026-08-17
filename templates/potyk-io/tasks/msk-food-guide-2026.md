@@ -1,5 +1,5 @@
 ---
-status: wip
+status: idea
 ---
 
 # Москва Фуд-гайд 2026

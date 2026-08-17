@@ -1,3 +1,8 @@
+---
+status: draft
+project: task-man
+---
+
 # Функционал Таск-трекер
 
 ## Задачи
