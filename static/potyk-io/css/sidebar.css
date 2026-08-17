@@ -267,6 +267,12 @@ body.search-open .search-shell {
 
     body.menu-open {
         overflow: hidden;
+        height: 100%;
+        height: 100dvh;
+    }
+
+    body.menu-open .layout-main {
+        visibility: hidden;
     }
 
     body.menu-open .sidebar-shell {
@@ -277,13 +283,17 @@ body.search-open .search-shell {
         right: 0;
         bottom: 0;
         width: 100%;
-        height: auto;
+        width: 100dvw;
+        height: calc(100vh - var(--top-bar-height));
+        height: calc(100dvh - var(--top-bar-height));
         max-height: none;
+        min-height: calc(100svh - var(--top-bar-height));
         z-index: 50;
         background: #fff;
         border: none;
         overflow: hidden;
         border-radius: 0;
+        align-self: stretch;
     }
 
     body.menu-open .search-shell {
