@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 from flask_wtf import FlaskForm
-from wtforms import DateField, IntegerField, StringField, SubmitField
+from wtforms import BooleanField, DateField, IntegerField, StringField, SubmitField
 from wtforms.validators import DataRequired, InputRequired, Length, NumberRange, Optional
 
 
@@ -20,6 +20,7 @@ class ExpenseForm(FlaskForm):
         validators=[DataRequired(message="Укажи категорию"), Length(max=64)],
     )
     description = StringField("Описание", validators=[Optional(), Length(max=255)], default="")
+    optional = BooleanField("Необязательный расход")
     submit = SubmitField("Добавить трату")
 
 

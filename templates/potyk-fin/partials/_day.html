@@ -39,7 +39,7 @@
         </thead>
         <tbody>
         {% for e in day.expenses %}
-        <tr>
+        <tr{% if e.optional %} class="optional-expense"{% endif %}>
             <td data-label="Сумма">{{ e.amount | rub }}</td>
             <td data-label="Категория">{{ e.category }}</td>
             <td class="muted" data-label="Описание">{{ e.description or '—' }}</td>

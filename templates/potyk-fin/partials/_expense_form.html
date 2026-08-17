@@ -43,6 +43,10 @@
         {{ expense_form.description.label.text }}
         {{ expense_form.description(placeholder='необязательно') }}
     </label>
+    <label class="checkbox-label full">
+        {{ expense_form.optional() }}
+        {{ expense_form.optional.label.text }}
+    </label>
     <div class="full">
         {{ expense_form.submit() }}
     </div>

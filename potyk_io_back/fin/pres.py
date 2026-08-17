@@ -103,6 +103,7 @@ def add_expense():
         amount=form.amount.data,
         category=form.category.data.strip(),
         description=(form.description.data or "").strip(),
+        optional=form.optional.data,
     )
     db.session.add(expense)
     db.session.commit()

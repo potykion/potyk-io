@@ -9,6 +9,7 @@ class Expense(db.Model):
     amount = db.Column(db.Integer, nullable=False)
     category = db.Column(db.String(64), nullable=False)
     description = db.Column(db.String(255), nullable=False, default="")
+    optional = db.Column(db.Boolean, nullable=False, default=False)
 
 
 class Saving(db.Model):

@@ -12,6 +12,7 @@ class ExpenseRow:
     amount: int
     category: str
     description: str
+    optional: bool = False
     running_balance: int = 0
 
 
@@ -79,6 +80,7 @@ def compute_days(
                     amount=expense.amount,
                     category=expense.category,
                     description=expense.description or "",
+                    optional=getattr(expense, "optional", False),
                     running_balance=balance,
                 )
             )

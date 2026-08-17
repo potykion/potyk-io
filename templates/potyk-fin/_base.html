@@ -209,6 +209,27 @@
             color: var(--muted);
         }
 
+        label.checkbox-label {
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            color: var(--ink);
+            cursor: pointer;
+        }
+
+        label.checkbox-label input[type="checkbox"] {
+            width: auto;
+            padding: 0;
+        }
+
+        tr.optional-expense {
+            background: #f3ede3;
+        }
+
+        tr.optional-expense td:first-child {
+            color: #8a6d3b;
+        }
+
         input, button, select {
             font: inherit;
             color: var(--ink);
