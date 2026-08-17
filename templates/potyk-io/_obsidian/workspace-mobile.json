@@ -1,0 +1,276 @@
+{
+  "main": {
+    "id": "7564c146f6e09694",
+    "type": "split",
+    "children": [
+      {
+        "id": "b12a1232368b1c57",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1d6e7eb57a842030",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2026-08-07.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-08-07"
+            }
+          },
+          {
+            "id": "7ed70e987b95e3a0",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2026-08-10.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-08-10"
+            }
+          },
+          {
+            "id": "3c5b052103d5c3bb",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "bryansk-bytosh.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "bryansk-bytosh"
+            }
+          },
+          {
+            "id": "a2cd6edabca63a8a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "street-art.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "street-art"
+            }
+          },
+          {
+            "id": "ec049fd52425b2be",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Diary/2026-08-16.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-08-16"
+            }
+          },
+          {
+            "id": "2973bf2aafda205a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Diary/2026-08-16.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-08-16"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "6d3ccd196dd357fe",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "6e845ba2b5f618c5",
+        "type": "leaf",
+        "state": {
+          "type": "file-explorer",
+          "state": {
+            "sortOrder": "alphabetical",
+            "autoReveal": true,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-folder-closed",
+          "title": "Файловый менеджер"
+        }
+      },
+      {
+        "id": "b04eea861fb9008a",
+        "type": "leaf",
+        "state": {
+          "type": "search",
+          "state": {
+            "query": "",
+            "matchingCase": false,
+            "explainSearch": false,
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical"
+          },
+          "icon": "lucide-search",
+          "title": "Поиск"
+        }
+      },
+      {
+        "id": "06b2e6c0bbeda64f",
+        "type": "leaf",
+        "state": {
+          "type": "tag",
+          "state": {
+            "sortOrder": "frequency",
+            "useHierarchy": true,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-tags",
+          "title": "Теги"
+        }
+      },
+      {
+        "id": "383093cca47e8b23",
+        "type": "leaf",
+        "state": {
+          "type": "all-properties",
+          "state": {
+            "sortOrder": "frequency",
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-archive",
+          "title": "Все свойства"
+        }
+      },
+      {
+        "id": "321c3f53bc08e28c",
+        "type": "leaf",
+        "state": {
+          "type": "bookmarks",
+          "state": {},
+          "icon": "lucide-bookmark",
+          "title": "Закладки"
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "right": {
+    "id": "9fc6a1273b9ff3fb",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "a904e2eafa04f2f4",
+        "type": "leaf",
+        "state": {
+          "type": "backlink",
+          "state": {
+            "file": "Tasks/README.md",
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical",
+            "showSearch": false,
+            "searchQuery": "",
+            "backlinkCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-coming-in",
+          "title": "Обратные ссылки"
+        }
+      },
+      {
+        "id": "c1a0e3ef2ddc11c8",
+        "type": "leaf",
+        "state": {
+          "type": "outgoing-link",
+          "state": {
+            "file": "2026-07-23.md",
+            "linksCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-going-out",
+          "title": "Исходящие ссылки"
+        }
+      },
+      {
+        "id": "701595e2c08197e2",
+        "type": "leaf",
+        "state": {
+          "type": "outline",
+          "state": {
+            "file": "2026-07-23.md",
+            "followCursor": false,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-list",
+          "title": "Структура"
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false
+    }
+  },
+  "active": "2973bf2aafda205a",
+  "lastOpenFiles": [
+    "Tasks/Feat-hashtags.md",
+    "Tasks/Done",
+    "Tasks/Feat-note-date.md",
+    "Tasks/README.md",
+    "Tasks/Task-Movies.md",
+    "Tasks/Style-inbox-photo.md",
+    "Tasks/Fix-menu-mobile.md",
+    "Tasks/feat-offline-mode.md",
+    "Шаблоны/Шаблон задачи.md",
+    "Diary/2026-08-16.md",
+    "Diary/2026-08-15.md",
+    "Озадаченный.md",
+    "Diary/2026-08-14.md",
+    "Diary/2026-08-11.md",
+    "Diary/2026-08-12.md",
+    "Diary/2026-08-13.md",
+    "street-art.md",
+    "Invest faq.md",
+    "bryansk-bytosh.md",
+    "Diary/2026-08-10.md",
+    "Diary/2026-08-09.md",
+    "Как живется в Москве.md",
+    "Что когда покупать ака Часы инвестора.md",
+    "Diary",
+    "Tasks",
+    "Шаблоны/Шаблон дневника.md",
+    "tula.md",
+    "Diary/2026-08-08.md",
+    "Шаблоны"
+  ]
+}
