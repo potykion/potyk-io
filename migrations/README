@@ -28,7 +28,7 @@ python -m alembic stamp head
 python -m alembic revision --autogenerate -m "краткое описание"
 ```
 
-Проверь сгенерированный файл в `alembic/versions/` — autogenerate не должен создавать уже существующие таблицы (`expenses`, `savings`, `settings`). Оставь только `add_column` / `create_table` для нового.
+Проверь сгенерированный файл в `migrations/versions/` — autogenerate не должен создавать уже существующие таблицы (`expenses`, `savings`, `settings`). Оставь только `add_column` / `create_table` для нового.
 
 Применить:
 
