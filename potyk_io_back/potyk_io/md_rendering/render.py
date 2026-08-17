@@ -1,13 +1,19 @@
 import re
+from datetime import date
 
 import flask
 import markdown
 
+from potyk_io_back.potyk_io.md_rendering.created import (
+    created_from_meta,
+    format_created_ru,
+)
 from potyk_io_back.potyk_io.md_rendering.hashtags import linkify_hashtags
 
 MD_EXTENSIONS = ["extra", "sane_lists", "nl2br", "pymdownx.magiclink"]
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 FALSEY = {"false", "0", "no", "off"}
+H1_RE = re.compile(r"(<h1\b[^>]*>.*?</h1>)", re.IGNORECASE | re.DOTALL)
 
 
 def split_frontmatter(text: str) -> tuple[dict[str, str], str]:
@@ -46,7 +52,25 @@ def ensure_h1(body: str, title: str) -> str:
     return f"# {title}\n\n{body}"
 
 
-def render_body_html(body: str, meta: dict[str, str], title: str | None = None) -> str:
+def inject_created(html: str, created: date, title: str | None) -> str:
+    created_iso = created.isoformat()
+    if title and title == created_iso:
+        return html
+    stamp = (
+        f'<time class="note-created" datetime="{created_iso}">'
+        f"{format_created_ru(created)}</time>"
+    )
+    if H1_RE.search(html):
+        return H1_RE.sub(rf"\1\n{stamp}", html, count=1)
+    return f"{stamp}\n{html}"
+
+
+def render_body_html(
+    body: str,
+    meta: dict[str, str],
+    title: str | None = None,
+    created: date | None = None,
+) -> str:
     if title:
         body = ensure_h1(body, title)
     content = markdown.markdown(
@@ -54,6 +78,10 @@ def render_body_html(body: str, meta: dict[str, str], title: str | None = None) 
         extensions=MD_EXTENSIONS,
         output_format="html",
     )
+    if created is None:
+        created = created_from_meta(meta)
+    if created is not None:
+        content = inject_created(content, created, title)
     show_header = str(meta.get("header", "true")).strip().lower() not in FALSEY
     return flask.render_template(
         "potyk-io/page.html", content=content, show_header=show_header

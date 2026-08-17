@@ -8,6 +8,7 @@ from potyk_io_back.potyk_io.md_rendering import (
     resolve_page,
     split_frontmatter,
 )
+from potyk_io_back.potyk_io.md_rendering.created import resolve_created
 from potyk_io_back.potyk_io.menu import MENU_GROUPS
 
 potyk_io_bp = Blueprint("potyk_io", __name__)
@@ -60,7 +61,8 @@ def page(page_path: str):
 
     if file.suffix == ".md":
         meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
-        return render_body_html(body, meta, title=file.stem)
+        created = resolve_created(file, meta)
+        return render_body_html(body, meta, title=file.stem, created=created)
 
     template_name = f"potyk-io/{file.relative_to(TEMPLATES_DIR).as_posix()}"
     ctx = {}

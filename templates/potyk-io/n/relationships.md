@@ -1,3 +1,6 @@
+---
+created: 2026-08-05
+---
 # State of relationships
 
 ## M2

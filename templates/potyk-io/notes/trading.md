@@ -1,3 +1,6 @@
+---
+created: 2026-08-05
+---
 # trading bootcamp
 
 ## [1](https://www.tbank.ru/invest/pulse/broadcast/ATMaraphon180526/) 

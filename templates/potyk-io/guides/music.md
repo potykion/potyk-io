@@ -1,7 +1,7 @@
 ---
+created: 2026-08-05
 cover: /static/potyk-io/img/covers/music-download.png
 ---
-
 # Скачать музыку бесплатно и без смс
 
 ![music-download.png](/static/potyk-io/img/covers/music-download.png)

@@ -31,3 +31,10 @@
 .md-content a.hashtag:hover {
     text-decoration: underline;
 }
+
+.md-content .note-created {
+    display: block;
+    color: #888;
+    font-size: 0.9rem;
+    margin: -0.4rem 0 1.1rem;
+}

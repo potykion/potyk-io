@@ -1,5 +1,5 @@
 ---
-status: new
+status: done
 project: potyk-io
 ---
 У каждой md заметки делать дату - frontmaater поле created
