@@ -82,8 +82,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "c622d0f7ebec4bbe",
@@ -188,8 +187,12 @@
       "bases:Create new base": false
     }
   },
-  "active": "1058229eaddd535d",
+  "active": "afcc4f5b5f3ae89d",
   "lastOpenFiles": [
+    "tasks/done/feat-close-day.md",
+    "tasks/done/feat-stats.md",
+    "tasks/done/feat-optional-expence.md",
+    "tasks/done/feat-alembic.md",
     "tasks/feat-optional-expence.md",
     "tasks/potyk-io-tasks.base",
     "tasks/feat-close-day.md",

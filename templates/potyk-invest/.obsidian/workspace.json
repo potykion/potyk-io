@@ -11,13 +11,14 @@
             "id": "43ee2378591649a1",
             "type": "leaf",
             "state": {
-              "type": "bases",
+              "type": "markdown",
               "state": {
-                "file": "Сделки.base",
-                "viewName": "Таблица"
+                "file": "Источники/Деньги не спят/2026-08-14 ДнС Запахло жареным.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-table",
-              "title": "Сделки"
+              "icon": "lucide-file",
+              "title": "2026-08-14 ДнС Запахло жареным"
             }
           }
         ]
@@ -79,7 +80,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 370.5
+    "width": 370.5,
+    "collapsed": true
   },
   "right": {
     "id": "ae47ff314d0bf9c8",
@@ -187,8 +189,9 @@
   },
   "active": "43ee2378591649a1",
   "lastOpenFiles": [
-    "Сделки/IRAO после падения.md",
+    "Источники/Деньги не спят/2026-08-14 ДнС Запахло жареным.md",
     "Сделки.base",
+    "Сделки/IRAO после падения.md",
     "Новости.md",
     "news.html",
     "index.html",

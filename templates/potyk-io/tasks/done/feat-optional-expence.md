@@ -1,5 +1,5 @@
 ---
-status: new
+status: done
 project: potyk-fin
 ---
 флажок Необязательный расход 
