@@ -31,6 +31,10 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        from alembic import command
+        from alembic.config import Config
+
+        command.upgrade(Config("alembic.ini"), "head")
         get_settings()
 
     @app.template_filter("rub")

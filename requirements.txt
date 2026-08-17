@@ -7,3 +7,4 @@ flask-sqlalchemy
 flask-login
 flask-wtf
 pyyaml
+alembic

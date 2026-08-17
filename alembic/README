@@ -1,0 +1,50 @@
+# Миграции БД (Alembic)
+
+База уже создана через `db.create_all()` в `main.py`. Alembic добавляет только **новые** поля и таблицы — не пересоздаёт существующие.
+
+## Накатить миграции
+
+```bash
+python -m alembic upgrade head
+```
+
+На деплое это делается автоматически в GitHub Actions.
+
+## Существующая база (первый раз)
+
+Если таблицы уже есть, а Alembic ещё не использовался:
+
+```bash
+python -m alembic stamp head
+```
+
+После этого `upgrade head` будет применять только новые ревизии.
+
+## Создать миграцию
+
+После изменения моделей в `potyk_io_back/fin/entities.py`:
+
+```bash
+python -m alembic revision --autogenerate -m "краткое описание"
+```
+
+Проверь сгенерированный файл в `alembic/versions/` — autogenerate не должен создавать уже существующие таблицы (`expenses`, `savings`, `settings`). Оставь только `add_column` / `create_table` для нового.
+
+Применить:
+
+```bash
+python -m alembic upgrade head
+```
+
+## Откат
+
+```bash
+python -m alembic downgrade -1
+```
+
+## Текущая ревизия
+
+```bash
+python -m alembic current
+python -m alembic history
+```

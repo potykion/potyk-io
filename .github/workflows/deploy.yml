@@ -21,6 +21,7 @@ jobs:
             git pull
             source ./.venv/bin/activate
             pip install -r requirements.txt
+            python -m alembic upgrade head
             sudo cp ./potyk-io.service /etc/systemd/system/potyk-io.service
             sudo systemctl daemon-reload
             sudo systemctl restart potyk-io.service
