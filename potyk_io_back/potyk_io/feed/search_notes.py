@@ -9,7 +9,7 @@ SNIPPET_RADIUS = 80
 
 def _plain_body(body: str) -> str:
     text = re.sub(r"^#+\s*", "", body, flags=re.MULTILINE)
-    text = re.sub(r"[*`_~\[\]()#>|-]", " ", text)
+    text = re.sub(r"[*`_~\[\]()>|-]", " ", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
@@ -47,6 +47,7 @@ def search_notes(query: str) -> list[dict]:
     q = query.strip().lower()
     if not q:
         return []
+    needle = q[1:] if q.startswith("#") and len(q) > 1 else q
 
     title_hits: list[dict] = []
     body_hits: list[dict] = []
@@ -56,23 +57,30 @@ def search_notes(query: str) -> list[dict]:
             title = extract_h1(body) or path.stem
             preview_meta = unquote_meta(meta.get("preview", ""))
             plain = _plain_body(body)
+            hay_title = title.lower()
+            hay_stem = path.stem.lower()
+            hay_plain = plain.lower()
+            hay_preview = preview_meta.lower() if preview_meta else ""
 
-            in_title = q in title.lower() or q in path.stem.lower()
-            in_preview = bool(preview_meta) and q in preview_meta.lower()
-            in_body = q in plain.lower() or in_preview
+            in_title = needle in hay_title or needle in hay_stem or q in hay_title
+            in_preview = bool(hay_preview) and (
+                needle in hay_preview or q in hay_preview
+            )
+            in_body = needle in hay_plain or q in hay_plain or in_preview
             if not in_title and not in_body:
                 continue
 
             if in_preview:
                 snippet = preview_meta
             elif in_body:
-                snippet = _snippet(plain, q)
+                snippet = _snippet(plain, q if q in hay_plain else needle)
             else:
-                snippet = preview_meta or _snippet(plain, q)
+                snippet = preview_meta or _snippet(plain, q if q in hay_plain else needle)
 
-            parts = [f"<h2>{_highlight(title, q)}</h2>"]
+            mark = q if q in hay_title or q in hay_plain else needle
+            parts = [f"<h2>{_highlight(title, mark)}</h2>"]
             if snippet:
-                parts.append(f"<p>{_highlight(snippet, q)}</p>")
+                parts.append(f"<p>{_highlight(snippet, mark)}</p>")
 
             card = {
                 "id": cid,

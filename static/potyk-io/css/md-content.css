@@ -21,3 +21,13 @@
 .md-content img {
     width: 100%;
 }
+
+.md-content a.hashtag {
+    color: #5b6abf;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.md-content a.hashtag:hover {
+    text-decoration: underline;
+}

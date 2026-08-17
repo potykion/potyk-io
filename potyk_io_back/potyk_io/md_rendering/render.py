@@ -3,6 +3,8 @@ import re
 import flask
 import markdown
 
+from potyk_io_back.potyk_io.md_rendering.hashtags import linkify_hashtags
+
 MD_EXTENSIONS = ["extra", "sane_lists", "nl2br", "pymdownx.magiclink"]
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 FALSEY = {"false", "0", "no", "off"}
@@ -48,7 +50,7 @@ def render_body_html(body: str, meta: dict[str, str], title: str | None = None) 
     if title:
         body = ensure_h1(body, title)
     content = markdown.markdown(
-        body,
+        linkify_hashtags(body),
         extensions=MD_EXTENSIONS,
         output_format="html",
     )
