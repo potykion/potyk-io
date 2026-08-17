@@ -23,6 +23,7 @@
     </details>
 </div>
 
+{% if today not in closed_dates %}
 <div class="panel">
     <details data-panel="expense" {% if open_panel == 'expense' %}open{% endif %}>
         <summary>Добавить трату</summary>
@@ -50,6 +51,7 @@
         </form>
     </details>
 </div>
+{% endif %}
 
 <h2>Лента</h2>
 {% include "potyk-fin/partials/_feed.html" %}

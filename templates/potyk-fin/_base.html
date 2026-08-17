@@ -352,6 +352,23 @@
             padding-top: 14px;
         }
 
+        .day details > summary {
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .day details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .close-day-form {
+            margin-top: 8px;
+        }
+
+        .day.is-closed {
+            opacity: 0.85;
+        }
+
         .day-head {
             display: flex;
             flex-wrap: wrap;

@@ -6,8 +6,8 @@ from sqlalchemy import func, select
 
 from potyk_io_back.core.db import db
 from potyk_io_back.fin.budget import compute_days
-from potyk_io_back.fin.entities import Expense, Saving, get_settings
-from potyk_io_back.fin.forms import BudgetForm, DeleteForm, ExpenseForm, SavingForm
+from potyk_io_back.fin.entities import ClosedDay, Expense, Saving, get_settings
+from potyk_io_back.fin.forms import BudgetForm, CloseDayForm, DeleteForm, ExpenseForm, SavingForm
 
 fin_bp = Blueprint("fin", __name__, url_prefix="/fin")
 
@@ -62,6 +62,9 @@ def index_context(
     categories = db.session.scalars(
         select(Expense.category).distinct().order_by(Expense.category)
     ).all()
+    closed_dates = set(
+        db.session.scalars(select(ClosedDay.date).order_by(ClosedDay.date)).all()
+    )
 
     days = compute_days(
         expenses,
@@ -112,11 +115,13 @@ def index_context(
         "stats_to": stats_to,
         "category_stats": category_stats,
         "stats_total": stats_total,
+        "closed_dates": closed_dates,
         "categories": categories,
         "expense_form": expense_form or ExpenseForm(),
         "saving_form": saving_form or SavingForm(),
         "budget_form": budget_form,
         "delete_form": DeleteForm(),
+        "close_day_form": CloseDayForm(),
         "open_panel": open_panel,
     }
 
@@ -129,6 +134,30 @@ def render_index(**kwargs):
 @login_required
 def index():
     return render_index()
+
+
+@fin_bp.post("/days/<date_str>/close")
+@login_required
+def toggle_day_close(date_str: str):
+    form = CloseDayForm()
+    if not form.validate_on_submit():
+        flash_form_errors(form)
+        return redirect(request.referrer or url_for("fin.index"))
+
+    try:
+        day = date.fromisoformat(date_str)
+    except ValueError:
+        flash("Некорректная дата", "error")
+        return redirect(request.referrer or url_for("fin.index"))
+
+    closed = request.form.get("closed") == "on"
+    row = db.session.get(ClosedDay, day)
+    if closed and row is None:
+        db.session.add(ClosedDay(date=day))
+    elif not closed and row is not None:
+        db.session.delete(row)
+    db.session.commit()
+    return redirect(request.referrer or url_for("fin.index"))
 
 
 @fin_bp.post("/expenses")

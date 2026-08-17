@@ -28,6 +28,12 @@ class Settings(db.Model):
     daily_budget = db.Column(db.Integer, nullable=False, default=10_000)
 
 
+class ClosedDay(db.Model):
+    __tablename__ = "closed_days"
+
+    date = db.Column(db.Date, primary_key=True)
+
+
 def get_settings() -> Settings:
     settings = db.session.get(Settings, 1)
     if settings is None:

@@ -44,3 +44,7 @@ class BudgetForm(FlaskForm):
 
 class DeleteForm(FlaskForm):
     submit = SubmitField("✕")
+
+
+class CloseDayForm(FlaskForm):
+    pass

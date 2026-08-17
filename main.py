@@ -30,11 +30,11 @@ def create_app():
     app.register_blueprint(fin_bp)
 
     with app.app_context():
-        db.create_all()
         from alembic import command
         from alembic.config import Config
 
         command.upgrade(Config("alembic.ini"), "head")
+        db.create_all()
         get_settings()
 
     @app.template_filter("rub")
