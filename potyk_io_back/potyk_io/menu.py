@@ -38,11 +38,17 @@ MENU_GROUPS: list[MenuGroup] = [
                 "title": "potyk-fin",
                 "url": "/fin",
                 "description": "Простой учет расходов и сберижений",
-            }, {
+            },             {
                 "icon": "💰",
                 "title": "potyk-invest",
                 "url": "/invest",
                 "description": "Новостюшки про рашн фондю",
+            },
+            {
+                "icon": "🍕",
+                "title": "potyk-food",
+                "url": "https://potyk.io/potyk-food/",
+                "description": "Ворую рецепты",
             },
             {
                 "icon": "👩‍💻",
@@ -67,12 +73,6 @@ MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "Еда",
         "links": [
-            {
-                "icon": "📃",
-                "title": "Рецептики",
-                "url": "https://potyk.io/potyk-food/",
-                "description": "",
-            },
             {
                 "icon": "🧠",
                 "title": "Размышления",
