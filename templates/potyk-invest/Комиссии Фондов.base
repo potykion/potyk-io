@@ -1,0 +1,17 @@
+views:
+  - type: table
+    name: Table
+    filters:
+      and:
+        - file.folder == "Тикеры/Фонды"
+    groupBy:
+      property: Сектор
+      direction: ASC
+    order:
+      - file.name
+      - Комиссия
+      - Зависимости
+      - УК
+    sort:
+      - property: Комиссия
+        direction: ASC

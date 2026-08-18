@@ -8,6 +8,7 @@
     "datetime open": "datetime",
     "Срок": "datetime",
     "Сектор": "multitext",
-    "Зависимости": "multitext"
+    "Зависимости": "multitext",
+    "Комиссия": "number"
   }
 }

@@ -8,16 +8,18 @@
         "type": "tabs",
         "children": [
           {
-            "id": "1058229eaddd535d",
+            "id": "6d612005413c3b95",
             "type": "leaf",
+            "pinned": true,
             "state": {
               "type": "bases",
               "state": {
-                "file": "tasks/potyk-io-tasks.base",
+                "file": "tasks/ЗАДАЧИ КАНБАН.base",
                 "viewName": "Table"
               },
+              "pinned": true,
               "icon": "columns",
-              "title": "potyk-io-tasks"
+              "title": "ЗАДАЧИ КАНБАН"
             }
           }
         ]
@@ -98,7 +100,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "tasks/potyk-io-tasks.base",
+                "file": "tasks/ЗАДАЧИ КАНБАН.base",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -117,7 +119,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "tasks/potyk-io-tasks.base",
+                "file": "tasks/ЗАДАЧИ КАНБАН.base",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -160,7 +162,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "tasks/potyk-io-tasks.base",
+                "file": "tasks/ЗАДАЧИ КАНБАН.base",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -187,22 +189,33 @@
       "bases:Create new base": false
     }
   },
-  "active": "afcc4f5b5f3ae89d",
+  "active": "6d612005413c3b95",
   "lastOpenFiles": [
+    "tasks/айфон и андроид.md",
+    "tasks/ЗАДАЧИ КАНБАН.base",
+    "tasks/potyk-invest Табличка на чем заработать.md",
+    "diary/2026-08-08.md",
+    "diary/2026-08-07.md",
+    "diary/2026-08-09.md",
+    "diary/2026-08-10.md",
+    "diary/2026-08-11.md",
+    "diary/2026-08-12.md",
+    "diary/2026-08-13.md",
+    "diary/2026-08-14.md",
+    "tasks/potyk-invest форма сделки.md",
+    "diary/2026-08-15.md",
+    "tasks/потик фуд эксперименты.md",
+    "diary/2026-08-16.md",
+    "tasks/обновление гайда по тревелу.md",
+    "tasks/ЗАДАЧИ СПИСОК.md",
+    "tasks/README.md",
     "tasks/done/feat-close-day.md",
     "tasks/done/feat-stats.md",
     "tasks/done/feat-optional-expence.md",
     "tasks/done/feat-alembic.md",
     "tasks/feat-optional-expence.md",
-    "tasks/potyk-io-tasks.base",
     "tasks/feat-close-day.md",
     "tasks/feat-stats.md",
-    "tasks/feat-alembic.md",
-    "diary/2026-08-14.md",
-    "Озадаченный.md",
-    "tasks/task-tracker-task/task-tracker-draft.md",
-    "tasks/done/Feat-note-date.md",
-    "tasks/done/Feat-hashtags.md",
-    "tasks/done/Fix-menu-mobile.md"
+    "tasks/feat-alembic.md"
   ]
 }

@@ -1,5 +1,6 @@
 ---
 artist: The Garden
+artist-link: ../artists/the-garden.md
 album: Bootleg
 year: 2026
 yandex: https://music.yandex.ru/playlists/11daca8c-d860-eef4-b930-da60ace13e15
