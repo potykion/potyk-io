@@ -1,0 +1,356 @@
+{% extends "potyk-invest/_base.html" %}
+
+{% block title %}Сделки — potyk-invest{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    body.site-invest .wrap {
+        max-width: 960px;
+    }
+
+    * { box-sizing: border-box; }
+
+    .deposit-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.75rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .muted {
+        color: var(--muted);
+        font-size: 0.95rem;
+    }
+
+    .panel {
+        background: #fff;
+        border: 1px solid var(--none-border);
+        border-radius: 8px;
+        padding: 14px;
+        margin: 0 0 1rem;
+    }
+
+    .panel details > summary {
+        cursor: pointer;
+        font-weight: 500;
+        list-style: none;
+        user-select: none;
+    }
+
+    .panel details > summary::-webkit-details-marker { display: none; }
+
+    form.grid {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    @media (min-width: 560px) {
+        form.grid.cols-2 { grid-template-columns: 1fr 1fr; }
+        form.grid.cols-2 .full { grid-column: 1 / -1; }
+        form.grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        form.grid.cols-3 .full { grid-column: 1 / -1; }
+        form.grid.cols-3 .span-2 { grid-column: span 2; }
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.85rem;
+        color: var(--muted);
+    }
+
+    input, textarea, button {
+        font: inherit;
+        color: var(--ink);
+    }
+
+    input, textarea {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--none-border);
+        border-radius: 6px;
+        background: #fff;
+        font-size: 16px;
+    }
+
+    textarea { min-height: 88px; resize: vertical; }
+
+    button, .btn {
+        padding: 10px 14px;
+        border: 1px solid var(--ink);
+        border-radius: 6px;
+        background: var(--ink);
+        color: #fff;
+        cursor: pointer;
+        font-weight: 500;
+        min-height: 44px;
+    }
+
+    .hint { font-size: 0.8rem; color: var(--muted); }
+    .field-error { color: #9b2c2c; font-size: 0.8rem; }
+
+    .qty-preview {
+        font-variant-numeric: tabular-nums;
+        color: var(--ink);
+        font-weight: 600;
+        min-height: 1.2em;
+    }
+
+    h2 {
+        margin: 1.5rem 0 0.75rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px 6px;
+        border-bottom: 1px solid var(--none-border);
+        vertical-align: top;
+    }
+
+    th {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--muted);
+    }
+
+    td.num, th.num { text-align: right; }
+    td.thoughts { max-width: 240px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .empty { color: var(--muted); margin: 0.5rem 0 0; }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="wrap">
+    <h1>Сделки</h1>
+
+    <section class="panel">
+        <p class="deposit-value">{{ deposit | invest_money }} ₽</p>
+        <p class="muted">Текущий депозит</p>
+
+        <form class="grid cols-2" method="post" action="{{ url_for('invest.update_deposit') }}">
+            {{ deposit_form.hidden_tag() }}
+            <label>
+                {{ deposit_form.date.label.text }}
+                {{ deposit_form.date(required=true) }}
+                {% for err in deposit_form.date.errors %}
+                <span class="field-error">{{ err }}</span>
+                {% endfor %}
+            </label>
+            <label>
+                {{ deposit_form.amount.label.text }}
+                {{ deposit_form.amount(min=0, step="0.01", required=true, inputmode="decimal") }}
+                {% for err in deposit_form.amount.errors %}
+                <span class="field-error">{{ err }}</span>
+                {% endfor %}
+            </label>
+            <div class="full">
+                {{ deposit_form.submit() }}
+            </div>
+        </form>
+
+        <details {% if open_panel == 'deposit' %}open{% endif %} style="margin-top: 14px;">
+            <summary>История изменений</summary>
+            {% if deposit_changes %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th class="num">Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in deposit_changes %}
+                        <tr>
+                            <td>{{ row.date.isoformat() }}</td>
+                            <td class="num">{{ row.amount | invest_money }} ₽</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="empty">Изменений пока нет.</p>
+            {% endif %}
+        </details>
+    </section>
+
+    <section class="panel">
+        <details data-panel="deal" {% if open_panel == 'deal' %}open{% endif %}>
+            <summary>Добавить покупку</summary>
+            <form class="grid cols-3" method="post" action="{{ url_for('invest.add_deal') }}" id="deal-form">
+                {{ deal_form.hidden_tag() }}
+                <label>
+                    {{ deal_form.ticker.label.text }}
+                    {{ deal_form.ticker(required=true, autocomplete="off", placeholder="SBER") }}
+                    {% for err in deal_form.ticker.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </label>
+                <label class="span-2">
+                    {{ deal_form.opened_at.label.text }}
+                    {{ deal_form.opened_at(required=true) }}
+                    {% for err in deal_form.opened_at.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </label>
+                <label>
+                    {{ deal_form.volume.label.text }}
+                    {{ deal_form.volume(min="0.01", step="0.01", required=true, inputmode="decimal") }}
+                    <span class="hint">не больше 5% депозита{% if deposit > 0 %} ({{ max_volume | invest_money }} ₽){% endif %}</span>
+                    {% for err in deal_form.volume.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </label>
+                <label>
+                    {{ deal_form.buy_price.label.text }}
+                    {{ deal_form.buy_price(min="0.000001", step="any", required=true, inputmode="decimal") }}
+                    {% for err in deal_form.buy_price.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </label>
+                <label>
+                    Кол-во позиций
+                    <span class="qty-preview" id="qty-preview">—</span>
+                    <span class="hint">объём / цена</span>
+                </label>
+                <label>
+                    {{ deal_form.entry_level.label.text }}
+                    {{ deal_form.entry_level(min="0", step="any", inputmode="decimal") }}
+                    {% for err in deal_form.entry_level.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </label>
+                <label>
+                    {{ deal_form.exit_level.label.text }}
+                    {{ deal_form.exit_level(min="0", step="any", inputmode="decimal") }}
+                    {% for err in deal_form.exit_level.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </label>
+                <label>
+                    {{ deal_form.take_profit.label.text }}
+                    {{ deal_form.take_profit(placeholder="+10 или 10%") }}
+                    <span class="hint">{{ deal_form.take_profit.description }}</span>
+                    {% for err in deal_form.take_profit.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </label>
+                <label>
+                    {{ deal_form.stop_loss.label.text }}
+                    {{ deal_form.stop_loss(placeholder="-10 или -5%") }}
+                    <span class="hint">{{ deal_form.stop_loss.description }}</span>
+                    {% for err in deal_form.stop_loss.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </label>
+                <label class="full">
+                    {{ deal_form.thoughts.label.text }}
+                    {{ deal_form.thoughts() }}
+                    {% for err in deal_form.thoughts.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </label>
+                <div class="full">
+                    {{ deal_form.submit() }}
+                </div>
+            </form>
+        </details>
+    </section>
+
+    <h2>Таблица сделок</h2>
+    {% if deals %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Тикер</th>
+                    <th class="num">Объём</th>
+                    <th class="num">Цена</th>
+                    <th class="num">Позиций</th>
+                    <th class="num">Вход</th>
+                    <th class="num">Выход</th>
+                    <th class="num">TP</th>
+                    <th class="num">SL</th>
+                    <th>Мысли</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for deal in deals %}
+                <tr>
+                    <td>{{ deal.opened_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ deal.ticker }}</td>
+                    <td class="num">{{ deal.volume | invest_money }}</td>
+                    <td class="num">{{ deal.buy_price | invest_price }}</td>
+                    <td class="num">{{ deal.qty | invest_price }}</td>
+                    <td class="num">{{ deal.entry_level | invest_price }}</td>
+                    <td class="num">{{ deal.exit_level | invest_price }}</td>
+                    <td class="num">
+                        {% if deal.take_profit_raw %}
+                            {{ deal.take_profit_raw }}{% if deal.take_profit_price %} → {{ deal.take_profit_price | invest_price }}{% endif %}
+                        {% else %}—{% endif %}
+                    </td>
+                    <td class="num">
+                        {% if deal.stop_loss_raw %}
+                            {{ deal.stop_loss_raw }}{% if deal.stop_loss_price %} → {{ deal.stop_loss_price | invest_price }}{% endif %}
+                        {% else %}—{% endif %}
+                    </td>
+                    <td class="thoughts">{{ deal.thoughts or "—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Сделок пока нет.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+(() => {
+  const volume = document.querySelector('#deal-form [name="volume"]');
+  const price = document.querySelector('#deal-form [name="buy_price"]');
+  const qty = document.getElementById("qty-preview");
+  if (!volume || !price || !qty) return;
+
+  const parseNum = (raw) => {
+    const n = Number(String(raw).trim().replace(/\s+/g, "").replace(",", "."));
+    return Number.isFinite(n) ? n : null;
+  };
+
+  const recalc = () => {
+    const v = parseNum(volume.value);
+    const p = parseNum(price.value);
+    qty.textContent = v && p && p !== 0 ? (v / p).toFixed(4).replace(/0+$/, "").replace(/\.$/, "") : "—";
+  };
+
+  volume.addEventListener("input", recalc);
+  price.addEventListener("input", recalc);
+  recalc();
+})();
+</script>
+{% endblock %}

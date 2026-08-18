@@ -9,26 +9,18 @@
 {% endblock %}
 
 {% block head_stylesheets %}
-    {% if invest_menu_groups %}
     <link rel="stylesheet" href="/static/potyk-io/css/sidebar.css">
-    {% endif %}
 {% endblock %}
 
-{% block body_class %}{% if invest_menu_groups %}menu-collapsed {% endif %}site-invest{% endblock %}
+{% block body_class %}menu-collapsed site-invest{% endblock %}
 
 {% block header_leading %}
-    {% if invest_menu_groups %}
     <button type="button"
             class="menu-toggle"
             id="menu-toggle"
             aria-controls="sidebar"
             aria-expanded="false"
             aria-label="Меню">≡</button>
-    {% else %}
-    <a href="{{ url_for('potyk_io.index') }}"
-       class="menu-toggle header-back"
-       aria-label="Назад в potyk.io">←</a>
-    {% endif %}
 {% endblock %}
 
 {% block header_brand %}
@@ -94,14 +86,29 @@
     body.site-invest .back:hover {
         color: var(--link);
     }
+
+    body.site-invest .alert {
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    body.site-invest .alert-success {
+        background: var(--pos-bg);
+        border: 1px solid var(--pos-border);
+    }
+
+    body.site-invest .alert-error {
+        background: var(--neg-bg);
+        border: 1px solid var(--neg-border);
+    }
 </style>
 {% endblock %}
 
 {% block layout %}
     <div class="layout layout-simple">
-        {% if invest_menu_groups %}
-            {% include "potyk-invest/_sidebar.html" %}
-        {% endif %}
+        {% include "potyk-invest/_sidebar.html" %}
 
         <div class="layout-main">
             <main class="{% block main_class %}{% endblock %}">
@@ -113,7 +120,5 @@
 {% endblock %}
 
 {% block layout_script %}
-    {% if invest_menu_groups %}
-        {% include "jinja/_menu_script.html" %}
-    {% endif %}
+    {% include "jinja/_menu_script.html" %}
 {% endblock %}
