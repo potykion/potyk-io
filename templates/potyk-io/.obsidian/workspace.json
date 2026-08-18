@@ -191,6 +191,10 @@
   },
   "active": "6d612005413c3b95",
   "lastOpenFiles": [
+    "collections/scream_cover_url.txt",
+    "collections/movies.html",
+    "collections/movies.yaml",
+    "tasks/menu-upd.md",
     "tasks/айфон и андроид.md",
     "tasks/ЗАДАЧИ КАНБАН.base",
     "tasks/potyk-invest Табличка на чем заработать.md",
@@ -215,7 +219,6 @@
     "tasks/done/feat-alembic.md",
     "tasks/feat-optional-expence.md",
     "tasks/feat-close-day.md",
-    "tasks/feat-stats.md",
-    "tasks/feat-alembic.md"
+    "tasks/feat-stats.md"
   ]
 }

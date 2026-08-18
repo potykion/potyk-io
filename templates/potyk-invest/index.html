@@ -1,152 +1,109 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Новости — potyk-invest</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #f7f6f3;
-            --ink: #1a1a1a;
-            --muted: #6b6b6b;
-            --link: #6b4ea3;
-            --card-w: 280px;
-            --pos-bg: rgba(34, 197, 94, 0.18);
-            --pos-border: rgba(34, 197, 94, 0.45);
-            --neu-bg: rgba(234, 179, 8, 0.20);
-            --neu-border: rgba(234, 179, 8, 0.50);
-            --neg-bg: rgba(239, 68, 68, 0.18);
-            --neg-border: rgba(239, 68, 68, 0.45);
-            --none-bg: #eeebe4;
-            --none-border: #d8d3c8;
-        }
+{% extends "potyk-invest/_base.html" %}
 
-        * { box-sizing: border-box; }
+{% block title %}Новости — potyk-invest{% endblock %}
 
-        body {
-            margin: 0;
-            padding: 1.25rem 1.5rem 3rem;
-            font-family: "IBM Plex Sans", system-ui, sans-serif;
-            color: var(--ink);
-            background:
-                radial-gradient(ellipse 80% 50% at 0% 0%, #ebe8e0 0%, transparent 55%),
-                var(--bg);
-            line-height: 1.4;
-        }
+{% block style %}
+{{ super() }}
+<style>
+    h2.sector {
+        margin: 1.5rem 0 0.5rem;
+        font-size: 1.15rem;
+        font-weight: 600;
+        opacity: 0.85;
+    }
 
-        h1 {
-            margin: 0 0 0.5rem;
-            font-size: 1.85rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
+    .ticker-section {
+        margin: 0 0 1.25rem;
+    }
 
-        h2.sector {
-            margin: 1.5rem 0 0.5rem;
-            font-size: 1.15rem;
-            font-weight: 600;
-            opacity: 0.85;
-        }
+    .ticker-heading {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+    }
 
-        .ticker-section {
-            margin: 0 0 1.25rem;
-        }
+    .ticker-deps {
+        font-weight: 400;
+        opacity: 0.65;
+        font-size: 0.85em;
+    }
 
-        .ticker-heading {
-            margin: 0;
-            font-size: 1.05rem;
-            font-weight: 700;
-        }
+    .news-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 1rem;
+        width: 100%;
+        margin: 0.75rem 0 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 0.35rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
 
-        .ticker-deps {
-            font-weight: 400;
-            opacity: 0.65;
-            font-size: 0.85em;
-        }
+    .news-card {
+        flex: 0 0 var(--card-w);
+        width: var(--card-w);
+        max-width: var(--card-w);
+        min-width: var(--card-w);
+        border-radius: 8px;
+        padding: 0.9rem 1rem;
+        border: 1px solid var(--none-border);
+        background: var(--none-bg);
+    }
 
-        .news-grid {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: 1rem;
-            width: 100%;
-            margin: 0.75rem 0 0;
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding-bottom: 0.35rem;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-        }
+    .news-card.tone-pos {
+        background: var(--pos-bg);
+        border-color: var(--pos-border);
+    }
 
-        .news-card {
-            flex: 0 0 var(--card-w);
-            width: var(--card-w);
-            max-width: var(--card-w);
-            min-width: var(--card-w);
-            border-radius: 8px;
-            padding: 0.9rem 1rem;
-            border: 1px solid var(--none-border);
-            background: var(--none-bg);
-        }
+    .news-card.tone-neu {
+        background: var(--neu-bg);
+        border-color: var(--neu-border);
+    }
 
-        .news-card.tone-pos {
-            background: var(--pos-bg);
-            border-color: var(--pos-border);
-        }
+    .news-card.tone-neg {
+        background: var(--neg-bg);
+        border-color: var(--neg-border);
+    }
 
-        .news-card.tone-neu {
-            background: var(--neu-bg);
-            border-color: var(--neu-border);
-        }
+    .news-card .title {
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+    }
 
-        .news-card.tone-neg {
-            background: var(--neg-bg);
-            border-color: var(--neg-border);
-        }
+    .news-card .title a {
+        color: var(--link);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
 
-        .news-card .title {
-            font-weight: 600;
-            margin-bottom: 0.35rem;
-        }
+    .news-card .title a:hover {
+        opacity: 0.85;
+    }
 
-        .news-card .title a {
-            color: var(--link);
-            text-decoration: underline;
-            text-underline-offset: 2px;
-        }
+    .news-card .when {
+        font-size: 0.85em;
+        opacity: 0.7;
+        margin-bottom: 0.45rem;
+    }
 
-        .news-card .title a:hover {
-            opacity: 0.85;
-        }
+    .news-card .meta {
+        font-size: 0.9em;
+        margin-bottom: 0.6rem;
+        opacity: 0.9;
+    }
 
-        .news-card .when {
-            font-size: 0.85em;
-            opacity: 0.7;
-            margin-bottom: 0.45rem;
-        }
+    .news-card .summary {
+        font-size: 0.92em;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+</style>
+{% endblock %}
 
-        .news-card .meta {
-            font-size: 0.9em;
-            margin-bottom: 0.6rem;
-            opacity: 0.9;
-        }
-
-        .news-card .summary {
-            font-size: 0.92em;
-            line-height: 1.45;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-        }
-
-        .empty {
-            color: var(--muted);
-            margin-top: 2rem;
-        }
-    </style>
-</head>
-<body>
+{% block main %}
     <h1>Новости</h1>
 
     {% if not sectors %}
@@ -183,20 +140,21 @@
     </section>
     {% endfor %}
     {% endfor %}
+{% endblock %}
 
-    <script>
-        document.querySelectorAll("[data-hscroll]").forEach((el) => {
-            el.addEventListener(
-                "wheel",
-                (e) => {
-                    if (e.deltaY === 0) return;
-                    if (el.scrollWidth <= el.clientWidth) return;
-                    e.preventDefault();
-                    el.scrollLeft += e.deltaY;
-                },
-                { passive: false }
-            );
-        });
-    </script>
-</body>
-</html>
+{% block script %}
+<script>
+    document.querySelectorAll("[data-hscroll]").forEach((el) => {
+        el.addEventListener(
+            "wheel",
+            (e) => {
+                if (e.deltaY === 0) return;
+                if (el.scrollWidth <= el.clientWidth) return;
+                e.preventDefault();
+                el.scrollLeft += e.deltaY;
+            },
+            { passive: false }
+        );
+    });
+</script>
+{% endblock %}

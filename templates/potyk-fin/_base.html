@@ -1,650 +1,633 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>potyk-fin</title>
+{% extends "jinja/base.html" %}
+
+{% block title %}potyk-fin{% endblock %}
+
+{% block viewport %}width=device-width, initial-scale=1, viewport-fit=cover{% endblock %}
+
+{% block head_fonts %}
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
+{% endblock %}
+
+{% block body_class %}site-fin{% if config.DEBUG %} debug-env{% endif %}{% endblock %}
+
+{% block header_leading %}
+    <a href="{{ url_for('potyk_io.index') }}"
+       class="menu-toggle header-back"
+       aria-label="Назад в potyk.io">←</a>
+{% endblock %}
+
+{% block header_brand %}
+    <a href="{{ url_for('fin.index') }}" class="top-bar-brand">potyk-fin</a>
+{% endblock %}
+
+{% block header_trailing %}
+    {% if current_user.is_authenticated %}
+    <a class="top-bar-link"
+       href="https://www.tbank.ru/mybank/operations/"
+       target="_blank"
+       rel="noopener noreferrer">где смотреть траты</a>
+    {% endif %}
+{% endblock %}
+
+{% block style %}
+<style>
+    :root {
+        --bg: #f6f4ef;
+        --ink: #1c1b19;
+        --muted: #6b6860;
+        --line: #ddd8ce;
+        --ok: #1f6b4a;
+        --ok-bg: #e5f3ec;
+        --bad: #9b2c2c;
+        --bad-bg: #f8e8e8;
+        --card: #fffdf8;
+        --accent: #2a5a8c;
+        --pad-x: max(12px, env(safe-area-inset-left));
+        --pad-r: max(12px, env(safe-area-inset-right));
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+        width: 100%;
+        height: 100%;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    body.site-fin {
+        width: 100%;
+        min-height: 100%;
+        min-height: 100dvh;
+        margin: 0;
+        font-family: "Rubik", system-ui, sans-serif;
+        color: var(--ink);
+        background:
+            radial-gradient(ellipse at top right, #ebe6da 0%, transparent 55%),
+            var(--bg);
+        position: relative;
+        overflow-x: clip;
+    }
+
+    body.site-fin.debug-env::before {
+        content: "тестовая среда";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(2.5rem, 12vw, 6rem);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: var(--ink);
+        opacity: 0.07;
+        transform: rotate(-18deg);
+        white-space: nowrap;
+        user-select: none;
+    }
+
+    body.site-fin > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    body.site-fin .layout-main {
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 var(--pad-r) calc(48px + env(safe-area-inset-bottom)) var(--pad-x);
+    }
+
+    body.site-fin main {
+        width: 100%;
+    }
+
+    body.site-fin a { color: var(--accent); text-decoration: none; }
+
+    body.site-fin .top-bar-link {
+        color: var(--accent);
+    }
+
+    .alert {
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    .alert-success { background: var(--ok-bg); color: var(--ok); }
+    .alert-error { background: var(--bad-bg); color: var(--bad); }
+
+    h1, h2 {
+        font-weight: 600;
+        margin: 0 0 12px;
+    }
+
+    h1 { font-size: 1.35rem; }
+    h2 { font-size: 1.1rem; margin-top: 28px; }
+
+    .summary {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    @media (min-width: 560px) {
+        .summary { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .stat {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+    }
+
+    .stat .label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 4px;
+    }
+
+    .stat .value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .stat .value.ok { color: var(--ok); }
+    .stat .value.bad { color: var(--bad); }
+
+    .stats-panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        margin-bottom: 8px;
+    }
+
+    .stats-period {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: flex-end;
+        margin-bottom: 14px;
+    }
+
+    .stats-period label {
+        flex: 1 1 120px;
+        min-width: 0;
+    }
+
+    .stats-period button {
+        flex: 0 0 auto;
+    }
+
+    .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .stats-table th,
+    .stats-table td {
+        padding: 8px 4px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+    }
+
+    .stats-table tfoot th,
+    .stats-table tfoot td {
+        border-bottom: none;
+        font-weight: 600;
+        padding-top: 10px;
+    }
+
+    .stats-table .num {
+        text-align: right;
+    }
+
+    .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        margin-top: 14px;
+    }
+
+    .panel details > summary {
+        cursor: pointer;
+        font-weight: 500;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        user-select: none;
+    }
+
+    .panel details > summary::-webkit-details-marker { display: none; }
+
+    .panel details > summary::before {
+        content: "›";
+        display: inline-block;
+        font-size: 1.25rem;
+        line-height: 1;
+        color: var(--muted);
+        transition: transform 0.15s ease;
+    }
+
+    .panel details[open] > summary::before {
+        transform: rotate(90deg);
+    }
+
+    form.grid {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    @media (min-width: 560px) {
+        form.grid.cols-2 { grid-template-columns: 1fr 1fr; }
+        form.grid.cols-2 .full { grid-column: 1 / -1; }
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.85rem;
+        color: var(--muted);
+    }
+
+    label.checkbox-label {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        color: var(--ink);
+        cursor: pointer;
+    }
+
+    label.checkbox-label input[type="checkbox"] {
+        width: auto;
+        padding: 0;
+    }
+
+    tr.optional-expense {
+        background: #f3ede3;
+    }
+
+    tr.optional-expense td:first-child {
+        color: #8a6d3b;
+    }
+
+    input, button, select {
+        font: inherit;
+        color: var(--ink);
+    }
+
+    input, select {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fff;
+        font-size: 16px;
+    }
+
+    button, .btn {
+        padding: 10px 14px;
+        border: 1px solid var(--ink);
+        border-radius: 6px;
+        background: var(--ink);
+        color: #fff;
+        cursor: pointer;
+        font-weight: 500;
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    button.secondary, .btn.secondary {
+        background: transparent;
+        color: var(--ink);
+    }
+
+    button.danger,
+    .inline-form input[type="submit"] {
+        appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        color: var(--muted);
+        padding: 8px 4px;
+        margin: 0;
+        font-size: 0.75rem;
+        font-weight: 400;
+        line-height: 1;
+        width: auto;
+        min-width: 44px;
+        min-height: 44px;
+        height: auto;
+        cursor: pointer;
+        touch-action: manipulation;
+    }
+
+    button.danger:hover,
+    .inline-form input[type="submit"]:hover {
+        color: var(--bad);
+    }
+
+    .inline-form { display: inline; }
+
+    td .inline-form {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .day {
+        margin-top: 18px;
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+    }
+
+    .day details > summary {
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .day details > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .close-day-form {
+        margin-top: 8px;
+    }
+
+    .day.is-closed {
+        opacity: 0.85;
+    }
+
+    .day-head {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        align-items: baseline;
+        margin-bottom: 8px;
+    }
+
+    .day-head .date {
+        font-weight: 600;
+    }
+
+    .day-head .meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .day-head .badges {
+        margin-left: auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+        max-width: 100%;
+    }
+
+    .day-head .badge {
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+
+    .day-head .badge.spent {
+        background: #eceae4;
+        color: var(--ink);
+    }
+
+    .day-head .add-expense-day,
+    .day-head .add-saving-day {
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-weight: 600;
+        line-height: 1;
+        padding: 2px 7px;
+        border-radius: 4px;
+        min-height: 0;
+        min-width: 0;
+        touch-action: manipulation;
+    }
+
+    .day-head .add-expense-day:hover,
+    .day-head .add-saving-day:hover {
+        color: var(--ink);
+        border-color: var(--ink);
+    }
+
+    .day-head .badge.ok {
+        background: var(--ok-bg);
+        color: var(--ok);
+    }
+
+    .day-head .badge.bad {
+        background: var(--bad-bg);
+        color: var(--bad);
+    }
+
+    .day-head .badge.saved {
+        background: #e8eef5;
+        color: #2a4a6b;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 6px 4px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+    }
+
+    th {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--muted);
+    }
+
+    td.num, th.num { text-align: right; }
+
+    td.balance.ok { color: var(--ok); }
+    td.balance.bad { color: var(--bad); }
+
+    .muted { color: var(--muted); }
+    .empty { color: var(--muted); font-size: 0.95rem; padding: 8px 0; }
+    .field-error { color: var(--bad); font-size: 0.8rem; }
+
+    .amount-row {
+        display: flex;
+        gap: 6px;
+        align-items: stretch;
+    }
+
+    .amount-row input { flex: 1 1 auto; min-width: 0; }
+
+    .calc-toggle,
+    .calc-eq {
+        flex: 0 0 auto;
+        min-width: 44px;
+        padding: 0 10px;
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        font-size: 1.1rem;
+        line-height: 1;
+    }
+
+    .calc-toggle:hover,
+    .calc-eq:hover {
+        border-color: var(--ink);
+    }
+
+    .calc-toggle[aria-expanded="true"] {
+        border-color: var(--ink);
+        background: #eceae4;
+    }
+
+    .calc-panel {
+        display: flex;
+        gap: 6px;
+        align-items: stretch;
+        margin-top: 2px;
+    }
+
+    .calc-panel[hidden] { display: none; }
+
+    .calc-panel .calc-formula { flex: 1 1 auto; min-width: 0; }
+
+    .calc-eq {
+        font-weight: 600;
+        font-size: 1.15rem;
+    }
+
+    .calc-panel.is-invalid .calc-formula {
+        border-color: var(--bad);
+    }
+
+    @media (max-width: 559px) {
         :root {
-            --bg: #f6f4ef;
-            --ink: #1c1b19;
-            --muted: #6b6860;
-            --line: #ddd8ce;
-            --ok: #1f6b4a;
-            --ok-bg: #e5f3ec;
-            --bad: #9b2c2c;
-            --bad-bg: #f8e8e8;
-            --card: #fffdf8;
-            --accent: #2a5a8c;
-            --pad-x: max(12px, env(safe-area-inset-left));
-            --pad-r: max(12px, env(safe-area-inset-right));
+            --pad-x: max(10px, env(safe-area-inset-left));
+            --pad-r: max(10px, env(safe-area-inset-right));
         }
 
-        * { box-sizing: border-box; }
-
-        html {
-            width: 100%;
-            height: 100%;
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-        }
-
-        body {
-            width: 100%;
-            max-width: 720px;
-            min-height: 100%;
-            min-height: 100dvh;
-            margin: 0 auto;
-            padding: 0 var(--pad-r) calc(48px + env(safe-area-inset-bottom)) var(--pad-x);
-            font-family: "Rubik", system-ui, sans-serif;
-            color: var(--ink);
-            background:
-                radial-gradient(ellipse at top right, #ebe6da 0%, transparent 55%),
-                var(--bg);
-            position: relative;
-            overflow-x: clip;
-        }
-
-        body.debug-env::before {
-            content: "тестовая среда";
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(2.5rem, 12vw, 6rem);
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            color: var(--ink);
-            opacity: 0.07;
-            transform: rotate(-18deg);
-            white-space: nowrap;
-            user-select: none;
-        }
-
-        body > * {
-            position: relative;
-            z-index: 1;
-        }
-
-        main {
-            width: 100%;
-        }
-
-        a { color: var(--accent); text-decoration: none; }
-
-        header {
-            padding: 16px 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 12px;
-            align-items: baseline;
-        }
-
-        header .brand {
-            font-weight: 600;
-            font-size: 1.15rem;
-            color: var(--ink);
-        }
-
-        header .spacer { flex-grow: 1; min-width: 8px; }
-
-        header a:not(.brand) {
-            font-size: 0.9rem;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid var(--line);
-            margin: 0 0 20px;
-        }
-
-        .alert {
-            padding: 10px 12px;
-            margin-bottom: 12px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
-
-        .alert-success { background: var(--ok-bg); color: var(--ok); }
-        .alert-error { background: var(--bad-bg); color: var(--bad); }
-
-        h1, h2 {
-            font-weight: 600;
-            margin: 0 0 12px;
-        }
-
-        h1 { font-size: 1.35rem; }
-        h2 { font-size: 1.1rem; margin-top: 28px; }
+        h1 { font-size: 1.2rem; }
 
         .summary {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        @media (min-width: 560px) {
-            .summary { grid-template-columns: repeat(4, 1fr); }
+            grid-template-columns: 1fr 1fr;
         }
 
         .stat {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .stat .label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin-bottom: 4px;
+            padding: 10px;
         }
 
         .stat .value {
-            font-size: 1.2rem;
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .stat .value.ok { color: var(--ok); }
-        .stat .value.bad { color: var(--bad); }
-
-        .stats-panel {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 14px;
-            margin-bottom: 8px;
-        }
-
-        .stats-period {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: flex-end;
-            margin-bottom: 14px;
-        }
-
-        .stats-period label {
-            flex: 1 1 120px;
-            min-width: 0;
-        }
-
-        .stats-period button {
-            flex: 0 0 auto;
-        }
-
-        .stats-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .stats-table th,
-        .stats-table td {
-            padding: 8px 4px;
-            border-bottom: 1px solid var(--line);
-            text-align: left;
-        }
-
-        .stats-table tfoot th,
-        .stats-table tfoot td {
-            border-bottom: none;
-            font-weight: 600;
-            padding-top: 10px;
-        }
-
-        .stats-table .num {
-            text-align: right;
-        }
-
-        .panel {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 14px;
-            margin-top: 14px;
-        }
-
-        .panel details > summary {
-            cursor: pointer;
-            font-weight: 500;
-            list-style: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            user-select: none;
-        }
-
-        .panel details > summary::-webkit-details-marker { display: none; }
-
-        .panel details > summary::before {
-            content: "›";
-            display: inline-block;
-            font-size: 1.25rem;
-            line-height: 1;
-            color: var(--muted);
-            transition: transform 0.15s ease;
-        }
-
-        .panel details[open] > summary::before {
-            transform: rotate(90deg);
-        }
-
-        form.grid {
-            display: grid;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        @media (min-width: 560px) {
-            form.grid.cols-2 { grid-template-columns: 1fr 1fr; }
-            form.grid.cols-2 .full { grid-column: 1 / -1; }
-        }
-
-        label {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            font-size: 0.85rem;
-            color: var(--muted);
-        }
-
-        label.checkbox-label {
-            flex-direction: row;
-            align-items: center;
-            gap: 8px;
-            color: var(--ink);
-            cursor: pointer;
-        }
-
-        label.checkbox-label input[type="checkbox"] {
-            width: auto;
-            padding: 0;
-        }
-
-        tr.optional-expense {
-            background: #f3ede3;
-        }
-
-        tr.optional-expense td:first-child {
-            color: #8a6d3b;
-        }
-
-        input, button, select {
-            font: inherit;
-            color: var(--ink);
-        }
-
-        input, select {
-            width: 100%;
-            max-width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--line);
-            border-radius: 6px;
-            background: #fff;
-            font-size: 16px; /* iOS: без зума при фокусе */
-        }
-
-        button, .btn {
-            padding: 10px 14px;
-            border: 1px solid var(--ink);
-            border-radius: 6px;
-            background: var(--ink);
-            color: #fff;
-            cursor: pointer;
-            font-weight: 500;
-            min-height: 44px;
-            touch-action: manipulation;
-        }
-
-        button.secondary, .btn.secondary {
-            background: transparent;
-            color: var(--ink);
-        }
-
-        button.danger,
-        .inline-form input[type="submit"] {
-            appearance: none;
-            -webkit-appearance: none;
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            color: var(--muted);
-            padding: 8px 4px;
-            margin: 0;
-            font-size: 0.75rem;
-            font-weight: 400;
-            line-height: 1;
-            width: auto;
-            min-width: 44px;
-            min-height: 44px;
-            height: auto;
-            cursor: pointer;
-            touch-action: manipulation;
-        }
-
-        button.danger:hover,
-        .inline-form input[type="submit"]:hover {
-            color: var(--bad);
-        }
-
-        .inline-form { display: inline; }
-
-        td .inline-form {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-        }
-
-        .day {
-            margin-top: 18px;
-            border-top: 1px solid var(--line);
-            padding-top: 14px;
-        }
-
-        .day details > summary {
-            cursor: pointer;
-            list-style: none;
-        }
-
-        .day details > summary::-webkit-details-marker {
-            display: none;
-        }
-
-        .close-day-form {
-            margin-top: 8px;
-        }
-
-        .day.is-closed {
-            opacity: 0.85;
-        }
-
-        .day-head {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 12px;
-            align-items: baseline;
-            margin-bottom: 8px;
-        }
-
-        .day-head .date {
-            font-weight: 600;
-        }
-
-        .day-head .meta {
-            color: var(--muted);
-            font-size: 0.9rem;
-            font-variant-numeric: tabular-nums;
+            font-size: 1.05rem;
+            word-break: break-word;
         }
 
         .day-head .badges {
-            margin-left: auto;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            align-items: center;
-            max-width: 100%;
-        }
-
-        .day-head .badge {
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        .day-head .badge.spent {
-            background: #eceae4;
-            color: var(--ink);
+            margin-left: 0;
+            width: 100%;
         }
 
         .day-head .add-expense-day,
         .day-head .add-saving-day {
-            cursor: pointer;
+            min-width: 36px;
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .day .table-wrap table,
+        .day .table-wrap thead,
+        .day .table-wrap tbody,
+        .day .table-wrap th,
+        .day .table-wrap td,
+        .day .table-wrap tr {
+            display: block;
+            width: 100%;
+        }
+
+        .day .table-wrap thead { display: none; }
+
+        .day .table-wrap tr {
+            background: var(--card);
             border: 1px solid var(--line);
-            background: transparent;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+        }
+
+        .day .table-wrap td {
+            border: none;
+            padding: 2px 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: baseline;
+        }
+
+        .day .table-wrap td::before {
+            content: attr(data-label);
             color: var(--muted);
-            font: inherit;
-            font-weight: 600;
-            line-height: 1;
-            padding: 2px 7px;
-            border-radius: 4px;
-            min-height: 0;
-            min-width: 0;
-            touch-action: manipulation;
-        }
-
-        .day-head .add-expense-day:hover,
-        .day-head .add-saving-day:hover {
-            color: var(--ink);
-            border-color: var(--ink);
-        }
-
-        .day-head .badge.ok {
-            background: var(--ok-bg);
-            color: var(--ok);
-        }
-
-        .day-head .badge.bad {
-            background: var(--bad-bg);
-            color: var(--bad);
-        }
-
-        .day-head .badge.saved {
-            background: #e8eef5;
-            color: #2a4a6b;
-        }
-        .table-wrap {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-x: contain;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-            font-variant-numeric: tabular-nums;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 6px 4px;
-            border-bottom: 1px solid var(--line);
-            vertical-align: top;
-        }
-
-        th {
             font-size: 0.75rem;
             font-weight: 500;
-            color: var(--muted);
+            flex-shrink: 0;
         }
 
-        td.num, th.num { text-align: right; }
-
-        td.balance.ok { color: var(--ok); }
-        td.balance.bad { color: var(--bad); }
-
-        .muted { color: var(--muted); }
-        .empty { color: var(--muted); font-size: 0.95rem; padding: 8px 0; }
-        .field-error { color: var(--bad); font-size: 0.8rem; }
-
-        .amount-row {
-            display: flex;
-            gap: 6px;
-            align-items: stretch;
+        .day .table-wrap td.num {
+            text-align: left;
         }
 
-        .amount-row input { flex: 1 1 auto; min-width: 0; }
-
-        .calc-toggle,
-        .calc-eq {
-            flex: 0 0 auto;
-            min-width: 44px;
-            padding: 0 10px;
-            background: transparent;
-            color: var(--ink);
-            border: 1px solid var(--line);
-            font-size: 1.1rem;
-            line-height: 1;
+        .day .table-wrap td:last-child {
+            justify-content: flex-end;
+            margin-top: 4px;
+            min-height: 28px;
         }
 
-        .calc-toggle:hover,
-        .calc-eq:hover {
-            border-color: var(--ink);
-        }
+        .day .table-wrap td:last-child::before { content: none; }
 
-        .calc-toggle[aria-expanded="true"] {
-            border-color: var(--ink);
-            background: #eceae4;
-        }
-
-        .calc-panel {
-            display: flex;
-            gap: 6px;
-            align-items: stretch;
-            margin-top: 2px;
-        }
-
-        .calc-panel[hidden] { display: none; }
-
-        .calc-panel .calc-formula { flex: 1 1 auto; min-width: 0; }
-
-        .calc-eq {
+        .day .table-wrap td:first-child {
             font-weight: 600;
-            font-size: 1.15rem;
+            font-size: 1.05rem;
         }
-
-        .calc-panel.is-invalid .calc-formula {
-            border-color: var(--bad);
-        }
-
-        @media (max-width: 559px) {
-            :root {
-                --pad-x: max(10px, env(safe-area-inset-left));
-                --pad-r: max(10px, env(safe-area-inset-right));
-            }
-
-            h1 { font-size: 1.2rem; }
-
-            .summary {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .stat {
-                padding: 10px;
-            }
-
-            .stat .value {
-                font-size: 1.05rem;
-                word-break: break-word;
-            }
-
-            .day-head .badges {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .day-head .add-expense-day,
-            .day-head .add-saving-day {
-                min-width: 36px;
-                min-height: 36px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                padding: 0;
-            }
-
-            /* Лента трат: карточки вместо узкой таблицы */
-            .day .table-wrap table,
-            .day .table-wrap thead,
-            .day .table-wrap tbody,
-            .day .table-wrap th,
-            .day .table-wrap td,
-            .day .table-wrap tr {
-                display: block;
-                width: 100%;
-            }
-
-            .day .table-wrap thead { display: none; }
-
-            .day .table-wrap tr {
-                background: var(--card);
-                border: 1px solid var(--line);
-                border-radius: 8px;
-                padding: 10px 12px;
-                margin-bottom: 8px;
-            }
-
-            .day .table-wrap td {
-                border: none;
-                padding: 2px 0;
-                display: flex;
-                justify-content: space-between;
-                gap: 12px;
-                align-items: baseline;
-            }
-
-            .day .table-wrap td::before {
-                content: attr(data-label);
-                color: var(--muted);
-                font-size: 0.75rem;
-                font-weight: 500;
-                flex-shrink: 0;
-            }
-
-            .day .table-wrap td.num {
-                text-align: left;
-            }
-
-            .day .table-wrap td:last-child {
-                justify-content: flex-end;
-                margin-top: 4px;
-                min-height: 28px;
-            }
-
-            .day .table-wrap td:last-child::before { content: none; }
-
-            .day .table-wrap td:first-child {
-                font-weight: 600;
-                font-size: 1.05rem;
-            }
-        }
-    </style>
-</head>
-<body{% if config.DEBUG %} class="debug-env"{% endif %}>
-<header>
-    <a class="brand" href="{{ url_for('fin.index') }}">potyk-fin</a>
-    <div class="spacer"></div>
-    {% if current_user.is_authenticated %}
-    <a href="https://www.tbank.ru/mybank/operations/" target="_blank" rel="noopener noreferrer">
-        где смотреть траты
-    </a>
-    {% endif %}
-</header>
-<hr>
-
-<main>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
-{% block main %}{% endblock %}
-</main>
-</body>
-</html>
+    }
+</style>
+{% endblock %}

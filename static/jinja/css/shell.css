@@ -1,0 +1,214 @@
+:root {
+    --sidebar-width: 260px;
+    --top-bar-height: 3rem;
+}
+
+body {
+    margin: 0;
+}
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: var(--top-bar-height);
+    padding: 0 0.5rem 0 0.35rem;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.top-bar-brand {
+    font-weight: 700;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.top-bar-spacer {
+    flex: 1;
+    min-width: 0;
+}
+
+.top-bar-link {
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+}
+
+.top-bar-link:hover {
+    opacity: 0.75;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+    align-items: stretch;
+    padding-top: var(--top-bar-height);
+    box-sizing: border-box;
+}
+
+.layout-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-simple .layout-main {
+    width: 100%;
+}
+
+.menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    text-decoration: none;
+    color: inherit;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    flex-shrink: 0;
+}
+
+.menu-toggle:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.header-back {
+    font-size: 1.35rem;
+}
+
+.search-shell {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    max-width: min(22rem, 55vw);
+}
+
+.search-toggle,
+.search-back,
+.search-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    text-decoration: none;
+    color: inherit;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    flex-shrink: 0;
+}
+
+.search-back {
+    display: none;
+    font-size: 1.5rem;
+}
+
+.search-submit {
+    display: none;
+}
+
+.search-toggle:hover,
+.search-back:hover,
+.search-submit:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.search-bar {
+    display: none;
+    width: min(18rem, 50vw);
+    min-width: 0;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+body.search-open .search-bar {
+    display: block;
+}
+
+body.search-open .search-shell {
+    flex: 1;
+    max-width: none;
+}
+
+.search-input {
+    width: 100%;
+    box-sizing: border-box;
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 0.4rem;
+    background: #fff;
+    color: inherit;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #999;
+}
+
+.search-input::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+    .layout {
+        display: block;
+    }
+
+    body.search-open .top-bar-brand,
+    body.search-open .top-bar-spacer,
+    body.search-open .menu-toggle {
+        display: none;
+    }
+
+    body.search-open .search-bar {
+        display: flex;
+        flex: 1;
+        width: auto;
+    }
+
+    body.search-open .search-input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    body.search-open .search-toggle {
+        display: none;
+    }
+
+    body.search-open .search-back,
+    body.search-open .search-submit {
+        display: inline-flex;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    body.search-open .search-bar {
+        display: block;
+    }
+}

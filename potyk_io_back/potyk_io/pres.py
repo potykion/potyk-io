@@ -1,7 +1,11 @@
+import json
+
 import flask
 from flask import Blueprint, abort
 
+from potyk_io_back.potyk_io.collections.movies import load_movies_data, movies_for_client
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, random_note_batch, search_notes
+from potyk_io_back.potyk_io.md_rendering.created import format_created_ru
 from potyk_io_back.potyk_io.md_rendering import (
     TEMPLATES_DIR,
     render_body_html,
@@ -51,6 +55,19 @@ def search():
     q = flask.request.args.get("q", "").strip()
     results = search_notes(q) if q else []
     return flask.render_template("potyk-io/search.html", q=q, results=results)
+
+
+@potyk_io_bp.route("/collections/movies")
+def movies_collection():
+    page = load_movies_data()
+    return flask.render_template(
+        "potyk-io/collections/movies.html",
+        collections=page.collections,
+        watch_later=page.watch_later,
+        created=page.created,
+        created_fmt=format_created_ru(page.created) if page.created else None,
+        movies_json=json.dumps(movies_for_client(page), ensure_ascii=False),
+    )
 
 
 @potyk_io_bp.route("/<path:page_path>")

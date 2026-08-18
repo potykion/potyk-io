@@ -1,230 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "jinja/base.html" %}
 
-    <title>potyk.io ✌️</title>
+{% block title %}potyk.io ✌️{% endblock %}
 
+{% block head_icons %}
     <link rel="icon" href="/static/potyk-io/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/potyk-io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/static/potyk-io/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/static/potyk-io/apple-touch-icon.png">
     <link rel="manifest" href="/static/potyk-io/site.webmanifest">
+{% endblock %}
 
+{% block head_fonts %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap"
           rel="stylesheet">
+{% endblock %}
+
+{% block head_stylesheets %}
     <link rel="stylesheet" href="/static/potyk-io/css/sidebar.css">
+    <style>
+        body.site-io {
+            font-family: "IBM Plex Sans", system-ui;
+        }
 
-<style>
-     body {
-        font-family: "IBM Plex Sans", system-ui;
-    }
-     main {
-         padding: 8px
-     }
-</style>
-    {% block style %}
-    {% endblock %}
-</head>
+        body.site-io main {
+            padding: 8px;
+        }
+    </style>
+{% endblock %}
 
-<body class="menu-collapsed">
-    <header class="top-bar">
-        <button type="button"
-                class="menu-toggle"
-                id="menu-toggle"
-                aria-controls="sidebar"
-                aria-expanded="false"
-                aria-label="Меню">≡</button>
-        {% if request.path != '/' %}
-        <a href="/" class="top-bar-brand">potyk.io</a>
-        {% endif %}
-        <div class="top-bar-spacer"></div>
-        <div class="search-shell" id="search-shell">
-            <button type="button"
-                    class="search-back"
-                    id="search-back"
-                    aria-label="Закрыть поиск">←</button>
-            <form class="search-bar" id="search-bar" action="/search" method="get" role="search">
-                <input type="search"
-                       class="search-input"
-                       id="search-input"
-                       name="q"
-                       value="{{ request.args.get('q', '') }}"
-                       placeholder="Поиск заметок…"
-                       autocomplete="off"
-                       enterkeyhint="search">
-                <button type="submit"
-                        class="search-submit"
-                        aria-label="Найти">⌕</button>
-            </form>
-            <button type="button"
-                    class="search-toggle"
-                    id="search-toggle"
-                    aria-controls="search-bar"
-                    aria-expanded="false"
-                    aria-label="Поиск">⌕</button>
-        </div>
-    </header>
+{% block body_class %}menu-collapsed site-io{% endblock %}
 
+{% block header_leading %}
+    <button type="button"
+            class="menu-toggle"
+            id="menu-toggle"
+            aria-controls="sidebar"
+            aria-expanded="false"
+            aria-label="Меню">≡</button>
+{% endblock %}
+
+{% block header_brand %}
+    {% if request.path != '/' %}
+    <a href="/" class="top-bar-brand">potyk.io</a>
+    {% endif %}
+{% endblock %}
+
+{% block header_trailing %}
+    {% include "jinja/_search_header.html" %}
+{% endblock %}
+
+{% block style %}{% endblock %}
+
+{% block layout %}
     <div class="layout">
         {% include "potyk-io/_sidebar.html" %}
 
         <div class="layout-main">
             <main class="{% block main_class %}{% endblock %}">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-
-                {% block main %}
-                {% endblock %}
+                {% include "jinja/_flashes.html" %}
+                {% block main %}{% endblock %}
             </main>
         </div>
     </div>
+{% endblock %}
 
-    <script>
-        (function () {
-            var STORAGE_KEY = 'menu-open';
-            var body = document.body;
-            var toggle = document.getElementById('menu-toggle');
-            var sidebar = document.getElementById('sidebar');
-            var searchShell = document.getElementById('search-shell');
-            var searchToggle = document.getElementById('search-toggle');
-            var searchBack = document.getElementById('search-back');
-            var searchInput = document.getElementById('search-input');
-            var searchBar = document.getElementById('search-bar');
-            var mq = window.matchMedia('(max-width: 767px)');
-
-            function isMobile() {
-                return mq.matches;
-            }
-
-            function defaultVisible() {
-                return false;
-            }
-
-            function readStored() {
-                try {
-                    var raw = localStorage.getItem(STORAGE_KEY);
-                    if (raw === 'true') return true;
-                    if (raw === 'false') return false;
-                } catch (e) {}
-                return null;
-            }
-
-            function writeStored(open) {
-                try {
-                    localStorage.setItem(STORAGE_KEY, open ? 'true' : 'false');
-                } catch (e) {}
-            }
-
-            function isVisible() {
-                if (isMobile()) return body.classList.contains('menu-open');
-                return !body.classList.contains('menu-collapsed');
-            }
-
-            function syncAria() {
-                if (toggle) toggle.setAttribute('aria-expanded', isVisible() ? 'true' : 'false');
-            }
-
-            function setVisible(open, persist) {
-                if (isMobile()) {
-                    body.classList.toggle('menu-open', open);
-                    body.classList.remove('menu-collapsed');
-                } else {
-                    body.classList.toggle('menu-collapsed', !open);
-                    body.classList.remove('menu-open');
-                }
-                if (persist !== false) writeStored(open);
-                syncAria();
-            }
-
-            function toggleMenu() {
-                setVisible(!isVisible());
-            }
-
-            function closeMenu() {
-                setVisible(false);
-            }
-
-            function applyStoredOrDefault() {
-                var stored = readStored();
-                setVisible(stored === null ? defaultVisible() : stored, false);
-            }
-
-            function isSearchOpen() {
-                return body.classList.contains('search-open');
-            }
-
-            function setSearchOpen(open) {
-                body.classList.toggle('search-open', open);
-                if (searchToggle) {
-                    searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-                }
-                if (open && searchInput) {
-                    requestAnimationFrame(function () {
-                        searchInput.focus();
-                        searchInput.select();
-                    });
-                }
-            }
-
-            if (toggle) toggle.addEventListener('click', toggleMenu);
-
-            if (sidebar) {
-                sidebar.addEventListener('click', function (e) {
-                    if (!isMobile()) return;
-                    if (e.target.closest('a.sidebar-link')) closeMenu();
-                });
-            }
-
-            if (searchToggle) {
-                searchToggle.addEventListener('click', function () {
-                    setSearchOpen(!isSearchOpen());
-                });
-            }
-
-            if (searchBack) {
-                searchBack.addEventListener('click', function () {
-                    setSearchOpen(false);
-                });
-            }
-
-            if (searchBar) {
-                searchBar.addEventListener('submit', function () {
-                    setSearchOpen(false);
-                });
-            }
-
-            document.addEventListener('pointerdown', function (e) {
-                if (!isSearchOpen() || isMobile()) return;
-                if (searchShell && !searchShell.contains(e.target)) {
-                    setSearchOpen(false);
-                }
-            });
-
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') {
-                    if (isSearchOpen()) {
-                        setSearchOpen(false);
-                        return;
-                    }
-                    closeMenu();
-                }
-            });
-
-            mq.addEventListener('change', applyStoredOrDefault);
-
-            applyStoredOrDefault();
-        })();
-    </script>
-    {% block script %}
-    {% endblock %}
-</body>
-</html>
+{% block layout_script %}
+    {% include "jinja/_menu_script.html" %}
+    {% include "jinja/_search_script.html" %}
+{% endblock %}

@@ -5,6 +5,13 @@ from potyk_io_back.invest.dashboard import build_dashboard, load_news_page
 invest_bp = Blueprint("invest", __name__, url_prefix="/invest")
 
 
+@invest_bp.context_processor
+def inject_invest_menu():
+    return {
+        "invest_menu_groups": [],
+    }
+
+
 @invest_bp.route("/")
 def index():
     return render_template("potyk-invest/index.html", sectors=build_dashboard())

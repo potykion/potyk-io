@@ -1,0 +1,25 @@
+<div class="search-shell" id="search-shell">
+    <button type="button"
+            class="search-back"
+            id="search-back"
+            aria-label="Закрыть поиск">←</button>
+    <form class="search-bar" id="search-bar" action="/search" method="get" role="search">
+        <input type="search"
+               class="search-input"
+               id="search-input"
+               name="q"
+               value="{{ request.args.get('q', '') }}"
+               placeholder="Поиск заметок…"
+               autocomplete="off"
+               enterkeyhint="search">
+        <button type="submit"
+                class="search-submit"
+                aria-label="Найти">⌕</button>
+    </form>
+    <button type="button"
+            class="search-toggle"
+            id="search-toggle"
+            aria-controls="search-bar"
+            aria-expanded="false"
+            aria-label="Поиск">⌕</button>
+</div>

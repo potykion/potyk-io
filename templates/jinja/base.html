@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="{{ html_lang|default('ru') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="{% block viewport %}width=device-width, initial-scale=1.0{% endblock %}">
+
+    <title>{% block title %}potyk.io{% endblock %}</title>
+
+    {% block head_icons %}{% endblock %}
+    {% block head_fonts %}{% endblock %}
+
+    <link rel="stylesheet" href="/static/jinja/css/shell.css">
+    {% block head_stylesheets %}{% endblock %}
+
+    {% block style %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header class="top-bar">
+        {% block header_leading %}{% endblock %}
+        {% block header_brand %}{% endblock %}
+        <div class="top-bar-spacer"></div>
+        {% block header_trailing %}{% endblock %}
+    </header>
+
+    {% block layout %}
+    <div class="layout layout-simple">
+        <div class="layout-main">
+            <main class="{% block main_class %}{% endblock %}">
+                {% include "jinja/_flashes.html" %}
+                {% block main %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block layout_script %}{% endblock %}
+    {% block script %}{% endblock %}
+</body>
+</html>

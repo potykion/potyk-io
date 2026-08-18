@@ -1,0 +1,119 @@
+{% extends "jinja/base.html" %}
+
+{% block title %}potyk-invest{% endblock %}
+
+{% block head_fonts %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block head_stylesheets %}
+    {% if invest_menu_groups %}
+    <link rel="stylesheet" href="/static/potyk-io/css/sidebar.css">
+    {% endif %}
+{% endblock %}
+
+{% block body_class %}{% if invest_menu_groups %}menu-collapsed {% endif %}site-invest{% endblock %}
+
+{% block header_leading %}
+    {% if invest_menu_groups %}
+    <button type="button"
+            class="menu-toggle"
+            id="menu-toggle"
+            aria-controls="sidebar"
+            aria-expanded="false"
+            aria-label="Меню">≡</button>
+    {% else %}
+    <a href="{{ url_for('potyk_io.index') }}"
+       class="menu-toggle header-back"
+       aria-label="Назад в potyk.io">←</a>
+    {% endif %}
+{% endblock %}
+
+{% block header_brand %}
+    <a href="{{ url_for('invest.index') }}" class="top-bar-brand">potyk-invest</a>
+{% endblock %}
+
+{% block style %}
+<style>
+    :root {
+        --bg: #f7f6f3;
+        --ink: #1a1a1a;
+        --muted: #6b6b6b;
+        --link: #6b4ea3;
+        --card-w: 280px;
+        --pos-bg: rgba(34, 197, 94, 0.18);
+        --pos-border: rgba(34, 197, 94, 0.45);
+        --neu-bg: rgba(234, 179, 8, 0.20);
+        --neu-border: rgba(234, 179, 8, 0.50);
+        --neg-bg: rgba(239, 68, 68, 0.18);
+        --neg-border: rgba(239, 68, 68, 0.45);
+        --none-bg: #eeebe4;
+        --none-border: #d8d3c8;
+    }
+
+    body.site-invest {
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+        color: var(--ink);
+        background:
+            radial-gradient(ellipse 80% 50% at 0% 0%, #ebe8e0 0%, transparent 55%),
+            var(--bg);
+        line-height: 1.45;
+    }
+
+    body.site-invest main {
+        padding: 1.25rem 1.5rem 3rem;
+    }
+
+    body.site-invest .wrap {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    body.site-invest h1 {
+        margin: 0 0 0.5rem;
+        font-size: 1.85rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    body.site-invest .empty {
+        color: var(--muted);
+        margin-top: 2rem;
+    }
+
+    body.site-invest .back {
+        display: inline-block;
+        margin-bottom: 1rem;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    body.site-invest .back:hover {
+        color: var(--link);
+    }
+</style>
+{% endblock %}
+
+{% block layout %}
+    <div class="layout layout-simple">
+        {% if invest_menu_groups %}
+            {% include "potyk-invest/_sidebar.html" %}
+        {% endif %}
+
+        <div class="layout-main">
+            <main class="{% block main_class %}{% endblock %}">
+                {% include "jinja/_flashes.html" %}
+                {% block main %}{% endblock %}
+            </main>
+        </div>
+    </div>
+{% endblock %}
+
+{% block layout_script %}
+    {% if invest_menu_groups %}
+        {% include "jinja/_menu_script.html" %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,252 @@
+created: 2026-08-05
+
+watch_later:
+  - id: "1807"
+    title_ru: Крик
+    title_en: Scream
+    year: 1996
+    cover: /static/potyk-io/img/movies/scream.jpg
+    kinopoisk: https://www.kinopoisk.ru/film/1807/
+    watched: false
+
+collections:
+  - id: pacany
+    title: "🔫 Пацаны ебланят 🔫"
+    youtube: https://www.youtube.com/embed/QWaWsgBbFsA?si=L1jvlj7E3RL2V-XP
+    movies:
+      - id: "9448"
+        title_ru: Ненависть
+        title_en: La Haine
+        year: 1995
+        cover: /static/potyk-io/img/movies/la-haine.webp
+        kinopoisk: https://www.kinopoisk.ru/film/9448/
+        watched: true
+      - id: "398049"
+        title_ru: Футбольные гладиаторы
+        title_en: Awaydays
+        year: 2009
+        cover: /static/potyk-io/img/movies/awaydays.webp
+        kinopoisk: https://www.kinopoisk.ru/film/398049/
+        watched: true
+      - id: "439"
+        title_ru: Город бога
+        title_en: Cidade de Deus
+        year: 2002
+        cover: /static/potyk-io/img/movies/cidade-de-deus.webp
+        kinopoisk: https://www.kinopoisk.ru/film/439/
+        watched: true
+      - id: "3791"
+        title_ru: Угроза для общества
+        title_en: Menace II Society
+        year: 1993
+        cover: /static/potyk-io/img/movies/menace-ii-society.webp
+        kinopoisk: https://www.kinopoisk.ru/film/3791/
+        watched: true
+    watch_later:
+      - Ромпер-стомпер
+      - Россия-88
+
+  - id: ubitiy
+    title: "🥴 Фильмы когда убитый 🥴"
+    quote: >
+      Когда упитый, упоротый, больной, и время уже под вечер-нось, и хочется кинчика,
+      которого в трезвом состоянии не прочувствуешь
+    youtube: https://www.youtube.com/embed/-kyAucCCiRI?si=OHYBVGWQop4zCBrf
+    movies:
+      - id: "1118214"
+        title_ru: Экстаз
+        title_en: Climax
+        year: 2018
+        cover: /static/potyk-io/img/movies/climax.webp
+        kinopoisk: https://www.kinopoisk.ru/film/1118214/
+        watched: true
+      - id: "406477"
+        title_ru: Вход в пустоту
+        title_en: Enter the Void
+        year: 2009
+        cover: /static/potyk-io/img/movies/enter-the-void.webp
+        kinopoisk: https://www.kinopoisk.ru/film/406477/
+        watched: true
+      - id: "1178137"
+        title_ru: Солнцестояние
+        title_en: Midsommar
+        year: 2019
+        cover: /static/potyk-io/img/movies/midsommar.webp
+        kinopoisk: https://www.kinopoisk.ru/film/1178137/
+        watched: true
+      - id: "3608"
+        title_ru: С широко закрытыми глазами
+        title_en: Eyes Wide Shut
+        year: 1999
+        cover: /static/potyk-io/img/movies/eyes-wide-shut.webp
+        kinopoisk: https://www.kinopoisk.ru/film/3608/
+        watched: true
+
+  - id: russian-y2k
+    title: "✨ Russian y2k weird-core ✨"
+    movies:
+      - id: "41149"
+        title_ru: Даун-Хаус
+        year: 2001
+        cover: /static/potyk-io/img/movies/down-house.png
+        kinopoisk: https://www.kinopoisk.ru/film/41149/
+        watched: true
+      - id: "41133"
+        title_ru: ДМБ
+        year: 2000
+        cover: /static/potyk-io/img/movies/dmb.png
+        kinopoisk: https://www.kinopoisk.ru/film/41133/
+        watched: true
+      - id: "278156"
+        title_ru: Русалка
+        year: 2007
+        cover: /static/potyk-io/img/movies/rusalka.webp
+        kinopoisk: https://www.kinopoisk.ru/film/278156/
+        watched: true
+
+  - id: primi-sudbu
+    title: "🔮 Прими свою судьбу 🔮"
+    movies:
+      - id: "5167"
+        title_ru: Эффект бабочки
+        title_en: Butterfly Effect
+        year: 2003
+        cover: /static/potyk-io/img/movies/butterfly-effect.webp
+        kinopoisk: https://www.kinopoisk.ru/film/5167/
+        watched: true
+      - id: "49166"
+        title_ru: Коралина в Стране Кошмаров
+        title_en: Coraline
+        year: 2008
+        cover: /static/potyk-io/img/movies/coraline.webp
+        kinopoisk: https://www.kinopoisk.ru/film/49166/
+        watched: true
+      - id: "739"
+        title_ru: Лиля навсегда
+        title_en: Lilja 4-Ever
+        year: 2002
+        cover: /static/potyk-io/img/movies/lilja-4-ever.webp
+        kinopoisk: https://www.kinopoisk.ru/film/739/
+        watched: true
+
+  - id: narkotiki
+    title: "💊 Фильмы про наркотики 💊"
+    movies:
+      - id: "367"
+        title_ru: Реквием по мечте
+        kinopoisk: https://www.kinopoisk.ru/film/367/
+        watched: true
+      - id: "6175"
+        title_ru: Дневник баскетболиста
+        kinopoisk: https://www.kinopoisk.ru/film/6175/
+        watched: true
+      - id: "88190"
+        title_ru: Кэнди
+        kinopoisk: https://www.kinopoisk.ru/film/88190/
+        watched: true
+      - id: "6733"
+        title_ru: Сид и Нэнси
+        kinopoisk: https://www.kinopoisk.ru/film/6733/
+        watched: true
+      - id: "4455"
+        title_ru: Аптечный ковбой
+        kinopoisk: https://www.kinopoisk.ru/film/4455/
+        watched: true
+      - id: "17331"
+        title_ru: Ещё один день в раю
+        kinopoisk: https://www.kinopoisk.ru/film/17331/
+        watched: true
+      - id: "4882"
+        title_ru: Паника в Нидл-парке
+        kinopoisk: https://www.kinopoisk.ru/film/4882/
+        watched: true
+      - id: "406477"
+        title_ru: Вход в пустоту
+        title_en: Enter the Void
+        year: 2009
+        cover: /static/potyk-io/img/movies/enter-the-void.webp
+        kinopoisk: https://www.kinopoisk.ru/film/406477/
+        watched: true
+      - id: "1118214"
+        title_ru: Экстаз
+        title_en: Climax
+        year: 2018
+        cover: /static/potyk-io/img/movies/climax.webp
+        kinopoisk: https://www.kinopoisk.ru/film/1118214/
+        watched: true
+      - id: "515"
+        title_ru: На игле
+        kinopoisk: https://www.kinopoisk.ru/film/515/
+        watched: true
+      - id: "744776"
+        title_ru: На игле 2
+        kinopoisk: https://www.kinopoisk.ru/film/744776/
+        watched: true
+      - id: "467293"
+        title_ru: Грязь
+        kinopoisk: https://www.kinopoisk.ru/film/467293/
+        watched: true
+      - id: "4385"
+        title_ru: Страх и ненависть в Лас-Вегасе
+        kinopoisk: https://www.kinopoisk.ru/film/4385/
+        watched: true
+      - id: "7576"
+        title_ru: Обед нагишом
+        kinopoisk: https://www.kinopoisk.ru/film/7576/
+        watched: true
+      - id: "262771"
+        title_ru: 99 франков
+        kinopoisk: https://www.kinopoisk.ru/film/262771/
+        watched: true
+      - id: "279596"
+        title_ru: Ананасовый экспресс
+        kinopoisk: https://www.kinopoisk.ru/film/279596/
+        watched: true
+      - id: "4411"
+        title_ru: Укуренные
+        kinopoisk: https://www.kinopoisk.ru/film/4411/
+        watched: true
+      - id: "5092"
+        title_ru: Торчки
+        kinopoisk: https://www.kinopoisk.ru/film/5092/
+        watched: true
+      - id: "55830"
+        title_ru: Я Кристина
+        kinopoisk: https://www.kinopoisk.ru/film/55830/
+        watched: true
+      - id: "51388"
+        title_ru: В отрыв
+        kinopoisk: https://www.kinopoisk.ru/film/51388/
+        watched: true
+      - id: "2013"
+        title_ru: Экстази
+        kinopoisk: https://www.kinopoisk.ru/film/2013/
+        watched: true
+      - id: "2931"
+        title_ru: Высший пилотаж
+        kinopoisk: https://www.kinopoisk.ru/film/2931/
+        watched: true
+      - id: "1053967"
+        title_ru: Рейв
+        kinopoisk: https://www.kinopoisk.ru/film/1053967/
+        watched: true
+      - id: "18805"
+        title_ru: Кислотный дом
+        kinopoisk: https://www.kinopoisk.ru/film/18805/
+        watched: true
+
+  - id: gryaz
+    title: "🤮 Грязь, Чернь 🤮"
+    quote: Когда хочется чернухи, мерзости, жестокости
+    movies:
+      - id: "281752"
+        title_ru: Экс-ударник
+        kinopoisk: https://www.kinopoisk.ru/film/281752/
+        watched: true
+      - id: "1405778"
+        title_ru: Казнь
+        kinopoisk: https://www.kinopoisk.ru/film/1405778/
+        watched: true
+    watch_later:
+      - title: Французское новое трансгрессивное кино
+        kinopoisk: https://www.kinopoisk.ru/lists/movies/french_new_transgressive/
