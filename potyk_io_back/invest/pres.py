@@ -7,7 +7,7 @@ from sqlalchemy import select
 from potyk_io_back.core.db import db
 from potyk_io_back.invest.dashboard import build_dashboard, load_news_page
 from potyk_io_back.invest.entities import InvestDeal, InvestDepositChange, current_deposit
-from potyk_io_back.invest.forms import MAX_VOLUME_PCT, DealForm, DepositForm
+from potyk_io_back.invest.forms import MAX_VOLUME_PCT, CloseDealForm, DealForm, DepositForm, compute_pnl
 from potyk_io_back.invest.menu import INVEST_MENU_ITEMS, is_invest_link_active
 
 invest_bp = Blueprint("invest", __name__, url_prefix="/invest")
@@ -82,6 +82,8 @@ def deals_context(
     *,
     deposit_form: DepositForm | None = None,
     deal_form: DealForm | None = None,
+    close_form: CloseDealForm | None = None,
+    close_deal: InvestDeal | None = None,
     open_panel: str | None = None,
 ) -> dict:
     deposit = current_deposit()
@@ -102,8 +104,25 @@ def deals_context(
         "deals": deals,
         "deposit_form": deposit_form,
         "deal_form": deal_form or DealForm(deposit=deposit),
+        "close_form": close_form or CloseDealForm(),
+        "close_deal": close_deal,
         "open_panel": open_panel,
         "max_volume_pct": MAX_VOLUME_PCT,
+        "deal_stats": deal_stats(deals),
+    }
+
+
+def deal_stats(deals: list[InvestDeal]) -> dict:
+    closed = [deal for deal in deals if deal.is_closed]
+    wins = sum(1 for deal in closed if deal.pnl is not None and deal.pnl > 0)
+    losses = sum(1 for deal in closed if deal.pnl is not None and deal.pnl < 0)
+    decided = wins + losses
+    winrate = (wins / decided * 100) if decided else None
+    return {
+        "total": len(deals),
+        "wins": wins,
+        "losses": losses,
+        "winrate": winrate,
     }
 
 
@@ -163,4 +182,31 @@ def add_deal():
     )
     db.session.commit()
     flash("Сделка добавлена", "success")
+    return redirect(url_for("invest.deals"))
+
+
+@invest_bp.post("/deals/<int:deal_id>/close")
+@login_required
+def close_deal(deal_id: int):
+    deal = db.session.get(InvestDeal, deal_id)
+    if deal is None:
+        flash("Сделка не найдена", "error")
+        return redirect(url_for("invest.deals"))
+    if deal.is_closed:
+        flash("Сделка уже закрыта", "error")
+        return redirect(url_for("invest.deals"))
+
+    form = CloseDealForm()
+    if not form.validate_on_submit():
+        flash_form_errors(form)
+        return render_deals(close_form=form, close_deal=deal, open_panel="close"), 400
+
+    sell_price = form.sell_price.data
+    deal.closed_at = form.closed_at.data
+    deal.sell_price = sell_price
+    deal.pnl = compute_pnl(Decimal(deal.qty), Decimal(deal.buy_price), Decimal(sell_price))
+    deal.close_thoughts = (form.thoughts.data or "").strip()
+    deal.close_errors = (form.mistakes.data or "").strip() if deal.pnl < 0 else ""
+    db.session.commit()
+    flash("Сделка закрыта", "success")
     return redirect(url_for("invest.deals"))

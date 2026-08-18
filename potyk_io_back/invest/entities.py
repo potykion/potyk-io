@@ -29,6 +29,23 @@ class InvestDeal(db.Model):
     stop_loss_raw = db.Column(db.String(32), nullable=False, default="")
     stop_loss_price = db.Column(db.Numeric(18, 6), nullable=True)
     thoughts = db.Column(db.Text, nullable=False, default="")
+    closed_at = db.Column(db.DateTime, nullable=True, index=True)
+    sell_price = db.Column(db.Numeric(18, 6), nullable=True)
+    pnl = db.Column(db.Numeric(18, 2), nullable=True)
+    close_thoughts = db.Column(db.Text, nullable=False, default="")
+    close_errors = db.Column(db.Text, nullable=False, default="")
+
+    @property
+    def is_closed(self) -> bool:
+        return self.closed_at is not None
+
+    @property
+    def pnl_pct(self) -> Decimal | None:
+        if self.sell_price is None or not self.buy_price:
+            return None
+        buy = Decimal(self.buy_price)
+        sell = Decimal(self.sell_price)
+        return ((sell - buy) / buy * Decimal(100)).quantize(Decimal("0.01"))
 
 
 def current_deposit() -> Decimal:

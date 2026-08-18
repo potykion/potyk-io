@@ -134,7 +134,7 @@ class DealForm(FlaskForm):
         validators=[Optional(), Length(max=32)],
         description="-10, -5% или цена",
     )
-    thoughts = TextAreaField("Мысли", validators=[Optional()], default="")
+    thoughts = TextAreaField("Причина входа", validators=[Optional()], default="")
     submit = SubmitField("Добавить сделку")
 
     def __init__(self, deposit: Decimal | None = None, **kwargs):
@@ -194,3 +194,26 @@ class DealForm(FlaskForm):
             return False
 
         return True
+
+
+def compute_pnl(qty: Decimal, buy_price: Decimal, sell_price: Decimal) -> Decimal:
+    return ((sell_price - buy_price) * qty).quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
+
+
+class CloseDealForm(FlaskForm):
+    closed_at = DateTimeField(
+        "Дата и время",
+        format="%Y-%m-%dT%H:%M",
+        default=datetime.now,
+        validators=[DataRequired()],
+        render_kw={"type": "datetime-local"},
+    )
+    sell_price = CommaDecimalField(
+        "Цена продажи",
+        places=6,
+        rounding=ROUND_HALF_UP,
+        validators=[InputRequired(), NumberRange(min=0.000001, message="Укажи цену продажи")],
+    )
+    thoughts = TextAreaField("Причина выхода", validators=[Optional()], default="")
+    mistakes = TextAreaField("Ошибки", validators=[Optional()], default="")
+    submit = SubmitField("Закрыть сделку")
