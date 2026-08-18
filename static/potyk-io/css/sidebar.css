@@ -4,7 +4,11 @@
     border-right: 1px solid #e8e8e8;
     background: #fafafa;
     overflow: hidden;
+    box-sizing: border-box;
+    height: calc(100vh - var(--top-bar-height));
+    height: calc(100dvh - var(--top-bar-height));
     max-height: calc(100vh - var(--top-bar-height));
+    max-height: calc(100dvh - var(--top-bar-height));
     position: sticky;
     top: var(--top-bar-height);
     align-self: flex-start;

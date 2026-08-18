@@ -52,8 +52,19 @@ def parse_level(raw: str | None, buy_price: Decimal) -> Decimal | None:
     return price.quantize(PRICE_QUANT, rounding=ROUND_HALF_UP)
 
 
-def compute_qty(volume: Decimal, buy_price: Decimal) -> Decimal:
-    return (volume / buy_price).quantize(QTY_QUANT, rounding=ROUND_HALF_UP)
+def volume_money(deposit: Decimal, volume_pct: Decimal) -> Decimal:
+    return (deposit * volume_pct / Decimal(100)).quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
+
+
+def compute_qty(deposit: Decimal, volume_pct: Decimal, buy_price: Decimal) -> Decimal:
+    return (volume_money(deposit, volume_pct) / buy_price).quantize(
+        QTY_QUANT, rounding=ROUND_HALF_UP
+    )
+
+
+def volume_pct_from_qty(deposit: Decimal, qty: Decimal, buy_price: Decimal) -> Decimal:
+    money = (qty * buy_price).quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
+    return (money / deposit * Decimal(100)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 class DepositForm(FlaskForm):
@@ -81,16 +92,25 @@ class DealForm(FlaskForm):
         render_kw={"type": "datetime-local"},
     )
     volume = CommaDecimalField(
-        "Объём, ₽",
+        "Объём, %",
         places=2,
         rounding=ROUND_HALF_UP,
-        validators=[InputRequired(), NumberRange(min=0.01, message="Укажи положительный объём")],
+        validators=[
+            Optional(),
+            NumberRange(min=0.01, max=5, message="Объём от 0.01% до 5% депозита"),
+        ],
     )
     buy_price = CommaDecimalField(
         "Цена покупки",
         places=6,
         rounding=ROUND_HALF_UP,
         validators=[InputRequired(), NumberRange(min=0.000001, message="Укажи цену покупки")],
+    )
+    qty = CommaDecimalField(
+        "Кол-во позиций",
+        places=6,
+        rounding=ROUND_HALF_UP,
+        validators=[Optional(), NumberRange(min=0.000001, message="Укажи количество")],
     )
     entry_level = CommaDecimalField(
         "Уровень входа",
@@ -122,28 +142,44 @@ class DealForm(FlaskForm):
         self.deposit = deposit if deposit is not None else Decimal("0")
         self.take_profit_price: Decimal | None = None
         self.stop_loss_price: Decimal | None = None
-        self.qty: Decimal | None = None
+        self.volume_amount: Decimal | None = None
 
     def validate_volume(self, field: CommaDecimalField) -> None:
         if field.data is None:
             return
         if self.deposit <= 0:
             raise ValidationError("Сначала укажи депозит")
-        max_volume = (self.deposit * MAX_VOLUME_PCT / Decimal(100)).quantize(
-            MONEY_QUANT, rounding=ROUND_HALF_UP
-        )
-        if field.data > max_volume:
-            raise ValidationError(
-                f"Объём не больше {MAX_VOLUME_PCT}% депозита ({max_volume} ₽)"
-            )
+        if field.data > MAX_VOLUME_PCT:
+            raise ValidationError(f"Объём не больше {MAX_VOLUME_PCT}% депозита")
 
     def validate(self, extra_validators=None) -> bool:
         if not super().validate(extra_validators):
             return False
 
-        volume = Decimal(self.volume.data)
+        if self.deposit <= 0:
+            self.volume.errors.append("Сначала укажи депозит")
+            return False
+
+        if self.volume.data is None and self.qty.data is None:
+            message = "Укажи объём или количество позиций"
+            self.volume.errors.append(message)
+            self.qty.errors.append(message)
+            return False
+
         buy_price = Decimal(self.buy_price.data)
-        self.qty = compute_qty(volume, buy_price)
+        if self.volume.data is None:
+            pct = volume_pct_from_qty(self.deposit, Decimal(self.qty.data), buy_price)
+            if pct > MAX_VOLUME_PCT:
+                self.qty.errors.append(
+                    f"Это больше {MAX_VOLUME_PCT}% депозита ({pct}%)"
+                )
+                return False
+            self.volume.data = pct
+        elif self.qty.data is None:
+            self.qty.data = compute_qty(self.deposit, Decimal(self.volume.data), buy_price)
+
+        volume_pct = Decimal(self.volume.data)
+        self.volume_amount = volume_money(self.deposit, volume_pct)
 
         try:
             self.take_profit_price = parse_level(self.take_profit.data, buy_price)

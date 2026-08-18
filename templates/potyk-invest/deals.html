@@ -53,6 +53,12 @@
         form.grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
         form.grid.cols-3 .full { grid-column: 1 / -1; }
         form.grid.cols-3 .span-2 { grid-column: span 2; }
+        form.grid .pair { grid-template-columns: 1fr 1fr; }
+    }
+
+    form.grid .pair {
+        display: grid;
+        gap: 10px;
     }
 
     label {
@@ -93,13 +99,6 @@
 
     .hint { font-size: 0.8rem; color: var(--muted); }
     .field-error { color: #9b2c2c; font-size: 0.8rem; }
-
-    .qty-preview {
-        font-variant-numeric: tabular-nums;
-        color: var(--ink);
-        font-weight: 600;
-        min-height: 1.2em;
-    }
 
     h2 {
         margin: 1.5rem 0 0.75rem;
@@ -199,7 +198,7 @@
     <section class="panel">
         <details data-panel="deal" {% if open_panel == 'deal' %}open{% endif %}>
             <summary>Добавить покупку</summary>
-            <form class="grid cols-3" method="post" action="{{ url_for('invest.add_deal') }}" id="deal-form">
+            <form class="grid cols-3" method="post" action="{{ url_for('invest.add_deal') }}" id="deal-form" data-deposit="{{ deposit }}">
                 {{ deal_form.hidden_tag() }}
                 <label>
                     {{ deal_form.ticker.label.text }}
@@ -217,8 +216,8 @@
                 </label>
                 <label>
                     {{ deal_form.volume.label.text }}
-                    {{ deal_form.volume(min="0.01", step="0.01", required=true, inputmode="decimal") }}
-                    <span class="hint">не больше 5% депозита{% if deposit > 0 %} ({{ max_volume | invest_money }} ₽){% endif %}</span>
+                    {{ deal_form.volume(min="0.01", max="5", step="0.01", inputmode="decimal") }}
+                    <span class="hint">не больше {{ max_volume_pct }}%{% if deposit > 0 %} · <span id="volume-money-hint">—</span>{% endif %}</span>
                     {% for err in deal_form.volume.errors %}
                     <span class="field-error">{{ err }}</span>
                     {% endfor %}
@@ -231,40 +230,47 @@
                     {% endfor %}
                 </label>
                 <label>
-                    Кол-во позиций
-                    <span class="qty-preview" id="qty-preview">—</span>
-                    <span class="hint">объём / цена</span>
-                </label>
-                <label>
-                    {{ deal_form.entry_level.label.text }}
-                    {{ deal_form.entry_level(min="0", step="any", inputmode="decimal") }}
-                    {% for err in deal_form.entry_level.errors %}
+                    {{ deal_form.qty.label.text }}
+                    {{ deal_form.qty(min="0.000001", step="any", inputmode="decimal") }}
+                    <span class="hint">связан с объёмом</span>
+                    {% for err in deal_form.qty.errors %}
                     <span class="field-error">{{ err }}</span>
                     {% endfor %}
                 </label>
-                <label>
-                    {{ deal_form.exit_level.label.text }}
-                    {{ deal_form.exit_level(min="0", step="any", inputmode="decimal") }}
-                    {% for err in deal_form.exit_level.errors %}
-                    <span class="field-error">{{ err }}</span>
-                    {% endfor %}
-                </label>
-                <label>
-                    {{ deal_form.take_profit.label.text }}
-                    {{ deal_form.take_profit(placeholder="+10 или 10%") }}
-                    <span class="hint">{{ deal_form.take_profit.description }}</span>
-                    {% for err in deal_form.take_profit.errors %}
-                    <span class="field-error">{{ err }}</span>
-                    {% endfor %}
-                </label>
-                <label>
-                    {{ deal_form.stop_loss.label.text }}
-                    {{ deal_form.stop_loss(placeholder="-10 или -5%") }}
-                    <span class="hint">{{ deal_form.stop_loss.description }}</span>
-                    {% for err in deal_form.stop_loss.errors %}
-                    <span class="field-error">{{ err }}</span>
-                    {% endfor %}
-                </label>
+                <div class="full pair">
+                    <label>
+                        {{ deal_form.entry_level.label.text }}
+                        {{ deal_form.entry_level(min="0", step="any", inputmode="decimal") }}
+                        {% for err in deal_form.entry_level.errors %}
+                        <span class="field-error">{{ err }}</span>
+                        {% endfor %}
+                    </label>
+                    <label>
+                        {{ deal_form.exit_level.label.text }}
+                        {{ deal_form.exit_level(min="0", step="any", inputmode="decimal") }}
+                        {% for err in deal_form.exit_level.errors %}
+                        <span class="field-error">{{ err }}</span>
+                        {% endfor %}
+                    </label>
+                </div>
+                <div class="full pair">
+                    <label>
+                        {{ deal_form.take_profit.label.text }}
+                        {{ deal_form.take_profit(placeholder="+10 или 10%") }}
+                        <span class="hint">{{ deal_form.take_profit.description }}</span>
+                        {% for err in deal_form.take_profit.errors %}
+                        <span class="field-error">{{ err }}</span>
+                        {% endfor %}
+                    </label>
+                    <label>
+                        {{ deal_form.stop_loss.label.text }}
+                        {{ deal_form.stop_loss(placeholder="-10 или -5%") }}
+                        <span class="hint">{{ deal_form.stop_loss.description }}</span>
+                        {% for err in deal_form.stop_loss.errors %}
+                        <span class="field-error">{{ err }}</span>
+                        {% endfor %}
+                    </label>
+                </div>
                 <label class="full">
                     {{ deal_form.thoughts.label.text }}
                     {{ deal_form.thoughts() }}
@@ -287,11 +293,10 @@
                 <tr>
                     <th>Дата</th>
                     <th>Тикер</th>
-                    <th class="num">Объём</th>
+                    <th class="num">Объём %</th>
                     <th class="num">Цена</th>
                     <th class="num">Позиций</th>
-                    <th class="num">Вход</th>
-                    <th class="num">Выход</th>
+                    <th class="num">Уровни</th>
                     <th class="num">TP</th>
                     <th class="num">SL</th>
                     <th>Мысли</th>
@@ -302,21 +307,16 @@
                 <tr>
                     <td>{{ deal.opened_at.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td>{{ deal.ticker }}</td>
-                    <td class="num">{{ deal.volume | invest_money }}</td>
+                    <td class="num">{{ deal.volume | invest_price }}%</td>
                     <td class="num">{{ deal.buy_price | invest_price }}</td>
                     <td class="num">{{ deal.qty | invest_price }}</td>
-                    <td class="num">{{ deal.entry_level | invest_price }}</td>
-                    <td class="num">{{ deal.exit_level | invest_price }}</td>
                     <td class="num">
-                        {% if deal.take_profit_raw %}
-                            {{ deal.take_profit_raw }}{% if deal.take_profit_price %} → {{ deal.take_profit_price | invest_price }}{% endif %}
-                        {% else %}—{% endif %}
+                        {%- if deal.entry_level or deal.exit_level -%}
+                            {{ deal.entry_level | invest_price }} – {{ deal.exit_level | invest_price }}
+                        {%- else -%}—{%- endif -%}
                     </td>
-                    <td class="num">
-                        {% if deal.stop_loss_raw %}
-                            {{ deal.stop_loss_raw }}{% if deal.stop_loss_price %} → {{ deal.stop_loss_price | invest_price }}{% endif %}
-                        {% else %}—{% endif %}
-                    </td>
+                    <td class="num">{{ deal.take_profit_price | invest_price }}</td>
+                    <td class="num">{{ deal.stop_loss_price | invest_price }}</td>
                     <td class="thoughts">{{ deal.thoughts or "—" }}</td>
                 </tr>
                 {% endfor %}
@@ -332,25 +332,75 @@
 {% block script %}
 <script>
 (() => {
+  const form = document.getElementById("deal-form");
   const volume = document.querySelector('#deal-form [name="volume"]');
   const price = document.querySelector('#deal-form [name="buy_price"]');
-  const qty = document.getElementById("qty-preview");
-  if (!volume || !price || !qty) return;
+  const qty = document.querySelector('#deal-form [name="qty"]');
+  const moneyHint = document.getElementById("volume-money-hint");
+  if (!form || !volume || !price || !qty) return;
+
+  const deposit = Number(String(form.dataset.deposit || "0").replace(",", "."));
+  let source = "volume";
+  let lock = false;
 
   const parseNum = (raw) => {
     const n = Number(String(raw).trim().replace(/\s+/g, "").replace(",", "."));
-    return Number.isFinite(n) ? n : null;
+    return Number.isFinite(n) && n !== 0 ? n : null;
   };
 
-  const recalc = () => {
-    const v = parseNum(volume.value);
+  const fmt = (n, digits) => {
+    const text = n.toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
+    return text.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  const fmtInput = (n, digits) =>
+    n.toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
+
+  const setVal = (el, value) => {
+    lock = true;
+    el.value = value;
+    lock = false;
+  };
+
+  const updateHint = (amount) => {
+    if (moneyHint) moneyHint.textContent = amount ? `≈ ${fmt(amount, 2)} ₽` : "—";
+  };
+
+  const fromVolume = () => {
+    const pct = parseNum(volume.value);
     const p = parseNum(price.value);
-    qty.textContent = v && p && p !== 0 ? (v / p).toFixed(4).replace(/0+$/, "").replace(/\.$/, "") : "—";
+    const amount = pct && deposit ? deposit * pct / 100 : null;
+    updateHint(amount);
+    if (amount && p) setVal(qty, fmtInput(amount / p, 6));
   };
 
-  volume.addEventListener("input", recalc);
-  price.addEventListener("input", recalc);
-  recalc();
+  const fromQty = () => {
+    const q = parseNum(qty.value);
+    const p = parseNum(price.value);
+    const amount = q && p ? q * p : null;
+    updateHint(amount);
+    if (amount && deposit) setVal(volume, fmtInput(amount / deposit * 100, 2));
+  };
+
+  volume.addEventListener("input", () => {
+    if (lock) return;
+    source = "volume";
+    fromVolume();
+  });
+  qty.addEventListener("input", () => {
+    if (lock) return;
+    source = "qty";
+    fromQty();
+  });
+  price.addEventListener("input", () => {
+    if (lock) return;
+    if (source === "qty") fromQty();
+    else fromVolume();
+  });
+
+  if (parseNum(qty.value) && !parseNum(volume.value)) source = "qty";
+  if (source === "qty") fromQty();
+  else fromVolume();
 })();
 </script>
 {% endblock %}

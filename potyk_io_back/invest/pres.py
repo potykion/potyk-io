@@ -103,7 +103,7 @@ def deals_context(
         "deposit_form": deposit_form,
         "deal_form": deal_form or DealForm(deposit=deposit),
         "open_panel": open_panel,
-        "max_volume": (deposit * MAX_VOLUME_PCT / Decimal("100")),
+        "max_volume_pct": MAX_VOLUME_PCT,
     }
 
 
@@ -151,7 +151,7 @@ def add_deal():
             opened_at=form.opened_at.data,
             volume=form.volume.data,
             buy_price=form.buy_price.data,
-            qty=form.qty,
+            qty=form.qty.data,
             entry_level=form.entry_level.data,
             exit_level=form.exit_level.data,
             take_profit_raw=(form.take_profit.data or "").strip(),

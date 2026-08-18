@@ -45,6 +45,18 @@ MENU_GROUPS: list[MenuGroup] = [
                 "description": "Новостюшки про рашн фондю",
             },
             {
+                "icon": "✍️",
+                "title": "Написать мне",
+                "url": "/inbox/send",
+                "description": "",
+            },
+            {
+                "icon": "📥",
+                "title": "Инбокс",
+                "url": "/inbox",
+                "description": "",
+            },
+            {
                 "icon": "🍕",
                 "title": "potyk-food",
                 "url": "https://potyk.io/potyk-food/",
