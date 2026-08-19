@@ -1,0 +1,25 @@
+{% macro field_errors(field) -%}
+    {% for error in field.errors %}
+    <span class="field-error">{{ error }}</span>
+    {% endfor %}
+{%- endmacro %}
+
+{% macro field(label_text, class_name='') -%}
+    <label{% if class_name %} class="{{ class_name }}"{% endif %}>
+        {{ label_text }}
+        {{ caller() }}
+    </label>
+{%- endmacro %}
+
+{% macro checkbox_field(field, class_name='') -%}
+    <label class="checkbox-label{% if class_name %} {{ class_name }}{% endif %}">
+        {{ field() }}
+        {{ field.label.text }}
+    </label>
+{%- endmacro %}
+
+{% macro submit_row(field, class_name='full') -%}
+    <div{% if class_name %} class="{{ class_name }}"{% endif %}>
+        {{ field() }}
+    </div>
+{%- endmacro %}
