@@ -1,8 +1,9 @@
 import json
+import re
 from pathlib import Path, PurePosixPath
 
 import flask
-from flask import Blueprint, abort, flash, redirect, request, render_template, send_file, url_for
+from flask import Blueprint, abort, flash, jsonify, redirect, request, render_template, send_file, url_for
 from flask_login import login_required
 import sqlalchemy as sa
 from sqlalchemy import select
@@ -128,6 +129,7 @@ def movies_collection():
         "potyk-io/collections/movies.html",
         collections=page.collections,
         watch_later=page.watch_later,
+        roulette_collections=page.roulette_collections,
         movies_by_collection_json=json.dumps(movies_for_client(page), ensure_ascii=False),
     )
 
@@ -139,10 +141,37 @@ def movies_admin():
     collections = db.session.scalars(
         select(MovieCollection).order_by(MovieCollection.watch_later.desc(), MovieCollection.sort_order.asc(), MovieCollection.id.asc())
     ).all()
+    movies_by_id = {movie.id: movie for movie in movies}
+    collections_kanban = []
+    for collection in collections:
+        collection_movies = []
+        for movie_id in collection.movie_ids or []:
+            movie = movies_by_id.get(movie_id)
+            if movie is None:
+                continue
+            collection_movies.append(
+                {
+                    "id": movie.id,
+                    "title_ru": movie.title_ru,
+                    "title_en": movie.title_en,
+                    "year": movie.year,
+                    "cover": movie.cover,
+                    "kinopoisk": movie.kinopoisk,
+                }
+            )
+        collections_kanban.append(
+            {
+                "id": collection.id,
+                "title": collection.title,
+                "watch_later": collection.watch_later,
+                "movies": collection_movies,
+            }
+        )
     return render_template(
         "potyk-io/collections/movies_admin.html",
         movies=movies,
         collections=collections,
+        collections_kanban_json=json.dumps(collections_kanban, ensure_ascii=False),
     )
 
 
@@ -157,6 +186,12 @@ def _parse_movie_ids(raw: str) -> list[str]:
         seen.add(t)
         result.append(t)
     return result
+
+
+def _collection_slug_from_title(title: str) -> str:
+    slug = re.sub(r"[^\w\s-]", "", title.lower(), flags=re.UNICODE)
+    slug = re.sub(r"[-\s]+", "-", slug, flags=re.UNICODE).strip("-")
+    return slug or "collection"
 
 
 @potyk_io_bp.post("/collections/movies/admin/movie")
@@ -206,7 +241,6 @@ def movies_admin_add_movie():
 @potyk_io_bp.post("/collections/movies/admin/collection")
 @login_required
 def movies_admin_create_collection():
-    col_id = (request.form.get("id") or "").strip()
     title = (request.form.get("title") or "").strip()
     youtube = (request.form.get("youtube") or "").strip() or None
     quote = (request.form.get("quote") or "").strip() or None
@@ -214,12 +248,11 @@ def movies_admin_create_collection():
     movie_ids_raw = request.form.get("movie_ids") or ""
     movie_ids = _parse_movie_ids(movie_ids_raw)
 
-    if not col_id:
-        flash("Укажите `id` коллекции", "error")
-        return redirect(url_for("potyk_io.movies_admin"))
     if not title:
         flash("Укажите `title` коллекции", "error")
         return redirect(url_for("potyk_io.movies_admin"))
+
+    col_id = _collection_slug_from_title(title)
 
     # Проверяем, что фильмы существуют.
     if movie_ids:
@@ -293,6 +326,41 @@ def movies_admin_add_movie_to_collection():
     db.session.commit()
     flash("Фильм добавлен в коллекцию", "success")
     return redirect(url_for("potyk_io.movies_admin"))
+
+
+@potyk_io_bp.post("/collections/movies/admin/collection/move-movie")
+@login_required
+def movies_admin_move_movie_between_collections():
+    payload = request.get_json(silent=True) or {}
+    source_id = str(payload.get("sourceCollectionId") or "").strip()
+    target_id = str(payload.get("targetCollectionId") or "").strip()
+    movie_id = str(payload.get("movieId") or "").strip()
+
+    if not source_id or not target_id or not movie_id:
+        return jsonify({"ok": False, "error": "missing fields"}), 400
+    if source_id == target_id:
+        return jsonify({"ok": True}), 200
+
+    source = db.session.get(MovieCollection, source_id)
+    target = db.session.get(MovieCollection, target_id)
+    movie = db.session.get(Movie, movie_id)
+
+    if source is None or target is None or movie is None:
+        return jsonify({"ok": False, "error": "not found"}), 404
+
+    source_movie_ids = list(source.movie_ids or [])
+    target_movie_ids = list(target.movie_ids or [])
+
+    if movie_id not in source_movie_ids:
+        return jsonify({"ok": False, "error": "movie not in source"}), 400
+
+    source.movie_ids = [mid for mid in source_movie_ids if mid != movie_id]
+    if movie_id not in target_movie_ids:
+        target_movie_ids.append(movie_id)
+    target.movie_ids = target_movie_ids
+
+    db.session.commit()
+    return jsonify({"ok": True})
 
 
 @potyk_io_bp.route("/food")

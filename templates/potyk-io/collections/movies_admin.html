@@ -2,6 +2,11 @@
 
 {% block title %}Админка кино — potyk.io{% endblock %}
 
+{% block style %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/potyk-io/css/movies.css">
+{% endblock %}
+
 {% block main_class %}md-content{% endblock %}
 
 {% block main %}
@@ -48,14 +53,12 @@
         <h2>Создать / обновить коллекцию</h2>
         <form method="post" action="{{ url_for('potyk_io.movies_admin_create_collection') }}">
             <p>
-                <label>ID коллекции<br>
-                    <input name="id" required style="width: 420px" />
-                </label>
-            </p>
-            <p>
                 <label>Title<br>
                     <input name="title" required style="width: 520px" />
                 </label>
+            </p>
+            <p style="opacity: 0.75; font-size: 0.95em">
+                `id` сгенерируется автоматически из названия коллекции.
             </p>
             <p>
                 <label>YouTube (embed URL)<br>
@@ -110,6 +113,13 @@
     </section>
 
     <section style="margin-top: 2rem">
+        <h2>Канбан коллекций</h2>
+        <p style="opacity: 0.75">Перетаскивайте фильмы между колонками. Это переносит фильм из одной коллекции в другую.</p>
+        <div class="movies-kanban" id="movies-kanban"></div>
+        <p id="movies-kanban-status" style="opacity: 0.75" hidden></p>
+    </section>
+
+    <section style="margin-top: 2rem">
         <h2>Текущие коллекции</h2>
         <ul>
             {% for c in collections %}
@@ -121,5 +131,11 @@
             {% endfor %}
         </ul>
     </section>
+
+    <script type="application/json" id="movies-admin-kanban-data">{{ collections_kanban_json | safe }}</script>
+{% endblock %}
+
+{% block script %}
+    <script src="/static/potyk-io/js/movies-admin.js"></script>
 {% endblock %}
 

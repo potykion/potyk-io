@@ -56,13 +56,14 @@ class CollectionView:
     movies: list[MovieView] = field(default_factory=list)
     youtube: str | None = None
     quote: str | None = None
+    watch_later: bool = False
 
 
 @dataclass
 class MoviesPage:
     collections: list[CollectionView]
     watch_later: list[MovieView]
-    watch_later_collection_id: str = WATCH_LATER_COLLECTION_ID
+    roulette_collections: list[CollectionView] = field(default_factory=list)
 
 
 def _parse_movie_from_yaml(raw: dict) -> MovieView:
@@ -172,8 +173,29 @@ def _ordered_movies_by_ids(movie_ids: list[str]) -> list[MovieView]:
 def load_movies_data() -> MoviesPage:
     _seed_from_yaml_if_needed()
 
-    wl = MovieCollection.query.filter(MovieCollection.watch_later.is_(True)).first()
-    watch_later = _ordered_movies_by_ids((wl.movie_ids if wl else []) or [])
+    watch_later_rows = MovieCollection.query.filter(MovieCollection.watch_later.is_(True)).order_by(
+        MovieCollection.sort_order.asc(), MovieCollection.id.asc()
+    )
+    roulette_collections: list[CollectionView] = []
+    watch_later_seen: set[str] = set()
+    watch_later: list[MovieView] = []
+    for col in watch_later_rows:
+        movies = _ordered_movies_by_ids((col.movie_ids if col.movie_ids else []) or [])
+        roulette_collections.append(
+            CollectionView(
+                id=col.id,
+                title=col.title,
+                movies=movies,
+                youtube=col.youtube,
+                quote=col.quote,
+                watch_later=True,
+            )
+        )
+        for movie in movies:
+            if movie.id in watch_later_seen:
+                continue
+            watch_later_seen.add(movie.id)
+            watch_later.append(movie)
 
     collections_rows = MovieCollection.query.filter(MovieCollection.watch_later.is_(False)).order_by(
         MovieCollection.sort_order.asc(), MovieCollection.id.asc()
@@ -188,10 +210,15 @@ def load_movies_data() -> MoviesPage:
                 movies=_ordered_movies_by_ids((col.movie_ids if col.movie_ids else []) or []),
                 youtube=col.youtube,
                 quote=col.quote,
+                watch_later=False,
             )
         )
 
-    return MoviesPage(collections=collections, watch_later=watch_later)
+    return MoviesPage(
+        collections=collections,
+        watch_later=watch_later,
+        roulette_collections=roulette_collections,
+    )
 
 
 def movies_for_client(page: MoviesPage) -> dict:
@@ -206,11 +233,12 @@ def movies_for_client(page: MoviesPage) -> dict:
         }
 
     movies_by_collection: dict[str, list[dict]] = {}
-    movies_by_collection[page.watch_later_collection_id] = [movie_to_dict(m) for m in page.watch_later]
+    for col in page.roulette_collections:
+        movies_by_collection[col.id] = [movie_to_dict(m) for m in col.movies]
     for col in page.collections:
         movies_by_collection[col.id] = [movie_to_dict(m) for m in col.movies]
 
     return {
-        "watchLaterCollectionId": page.watch_later_collection_id,
+        "watchLaterCollectionId": page.roulette_collections[0].id if page.roulette_collections else WATCH_LATER_COLLECTION_ID,
         "moviesByCollection": movies_by_collection,
     }

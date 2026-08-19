@@ -50,9 +50,8 @@
         <div class="roulette-collection-select">
             <label for="roulette-collection-select">Коллекция</label>
             <select id="roulette-collection-select">
-                <option value="watch_later" selected>Посмотреть позже</option>
-                {% for col in collections %}
-                    <option value="{{ col.id }}">{{ col.title }}</option>
+                {% for col in roulette_collections %}
+                    <option value="{{ col.id }}" {% if loop.first %}selected{% endif %}>{{ col.title }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -64,16 +63,6 @@
         <div class="roulette-result" id="roulette-result" hidden></div>
         <p class="roulette-empty" id="roulette-empty" hidden>В выбранной коллекции пока пусто</p>
     </section>
-
-
-
-    {% if watch_later %}
-        <section class="movie-collection" id="watch-later">
-            <h2>Посмотреть позже</h2>
-            {{ movies_table(watch_later) }}
-        </section>
-    {% endif %}
-
     <h2>Подборочки</h2>
 
     <nav class="movies-toc">
