@@ -63,7 +63,8 @@
 
                 cardEl.innerHTML =
                     coverHtml +
-                    "<div>" +
+                    "<div class=\"movies-kanban-card-body\">" +
+                    "<button type=\"button\" class=\"movies-kanban-delete\" data-movie-id=\"" + escapeAttr(movie.id) + "\" aria-label=\"Удалить фильм\">&times;</button>" +
                     "<div class=\"movies-kanban-title\">" + escapeHtml(movieLabel(movie)) + "</div>" +
                     enHtml +
                     kpHtml +
@@ -71,6 +72,12 @@
 
                 cardEl.addEventListener("dragstart", onDragStart);
                 cardEl.addEventListener("dragend", onDragEnd);
+                const deleteBtn = cardEl.querySelector(".movies-kanban-delete");
+                if (deleteBtn) {
+                    deleteBtn.addEventListener("click", onDeleteClick);
+                    deleteBtn.addEventListener("mousedown", stopEvent);
+                    deleteBtn.addEventListener("dragstart", stopEvent);
+                }
                 listEl.appendChild(cardEl);
             });
 
@@ -145,6 +152,38 @@
         }
     }
 
+    async function onDeleteClick(event) {
+        stopEvent(event);
+        const movieId = event.currentTarget.dataset.movieId;
+        const movie = findMovie(movieId);
+        if (!movieId || !movie) return;
+
+        const confirmed = window.confirm("Удалить фильм \"" + movieLabel(movie) + "\"?");
+        if (!confirmed) return;
+
+        setStatus("Удаляю фильм...");
+        try {
+            const response = await fetch("/collections/movies/admin/movie/delete", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    movieId: movieId,
+                }),
+            });
+            const result = await response.json();
+            if (!response.ok || !result.ok) {
+                throw new Error(result.error || "Не удалось удалить фильм");
+            }
+            removeLocalMovie(movieId);
+            render();
+            setStatus("Фильм удалён");
+        } catch (error) {
+            setStatus(error.message || "Ошибка удаления", true);
+        }
+    }
+
     function moveLocalMovie(movieId, sourceCollectionId, targetCollectionId) {
         const source = collections.find((c) => c.id === sourceCollectionId);
         const target = collections.find((c) => c.id === targetCollectionId);
@@ -160,10 +199,33 @@
         }
     }
 
+    function removeLocalMovie(movieId) {
+        collections.forEach(function (collection) {
+            collection.movies = collection.movies.filter(function (movie) {
+                return movie.id !== movieId;
+            });
+        });
+    }
+
+    function findMovie(movieId) {
+        for (const collection of collections) {
+            const movie = collection.movies.find(function (item) {
+                return item.id === movieId;
+            });
+            if (movie) return movie;
+        }
+        return null;
+    }
+
     function clearTargets() {
         boardEl.querySelectorAll(".movies-kanban-column").forEach(function (el) {
             el.classList.remove("is-drop-target");
         });
+    }
+
+    function stopEvent(event) {
+        event.preventDefault();
+        event.stopPropagation();
     }
 
     function escapeHtml(value) {

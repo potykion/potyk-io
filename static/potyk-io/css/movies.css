@@ -250,6 +250,12 @@
     cursor: grab;
 }
 
+.movies-kanban-card-body {
+    position: relative;
+    min-width: 0;
+    padding-right: 1.75rem;
+}
+
 .movies-kanban-card.is-dragging {
     opacity: 0.45;
 }
@@ -265,6 +271,27 @@
 .movies-kanban-title {
     font-weight: 600;
     line-height: 1.25;
+}
+
+.movies-kanban-delete {
+    position: absolute;
+    top: -0.1rem;
+    right: 0;
+    width: 1.4rem;
+    height: 1.4rem;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: #888;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.movies-kanban-delete:hover {
+    background: #f3f3f3;
+    color: #b42318;
 }
 
 .movies-kanban-subtitle {

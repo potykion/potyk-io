@@ -363,6 +363,31 @@ def movies_admin_move_movie_between_collections():
     return jsonify({"ok": True})
 
 
+@potyk_io_bp.post("/collections/movies/admin/movie/delete")
+@login_required
+def movies_admin_delete_movie():
+    payload = request.get_json(silent=True) or {}
+    movie_id = str(payload.get("movieId") or "").strip()
+
+    if not movie_id:
+        return jsonify({"ok": False, "error": "missing movieId"}), 400
+
+    movie = db.session.get(Movie, movie_id)
+    if movie is None:
+        return jsonify({"ok": False, "error": "not found"}), 404
+
+    collections = db.session.scalars(select(MovieCollection)).all()
+    for collection in collections:
+        movie_ids = list(collection.movie_ids or [])
+        if movie_id not in movie_ids:
+            continue
+        collection.movie_ids = [mid for mid in movie_ids if mid != movie_id]
+
+    db.session.delete(movie)
+    db.session.commit()
+    return jsonify({"ok": True})
+
+
 @potyk_io_bp.route("/food")
 @potyk_io_bp.route("/food/")
 def food_index():
