@@ -43,20 +43,26 @@
 
 {% block main %}
     <h1>Кино</h1>
-    {% if created %}
-        <time class="note-created" datetime="{{ created.isoformat() }}">{{ created_fmt }}</time>
-    {% endif %}
 
     <section class="movie-roulette" id="movie-roulette">
         <h2>🎰 Кино-рулетка</h2>
-        <p class="roulette-hint">Крути колесо — выберется случайный фильм из «Посмотреть позже»</p>
+        <p class="roulette-hint">Крути колесо — выберется случайный фильм из выбранной коллекции</p>
+        <div class="roulette-collection-select">
+            <label for="roulette-collection-select">Коллекция</label>
+            <select id="roulette-collection-select">
+                <option value="watch_later" selected>Посмотреть позже</option>
+                {% for col in collections %}
+                    <option value="{{ col.id }}">{{ col.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
         <div class="roulette-stage">
             <div class="roulette-pointer" aria-hidden="true"></div>
             <canvas id="roulette-canvas" width="360" height="360" aria-label="Колесо рулетки"></canvas>
         </div>
         <button type="button" class="roulette-spin-btn" id="roulette-spin">Крутить!</button>
         <div class="roulette-result" id="roulette-result" hidden></div>
-        <p class="roulette-empty" id="roulette-empty" hidden>В «Посмотреть позже» пока пусто</p>
+        <p class="roulette-empty" id="roulette-empty" hidden>В выбранной коллекции пока пусто</p>
     </section>
 
 
@@ -95,27 +101,10 @@
             {% endif %}
 
             {{ movies_table(col.movies) }}
-
-            {% if col.watch_later %}
-                <h3>Посмотреть позже</h3>
-                <ul class="watch-later">
-                    {% for item in col.watch_later %}
-                        <li>
-                            {% if item is string %}
-                                {{ item }}
-                            {% elif item.kinopoisk %}
-                                <a href="{{ item.kinopoisk }}" target="_blank" rel="noopener">{{ item.title }}</a>
-                            {% else %}
-                                {{ item.title }}
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
         </section>
     {% endfor %}
 
-    <script type="application/json" id="movies-data">{{ movies_json | safe }}</script>
+    <script type="application/json" id="movies-by-collection">{{ movies_by_collection_json | safe }}</script>
 {% endblock %}
 
 {% block script %}

@@ -6,7 +6,6 @@ from flask import Blueprint, abort, request, send_file
 
 from potyk_io_back.potyk_io.collections.movies import load_movies_data, movies_for_client
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, random_note_batch, search_notes
-from potyk_io_back.potyk_io.md_rendering.created import format_created_ru
 from potyk_io_back.potyk_io.md_rendering import (
     FOOD_TEMPLATES_DIR,
     TEMPLATES_DIR,
@@ -120,9 +119,7 @@ def movies_collection():
         "potyk-io/collections/movies.html",
         collections=page.collections,
         watch_later=page.watch_later,
-        created=page.created,
-        created_fmt=format_created_ru(page.created) if page.created else None,
-        movies_json=json.dumps(movies_for_client(page), ensure_ascii=False),
+        movies_by_collection_json=json.dumps(movies_for_client(page), ensure_ascii=False),
     )
 
 

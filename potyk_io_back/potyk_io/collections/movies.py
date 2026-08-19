@@ -1,110 +1,216 @@
-"""Загрузка кино-подборок из YAML."""
+"""Кино-коллекции и рулетка: данные в SQL (2 таблицы)."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import date
 from pathlib import Path
 
 import yaml
 
+from potyk_io_back.core.db import db
+
 COLLECTIONS_DIR = Path(__file__).resolve().parents[3] / "templates" / "potyk-io" / "collections"
 MOVIES_YAML = COLLECTIONS_DIR / "movies.yaml"
 
+WATCH_LATER_COLLECTION_ID = "watch_later"
+WATCH_LATER_COLLECTION_TITLE = "Посмотреть позже"
+
+
+class Movie(db.Model):
+    __tablename__ = "movies"
+
+    id = db.Column(db.String(64), primary_key=True)
+    title_ru = db.Column(db.String(255), nullable=False)
+    title_en = db.Column(db.String(255), nullable=True)
+    year = db.Column(db.Integer, nullable=True, index=True)
+    cover = db.Column(db.String(512), nullable=True)
+    kinopoisk = db.Column(db.String(512), nullable=False, default="")
+
+
+class MovieCollection(db.Model):
+    __tablename__ = "movie_collections"
+
+    id = db.Column(db.String(64), primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    quote = db.Column(db.Text, nullable=True)
+    youtube = db.Column(db.Text, nullable=True)
+    movie_ids = db.Column(db.JSON, nullable=False, default=list)
+    watch_later = db.Column(db.Boolean, nullable=False, default=False, index=True)
+    sort_order = db.Column(db.Integer, nullable=False, default=0, index=True)
+
 
 @dataclass
-class Movie:
+class MovieView:
     id: str
     title_ru: str
     title_en: str | None = None
     year: int | None = None
     cover: str | None = None
     kinopoisk: str = ""
-    watched: bool = False
 
 
 @dataclass
-class WatchLaterItem:
-    title: str
-    kinopoisk: str | None = None
-
-
-@dataclass
-class Collection:
+class CollectionView:
     id: str
     title: str
-    movies: list[Movie] = field(default_factory=list)
+    movies: list[MovieView] = field(default_factory=list)
     youtube: str | None = None
     quote: str | None = None
-    watch_later: list[WatchLaterItem | str] = field(default_factory=list)
 
 
 @dataclass
 class MoviesPage:
-    created: date | None
-    collections: list[Collection]
-    watch_later: list[Movie]
+    collections: list[CollectionView]
+    watch_later: list[MovieView]
+    watch_later_collection_id: str = WATCH_LATER_COLLECTION_ID
 
 
-def _parse_movie(raw: dict) -> Movie:
+def _parse_movie_from_yaml(raw: dict) -> MovieView:
     year = raw.get("year")
-    return Movie(
+    return MovieView(
         id=str(raw["id"]),
         title_ru=str(raw["title_ru"]),
         title_en=raw.get("title_en") or None,
         year=int(year) if year is not None else None,
         cover=raw.get("cover") or None,
         kinopoisk=str(raw.get("kinopoisk", "")),
-        watched=bool(raw.get("watched", False)),
     )
 
 
-def _parse_watch_later(raw) -> WatchLaterItem | str:
-    if isinstance(raw, str):
-        return raw
-    return WatchLaterItem(
-        title=str(raw.get("title", "")),
-        kinopoisk=raw.get("kinopoisk") or None,
+def _seed_from_yaml_if_needed() -> None:
+    # Идемпотентная подстановка: если таблицы уже заполнены миграцией — ничего не делаем.
+    if Movie.query.first() is not None:
+        return
+
+    if not MOVIES_YAML.exists():
+        return
+
+    text = MOVIES_YAML.read_text(encoding="utf-8-sig")
+    data = yaml.safe_load(text) or {}
+
+    watch_later_raw = data.get("watch_later", []) or []
+    collections_raw = data.get("collections", []) or []
+
+    movies_by_id: dict[str, MovieView] = {}
+
+    def add_movie(raw_movie: dict) -> None:
+        movie = _parse_movie_from_yaml(raw_movie)
+        movies_by_id.setdefault(movie.id, movie)
+
+    movie_ids_watch_later: list[str] = []
+    for raw_movie in watch_later_raw:
+        add_movie(raw_movie)
+        movie_ids_watch_later.append(str(raw_movie["id"]))
+
+    collection_rows: list[dict] = []
+    for idx, raw_col in enumerate(collections_raw):
+        col_id = str(raw_col["id"])
+        movie_ids: list[str] = []
+        for raw_movie in raw_col.get("movies", []) or []:
+            add_movie(raw_movie)
+            movie_ids.append(str(raw_movie["id"]))
+
+        collection_rows.append(
+            dict(
+                id=col_id,
+                title=str(raw_col["title"]),
+                quote=raw_col.get("quote") or None,
+                youtube=raw_col.get("youtube") or None,
+                movie_ids=movie_ids,
+                watch_later=False,
+                sort_order=idx,
+            )
+        )
+
+    watch_later_collection_row = dict(
+        id=WATCH_LATER_COLLECTION_ID,
+        title=WATCH_LATER_COLLECTION_TITLE,
+        quote=None,
+        youtube=None,
+        movie_ids=movie_ids_watch_later,
+        watch_later=True,
+        sort_order=0,
     )
 
+    # Перезаполняем только при первом заполнении (если Movie пустая).
+    db.session.query(MovieCollection).delete()
+    db.session.query(Movie).delete()
 
-def _parse_collection(raw: dict) -> Collection:
-    return Collection(
-        id=str(raw["id"]),
-        title=str(raw["title"]),
-        movies=[_parse_movie(m) for m in raw.get("movies", [])],
-        youtube=raw.get("youtube") or None,
-        quote=raw.get("quote") or None,
-        watch_later=[_parse_watch_later(w) for w in raw.get("watch_later", [])],
+    db.session.bulk_insert_mappings(
+        Movie.__table__,
+        [m.__dict__ for m in movies_by_id.values()],
     )
+
+    all_collections = [watch_later_collection_row, *collection_rows]
+    db.session.bulk_insert_mappings(MovieCollection.__table__, all_collections)
+    db.session.commit()
+
+
+def _ordered_movies_by_ids(movie_ids: list[str]) -> list[MovieView]:
+    if not movie_ids:
+        return []
+    rows = Movie.query.filter(Movie.id.in_(movie_ids)).all()
+    by_id = {r.id: r for r in rows}
+    result: list[MovieView] = []
+    for mid in movie_ids:
+        row = by_id.get(mid)
+        if row is None:
+            continue
+        result.append(
+            MovieView(
+                id=row.id,
+                title_ru=row.title_ru,
+                title_en=row.title_en,
+                year=row.year,
+                cover=row.cover,
+                kinopoisk=row.kinopoisk,
+            )
+        )
+    return result
 
 
 def load_movies_data() -> MoviesPage:
-    text = MOVIES_YAML.read_text(encoding="utf-8-sig")
-    data = yaml.safe_load(text) or {}
-    created_raw = data.get("created")
-    created = date.fromisoformat(str(created_raw)) if created_raw else None
-    collections = [_parse_collection(c) for c in data.get("collections", [])]
-    watch_later = [_parse_movie(m) for m in data.get("watch_later", [])]
-    return MoviesPage(created=created, collections=collections, watch_later=watch_later)
+    _seed_from_yaml_if_needed()
 
+    wl = MovieCollection.query.filter(MovieCollection.watch_later.is_(True)).first()
+    watch_later = _ordered_movies_by_ids((wl.movie_ids if wl else []) or [])
 
-def movies_for_client(page: MoviesPage) -> list[dict]:
-    seen: set[str] = set()
-    result: list[dict] = []
-    for movie in [*page.watch_later, *(m for col in page.collections for m in col.movies)]:
-        if movie.id in seen:
-            continue
-        seen.add(movie.id)
-        result.append(
-            {
-                "id": movie.id,
-                "title_ru": movie.title_ru,
-                "title_en": movie.title_en,
-                "year": movie.year,
-                "cover": movie.cover,
-                "kinopoisk": movie.kinopoisk,
-                "watched": movie.watched,
-            }
+    collections_rows = MovieCollection.query.filter(MovieCollection.watch_later.is_(False)).order_by(
+        MovieCollection.sort_order.asc(), MovieCollection.id.asc()
+    )
+
+    collections: list[CollectionView] = []
+    for col in collections_rows:
+        collections.append(
+            CollectionView(
+                id=col.id,
+                title=col.title,
+                movies=_ordered_movies_by_ids((col.movie_ids if col.movie_ids else []) or []),
+                youtube=col.youtube,
+                quote=col.quote,
+            )
         )
-    return result
+
+    return MoviesPage(collections=collections, watch_later=watch_later)
+
+
+def movies_for_client(page: MoviesPage) -> dict:
+    def movie_to_dict(m: MovieView) -> dict:
+        return {
+            "id": m.id,
+            "title_ru": m.title_ru,
+            "title_en": m.title_en,
+            "year": m.year,
+            "cover": m.cover,
+            "kinopoisk": m.kinopoisk,
+        }
+
+    movies_by_collection: dict[str, list[dict]] = {}
+    movies_by_collection[page.watch_later_collection_id] = [movie_to_dict(m) for m in page.watch_later]
+    for col in page.collections:
+        movies_by_collection[col.id] = [movie_to_dict(m) for m in col.movies]
+
+    return {
+        "watchLaterCollectionId": page.watch_later_collection_id,
+        "moviesByCollection": movies_by_collection,
+    }

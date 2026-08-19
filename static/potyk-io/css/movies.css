@@ -175,6 +175,23 @@
     opacity: 0.75;
 }
 
+.roulette-collection-select {
+    margin: 0 0 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.roulette-collection-select select {
+    padding: 0.45rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    max-width: 100%;
+}
+
 @media (max-width: 520px) {
     .movies-table .col-en,
     .movies-table th.col-en {

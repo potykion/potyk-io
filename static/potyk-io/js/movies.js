@@ -7,31 +7,39 @@
         "#2980b9", "#27ae60", "#d35400", "#8e44ad", "#2c3e50",
     ];
 
-    const dataEl = document.getElementById("movies-data");
+    const dataEl = document.getElementById("movies-by-collection");
     if (!dataEl) return;
 
-    const allMovies = JSON.parse(dataEl.textContent);
+    const payload = JSON.parse(dataEl.textContent);
+    const moviesByCollection = payload.moviesByCollection || {};
+    const defaultCollectionId = payload.watchLaterCollectionId || "watch_later";
+
     const canvas = document.getElementById("roulette-canvas");
     const spinBtn = document.getElementById("roulette-spin");
     const resultEl = document.getElementById("roulette-result");
     const emptyEl = document.getElementById("roulette-empty");
+    const collectionSelect = document.getElementById("roulette-collection-select");
 
     let rotation = 0;
     let spinning = false;
+    let wheelVersion = 0;
 
-    function unwatchedMovies() {
-        return allMovies.filter((m) => !m.watched);
+    let selectedCollectionId = collectionSelect ? collectionSelect.value : defaultCollectionId;
+    if (!selectedCollectionId) selectedCollectionId = defaultCollectionId;
+
+    function getSelectedMovies() {
+        return moviesByCollection[selectedCollectionId] || [];
     }
 
     function movieLabel(movie) {
-        let label = movie.title_ru;
+        let label = movie.title_ru || "";
         if (movie.year) label += " (" + movie.year + ")";
         return label;
     }
 
     function drawWheel() {
         if (!canvas) return;
-        const movies = unwatchedMovies();
+        const movies = getSelectedMovies();
         const ctx = canvas.getContext("2d");
         const size = canvas.width;
         const cx = size / 2;
@@ -75,9 +83,8 @@
             ctx.textAlign = "right";
             ctx.fillStyle = "#fff";
             ctx.font = "bold 11px IBM Plex Sans, sans-serif";
-            const text = movie.title_ru.length > 14
-                ? movie.title_ru.slice(0, 12) + "…"
-                : movie.title_ru;
+            const title = movie.title_ru || "";
+            const text = title.length > 14 ? title.slice(0, 12) + "…" : title;
             ctx.fillText(text, radius - 10, 4);
             ctx.restore();
         });
@@ -92,7 +99,7 @@
     }
 
     function updateSpinState() {
-        const movies = unwatchedMovies();
+        const movies = getSelectedMovies();
         const hasMovies = movies.length > 0;
         if (spinBtn) spinBtn.disabled = !hasMovies || spinning;
         if (emptyEl) emptyEl.hidden = hasMovies;
@@ -113,10 +120,19 @@
         resultEl.hidden = false;
     }
 
+    function invalidateSpin() {
+        wheelVersion += 1;
+        spinning = false;
+        rotation = 0;
+        if (canvas) canvas.style.transform = "rotate(0deg)";
+        if (resultEl) resultEl.hidden = true;
+    }
+
     function spinWheel() {
-        const movies = unwatchedMovies();
+        const movies = getSelectedMovies();
         if (movies.length === 0 || spinning) return;
 
+        const version = wheelVersion;
         spinning = true;
         updateSpinState();
         if (resultEl) resultEl.hidden = true;
@@ -131,6 +147,7 @@
 
         const onEnd = function () {
             canvas.removeEventListener("transitionend", onEnd);
+            if (wheelVersion !== version) return;
             spinning = false;
             updateSpinState();
             showResult(movies[winnerIdx]);
@@ -140,6 +157,15 @@
 
     if (spinBtn) {
         spinBtn.addEventListener("click", spinWheel);
+    }
+
+    if (collectionSelect) {
+        collectionSelect.addEventListener("change", function () {
+            selectedCollectionId = collectionSelect.value;
+            invalidateSpin();
+            drawWheel();
+            updateSpinState();
+        });
     }
 
     drawWheel();

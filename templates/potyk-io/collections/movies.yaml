@@ -42,9 +42,7 @@ collections:
         cover: /static/potyk-io/img/movies/menace-ii-society.webp
         kinopoisk: https://www.kinopoisk.ru/film/3791/
         watched: true
-    watch_later:
-      - Ромпер-стомпер
-      - Россия-88
+
 
   - id: ubitiy
     title: "🥴 Фильмы когда убитый 🥴"
@@ -247,6 +245,3 @@ collections:
         title_ru: Казнь
         kinopoisk: https://www.kinopoisk.ru/film/1405778/
         watched: true
-    watch_later:
-      - title: Французское новое трансгрессивное кино
-        kinopoisk: https://www.kinopoisk.ru/lists/movies/french_new_transgressive/

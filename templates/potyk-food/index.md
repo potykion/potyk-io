@@ -88,6 +88,7 @@
 ### 🥧 Десерты
 
 - [Брауни с вишней](recipes/06-dessert/brownie.md)
+- [Шарлотка с яблоками](recipes/06-dessert/charlotte-w-apples.md)
 
 ### 🪓 Крафт
 
