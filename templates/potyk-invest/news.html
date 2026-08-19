@@ -90,6 +90,9 @@
             {% if page.source %}
             <div class="meta-row"><span class="label">source:</span> {{ page.source }}</div>
             {% endif %}
+            {% if page.action %}
+            <div class="meta-row"><span class="label">action:</span> {{ page.action }}</div>
+            {% endif %}
             {% if page.sentiment or page.price %}
             <div class="meta-row">
                 {%- if page.sentiment -%}<span class="label">sentiment:</span> {{ page.sentiment }}{%- endif -%}

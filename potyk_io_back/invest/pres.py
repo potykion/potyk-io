@@ -6,8 +6,22 @@ from sqlalchemy import select
 
 from potyk_io_back.core.db import db
 from potyk_io_back.invest.dashboard import build_dashboard, load_news_page
-from potyk_io_back.invest.entities import InvestDeal, InvestDepositChange, current_deposit
-from potyk_io_back.invest.forms import MAX_VOLUME_PCT, CloseDealForm, DealForm, DepositForm, compute_pnl
+from potyk_io_back.invest.entities import (
+    InvestDeal,
+    InvestDepositChange,
+    InvestNews,
+    current_deposit,
+    load_source_choices_from_db,
+    load_ticker_choices_from_db,
+)
+from potyk_io_back.invest.forms import (
+    MAX_VOLUME_PCT,
+    CloseDealForm,
+    DealForm,
+    DepositForm,
+    NewsForm,
+    compute_pnl,
+)
 from potyk_io_back.invest.menu import INVEST_MENU_ITEMS, is_invest_link_active
 
 invest_bp = Blueprint("invest", __name__, url_prefix="/invest")
@@ -67,7 +81,64 @@ def inject_invest_menu():
 
 @invest_bp.route("/")
 def index():
-    return render_template("potyk-invest/index.html", sectors=build_dashboard())
+    ticker_choices = load_ticker_choices_from_db()
+    source_choices = load_source_choices_from_db()
+    news_form = NewsForm(ticker_choices=ticker_choices, source_choices=source_choices)
+    return render_template(
+        "potyk-invest/index.html",
+        sectors=build_dashboard(),
+        news_form=news_form,
+        open_panel=None,
+    )
+
+
+@invest_bp.post("/")
+@login_required
+def add_news():
+    ticker_choices = load_ticker_choices_from_db()
+    source_choices = load_source_choices_from_db()
+    form = NewsForm(ticker_choices=ticker_choices, source_choices=source_choices)
+    if not form.validate_on_submit():
+        flash_form_errors(form)
+        return (
+            render_template(
+                "potyk-invest/index.html",
+                sectors=build_dashboard(),
+                news_form=form,
+                open_panel="news",
+            ),
+            400,
+        )
+
+    dt = form.datetime.data
+    ticker = form.ticker.data.strip().upper()
+
+    slug_base = f"{dt:%Y-%m-%d} {dt:%H-%M} {ticker} {form.action.data}"
+    slug_base = slug_base[:240]
+    slug = slug_base
+    i = 1
+    while db.session.scalars(select(InvestNews.id).where(InvestNews.slug == slug)).first() is not None:
+        i += 1
+        slug = f"{slug_base} ({i})"
+        slug = slug[:255]
+
+    db.session.add(
+        InvestNews(
+            slug=slug,
+            datetime=dt,
+            ticker=ticker,
+            source=(form.source.data or "").strip(),
+            summary=(form.summary.data or "").strip(),
+            price=(form.price.data or "").strip(),
+            sentiment=(form.sentiment.data or "").strip(),
+            action=form.action.data,
+            content=(form.body.data or "").strip(),
+        )
+    )
+    db.session.commit()
+
+    flash("Новость добавлена", "success")
+    return redirect(url_for("invest.index"))
 
 
 @invest_bp.route("/Новости/<path:slug>")
@@ -87,6 +158,7 @@ def deals_context(
     open_panel: str | None = None,
 ) -> dict:
     deposit = current_deposit()
+    ticker_choices = load_ticker_choices_from_db()
     changes = db.session.scalars(
         select(InvestDepositChange).order_by(
             InvestDepositChange.date.desc(),
@@ -103,7 +175,7 @@ def deals_context(
         "deposit_changes": changes,
         "deals": deals,
         "deposit_form": deposit_form,
-        "deal_form": deal_form or DealForm(deposit=deposit),
+        "deal_form": deal_form or DealForm(deposit=deposit, ticker_choices=ticker_choices),
         "close_form": close_form or CloseDealForm(),
         "close_deal": close_deal,
         "open_panel": open_panel,
@@ -159,7 +231,7 @@ def update_deposit():
 @login_required
 def add_deal():
     deposit = current_deposit()
-    form = DealForm(deposit=deposit)
+    form = DealForm(deposit=deposit, ticker_choices=load_ticker_choices_from_db())
     if not form.validate_on_submit():
         flash_form_errors(form)
         return render_deals(deal_form=form, open_panel="deal"), 400

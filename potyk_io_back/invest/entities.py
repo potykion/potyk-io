@@ -48,6 +48,71 @@ class InvestDeal(db.Model):
         return ((sell - buy) / buy * Decimal(100)).quantize(Decimal("0.01"))
 
 
+class InvestTicker(db.Model):
+    __tablename__ = "invest_tickers"
+
+    id = db.Column(db.Integer, primary_key=True)
+    ticker = db.Column(db.String(64), nullable=False, unique=True, index=True)
+    name = db.Column(db.String(255), nullable=False)
+    asset_type = db.Column(db.String(16), nullable=False, index=True)
+    sector = db.Column(db.String(255), nullable=False, default="")
+    dependencies = db.Column(db.JSON, nullable=False, default=list)
+    fee = db.Column(db.Numeric(8, 4), nullable=True)
+    management_company = db.Column(db.String(255), nullable=False, default="")
+
+
+class InvestNews(db.Model):
+    __tablename__ = "invest_news"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    # slug нужен для URL `/invest/Новости/<slug>` и как отображаемое название на карточках.
+    slug = db.Column(db.String(255), nullable=False, unique=True, index=True)
+
+    datetime = db.Column(db.DateTime, nullable=False, index=True)
+    ticker = db.Column(db.String(64), nullable=False, index=True)
+
+    source = db.Column(db.String(255), nullable=False, default="")
+    summary = db.Column(db.Text, nullable=False, default="")
+    price = db.Column(db.String(64), nullable=False, default="")
+
+    # В старом vault это было emoji из frontmatter (🟢/🟡/🔴).
+    sentiment = db.Column(db.String(16), nullable=False, default="")
+
+    # Покупать / держать / наблюдать / продавать
+    action = db.Column(db.String(32), nullable=False, default="наблюдать")
+
+    # Markdown body (часть файла после frontmatter), рендерится в HTML на странице новости.
+    content = db.Column(db.Text, nullable=False, default="")
+
+
+def load_source_choices_from_db() -> list[tuple[str, str]]:
+    """Уникальные непустые источники из invest_news, отсортированные по убыванию даты."""
+    rows = db.session.execute(
+        select(InvestNews.source)
+        .where(InvestNews.source != "")
+        .group_by(InvestNews.source)
+        .order_by(InvestNews.source.desc())
+    ).scalars().all()
+    return [(s, s) for s in rows if s]
+
+
+def load_ticker_choices_from_db() -> list[tuple[str, str]]:
+    """
+    (value, label) для Tom Select: value = тикер, label = "TICKER Имя".
+    """
+    rows = db.session.scalars(select(InvestTicker).order_by(InvestTicker.ticker.asc()))
+    choices: list[tuple[str, str]] = []
+    for r in rows:
+        ticker = (r.ticker or "").strip()
+        name = (r.name or "").strip()
+        if not ticker:
+            continue
+        label = ticker if (not name or name == ticker) else f"{ticker} {name}"
+        choices.append((ticker, label))
+    return choices
+
+
 def current_deposit() -> Decimal:
     row = db.session.scalars(
         select(InvestDepositChange).order_by(

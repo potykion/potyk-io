@@ -3,7 +3,7 @@ from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 import re
 
 from flask_wtf import FlaskForm
-from wtforms import DateField, DateTimeField, DecimalField, StringField, SubmitField, TextAreaField
+from wtforms import DateField, DateTimeField, DecimalField, SelectField, StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, InputRequired, Length, NumberRange, Optional, ValidationError
 
 MAX_VOLUME_PCT = Decimal("5")
@@ -79,10 +79,11 @@ class DepositForm(FlaskForm):
 
 
 class DealForm(FlaskForm):
-    ticker = StringField(
+    ticker = SelectField(
         "Тикер",
         validators=[DataRequired(message="Укажи тикер"), Length(max=32)],
         filters=[lambda value: value.strip() if isinstance(value, str) else value],
+        validate_choice=False,
     )
     opened_at = DateTimeField(
         "Дата и время",
@@ -137,9 +138,15 @@ class DealForm(FlaskForm):
     thoughts = TextAreaField("Причина входа", validators=[Optional()], default="")
     submit = SubmitField("Добавить сделку")
 
-    def __init__(self, deposit: Decimal | None = None, **kwargs):
+    def __init__(
+        self,
+        deposit: Decimal | None = None,
+        ticker_choices: list[tuple[str, str]] | None = None,
+        **kwargs,
+    ):
         super().__init__(**kwargs)
         self.deposit = deposit if deposit is not None else Decimal("0")
+        self.ticker.choices = [("", "")] + (ticker_choices or [])
         self.take_profit_price: Decimal | None = None
         self.stop_loss_price: Decimal | None = None
         self.volume_amount: Decimal | None = None
@@ -217,3 +224,79 @@ class CloseDealForm(FlaskForm):
     thoughts = TextAreaField("Причина выхода", validators=[Optional()], default="")
     mistakes = TextAreaField("Ошибки", validators=[Optional()], default="")
     submit = SubmitField("Закрыть сделку")
+
+
+class NewsForm(FlaskForm):
+    datetime = DateTimeField(
+        "Дата и время",
+        format="%Y-%m-%dT%H:%M",
+        # Чтоб в input[type=datetime-local] всегда было значение.
+        default=datetime.now,
+        validators=[DataRequired()],
+        render_kw={"type": "datetime-local"},
+    )
+
+    ticker = SelectField(
+        "Тикер",
+        validators=[DataRequired(message="Укажи тикер"), Length(max=64)],
+        filters=[lambda value: value.strip().upper() if isinstance(value, str) else value],
+        validate_choice=False,
+    )
+
+    source = SelectField(
+        "Источник",
+        validators=[Optional(), Length(max=255)],
+        validate_choice=False,
+    )
+
+    summary = TextAreaField(
+        "Коротко",
+        validators=[InputRequired(), Length(max=2000)],
+    )
+
+    price = StringField(
+        "Цена",
+        validators=[Optional(), Length(max=64)],
+        description="Можно оставить пустым",
+    )
+
+    sentiment = SelectField(
+        "Сентимент",
+        choices=[
+            ("", "—"),
+            ("🟢", "🟢 Позитив"),
+            ("🟡", "🟡 Нейтрально"),
+            ("🔴", "🔴 Негатив"),
+        ],
+        validators=[Optional()],
+    )
+
+    action = SelectField(
+        "Действие",
+        choices=[
+            ("Покупать", "Покупать"),
+            ("держать", "держать"),
+            ("наблюдать", "наблюдать"),
+            ("продавать", "продавать"),
+        ],
+        validators=[DataRequired()],
+        default="наблюдать",
+    )
+
+    body = TextAreaField(
+        "Текст новости (markdown)",
+        validators=[Optional()],
+        default="",
+    )
+
+    submit = SubmitField("Добавить")
+
+    def __init__(
+        self,
+        ticker_choices: list[tuple[str, str]] | None = None,
+        source_choices: list[tuple[str, str]] | None = None,
+        **kwargs,
+    ):
+        super().__init__(**kwargs)
+        self.ticker.choices = [("", "")] + (ticker_choices or [])
+        self.source.choices = [("", "")] + (source_choices or [])

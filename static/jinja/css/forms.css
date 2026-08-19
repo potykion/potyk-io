@@ -4,6 +4,10 @@ form.grid {
     margin-top: 12px;
 }
 
+form.grid * {
+    box-sizing: border-box;
+}
+
 @media (min-width: 560px) {
     form.grid.cols-2 { grid-template-columns: 1fr 1fr; }
     form.grid.cols-2 .full { grid-column: 1 / -1; }
@@ -57,6 +61,12 @@ input, textarea, select {
 textarea {
     min-height: 88px;
     resize: vertical;
+}
+
+input[type="datetime-local"] {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 10px;
 }
 
 button, .btn {
