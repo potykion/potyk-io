@@ -50,7 +50,7 @@
         <div class="roulette-collection-select">
             <label for="roulette-collection-select">Коллекция</label>
             <select id="roulette-collection-select">
-                {% for col in roulette_collections %}
+                {% for col in collections %}
                     <option value="{{ col.id }}" {% if loop.first %}selected{% endif %}>{{ col.title }}</option>
                 {% endfor %}
             </select>

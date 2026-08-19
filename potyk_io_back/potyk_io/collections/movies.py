@@ -12,9 +12,6 @@ from potyk_io_back.core.db import db
 COLLECTIONS_DIR = Path(__file__).resolve().parents[3] / "templates" / "potyk-io" / "collections"
 MOVIES_YAML = COLLECTIONS_DIR / "movies.yaml"
 
-WATCH_LATER_COLLECTION_ID = "watch_later"
-WATCH_LATER_COLLECTION_TITLE = "Посмотреть позже"
-
 
 class Movie(db.Model):
     __tablename__ = "movies"
@@ -35,7 +32,6 @@ class MovieCollection(db.Model):
     quote = db.Column(db.Text, nullable=True)
     youtube = db.Column(db.Text, nullable=True)
     movie_ids = db.Column(db.JSON, nullable=False, default=list)
-    watch_later = db.Column(db.Boolean, nullable=False, default=False, index=True)
     sort_order = db.Column(db.Integer, nullable=False, default=0, index=True)
 
 
@@ -56,14 +52,11 @@ class CollectionView:
     movies: list[MovieView] = field(default_factory=list)
     youtube: str | None = None
     quote: str | None = None
-    watch_later: bool = False
 
 
 @dataclass
 class MoviesPage:
     collections: list[CollectionView]
-    watch_later: list[MovieView]
-    roulette_collections: list[CollectionView] = field(default_factory=list)
 
 
 def _parse_movie_from_yaml(raw: dict) -> MovieView:
@@ -89,7 +82,6 @@ def _seed_from_yaml_if_needed() -> None:
     text = MOVIES_YAML.read_text(encoding="utf-8-sig")
     data = yaml.safe_load(text) or {}
 
-    watch_later_raw = data.get("watch_later", []) or []
     collections_raw = data.get("collections", []) or []
 
     movies_by_id: dict[str, MovieView] = {}
@@ -98,12 +90,18 @@ def _seed_from_yaml_if_needed() -> None:
         movie = _parse_movie_from_yaml(raw_movie)
         movies_by_id.setdefault(movie.id, movie)
 
-    movie_ids_watch_later: list[str] = []
-    for raw_movie in watch_later_raw:
-        add_movie(raw_movie)
-        movie_ids_watch_later.append(str(raw_movie["id"]))
-
     collection_rows: list[dict] = []
+    raw_watch_later = data.get("watch_later", []) or []
+    if raw_watch_later:
+        collections_raw = [
+            {
+                "id": "watch_later",
+                "title": "Посмотреть позже",
+                "movies": raw_watch_later,
+            },
+            *collections_raw,
+        ]
+
     for idx, raw_col in enumerate(collections_raw):
         col_id = str(raw_col["id"])
         movie_ids: list[str] = []
@@ -118,20 +116,9 @@ def _seed_from_yaml_if_needed() -> None:
                 quote=raw_col.get("quote") or None,
                 youtube=raw_col.get("youtube") or None,
                 movie_ids=movie_ids,
-                watch_later=False,
                 sort_order=idx,
             )
         )
-
-    watch_later_collection_row = dict(
-        id=WATCH_LATER_COLLECTION_ID,
-        title=WATCH_LATER_COLLECTION_TITLE,
-        quote=None,
-        youtube=None,
-        movie_ids=movie_ids_watch_later,
-        watch_later=True,
-        sort_order=0,
-    )
 
     # Перезаполняем только при первом заполнении (если Movie пустая).
     db.session.query(MovieCollection).delete()
@@ -142,8 +129,7 @@ def _seed_from_yaml_if_needed() -> None:
         [m.__dict__ for m in movies_by_id.values()],
     )
 
-    all_collections = [watch_later_collection_row, *collection_rows]
-    db.session.bulk_insert_mappings(MovieCollection.__table__, all_collections)
+    db.session.bulk_insert_mappings(MovieCollection.__table__, collection_rows)
     db.session.commit()
 
 
@@ -172,34 +158,7 @@ def _ordered_movies_by_ids(movie_ids: list[str]) -> list[MovieView]:
 
 def load_movies_data() -> MoviesPage:
     _seed_from_yaml_if_needed()
-
-    watch_later_rows = MovieCollection.query.filter(MovieCollection.watch_later.is_(True)).order_by(
-        MovieCollection.sort_order.asc(), MovieCollection.id.asc()
-    )
-    roulette_collections: list[CollectionView] = []
-    watch_later_seen: set[str] = set()
-    watch_later: list[MovieView] = []
-    for col in watch_later_rows:
-        movies = _ordered_movies_by_ids((col.movie_ids if col.movie_ids else []) or [])
-        roulette_collections.append(
-            CollectionView(
-                id=col.id,
-                title=col.title,
-                movies=movies,
-                youtube=col.youtube,
-                quote=col.quote,
-                watch_later=True,
-            )
-        )
-        for movie in movies:
-            if movie.id in watch_later_seen:
-                continue
-            watch_later_seen.add(movie.id)
-            watch_later.append(movie)
-
-    collections_rows = MovieCollection.query.filter(MovieCollection.watch_later.is_(False)).order_by(
-        MovieCollection.sort_order.asc(), MovieCollection.id.asc()
-    )
+    collections_rows = MovieCollection.query.order_by(MovieCollection.sort_order.asc(), MovieCollection.id.asc())
 
     collections: list[CollectionView] = []
     for col in collections_rows:
@@ -210,15 +169,9 @@ def load_movies_data() -> MoviesPage:
                 movies=_ordered_movies_by_ids((col.movie_ids if col.movie_ids else []) or []),
                 youtube=col.youtube,
                 quote=col.quote,
-                watch_later=False,
             )
         )
-
-    return MoviesPage(
-        collections=collections,
-        watch_later=watch_later,
-        roulette_collections=roulette_collections,
-    )
+    return MoviesPage(collections=collections)
 
 
 def movies_for_client(page: MoviesPage) -> dict:
@@ -233,12 +186,10 @@ def movies_for_client(page: MoviesPage) -> dict:
         }
 
     movies_by_collection: dict[str, list[dict]] = {}
-    for col in page.roulette_collections:
-        movies_by_collection[col.id] = [movie_to_dict(m) for m in col.movies]
     for col in page.collections:
         movies_by_collection[col.id] = [movie_to_dict(m) for m in col.movies]
 
     return {
-        "watchLaterCollectionId": page.roulette_collections[0].id if page.roulette_collections else WATCH_LATER_COLLECTION_ID,
+        "defaultCollectionId": page.collections[0].id if page.collections else "",
         "moviesByCollection": movies_by_collection,
     }

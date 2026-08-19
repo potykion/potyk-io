@@ -12,7 +12,7 @@
 
     const payload = JSON.parse(dataEl.textContent);
     const moviesByCollection = payload.moviesByCollection || {};
-    const defaultCollectionId = payload.watchLaterCollectionId || "watch_later";
+    const defaultCollectionId = payload.defaultCollectionId || Object.keys(moviesByCollection)[0] || "";
 
     const canvas = document.getElementById("roulette-canvas");
     const spinBtn = document.getElementById("roulette-spin");

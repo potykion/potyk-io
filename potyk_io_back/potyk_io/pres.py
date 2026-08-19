@@ -128,8 +128,6 @@ def movies_collection():
     return flask.render_template(
         "potyk-io/collections/movies.html",
         collections=page.collections,
-        watch_later=page.watch_later,
-        roulette_collections=page.roulette_collections,
         movies_by_collection_json=json.dumps(movies_for_client(page), ensure_ascii=False),
     )
 
@@ -139,7 +137,7 @@ def movies_collection():
 def movies_admin():
     movies = db.session.scalars(select(Movie).order_by(Movie.id.asc())).all()
     collections = db.session.scalars(
-        select(MovieCollection).order_by(MovieCollection.watch_later.desc(), MovieCollection.sort_order.asc(), MovieCollection.id.asc())
+        select(MovieCollection).order_by(MovieCollection.sort_order.asc(), MovieCollection.id.asc())
     ).all()
     movies_by_id = {movie.id: movie for movie in movies}
     collections_kanban = []
@@ -163,7 +161,6 @@ def movies_admin():
             {
                 "id": collection.id,
                 "title": collection.title,
-                "watch_later": collection.watch_later,
                 "movies": collection_movies,
             }
         )
@@ -244,7 +241,6 @@ def movies_admin_create_collection():
     title = (request.form.get("title") or "").strip()
     youtube = (request.form.get("youtube") or "").strip() or None
     quote = (request.form.get("quote") or "").strip() or None
-    watch_later = (request.form.get("watch_later") or "") == "on"
     movie_ids_raw = request.form.get("movie_ids") or ""
     movie_ids = _parse_movie_ids(movie_ids_raw)
 
@@ -264,9 +260,8 @@ def movies_admin_create_collection():
 
     col = db.session.get(MovieCollection, col_id)
     if col is None:
-        # sort_order: в конец среди non-watch_later коллекций.
         max_sort = db.session.scalar(
-            select(sa.func.max(MovieCollection.sort_order)).where(MovieCollection.watch_later.is_(False))
+            select(sa.func.max(MovieCollection.sort_order))
         )
         col = MovieCollection(id=col_id, sort_order=(max_sort or 0) + 1)
         db.session.add(col)
@@ -276,22 +271,6 @@ def movies_admin_create_collection():
     col.quote = quote
 
     col.movie_ids = movie_ids
-
-    # Ограничиваем “ровно одну watch_later-коллекцию”, чтобы рулетка не зависела от порядка.
-    if watch_later:
-        db.session.query(MovieCollection).filter(MovieCollection.id != col_id).update({"watch_later": False})
-        col.watch_later = True
-    else:
-        # Не даём выключить watch_later у последней коллекции.
-        if col.watch_later:
-            only_watch_later = db.session.scalar(
-                select(sa.func.count(MovieCollection.id)).where(MovieCollection.watch_later.is_(True))
-            )
-            if only_watch_later == 1:
-                flash("Нельзя выключить watch_later у единственной коллекции — сначала включите его в другую.", "error")
-                db.session.rollback()
-                return redirect(url_for("potyk_io.movies_admin"))
-        col.watch_later = False
 
     db.session.commit()
     flash("Коллекция сохранена", "success")

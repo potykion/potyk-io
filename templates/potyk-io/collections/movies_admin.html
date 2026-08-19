@@ -71,11 +71,6 @@
                 </label>
             </p>
             <p>
-                <label>watch_later (режим рулетки)<br>
-                    <input type="checkbox" name="watch_later"/>
-                </label>
-            </p>
-            <p>
                 <label>movie_ids (id фильмов через запятую/пробел/перенос строки)<br>
                     <textarea name="movie_ids" rows="3" style="width: 520px"></textarea>
                 </label>
@@ -91,9 +86,7 @@
                 <label>Коллекция<br>
                     <select name="collection_id" required style="width: 420px">
                         {% for c in collections %}
-                            <option value="{{ c.id }}">
-                                {{ c.title }} ({{ c.id }}){% if c.watch_later %} [watch_later]{% endif %}
-                            </option>
+                            <option value="{{ c.id }}">{{ c.title }} ({{ c.id }})</option>
                         {% endfor %}
                     </select>
                 </label>
@@ -126,7 +119,6 @@
                 <li>
                     <b>{{ c.title }}</b> ({{ c.id }}) —
                     фильмов: {{ (c.movie_ids or []) | length }}
-                    {% if c.watch_later %}[watch_later]{% endif %}
                 </li>
             {% endfor %}
         </ul>

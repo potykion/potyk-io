@@ -35,7 +35,6 @@
             headerEl.innerHTML =
                 "<h3>" + escapeHtml(collection.title) + "</h3>" +
                 "<div class=\"movies-kanban-meta\">" +
-                (collection.watch_later ? "watch_later, " : "") +
                 collection.movies.length + " фильмов" +
                 "</div>";
 
