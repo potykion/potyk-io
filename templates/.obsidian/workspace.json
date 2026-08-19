@@ -1,57 +1,37 @@
 {
   "main": {
-    "id": "18f5d9422a6e9a0b",
+    "id": "62cd83fd9c39879c",
     "type": "split",
     "children": [
       {
-        "id": "b0ff40d606ce64b9",
+        "id": "03cee36919950ef3",
         "type": "tabs",
         "children": [
           {
-            "id": "6d612005413c3b95",
-            "type": "leaf",
-            "pinned": true,
-            "state": {
-              "type": "bases",
-              "state": {
-                "file": "tasks/ЗАДАЧИ КАНБАН.base",
-                "viewName": "Table"
-              },
-              "pinned": true,
-              "icon": "columns",
-              "title": "ЗАДАЧИ КАНБАН"
-            }
-          },
-          {
-            "id": "ec104f0e3020a5b7",
+            "id": "0f76d3e8fb0c1057",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "tasks/potyk-invest Табличка на чем заработать.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "potyk-invest Табличка на чем заработать"
+              "title": "New tab"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
   },
   "left": {
-    "id": "f1cff8fa27b4c242",
+    "id": "2c3e065e9b7eac3d",
     "type": "split",
     "children": [
       {
-        "id": "92b103b9958a7528",
+        "id": "c05338e7de434239",
         "type": "tabs",
         "children": [
           {
-            "id": "afcc4f5b5f3ae89d",
+            "id": "a2f4813a1acf36d0",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -66,7 +46,7 @@
             }
           },
           {
-            "id": "9d9b89df5c481308",
+            "id": "46a19bf9817647a7",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -83,7 +63,7 @@
             }
           },
           {
-            "id": "50f636b39100db24",
+            "id": "920ed3f9884f67c1",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -102,20 +82,19 @@
     "width": 300
   },
   "right": {
-    "id": "c622d0f7ebec4bbe",
+    "id": "78864376de88b74b",
     "type": "split",
     "children": [
       {
-        "id": "a3f176c3d38a7266",
+        "id": "1bb66559e5511db5",
         "type": "tabs",
         "children": [
           {
-            "id": "2fe0346caaa18763",
+            "id": "dfac671800569fec",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "tasks/potyk-invest Табличка на чем заработать.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -129,12 +108,11 @@
             }
           },
           {
-            "id": "e1495b18f062a2f2",
+            "id": "c30434b5112215a5",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "tasks/potyk-invest Табличка на чем заработать.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -143,7 +121,7 @@
             }
           },
           {
-            "id": "c2bfb2f6ca88a46c",
+            "id": "ff0fc04dd59941c7",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -158,7 +136,7 @@
             }
           },
           {
-            "id": "6ac486347fd5e6ad",
+            "id": "95e440ecb25eadf5",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -172,12 +150,11 @@
             }
           },
           {
-            "id": "cadb37b0f2874614",
+            "id": "3e68e4189f41b39c",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "tasks/potyk-invest Табличка на чем заработать.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -204,37 +181,6 @@
       "bases:Create new base": false
     }
   },
-  "active": "ec104f0e3020a5b7",
-  "lastOpenFiles": [
-    "tasks/feat-travel-guide.md",
-    "tasks/ЗАДАЧИ КАНБАН.base",
-    "tasks/README.md",
-    "diary/ИИ Обзоры/Недели/2026-W33.md",
-    "tasks/done/potyk-invest форма сделки.md",
-    "tasks/Task-Movies.md",
-    "collections/scream_cover_url.txt",
-    "collections/movies.html",
-    "collections/movies.yaml",
-    "tasks/menu-upd.md",
-    "tasks/айфон и андроид.md",
-    "tasks/potyk-invest Табличка на чем заработать.md",
-    "diary/2026-08-08.md",
-    "diary/2026-08-07.md",
-    "diary/2026-08-09.md",
-    "diary/2026-08-10.md",
-    "diary/2026-08-11.md",
-    "diary/2026-08-12.md",
-    "diary/2026-08-13.md",
-    "diary/2026-08-14.md",
-    "tasks/potyk-invest форма сделки.md",
-    "diary/2026-08-15.md",
-    "tasks/потик фуд эксперименты.md",
-    "diary/2026-08-16.md",
-    "tasks/обновление гайда по тревелу.md",
-    "tasks/ЗАДАЧИ СПИСОК.md",
-    "tasks/done/feat-close-day.md",
-    "tasks/done/feat-stats.md",
-    "tasks/done/feat-optional-expence.md",
-    "tasks/done/feat-alembic.md"
-  ]
+  "active": "0f76d3e8fb0c1057",
+  "lastOpenFiles": []
 }
