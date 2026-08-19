@@ -2,9 +2,9 @@
 
 ## Рецепты
 
-### :cooking: Завтраки
+### 🍳 Завтраки
 
-#### :bread: Хлеб
+#### 🍞 Хлеб
 
 - [Риет из тунца ака Тунцовая намазка](recipes/01-breakfast/bread/tuna-riet.md)
 - [Риет из горбуши](recipes/01-breakfast/bread/salmon-riet.md)
@@ -14,32 +14,32 @@
 - [Горячий бутер с кетчупом, колбасой и сыром](recipes/01-breakfast/bread/hot-sandwich-ketchup-sausage-cheese.md)
 - [Яйца Бенедикт](recipes/01-breakfast/bread/benedict.md)
 
-#### :egg: Яйца
+#### 🥚 Яйца
 
 - [Гайд на яйца](./recipes/guides/eggs.md)
 - [Шакшука](recipes/01-breakfast/eggs/shakshouka.md)
 - [Глазунья/Омлет запеченая с колбасками/овощами/сыром / Фриратта](recipes/01-breakfast/eggs/eggs-baked-w-sausage-and-veggies.md)
 - [Скрембл с тунцом](recipes/01-breakfast/eggs/tuna-eggs.md)
 
-#### :pancakes: Сырники / Блинбчики и тд
+#### 🥞 Сырники / Блинбчики и тд
 
 - [Сырники](recipes/01-breakfast/pancakes/syrniki.md)
 - [Блины](recipes/01-breakfast/pancakes/blyni.md)
 - [Оладьи](recipes/01-breakfast/pancakes/pancakes.md)
 - [Запеканка](recipes/01-breakfast/pancakes/zapekanka.md)
 
-### :salad: Салаты
+### 🥗 Салаты
 
 - [Салат с сельдереем с яблоками](recipes/02-salad/celery-apples.md)
 - [Салат с уткой](recipes/02-salad/salad-duck.md)
 - [Салат из капусты «Витаминный»](recipes/02-salad/cabbage-vitamin.md)
 
-### :bowl_with_spoon: Супы
+### 🍲 Супы
 
 - [Куриный суп](recipes/03-soup/chicken-soup.md)
 - [Борщ](recipes/03-soup/borsh.md)
 
-### :shallow_pan_of_food: Основные блюда
+### 🍽️ Основные блюда
 
 - [Сердечки по-строгоновски](recipes/04-main-course/heart-stroganoff.md)
 - [Тефтели с овощами в одной сковороде](recipes/04-main-course/meatballs-w-veggies.md)
@@ -58,49 +58,49 @@
 - [Рыба, запеченная с помидорами и оливками по-средиземноморски](recipes/04-main-course/fish-w-tomatoes-olives.md)
 - [Ленивые голубцы в духовке](recipes/04-main-course/lazy-golubtsy.md)
 
-#### :spaghetti: Паста
+#### 🍝 Паста
 
 - [Карбонара](recipes/04-main-course/pasta/pasta-carbonara.md)
 - [Паста с мясным рагу и шпинатом](recipes/04-main-course/pasta/pasta-ground-beef-spinach.md)
 - [Паста по-французски с кальмарами](recipes/04-main-course/pasta/pasta-squid.md)
 - [Макароны с мясом в томатном соусе](recipes/04-main-course/pasta/pasta-w-pork-tomato.md)
 
-#### :wind_blowing_face: Аэрогриль
+#### 💨 Аэрогриль
 
 - [Куриные крылья в аэрогрилле](recipes/04-main-course/air-fryer/air-fryer-chicken.md)
 
-### :earth_asia: Азия
+### 🌏 Азия
 
 - [Соба с утиной грудкой и соусом терияки](recipes/05-asia/duck-soba.md)
 - [Стеклянная лапша с креветками](recipes/05-asia/glass-noodles-shrimp.md)
 
-#### :cn: Китайская кухня
+#### 🇨🇳 Китайская кухня
 
 - [Курица в соевом соусе с рисом](recipes/05-asia/china/chicken-rice.md)
 - [Мапо Тофу](recipes/05-asia/china/mapo-tofu.md)
 
-#### :kr: Корейская кухня
+#### 🇰🇷 Корейская кухня
 
 - [Корейский чикен в соусе Яннём](recipes/05-asia/korea/korean-chicken.md)
 - [Пульгоги](recipes/05-asia/korea/bulgogi.md)
 - [Кимчи](https://www.youtube.com/watch?v=mvsUjHd0Na4)
 
-### :pie: Десерты
+### 🥧 Десерты
 
 - [Брауни с вишней](recipes/06-dessert/brownie.md)
 
-### :axe: Крафт
+### 🪓 Крафт
 
-#### :jar: Ферментация
+#### 🫙 Ферментация
 
 - [Квашеная капуста / Капуста по-гурьевски](recipes/07-craft/fermented-cabbage.md)
 - [Кимчи](https://www.youtube.com/watch?v=mvsUjHd0Na4)
 
-#### :hot_dog: Колбасные изделия
+#### 🌭 Колбасные изделия
 
 - [Колбаски из индейки](recipes/07-craft/sausage-turkey.md)
 
 ## Дегустации
 
-- :wine_glass: [Вино](tasting/wine.md)
-- :beer: [Пиво](tasting/beer.md)
+- 🍷 [Вино](tasting/wine.md)
+- 🍺 [Пиво](tasting/beer.md)

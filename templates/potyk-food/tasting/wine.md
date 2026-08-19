@@ -14,7 +14,7 @@
     <a href="#5" style="display: inline-flex; align-items: flex-end; justify-content: center; width: 40px;"><img src="../img/991dab897a77c78a5279cfxd2fdc.webp" alt="Zinfandel" ></a>
 </div>
 
-## :ar: [Argentinian Mendoza Malbec Red](https://www.vivino.com/en/wine-styles/argentinian-mendoza-malbec-red)
+## 🇦🇷 [Argentinian Mendoza Malbec Red](https://www.vivino.com/en/wine-styles/argentinian-mendoza-malbec-red)
 
 >
 
@@ -39,7 +39,7 @@
 </tbody>
 </table>
 
-## :de: [Spätburgunder aka German Pinot Noir](https://www.vivino.com/en/wine-styles/german-spatburgunder)
+## 🇩🇪 [Spätburgunder aka German Pinot Noir](https://www.vivino.com/en/wine-styles/german-spatburgunder)
 
 >
 
@@ -72,7 +72,7 @@
 </tbody>
 </table>
 
-## :es: [Spanish Toro Red](https://www.vivino.com/en/wine-styles/spanish-toro-red)
+## 🇪🇸 [Spanish Toro Red](https://www.vivino.com/en/wine-styles/spanish-toro-red)
 
 >Испанский бленд вин на основе винограда Темпранильо
 
@@ -97,7 +97,7 @@
 </tbody>
 </table>
 
-## :flag_cl: [Chilean Cabernet Sauvignon](https://www.vivino.com/en/wine-styles/chilean-cabernet-sauvignon)
+## 🇨🇱 [Chilean Cabernet Sauvignon](https://www.vivino.com/en/wine-styles/chilean-cabernet-sauvignon)
 
 >
 
@@ -122,7 +122,7 @@
 </tbody>
 </table>
 
-## :flag_it: [Italian Prosecco](https://www.vivino.com/en/wine-styles/italian-prosecco)
+## 🇮🇹 [Italian Prosecco](https://www.vivino.com/en/wine-styles/italian-prosecco)
 
 >Итальянское игристое
 
@@ -147,7 +147,7 @@
 </tbody>
 </table>
 
-## :flag_ru: [Russian Red](https://www.vivino.com/en/wine-styles/russian-red)
+## 🇷🇺 [Russian Red](https://www.vivino.com/en/wine-styles/russian-red)
 
 >
 
@@ -172,7 +172,7 @@
 </tbody>
 </table>
 
-## :fr: [Languedoc-Roussillon Red](https://www.vivino.com/en/wine-styles/languedoc-roussillon-red)
+## 🇫🇷 [Languedoc-Roussillon Red](https://www.vivino.com/en/wine-styles/languedoc-roussillon-red)
 
 >Бленд вин с юга Франции
 
@@ -197,7 +197,7 @@
 </tbody>
 </table>
 
-## :ge: [Georgian Qvevri White](https://www.vivino.com/en/wine-styles/georgian-white)
+## 🇬🇪 [Georgian Qvevri White](https://www.vivino.com/en/wine-styles/georgian-white)
 
 >Грузинское оранжевое вино, выдержанное в кувшинах кверви
 
@@ -222,7 +222,7 @@
 </tbody>
 </table>
 
-## :ge: [Georgian Rkatsiteli White](https://www.vivino.com/en/wine-styles/georgian-rkatsiteli-white)
+## 🇬🇪 [Georgian Rkatsiteli White](https://www.vivino.com/en/wine-styles/georgian-rkatsiteli-white)
 
 >Вино из винограда Ркацители - самого популярного в Грузии
 
@@ -247,7 +247,7 @@
 </tbody>
 </table>
 
-## :us: [Californian Zinfandel](https://www.vivino.com/en/wine-styles/californian-zinfandel)
+## 🇺🇸 [Californian Zinfandel](https://www.vivino.com/en/wine-styles/californian-zinfandel)
 
 >
 

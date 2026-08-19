@@ -11,7 +11,7 @@
     <a href="#3" style="display: inline-flex; align-items: flex-end; justify-content: center; width: 40px;"><img src="../img/a3303ddcfxde9145b4c5a9601d43.webp" alt="Крушовице Безалкогольное" ></a>
 </div>
 
-## :be: Belgian Enkel
+## 🇧🇪 Belgian Enkel
 
 <table>
 <thead>
@@ -34,7 +34,7 @@
 </tbody>
 </table>
 
-## :be: Belgian Stout
+## 🇧🇪 Belgian Stout
 
 <table>
 <thead>
@@ -57,7 +57,7 @@
 </tbody>
 </table>
 
-## :de: German Helles
+## 🇩🇪 German Helles
 
 <table>
 <thead>
@@ -88,7 +88,7 @@
 </tbody>
 </table>
 
-## :earth_africa: Pale Lager
+## 🌍 Pale Lager
 
 <table>
 <thead>
@@ -119,7 +119,7 @@
 </tbody>
 </table>
 
-## :us: DIPA
+## 🇺🇸 DIPA
 
 <table>
 <thead>
@@ -142,7 +142,7 @@
 </tbody>
 </table>
 
-## :zero: Non-Alcoholic Lager
+## 0️⃣ Non-Alcoholic Lager
 
 <table>
 <thead>

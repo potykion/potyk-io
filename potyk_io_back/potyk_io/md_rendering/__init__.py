@@ -11,10 +11,15 @@ from potyk_io_back.potyk_io.md_rendering.render import (
     split_frontmatter,
     unquote_meta,
 )
-from potyk_io_back.potyk_io.md_rendering.templates import TEMPLATES_DIR, resolve_page
+from potyk_io_back.potyk_io.md_rendering.templates import (
+    FOOD_TEMPLATES_DIR,
+    TEMPLATES_DIR,
+    resolve_page,
+)
 
 __all__ = [
     "TEMPLATES_DIR",
+    "FOOD_TEMPLATES_DIR",
     "demote_headings",
     "extract_h1",
     "html_text",

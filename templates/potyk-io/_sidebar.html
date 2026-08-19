@@ -1,10 +1,22 @@
 {% macro nav_link(icon, title, link) -%}
 {%- set external = link.startswith('http://') or link.startswith('https://') -%}
-{%- set active = not external and (
-    request.path == link
-    or (link != '/' and link != '/n' and request.path.startswith(link + '/'))
-) -%}
-<a class="sidebar-link{% if active %} is-active{% endif %}"
+{%- set active_ns = namespace(active=false, longest_match='') -%}
+{%- if not external -%}
+    {%- for group in menu_groups -%}
+        {%- for item in group.links -%}
+            {%- set candidate = item.url -%}
+            {%- set candidate_external = candidate.startswith('http://') or candidate.startswith('https://') -%}
+            {%- if not candidate_external and (
+                request.path == candidate
+                or (candidate != '/' and candidate != '/n' and request.path.startswith(candidate + '/'))
+            ) and candidate|length > active_ns.longest_match|length -%}
+                {%- set active_ns.longest_match = candidate -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    {%- set active_ns.active = active_ns.longest_match == link -%}
+{%- endif -%}
+<a class="sidebar-link{% if active_ns.active %} is-active{% endif %}"
    href="{{ link }}"
    {% if external %}target="_blank" rel="noopener"{% endif %}>
     <span class="sidebar-link-icon" aria-hidden="true">{{ icon }}</span>

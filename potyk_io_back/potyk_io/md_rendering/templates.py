@@ -1,9 +1,13 @@
 from pathlib import Path
 
 TEMPLATES_DIR = Path(__file__).resolve().parents[3] / "templates" / "potyk-io"
+FOOD_TEMPLATES_DIR = Path(__file__).resolve().parents[3] / "templates" / "potyk-food"
 
 
-def resolve_page(page_path: str) -> Path | None:
+def resolve_page(
+    page_path: str, root: Path | None = None, allow_assets: bool = False
+) -> Path | None:
+    root = root or TEMPLATES_DIR
     page_path = page_path.strip("/")
     if not page_path or ".." in Path(page_path).parts:
         return None
@@ -13,13 +17,15 @@ def resolve_page(page_path: str) -> Path | None:
         return None
 
     candidates = [
-        TEMPLATES_DIR / f"{page_path}.md",
-        TEMPLATES_DIR / page_path / "index.md",
-        TEMPLATES_DIR / f"{page_path}.html",
-        TEMPLATES_DIR / page_path / "menu.html",
+        root / f"{page_path}.md",
+        root / page_path / "index.md",
+        root / f"{page_path}.html",
+        root / page_path / "menu.html",
     ]
+    if allow_assets:
+        candidates.append(root / page_path)
 
-    templates_root = TEMPLATES_DIR.resolve()
+    templates_root = root.resolve()
     for candidate in candidates:
         try:
             resolved = candidate.resolve()

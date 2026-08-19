@@ -59,7 +59,7 @@ MENU_GROUPS: list[MenuGroup] = [
             {
                 "icon": "🍕",
                 "title": "potyk-food",
-                "url": "https://potyk.io/potyk-food/",
+                "url": "/food",
                 "description": "Ворую рецепты",
             },
             {
@@ -248,6 +248,45 @@ MENU_GROUPS: list[MenuGroup] = [
             },
         ],
     },
+]
+
+
+FOOD_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "potyk-food",
+        "links": [
+            {
+                "icon": "🧪",
+                "title": "Эксперименты",
+                "url": "/food/experiments",
+                "description": "",
+            },
+            {
+                "icon": "🍳",
+                "title": "Рецепты",
+                "url": "/food",
+                "description": "",
+            },
+            {
+                "icon": "🍽️",
+                "title": "Кафе и рестораны",
+                "url": "/food/rest",
+                "description": "",
+            },
+            {
+                "icon": "🍷",
+                "title": "Дегустации",
+                "url": "/food/tasting",
+                "description": "",
+            },
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    }
 ]
 
 

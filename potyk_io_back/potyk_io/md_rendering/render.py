@@ -1,4 +1,5 @@
 import re
+from collections.abc import Callable
 from datetime import date
 
 import flask
@@ -14,6 +15,7 @@ MD_EXTENSIONS = ["extra", "sane_lists", "nl2br", "pymdownx.magiclink"]
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 FALSEY = {"false", "0", "no", "off"}
 H1_RE = re.compile(r"(<h1\b[^>]*>.*?</h1>)", re.IGNORECASE | re.DOTALL)
+MARKDOWN_LINK_RE = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)")
 
 
 def split_frontmatter(text: str) -> tuple[dict[str, str], str]:
@@ -65,14 +67,31 @@ def inject_created(html: str, created: date, title: str | None) -> str:
     return f"{stamp}\n{html}"
 
 
+def rewrite_markdown_links(
+    body: str, link_rewriter: Callable[[str], str | None]
+) -> str:
+    def replace(match: re.Match[str]) -> str:
+        label, url = match.groups()
+        rewritten = link_rewriter(url)
+        if not rewritten or rewritten == url:
+            return match.group(0)
+        return f"[{label}]({rewritten})"
+
+    return MARKDOWN_LINK_RE.sub(replace, body)
+
+
 def render_body_html(
     body: str,
     meta: dict[str, str],
     title: str | None = None,
     created: date | None = None,
+    base_href: str | None = None,
+    link_rewriter: Callable[[str], str | None] | None = None,
 ) -> str:
     if title:
         body = ensure_h1(body, title)
+    if link_rewriter is not None:
+        body = rewrite_markdown_links(body, link_rewriter)
     content = markdown.markdown(
         linkify_hashtags(body),
         extensions=MD_EXTENSIONS,
@@ -84,5 +103,8 @@ def render_body_html(
         content = inject_created(content, created, title)
     show_header = str(meta.get("header", "true")).strip().lower() not in FALSEY
     return flask.render_template(
-        "potyk-io/page.html", content=content, show_header=show_header
+        "potyk-io/page.html",
+        content=content,
+        show_header=show_header,
+        base_href=base_href,
     )

@@ -43,7 +43,7 @@
 
 {% block header_brand %}
     {% if request.path != '/' %}
-    <a href="/" class="top-bar-brand">potyk.io</a>
+    <a href="{{ section_brand_url|default('/') }}" class="top-bar-brand">{{ section_brand_title|default('potyk.io') }}</a>
     {% endif %}
 {% endblock %}
 

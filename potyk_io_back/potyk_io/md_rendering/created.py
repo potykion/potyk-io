@@ -39,14 +39,10 @@ def parse_iso_date(value: str) -> date | None:
 
 
 def created_from_meta(meta: dict[str, str]) -> date | None:
-    for key in ("created", "date"):
-        raw = meta.get(key)
-        if not raw:
-            continue
-        parsed = parse_iso_date(raw)
-        if parsed:
-            return parsed
-    return None
+    raw = meta.get("created")
+    if not raw:
+        return None
+    return parse_iso_date(raw)
 
 
 def created_from_filename(stem: str) -> date | None:
@@ -105,19 +101,9 @@ def resolve_created(
     meta: dict[str, str],
     *,
     use_git: bool = False,
-) -> date:
-    """created из frontmatter, иначе из имени, иначе git (если просили) / ctime файла."""
-    from_meta = created_from_meta(meta)
-    if from_meta:
-        return from_meta
-    from_name = created_from_filename(path.stem)
-    if from_name:
-        return from_name
-    if use_git:
-        from_git = created_from_git(path)
-        if from_git:
-            return from_git
-    return created_from_fs(path)
+) -> date | None:
+    """Показываем дату только если явно указан frontmatter `created`."""
+    return created_from_meta(meta)
 
 
 def format_created_ru(value: date) -> str:

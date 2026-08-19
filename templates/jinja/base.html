@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="{% block viewport %}width=device-width, initial-scale=1.0{% endblock %}">
+    {% if base_href %}<base href="{{ base_href }}">{% endif %}
 
     <title>{% block title %}potyk.io{% endblock %}</title>
 
