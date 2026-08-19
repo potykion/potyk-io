@@ -2,9 +2,18 @@ import json
 from pathlib import Path, PurePosixPath
 
 import flask
-from flask import Blueprint, abort, request, send_file
+from flask import Blueprint, abort, flash, redirect, request, render_template, send_file, url_for
+from flask_login import login_required
+import sqlalchemy as sa
+from sqlalchemy import select
 
-from potyk_io_back.potyk_io.collections.movies import load_movies_data, movies_for_client
+from potyk_io_back.potyk_io.collections.movies import (
+    Movie,
+    MovieCollection,
+    load_movies_data,
+    movies_for_client,
+)
+from potyk_io_back.core.db import db
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, random_note_batch, search_notes
 from potyk_io_back.potyk_io.md_rendering import (
     FOOD_TEMPLATES_DIR,
@@ -121,6 +130,169 @@ def movies_collection():
         watch_later=page.watch_later,
         movies_by_collection_json=json.dumps(movies_for_client(page), ensure_ascii=False),
     )
+
+
+@potyk_io_bp.route("/collections/movies/admin")
+@login_required
+def movies_admin():
+    movies = db.session.scalars(select(Movie).order_by(Movie.id.asc())).all()
+    collections = db.session.scalars(
+        select(MovieCollection).order_by(MovieCollection.watch_later.desc(), MovieCollection.sort_order.asc(), MovieCollection.id.asc())
+    ).all()
+    return render_template(
+        "potyk-io/collections/movies_admin.html",
+        movies=movies,
+        collections=collections,
+    )
+
+
+def _parse_movie_ids(raw: str) -> list[str]:
+    # Поддерживаем ввод: "1,2,3", "1 2 3" и переносы строк.
+    tokens = [t.strip() for t in raw.replace(",", " ").split()]
+    seen: set[str] = set()
+    result: list[str] = []
+    for t in tokens:
+        if not t or t in seen:
+            continue
+        seen.add(t)
+        result.append(t)
+    return result
+
+
+@potyk_io_bp.post("/collections/movies/admin/movie")
+@login_required
+def movies_admin_add_movie():
+    movie_id = (request.form.get("id") or "").strip()
+    title_ru = (request.form.get("title_ru") or "").strip()
+    title_en = (request.form.get("title_en") or "").strip() or None
+    cover = (request.form.get("cover") or "").strip() or None
+    kinopoisk = (request.form.get("kinopoisk") or "").strip()
+
+    year_raw = (request.form.get("year") or "").strip()
+    year = None
+    if year_raw:
+        try:
+            year = int(year_raw)
+        except ValueError:
+            flash("Год должен быть числом", "error")
+            return redirect(url_for("potyk_io.movies_admin"))
+
+    if not movie_id:
+        flash("Укажите `id` фильма", "error")
+        return redirect(url_for("potyk_io.movies_admin"))
+    if not title_ru:
+        flash("Укажите `title_ru` фильма", "error")
+        return redirect(url_for("potyk_io.movies_admin"))
+    if not kinopoisk:
+        flash("Укажите `kinopoisk` (URL)", "error")
+        return redirect(url_for("potyk_io.movies_admin"))
+
+    movie = db.session.get(Movie, movie_id)
+    if movie is None:
+        movie = Movie(id=movie_id)
+        db.session.add(movie)
+
+    movie.title_ru = title_ru
+    movie.title_en = title_en
+    movie.year = year
+    movie.cover = cover
+    movie.kinopoisk = kinopoisk
+
+    db.session.commit()
+    flash("Фильм сохранён", "success")
+    return redirect(url_for("potyk_io.movies_admin"))
+
+
+@potyk_io_bp.post("/collections/movies/admin/collection")
+@login_required
+def movies_admin_create_collection():
+    col_id = (request.form.get("id") or "").strip()
+    title = (request.form.get("title") or "").strip()
+    youtube = (request.form.get("youtube") or "").strip() or None
+    quote = (request.form.get("quote") or "").strip() or None
+    watch_later = (request.form.get("watch_later") or "") == "on"
+    movie_ids_raw = request.form.get("movie_ids") or ""
+    movie_ids = _parse_movie_ids(movie_ids_raw)
+
+    if not col_id:
+        flash("Укажите `id` коллекции", "error")
+        return redirect(url_for("potyk_io.movies_admin"))
+    if not title:
+        flash("Укажите `title` коллекции", "error")
+        return redirect(url_for("potyk_io.movies_admin"))
+
+    # Проверяем, что фильмы существуют.
+    if movie_ids:
+        existing = set(db.session.scalars(select(Movie.id).where(Movie.id.in_(movie_ids))).all())
+        missing = [mid for mid in movie_ids if mid not in existing]
+        if missing:
+            flash(f"Не найдено фильмов: {', '.join(missing[:10])}", "error")
+            return redirect(url_for("potyk_io.movies_admin"))
+
+    col = db.session.get(MovieCollection, col_id)
+    if col is None:
+        # sort_order: в конец среди non-watch_later коллекций.
+        max_sort = db.session.scalar(
+            select(sa.func.max(MovieCollection.sort_order)).where(MovieCollection.watch_later.is_(False))
+        )
+        col = MovieCollection(id=col_id, sort_order=(max_sort or 0) + 1)
+        db.session.add(col)
+
+    col.title = title
+    col.youtube = youtube
+    col.quote = quote
+
+    col.movie_ids = movie_ids
+
+    # Ограничиваем “ровно одну watch_later-коллекцию”, чтобы рулетка не зависела от порядка.
+    if watch_later:
+        db.session.query(MovieCollection).filter(MovieCollection.id != col_id).update({"watch_later": False})
+        col.watch_later = True
+    else:
+        # Не даём выключить watch_later у последней коллекции.
+        if col.watch_later:
+            only_watch_later = db.session.scalar(
+                select(sa.func.count(MovieCollection.id)).where(MovieCollection.watch_later.is_(True))
+            )
+            if only_watch_later == 1:
+                flash("Нельзя выключить watch_later у единственной коллекции — сначала включите его в другую.", "error")
+                db.session.rollback()
+                return redirect(url_for("potyk_io.movies_admin"))
+        col.watch_later = False
+
+    db.session.commit()
+    flash("Коллекция сохранена", "success")
+    return redirect(url_for("potyk_io.movies_admin"))
+
+
+@potyk_io_bp.post("/collections/movies/admin/collection/add-movie")
+@login_required
+def movies_admin_add_movie_to_collection():
+    col_id = (request.form.get("collection_id") or "").strip()
+    movie_id = (request.form.get("movie_id") or "").strip()
+
+    if not col_id or not movie_id:
+        flash("Укажите `collection_id` и `movie_id`", "error")
+        return redirect(url_for("potyk_io.movies_admin"))
+
+    col = db.session.get(MovieCollection, col_id)
+    if col is None:
+        flash("Коллекция не найдена", "error")
+        return redirect(url_for("potyk_io.movies_admin"))
+
+    movie = db.session.get(Movie, movie_id)
+    if movie is None:
+        flash("Фильм не найден", "error")
+        return redirect(url_for("potyk_io.movies_admin"))
+
+    movie_ids = list(col.movie_ids or [])
+    if movie_id not in movie_ids:
+        movie_ids.append(movie_id)
+        col.movie_ids = movie_ids
+
+    db.session.commit()
+    flash("Фильм добавлен в коллекцию", "success")
+    return redirect(url_for("potyk_io.movies_admin"))
 
 
 @potyk_io_bp.route("/food")

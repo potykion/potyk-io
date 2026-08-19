@@ -1,0 +1,125 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}Админка кино — potyk.io{% endblock %}
+
+{% block main_class %}md-content{% endblock %}
+
+{% block main %}
+    <h1>Админка: кино</h1>
+
+    <section>
+        <h2>Добавить фильм</h2>
+        <form method="post" action="{{ url_for('potyk_io.movies_admin_add_movie') }}">
+            <p>
+                <label>ID<br>
+                    <input name="id" required style="width: 420px" />
+                </label>
+            </p>
+            <p>
+                <label>Title RU<br>
+                    <input name="title_ru" required style="width: 420px" />
+                </label>
+            </p>
+            <p>
+                <label>Title EN<br>
+                    <input name="title_en" style="width: 420px" />
+                </label>
+            </p>
+            <p>
+                <label>Year<br>
+                    <input name="year" type="number" style="width: 220px" />
+                </label>
+            </p>
+            <p>
+                <label>Cover (путь)<br>
+                    <input name="cover" style="width: 420px" placeholder="/static/potyk-io/img/movies/..."/>
+                </label>
+            </p>
+            <p>
+                <label>Kinopoisk URL<br>
+                    <input name="kinopoisk" required style="width: 520px" />
+                </label>
+            </p>
+            <button type="submit">Сохранить фильм</button>
+        </form>
+    </section>
+
+    <section style="margin-top: 2rem">
+        <h2>Создать / обновить коллекцию</h2>
+        <form method="post" action="{{ url_for('potyk_io.movies_admin_create_collection') }}">
+            <p>
+                <label>ID коллекции<br>
+                    <input name="id" required style="width: 420px" />
+                </label>
+            </p>
+            <p>
+                <label>Title<br>
+                    <input name="title" required style="width: 520px" />
+                </label>
+            </p>
+            <p>
+                <label>YouTube (embed URL)<br>
+                    <input name="youtube" style="width: 520px"/>
+                </label>
+            </p>
+            <p>
+                <label>Quote<br>
+                    <textarea name="quote" rows="3" style="width: 520px"></textarea>
+                </label>
+            </p>
+            <p>
+                <label>watch_later (режим рулетки)<br>
+                    <input type="checkbox" name="watch_later"/>
+                </label>
+            </p>
+            <p>
+                <label>movie_ids (id фильмов через запятую/пробел/перенос строки)<br>
+                    <textarea name="movie_ids" rows="3" style="width: 520px"></textarea>
+                </label>
+            </p>
+            <button type="submit">Сохранить коллекцию</button>
+        </form>
+    </section>
+
+    <section style="margin-top: 2rem">
+        <h2>Добавить фильм в коллекцию</h2>
+        <form method="post" action="{{ url_for('potyk_io.movies_admin_add_movie_to_collection') }}">
+            <p>
+                <label>Коллекция<br>
+                    <select name="collection_id" required style="width: 420px">
+                        {% for c in collections %}
+                            <option value="{{ c.id }}">
+                                {{ c.title }} ({{ c.id }}){% if c.watch_later %} [watch_later]{% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </p>
+            <p>
+                <label>Movie ID<br>
+                    <input name="movie_id" required list="movies-list" style="width: 220px"/>
+                    <datalist id="movies-list">
+                        {% for m in movies %}
+                            <option value="{{ m.id }}">{{ m.title_ru }}</option>
+                        {% endfor %}
+                    </datalist>
+                </label>
+            </p>
+            <button type="submit">Добавить</button>
+        </form>
+    </section>
+
+    <section style="margin-top: 2rem">
+        <h2>Текущие коллекции</h2>
+        <ul>
+            {% for c in collections %}
+                <li>
+                    <b>{{ c.title }}</b> ({{ c.id }}) —
+                    фильмов: {{ (c.movie_ids or []) | length }}
+                    {% if c.watch_later %}[watch_later]{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+{% endblock %}
+
