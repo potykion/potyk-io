@@ -1,4 +1,10 @@
 {% extends 'potyk-fin/_base.html' %}
+{% import "jinja/forms.html" as forms %}
+
+{% block head_stylesheets %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css">
+{% endblock %}
 
 {% block main %}
 <h1>Сегодня, {{ today.isoformat() }}</h1>
@@ -12,13 +18,11 @@
         <summary>Изменить бюджет на день</summary>
         <form class="grid cols-2" method="post" action="{{ url_for('fin.update_budget') }}">
             {{ budget_form.hidden_tag() }}
-            <label class="full">
-                {{ budget_form.daily_budget.label.text }}
+            {% call forms.field(budget_form.daily_budget.label.text, "full") %}
                 {{ budget_form.daily_budget(min=1, step=1, required=true) }}
-            </label>
-            <div class="full">
-                {{ budget_form.submit() }}
-            </div>
+                {{ forms.field_errors(budget_form.daily_budget) }}
+            {% endcall %}
+            {{ forms.submit_row(budget_form.submit) }}
         </form>
     </details>
 </div>
@@ -37,17 +41,15 @@
         <p class="muted">Когда реально перевёл на накопительный в банке</p>
         <form class="grid cols-2" method="post" action="{{ url_for('fin.add_saving') }}">
             {{ saving_form.hidden_tag() }}
-            <label>
-                {{ saving_form.amount.label.text }}
+            {% call forms.field(saving_form.amount.label.text) %}
                 {{ saving_form.amount(min=1, step=1, required=true) }}
-            </label>
-            <label>
-                {{ saving_form.date.label.text }}
+                {{ forms.field_errors(saving_form.amount) }}
+            {% endcall %}
+            {% call forms.field(saving_form.date.label.text) %}
                 {{ saving_form.date(required=true) }}
-            </label>
-            <div class="full">
-                {{ saving_form.submit() }}
-            </div>
+                {{ forms.field_errors(saving_form.date) }}
+            {% endcall %}
+            {{ forms.submit_row(saving_form.submit) }}
         </form>
     </details>
 </div>
@@ -178,6 +180,38 @@
     e.preventDefault();
     const field = formula.closest(".amount-field");
     if (field) applyCalc(field);
+  });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+<script>
+(() => {
+  const initTomSelect = (root = document) => {
+    if (typeof TomSelect !== "function") return;
+    root.querySelectorAll("select[data-tom-select]").forEach((el) => {
+      if (el.tomselect) return;
+      new TomSelect(el, {
+        create: el.dataset.create === "true",
+        createOnBlur: true,
+        persist: false,
+        maxOptions: 200,
+        closeAfterSelect: true,
+        placeholder: el.dataset.placeholder || "",
+        sortField: [
+          { field: "text", direction: "asc" },
+        ],
+      });
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => initTomSelect());
+  } else {
+    initTomSelect();
+  }
+
+  document.body.addEventListener("htmx:load", (event) => {
+    initTomSelect(event.target);
   });
 })();
 </script>

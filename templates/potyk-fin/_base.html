@@ -11,6 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
 {% endblock %}
 
+{% block head_stylesheets %}
+    <link rel="stylesheet" href="/static/jinja/css/forms.css">
+{% endblock %}
+
 {% block body_class %}site-fin{% if config.DEBUG %} debug-env{% endif %}{% endblock %}
 
 {% block header_leading %}
@@ -248,38 +252,6 @@
         transform: rotate(90deg);
     }
 
-    form.grid {
-        display: grid;
-        gap: 10px;
-        margin-top: 12px;
-    }
-
-    @media (min-width: 560px) {
-        form.grid.cols-2 { grid-template-columns: 1fr 1fr; }
-        form.grid.cols-2 .full { grid-column: 1 / -1; }
-    }
-
-    label {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        font-size: 0.85rem;
-        color: var(--muted);
-    }
-
-    label.checkbox-label {
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-        color: var(--ink);
-        cursor: pointer;
-    }
-
-    label.checkbox-label input[type="checkbox"] {
-        width: auto;
-        padding: 0;
-    }
-
     tr.optional-expense {
         background: #f3ede3;
     }
@@ -288,30 +260,7 @@
         color: #8a6d3b;
     }
 
-    input, button, select {
-        font: inherit;
-        color: var(--ink);
-    }
-
-    input, select {
-        width: 100%;
-        max-width: 100%;
-        padding: 10px 12px;
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        background: #fff;
-        font-size: 16px;
-    }
-
     button, .btn {
-        padding: 10px 14px;
-        border: 1px solid var(--ink);
-        border-radius: 6px;
-        background: var(--ink);
-        color: #fff;
-        cursor: pointer;
-        font-weight: 500;
-        min-height: 44px;
         touch-action: manipulation;
     }
 
@@ -487,7 +436,29 @@
 
     .muted { color: var(--muted); }
     .empty { color: var(--muted); font-size: 0.95rem; padding: 8px 0; }
-    .field-error { color: var(--bad); font-size: 0.8rem; }
+    .ts-wrapper.single .ts-control,
+    .ts-wrapper.multi .ts-control {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        box-shadow: none;
+        padding: 10px 12px;
+        min-height: 44px;
+    }
+
+    .ts-wrapper.focus .ts-control {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(42, 90, 140, 0.12);
+    }
+
+    .ts-wrapper .ts-control input {
+        font-size: 16px;
+    }
+
+    .ts-dropdown {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    }
 
     .amount-row {
         display: flex;

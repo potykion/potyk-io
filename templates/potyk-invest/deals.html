@@ -1,6 +1,12 @@
 {% extends "potyk-invest/_base.html" %}
+{% import "jinja/forms.html" as forms %}
 
 {% block title %}Сделки — potyk-invest{% endblock %}
+
+{% block head_stylesheets %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css">
+{% endblock %}
 
 {% block style %}
 {{ super() }}
@@ -41,64 +47,7 @@
 
     .panel details > summary::-webkit-details-marker { display: none; }
 
-    form.grid {
-        display: grid;
-        gap: 10px;
-        margin-top: 12px;
-    }
-
-    @media (min-width: 560px) {
-        form.grid.cols-2 { grid-template-columns: 1fr 1fr; }
-        form.grid.cols-2 .full { grid-column: 1 / -1; }
-        form.grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-        form.grid.cols-3 .full { grid-column: 1 / -1; }
-        form.grid.cols-3 .span-2 { grid-column: span 2; }
-        form.grid .pair { grid-template-columns: 1fr 1fr; }
-    }
-
-    form.grid .pair {
-        display: grid;
-        gap: 10px;
-    }
-
-    label {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        font-size: 0.85rem;
-        color: var(--muted);
-    }
-
-    input, textarea, button {
-        font: inherit;
-        color: var(--ink);
-    }
-
-    input, textarea {
-        width: 100%;
-        max-width: 100%;
-        padding: 10px 12px;
-        border: 1px solid var(--none-border);
-        border-radius: 6px;
-        background: #fff;
-        font-size: 16px;
-    }
-
-    textarea { min-height: 88px; resize: vertical; }
-
-    button, .btn {
-        padding: 10px 14px;
-        border: 1px solid var(--ink);
-        border-radius: 6px;
-        background: var(--ink);
-        color: #fff;
-        cursor: pointer;
-        font-weight: 500;
-        min-height: 44px;
-    }
-
     .hint { font-size: 0.8rem; color: var(--muted); }
-    .field-error { color: #9b2c2c; font-size: 0.8rem; }
 
     h2 {
         margin: 1.5rem 0 0.75rem;
@@ -170,6 +119,11 @@
 
     .deal-stats .stat b.pnl-pos { color: #1f6b4a; }
     .deal-stats .stat b.pnl-neg { color: #9b2c2c; }
+
+    .ts-wrapper,
+    .ts-control {
+        width: 100%;
+    }
 </style>
 {% endblock %}
 
@@ -183,23 +137,15 @@
 
         <form class="grid cols-2" method="post" action="{{ url_for('invest.update_deposit') }}">
             {{ deposit_form.hidden_tag() }}
-            <label>
-                {{ deposit_form.date.label.text }}
+            {% call forms.field(deposit_form.date.label.text) %}
                 {{ deposit_form.date(required=true) }}
-                {% for err in deposit_form.date.errors %}
-                <span class="field-error">{{ err }}</span>
-                {% endfor %}
-            </label>
-            <label>
-                {{ deposit_form.amount.label.text }}
+                {{ forms.field_errors(deposit_form.date) }}
+            {% endcall %}
+            {% call forms.field(deposit_form.amount.label.text) %}
                 {{ deposit_form.amount(min=0, step="0.01", required=true, inputmode="decimal") }}
-                {% for err in deposit_form.amount.errors %}
-                <span class="field-error">{{ err }}</span>
-                {% endfor %}
-            </label>
-            <div class="full">
-                {{ deposit_form.submit() }}
-            </div>
+                {{ forms.field_errors(deposit_form.amount) }}
+            {% endcall %}
+            {{ forms.submit_row(deposit_form.submit) }}
         </form>
 
         <details {% if open_panel == 'deposit' %}open{% endif %} style="margin-top: 14px;">
@@ -234,87 +180,60 @@
             <summary>Добавить покупку</summary>
             <form class="grid cols-3" method="post" action="{{ url_for('invest.add_deal') }}" id="deal-form" data-deposit="{{ deposit }}">
                 {{ deal_form.hidden_tag() }}
-                <label>
-                    {{ deal_form.ticker.label.text }}
-                    {{ deal_form.ticker(required=true, autocomplete="off", placeholder="SBER") }}
-                    {% for err in deal_form.ticker.errors %}
-                    <span class="field-error">{{ err }}</span>
-                    {% endfor %}
-                </label>
-                <label class="span-2">
-                    {{ deal_form.opened_at.label.text }}
+                {% call forms.field(deal_form.ticker.label.text) %}
+                    {{ deal_form.ticker(
+                        required=true,
+                        data_tom_select="true",
+                        data_create="true",
+                        data_placeholder="SBER или Самолет",
+                    ) }}
+                    {{ forms.field_errors(deal_form.ticker) }}
+                {% endcall %}
+                {% call forms.field(deal_form.opened_at.label.text, "span-2") %}
                     {{ deal_form.opened_at(required=true) }}
-                    {% for err in deal_form.opened_at.errors %}
-                    <span class="field-error">{{ err }}</span>
-                    {% endfor %}
-                </label>
-                <label>
-                    {{ deal_form.volume.label.text }}
+                    {{ forms.field_errors(deal_form.opened_at) }}
+                {% endcall %}
+                {% call forms.field(deal_form.volume.label.text) %}
                     {{ deal_form.volume(min="0.01", max="5", step="0.01", inputmode="decimal") }}
                     <span class="hint">не больше {{ max_volume_pct }}%{% if deposit > 0 %} · <span id="volume-money-hint">—</span>{% endif %}</span>
-                    {% for err in deal_form.volume.errors %}
-                    <span class="field-error">{{ err }}</span>
-                    {% endfor %}
-                </label>
-                <label>
-                    {{ deal_form.buy_price.label.text }}
+                    {{ forms.field_errors(deal_form.volume) }}
+                {% endcall %}
+                {% call forms.field(deal_form.buy_price.label.text) %}
                     {{ deal_form.buy_price(min="0.000001", step="any", required=true, inputmode="decimal") }}
-                    {% for err in deal_form.buy_price.errors %}
-                    <span class="field-error">{{ err }}</span>
-                    {% endfor %}
-                </label>
-                <label>
-                    {{ deal_form.qty.label.text }}
+                    {{ forms.field_errors(deal_form.buy_price) }}
+                {% endcall %}
+                {% call forms.field(deal_form.qty.label.text) %}
                     {{ deal_form.qty(min="0.000001", step="any", inputmode="decimal") }}
                     <span class="hint">связан с объёмом</span>
-                    {% for err in deal_form.qty.errors %}
-                    <span class="field-error">{{ err }}</span>
-                    {% endfor %}
-                </label>
+                    {{ forms.field_errors(deal_form.qty) }}
+                {% endcall %}
                 <div class="full pair">
-                    <label>
-                        {{ deal_form.entry_level.label.text }}
+                    {% call forms.field(deal_form.entry_level.label.text) %}
                         {{ deal_form.entry_level(min="0", step="any", inputmode="decimal") }}
-                        {% for err in deal_form.entry_level.errors %}
-                        <span class="field-error">{{ err }}</span>
-                        {% endfor %}
-                    </label>
-                    <label>
-                        {{ deal_form.exit_level.label.text }}
+                        {{ forms.field_errors(deal_form.entry_level) }}
+                    {% endcall %}
+                    {% call forms.field(deal_form.exit_level.label.text) %}
                         {{ deal_form.exit_level(min="0", step="any", inputmode="decimal") }}
-                        {% for err in deal_form.exit_level.errors %}
-                        <span class="field-error">{{ err }}</span>
-                        {% endfor %}
-                    </label>
+                        {{ forms.field_errors(deal_form.exit_level) }}
+                    {% endcall %}
                 </div>
                 <div class="full pair">
-                    <label>
-                        {{ deal_form.take_profit.label.text }}
+                    {% call forms.field(deal_form.take_profit.label.text) %}
                         {{ deal_form.take_profit(placeholder="+10 или 10%") }}
                         <span class="hint">{{ deal_form.take_profit.description }}</span>
-                        {% for err in deal_form.take_profit.errors %}
-                        <span class="field-error">{{ err }}</span>
-                        {% endfor %}
-                    </label>
-                    <label>
-                        {{ deal_form.stop_loss.label.text }}
+                        {{ forms.field_errors(deal_form.take_profit) }}
+                    {% endcall %}
+                    {% call forms.field(deal_form.stop_loss.label.text) %}
                         {{ deal_form.stop_loss(placeholder="-10 или -5%") }}
                         <span class="hint">{{ deal_form.stop_loss.description }}</span>
-                        {% for err in deal_form.stop_loss.errors %}
-                        <span class="field-error">{{ err }}</span>
-                        {% endfor %}
-                    </label>
+                        {{ forms.field_errors(deal_form.stop_loss) }}
+                    {% endcall %}
                 </div>
-                <label class="full">
-                    {{ deal_form.thoughts.label.text }}
+                {% call forms.field(deal_form.thoughts.label.text, "full") %}
                     {{ deal_form.thoughts() }}
-                    {% for err in deal_form.thoughts.errors %}
-                    <span class="field-error">{{ err }}</span>
-                    {% endfor %}
-                </label>
-                <div class="full">
-                    {{ deal_form.submit() }}
-                </div>
+                    {{ forms.field_errors(deal_form.thoughts) }}
+                {% endcall %}
+                {{ forms.submit_row(deal_form.submit) }}
             </form>
         </details>
     </section>
@@ -326,38 +245,25 @@
         <form class="grid cols-2" method="post" id="close-form"
               action="{% if close_deal %}{{ url_for('invest.close_deal', deal_id=close_deal.id) }}{% endif %}">
             {{ close_form.hidden_tag() }}
-            <label>
-                {{ close_form.closed_at.label.text }}
+            {% call forms.field(close_form.closed_at.label.text) %}
                 {{ close_form.closed_at(required=true) }}
-                {% for err in close_form.closed_at.errors %}
-                <span class="field-error">{{ err }}</span>
-                {% endfor %}
-            </label>
-            <label>
-                {{ close_form.sell_price.label.text }}
+                {{ forms.field_errors(close_form.closed_at) }}
+            {% endcall %}
+            {% call forms.field(close_form.sell_price.label.text) %}
                 {{ close_form.sell_price(min="0.000001", step="any", required=true, inputmode="decimal") }}
-                {% for err in close_form.sell_price.errors %}
-                <span class="field-error">{{ err }}</span>
-                {% endfor %}
-            </label>
+                {{ forms.field_errors(close_form.sell_price) }}
+            {% endcall %}
             <p class="full muted" id="close-pnl">P/L: —</p>
-            <label class="full">
-                {{ close_form.thoughts.label.text }}
+            {% call forms.field(close_form.thoughts.label.text, "full") %}
                 {{ close_form.thoughts() }}
-                {% for err in close_form.thoughts.errors %}
-                <span class="field-error">{{ err }}</span>
-                {% endfor %}
-            </label>
+                {{ forms.field_errors(close_form.thoughts) }}
+            {% endcall %}
             <label class="full" id="close-errors-field" hidden>
                 {{ close_form.mistakes.label.text }}
                 {{ close_form.mistakes() }}
-                {% for err in close_form.mistakes.errors %}
-                <span class="field-error">{{ err }}</span>
-                {% endfor %}
+                {{ forms.field_errors(close_form.mistakes) }}
             </label>
-            <div class="full">
-                {{ close_form.submit() }}
-            </div>
+            {{ forms.submit_row(close_form.submit) }}
         </form>
     </section>
 
@@ -455,7 +361,35 @@
 {% endblock %}
 
 {% block script %}
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
 <script>
+(() => {
+  const initTomSelect = (root = document) => {
+    if (typeof TomSelect !== "function") return;
+    root.querySelectorAll("select[data-tom-select]").forEach((el) => {
+      if (el.tomselect) return;
+      new TomSelect(el, {
+        create: el.dataset.create === "true",
+        createOnBlur: true,
+        persist: false,
+        maxOptions: 200,
+        closeAfterSelect: true,
+        placeholder: el.dataset.placeholder || "",
+        searchField: ["text", "value"],
+        sortField: [
+          { field: "text", direction: "asc" },
+        ],
+      });
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => initTomSelect());
+  } else {
+    initTomSelect();
+  }
+})();
+
 (() => {
   const form = document.getElementById("deal-form");
   const volume = document.querySelector('#deal-form [name="volume"]');

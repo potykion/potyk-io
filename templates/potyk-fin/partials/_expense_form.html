@@ -1,3 +1,5 @@
+{% import "jinja/forms.html" as forms %}
+
 <form id="expense-form"
       class="grid cols-2"
       method="post"
@@ -6,15 +8,11 @@
       hx-target="#expense-form"
       hx-swap="outerHTML">
     {{ expense_form.hidden_tag() }}
-    <label>
-        {{ expense_form.date.label.text }}
+    {% call forms.field(expense_form.date.label.text) %}
         {{ expense_form.date(required=true) }}
-        {% for error in expense_form.date.errors %}
-        <span class="field-error">{{ error }}</span>
-        {% endfor %}
-    </label>
-    <label class="amount-field">
-        {{ expense_form.amount.label.text }}
+        {{ forms.field_errors(expense_form.date) }}
+    {% endcall %}
+    {% call forms.field(expense_form.amount.label.text, "amount-field") %}
         <div class="amount-row">
             {{ expense_form.amount(min=1, step=1, required=true, autofocus=true) }}
             <button type="button" class="calc-toggle" title="Калькулятор" aria-label="Калькулятор" aria-expanded="false">🧮</button>
@@ -23,31 +21,29 @@
             <input type="text" class="calc-formula" placeholder="123+456" inputmode="decimal" autocomplete="off" aria-label="Формула">
             <button type="button" class="calc-eq" title="Посчитать">=</button>
         </div>
-        {% for error in expense_form.amount.errors %}
-        <span class="field-error">{{ error }}</span>
-        {% endfor %}
-    </label>
-    <label>
-        {{ expense_form.category.label.text }}
-        {{ expense_form.category(list='categories', required=true, placeholder='еда, быт…') }}
-        <datalist id="categories">
+        {{ forms.field_errors(expense_form.amount) }}
+    {% endcall %}
+    {% call forms.field(expense_form.category.label.text) %}
+        <select name="{{ expense_form.category.name }}"
+                id="{{ expense_form.category.id }}"
+                required
+                data-tom-select
+                data-create="true"
+                data-placeholder="еда, быт...">
+            <option value=""></option>
             {% for cat in categories %}
-            <option value="{{ cat }}"></option>
+            <option value="{{ cat }}"{% if expense_form.category.data == cat %} selected{% endif %}>{{ cat }}</option>
             {% endfor %}
-        </datalist>
-        {% for error in expense_form.category.errors %}
-        <span class="field-error">{{ error }}</span>
-        {% endfor %}
-    </label>
-    <label>
-        {{ expense_form.description.label.text }}
+            {% if expense_form.category.data and expense_form.category.data not in categories %}
+            <option value="{{ expense_form.category.data }}" selected>{{ expense_form.category.data }}</option>
+            {% endif %}
+        </select>
+        {{ forms.field_errors(expense_form.category) }}
+    {% endcall %}
+    {% call forms.field(expense_form.description.label.text) %}
         {{ expense_form.description(placeholder='необязательно') }}
-    </label>
-    <label class="checkbox-label full">
-        {{ expense_form.optional() }}
-        {{ expense_form.optional.label.text }}
-    </label>
-    <div class="full">
-        {{ expense_form.submit() }}
-    </div>
+        {{ forms.field_errors(expense_form.description) }}
+    {% endcall %}
+    {{ forms.checkbox_field(expense_form.optional, "full") }}
+    {{ forms.submit_row(expense_form.submit) }}
 </form>
