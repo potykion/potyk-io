@@ -24,7 +24,7 @@ class Movie(db.Model):
     title_en = db.Column(db.String(255), nullable=True)
     year = db.Column(db.Integer, nullable=True, index=True)
     cover = db.Column(db.String(512), nullable=True)
-    kinopoisk = db.Column(db.String(512), nullable=False, default="")
+    kinopoisk = db.Column(db.String(512), nullable=False, default="", unique=True)
 
 
 class MovieCollection(db.Model):
