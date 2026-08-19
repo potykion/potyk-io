@@ -64,7 +64,7 @@
                 cardEl.innerHTML =
                     coverHtml +
                     "<div class=\"movies-kanban-card-body\">" +
-                    "<button type=\"button\" class=\"movies-kanban-delete\" data-movie-id=\"" + escapeAttr(movie.id) + "\" aria-label=\"Удалить фильм\">&times;</button>" +
+                    "<button type=\"button\" class=\"movies-kanban-delete\" data-movie-id=\"" + escapeAttr(movie.id) + "\" data-collection-id=\"" + escapeAttr(collection.id) + "\" aria-label=\"Убрать фильм из коллекции\">&times;</button>" +
                     "<div class=\"movies-kanban-title\">" + escapeHtml(movieLabel(movie)) + "</div>" +
                     enHtml +
                     kpHtml +
@@ -155,13 +155,14 @@
     async function onDeleteClick(event) {
         stopEvent(event);
         const movieId = event.currentTarget.dataset.movieId;
-        const movie = findMovie(movieId);
-        if (!movieId || !movie) return;
+        const collectionId = event.currentTarget.dataset.collectionId;
+        const movie = findMovie(movieId, collectionId);
+        if (!movieId || !collectionId || !movie) return;
 
-        const confirmed = window.confirm("Удалить фильм \"" + movieLabel(movie) + "\"?");
+        const confirmed = window.confirm("Убрать фильм \"" + movieLabel(movie) + "\" из этой коллекции?");
         if (!confirmed) return;
 
-        setStatus("Удаляю фильм...");
+        setStatus("Убираю фильм из коллекции...");
         try {
             const response = await fetch("/collections/movies/admin/movie/delete", {
                 method: "POST",
@@ -170,15 +171,16 @@
                 },
                 body: JSON.stringify({
                     movieId: movieId,
+                    collectionId: collectionId,
                 }),
             });
             const result = await response.json();
             if (!response.ok || !result.ok) {
-                throw new Error(result.error || "Не удалось удалить фильм");
+                throw new Error(result.error || "Не удалось убрать фильм из коллекции");
             }
-            removeLocalMovie(movieId);
+            removeLocalMovie(movieId, collectionId);
             render();
-            setStatus("Фильм удалён");
+            setStatus("Фильм убран из коллекции");
         } catch (error) {
             setStatus(error.message || "Ошибка удаления", true);
         }
@@ -199,22 +201,24 @@
         }
     }
 
-    function removeLocalMovie(movieId) {
-        collections.forEach(function (collection) {
-            collection.movies = collection.movies.filter(function (movie) {
-                return movie.id !== movieId;
-            });
+    function removeLocalMovie(movieId, collectionId) {
+        const collection = collections.find(function (item) {
+            return item.id === collectionId;
+        });
+        if (!collection) return;
+        collection.movies = collection.movies.filter(function (movie) {
+            return movie.id !== movieId;
         });
     }
 
-    function findMovie(movieId) {
-        for (const collection of collections) {
-            const movie = collection.movies.find(function (item) {
-                return item.id === movieId;
-            });
-            if (movie) return movie;
-        }
-        return null;
+    function findMovie(movieId, collectionId) {
+        const collection = collections.find(function (item) {
+            return item.id === collectionId;
+        });
+        if (!collection) return null;
+        return collection.movies.find(function (item) {
+            return item.id === movieId;
+        }) || null;
     }
 
     function clearTargets() {

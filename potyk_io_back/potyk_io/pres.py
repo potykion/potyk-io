@@ -368,22 +368,21 @@ def movies_admin_move_movie_between_collections():
 def movies_admin_delete_movie():
     payload = request.get_json(silent=True) or {}
     movie_id = str(payload.get("movieId") or "").strip()
+    collection_id = str(payload.get("collectionId") or "").strip()
 
-    if not movie_id:
-        return jsonify({"ok": False, "error": "missing movieId"}), 400
+    if not movie_id or not collection_id:
+        return jsonify({"ok": False, "error": "missing fields"}), 400
 
+    collection = db.session.get(MovieCollection, collection_id)
     movie = db.session.get(Movie, movie_id)
-    if movie is None:
+    if collection is None or movie is None:
         return jsonify({"ok": False, "error": "not found"}), 404
 
-    collections = db.session.scalars(select(MovieCollection)).all()
-    for collection in collections:
-        movie_ids = list(collection.movie_ids or [])
-        if movie_id not in movie_ids:
-            continue
-        collection.movie_ids = [mid for mid in movie_ids if mid != movie_id]
+    movie_ids = list(collection.movie_ids or [])
+    if movie_id not in movie_ids:
+        return jsonify({"ok": False, "error": "movie not in collection"}), 400
 
-    db.session.delete(movie)
+    collection.movie_ids = [mid for mid in movie_ids if mid != movie_id]
     db.session.commit()
     return jsonify({"ok": True})
 
