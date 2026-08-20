@@ -12,6 +12,7 @@ from potyk_io_back.core.db import db
 import potyk_io_back.fin.entities  # noqa: F401 — register models
 import potyk_io_back.inbox.entities  # noqa: F401 — register models
 import potyk_io_back.invest.entities  # noqa: F401 — register models
+import potyk_io_back.potyk_io.findings.entities  # noqa: F401 — register models
 
 config = context.config
 

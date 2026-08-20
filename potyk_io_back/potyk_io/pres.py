@@ -1,8 +1,10 @@
 import json
 import re
+from datetime import datetime
 from pathlib import Path, PurePosixPath
 
 import flask
+import markdown
 from flask import Blueprint, abort, flash, jsonify, redirect, request, render_template, send_file, url_for
 from flask_login import login_required
 import sqlalchemy as sa
@@ -16,6 +18,9 @@ from potyk_io_back.potyk_io.collections.movies import (
 )
 from potyk_io_back.core.db import db
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, random_note_batch, search_notes
+from potyk_io_back.potyk_io.findings import Finding
+from potyk_io_back.potyk_io.findings.forms import AddFindingForm, MarkWatchedForm
+from potyk_io_back.potyk_io.findings.oembed import fetch_title
 from potyk_io_back.potyk_io.md_rendering import (
     FOOD_TEMPLATES_DIR,
     TEMPLATES_DIR,
@@ -23,7 +28,9 @@ from potyk_io_back.potyk_io.md_rendering import (
     resolve_page,
     split_frontmatter,
 )
+from potyk_io_back.potyk_io.md_rendering.hashtags import linkify_hashtags
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
+from potyk_io_back.potyk_io.md_rendering.render import MD_EXTENSIONS
 from potyk_io_back.potyk_io.menu import FOOD_MENU_GROUPS, MENU_GROUPS
 
 potyk_io_bp = Blueprint("potyk_io", __name__)
@@ -364,6 +371,90 @@ def movies_admin_delete_movie():
     collection.movie_ids = [mid for mid in movie_ids if mid != movie_id]
     db.session.commit()
     return jsonify({"ok": True})
+
+
+def _findings_archive_html() -> str:
+    archive = TEMPLATES_DIR / "findings.md"
+    if not archive.is_file():
+        return ""
+    _, body = split_frontmatter(archive.read_text(encoding="utf-8-sig"))
+    return markdown.markdown(
+        linkify_hashtags(body),
+        extensions=MD_EXTENSIONS,
+        output_format="html",
+    )
+
+
+def _flash_form_errors(form) -> None:
+    for messages in form.errors.values():
+        for message in messages:
+            flash(message, "error")
+
+
+@potyk_io_bp.get("/findings")
+def findings():
+    unwatched = db.session.scalars(
+        select(Finding)
+        .where(Finding.watched_at.is_(None))
+        .order_by(Finding.created_at.desc(), Finding.id.desc())
+    ).all()
+    watched = db.session.scalars(
+        select(Finding)
+        .where(Finding.watched_at.is_not(None))
+        .order_by(Finding.watched_at.desc(), Finding.id.desc())
+    ).all()
+    return render_template(
+        "potyk-io/findings.html",
+        unwatched=unwatched,
+        watched=watched,
+        add_form=AddFindingForm(),
+        mark_form=MarkWatchedForm(),
+        archive_html=_findings_archive_html(),
+    )
+
+
+@potyk_io_bp.post("/findings")
+@login_required
+def findings_add():
+    form = AddFindingForm()
+    if not form.validate_on_submit():
+        _flash_form_errors(form)
+        return redirect(url_for("potyk_io.findings"))
+
+    url = form.url.data.strip()
+    existing = db.session.scalar(select(Finding).where(Finding.url == url))
+    if existing is not None:
+        flash("Такая ссылка уже есть", "error")
+        return redirect(url_for("potyk_io.findings"))
+
+    db.session.add(
+        Finding(
+            url=url,
+            title=fetch_title(url),
+            created_at=datetime.now(),
+        )
+    )
+    db.session.commit()
+    flash("Добавлено", "success")
+    return redirect(url_for("potyk_io.findings"))
+
+
+@potyk_io_bp.post("/findings/<int:finding_id>/watched")
+@login_required
+def findings_mark_watched(finding_id: int):
+    form = MarkWatchedForm()
+    if not form.validate_on_submit():
+        _flash_form_errors(form)
+        return redirect(url_for("potyk_io.findings"))
+
+    finding = db.session.get(Finding, finding_id)
+    if finding is None:
+        abort(404)
+    if finding.watched_at is None:
+        finding.watched_at = datetime.now()
+        db.session.commit()
+        flash("Отмечено как просмотренное", "success")
+    return redirect(url_for("potyk_io.findings"))
 
 
 @potyk_io_bp.route("/food")
