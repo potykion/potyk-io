@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, StringField, SubmitField
-from wtforms.validators import DataRequired, Length, URL
+from wtforms import HiddenField, SelectField, StringField, SubmitField
+from wtforms.validators import DataRequired, Length, Optional, URL
 
 FINDING_KIND_CHOICES = [
     ("🎵", "🎵 — музончик: клипы, сеты и тд"),
@@ -26,6 +26,10 @@ class AddFindingForm(FlaskForm):
             Length(max=1024),
         ],
         render_kw={"placeholder": "https://youtu.be/…", "autocomplete": "off"},
+    )
+    title = HiddenField(
+        "title",
+        validators=[Optional(), Length(max=512)],
     )
     submit = SubmitField("Добавить")
 

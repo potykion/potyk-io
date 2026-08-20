@@ -106,3 +106,10 @@
     </section>
     {% endif %}
 {% endblock %}
+
+{% block script %}
+{{ super() }}
+{% if current_user.is_authenticated %}
+<script src="/static/potyk-io/js/findings-add.js"></script>
+{% endif %}
+{% endblock %}

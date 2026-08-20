@@ -25,7 +25,6 @@ from potyk_io_back.potyk_io.findings.forms import (
     DeleteFindingForm,
     MarkWatchedForm,
 )
-from potyk_io_back.potyk_io.findings.oembed import fetch_title
 from potyk_io_back.potyk_io.md_rendering import (
     FOOD_TEMPLATES_DIR,
     TEMPLATES_DIR,
@@ -449,7 +448,7 @@ def findings_add():
         return redirect(url_for("potyk_io.findings"))
 
     kind = (form.kind.data or "").strip()
-    raw_title = fetch_title(url)
+    raw_title = (form.title.data or "").strip() or url
     title = f"{kind} {raw_title}".strip() if kind else raw_title
 
     db.session.add(
