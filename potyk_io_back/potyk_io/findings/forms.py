@@ -1,9 +1,23 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired, Length, URL
+
+FINDING_KIND_CHOICES = [
+    ("🎵", "🎵 — музончик: клипы, сеты и тд"),
+    ("📹", "📹 — ютуб видик"),
+    ("🎮", "🎮 — игрушки"),
+    ("🎥", "🎥 — кинцо"),
+    ("🖼️", "🖼️ — картинка"),
+]
 
 
 class AddFindingForm(FlaskForm):
+    kind = SelectField(
+        "Тип",
+        choices=FINDING_KIND_CHOICES,
+        default="📹",
+        validators=[DataRequired()],
+    )
     url = StringField(
         "Ссылка",
         validators=[
@@ -17,7 +31,10 @@ class AddFindingForm(FlaskForm):
 
 
 class MarkWatchedForm(FlaskForm):
-    submit = SubmitField("Просмотрено")
+    submit = SubmitField(
+        "👁️",
+        render_kw={"aria-label": "Просмотрено", "title": "Просмотрено"},
+    )
 
 
 class DeleteFindingForm(FlaskForm):

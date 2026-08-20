@@ -1,6 +1,7 @@
 import json
 import re
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from itertools import groupby
 from pathlib import Path, PurePosixPath
 
 import flask
@@ -395,6 +396,21 @@ def _flash_form_errors(form) -> None:
             flash(message, "error")
 
 
+def _week_label(day: date) -> str:
+    start = day - timedelta(days=day.weekday())
+    end = start + timedelta(days=6)
+    return f"{start.isoformat()} — {end.isoformat()}"
+
+
+def _group_watched_by_week(items: list[Finding]) -> list[dict]:
+    groups: list[dict] = []
+    for label, grouped in groupby(
+        items, key=lambda f: _week_label(f.watched_at.date())
+    ):
+        groups.append({"title": label, "entries": list(grouped)})
+    return groups
+
+
 @potyk_io_bp.get("/findings")
 def findings():
     unwatched = db.session.scalars(
@@ -410,7 +426,7 @@ def findings():
     return render_template(
         "potyk-io/findings.html",
         unwatched=unwatched,
-        watched=watched,
+        watched_weeks=_group_watched_by_week(list(watched)),
         add_form=AddFindingForm(),
         mark_form=MarkWatchedForm(),
         delete_form=DeleteFindingForm(),
@@ -432,10 +448,14 @@ def findings_add():
         flash("Такая ссылка уже есть", "error")
         return redirect(url_for("potyk_io.findings"))
 
+    kind = (form.kind.data or "").strip()
+    raw_title = fetch_title(url)
+    title = f"{kind} {raw_title}".strip() if kind else raw_title
+
     db.session.add(
         Finding(
             url=url,
-            title=fetch_title(url),
+            title=title[:512],
             created_at=datetime.now(),
         )
     )

@@ -6,179 +6,98 @@
 {% block style %}
 {{ super() }}
 <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
-<style>
-    .findings-page {
-        margin: auto;
-        max-width: 600px;
-    }
-
-    .findings-page h1 {
-        margin-bottom: 0.4rem;
-    }
-
-    .findings-lead {
-        color: #666;
-        margin: 0 0 1.2rem;
-    }
-
-    .findings-add {
-        margin: 0 0 1.4rem;
-        display: grid;
-        gap: 0.5rem;
-    }
-
-    .findings-add input[type="url"],
-    .findings-add input[type="text"] {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 0.45rem 0.55rem;
-        font: inherit;
-    }
-
-    .findings-list {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 1.6rem;
-    }
-
-    .findings-list li {
-        display: flex;
-        gap: 0.75rem;
-        align-items: flex-start;
-        padding: 0.55rem 0;
-        border-bottom: 1px solid #eee;
-    }
-
-    .findings-list a {
-        flex: 1;
-        min-width: 0;
-        word-break: break-word;
-    }
-
-    .findings-meta {
-        display: block;
-        color: #888;
-        font-size: 0.85rem;
-        margin-top: 0.2rem;
-    }
-
-    .findings-actions {
-        display: flex;
-        gap: 0.35rem;
-        flex-shrink: 0;
-        align-items: center;
-    }
-
-    .findings-mark,
-    .findings-delete {
-        margin: 0;
-    }
-
-    .findings-mark button,
-    .findings-delete button {
-        font: inherit;
-        cursor: pointer;
-        padding: 0.25rem 0.55rem;
-    }
-
-    .findings-delete button {
-        border: none;
-        background: transparent;
-        color: #999;
-        font-size: 1.15rem;
-        line-height: 1;
-        padding: 0.15rem 0.35rem;
-    }
-
-    .findings-delete button:hover {
-        color: #c0392b;
-    }
-
-    .findings-empty {
-        color: #888;
-        margin: 0 0 1.4rem;
-    }
-
-    .findings-archive {
-        margin-top: 2rem;
-        padding-top: 1rem;
-        border-top: 1px solid #e8e8e8;
-    }
-
-    .findings-archive > h2:first-child {
-        margin-top: 0;
-    }
-</style>
+<link rel="stylesheet" href="/static/potyk-io/css/findings.css">
 {% endblock %}
 
 {% block main_class %}md-content findings-page{% endblock %}
 
 {% block main %}
     <h1>📜 Находки</h1>
-    <p class="findings-lead">Посмотреть позже — ссылки в очередь. Остальное — архив недель.</p>
+    <blockquote class="findings-intro">
+        У меня иногда возникает желание что-то запостить, но тг канал - это не мой интернет, а я ведь делаю сво й и вот крч
+    </blockquote>
 
-    {% if current_user.is_authenticated %}
-    <form class="findings-add" method="post" action="{{ url_for('potyk_io.findings_add') }}">
-        {{ add_form.hidden_tag() }}
-        {% call forms.field(add_form.url.label.text) %}
-            {{ add_form.url(type="url", required=true) }}
-            {{ forms.field_errors(add_form.url) }}
-        {% endcall %}
-        {{ forms.submit_row(add_form.submit, class_name='') }}
-    </form>
-    {% endif %}
-
-    <h2>Посмотреть позже</h2>
-    {% if unwatched %}
-    <ul class="findings-list">
-        {% for item in unwatched %}
-        <li>
-            <div>
-                <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title or item.url }}</a>
-                <span class="findings-meta">добавлено {{ item.created_at.strftime('%Y-%m-%d') }}</span>
-            </div>
-            {% if current_user.is_authenticated %}
-            <div class="findings-actions">
-                <form class="findings-mark" method="post"
-                      action="{{ url_for('potyk_io.findings_mark_watched', finding_id=item.id) }}">
-                    {{ mark_form.hidden_tag() }}
-                    <button type="submit">просмотрено</button>
-                </form>
-                <form class="findings-delete" method="post"
-                      action="{{ url_for('potyk_io.findings_delete', finding_id=item.id) }}">
-                    {{ delete_form.hidden_tag() }}
-                    <button type="submit" aria-label="Удалить" title="Удалить">×</button>
-                </form>
-            </div>
-            {% endif %}
-        </li>
-        {% endfor %}
+    <p class="findings-legend-title">Обозначения и мета</p>
+    <ul class="findings-legend">
+        <li>🎵 — музончик: клипы, сеты и тд</li>
+        <li>📹 — ютуб видик</li>
+        <li>🎮 — игрушки</li>
+        <li>🎥 — кинцо</li>
+        <li>🖼️ — картинка</li>
     </ul>
-    {% else %}
-    <p class="findings-empty">Пока пусто.</p>
-    {% endif %}
 
-    {% if watched %}
+    <details class="findings-later" open>
+        <summary>Посмотреть позже</summary>
+
+        {% if current_user.is_authenticated %}
+        <form class="findings-add" method="post" action="{{ url_for('potyk_io.findings_add') }}">
+            {{ add_form.hidden_tag() }}
+            {% call forms.field(add_form.kind.label.text) %}
+                {{ add_form.kind() }}
+                {{ forms.field_errors(add_form.kind) }}
+            {% endcall %}
+            {% call forms.field(add_form.url.label.text) %}
+                {{ add_form.url(type="url", required=true) }}
+                {{ forms.field_errors(add_form.url) }}
+            {% endcall %}
+            {{ forms.submit_row(add_form.submit, class_name='') }}
+        </form>
+        {% endif %}
+
+        {% if unwatched %}
+        <ul class="findings-list">
+            {% for item in unwatched %}
+            <li>
+                <div class="findings-item-body">
+                    <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title or item.url }}</a>
+                </div>
+                {% if current_user.is_authenticated %}
+                <div class="findings-actions">
+                    <form class="findings-mark" method="post"
+                          action="{{ url_for('potyk_io.findings_mark_watched', finding_id=item.id) }}">
+                        {{ mark_form.hidden_tag() }}
+                        {{ mark_form.submit() }}
+                    </form>
+                    <form class="findings-delete" method="post"
+                          action="{{ url_for('potyk_io.findings_delete', finding_id=item.id) }}">
+                        {{ delete_form.hidden_tag() }}
+                        <button type="submit" aria-label="Удалить" title="Удалить">×</button>
+                    </form>
+                </div>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="findings-empty">Пока пусто.</p>
+        {% endif %}
+    </details>
+
+    {% if watched_weeks %}
     <h2>Просмотрено</h2>
-    <ul class="findings-list">
-        {% for item in watched %}
-        <li>
-            <div>
-                <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title or item.url }}</a>
-                <span class="findings-meta">просмотрено {{ item.watched_at.strftime('%Y-%m-%d') }}</span>
-            </div>
-            {% if current_user.is_authenticated %}
-            <div class="findings-actions">
-                <form class="findings-delete" method="post"
-                      action="{{ url_for('potyk_io.findings_delete', finding_id=item.id) }}">
-                    {{ delete_form.hidden_tag() }}
-                    <button type="submit" aria-label="Удалить" title="Удалить">×</button>
-                </form>
-            </div>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
+    {% for week in watched_weeks %}
+    <section class="findings-week">
+        <h3>{{ week.title }}</h3>
+        <ul class="findings-list">
+            {% for item in week.entries %}
+            <li>
+                <div class="findings-item-body">
+                    <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title or item.url }}</a>
+                </div>
+                {% if current_user.is_authenticated %}
+                <div class="findings-actions">
+                    <form class="findings-delete" method="post"
+                          action="{{ url_for('potyk_io.findings_delete', finding_id=item.id) }}">
+                        {{ delete_form.hidden_tag() }}
+                        <button type="submit" aria-label="Удалить" title="Удалить">×</button>
+                    </form>
+                </div>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endfor %}
     {% endif %}
 
     {% if archive_html %}
