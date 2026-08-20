@@ -1,7 +1,22 @@
-{% extends "potyk-io/_base.html" %}
+{% extends "inbox/_base.html" %}
+{% import "jinja/forms.html" as forms %}
 
 {% block title %}Написать мне{% endblock %}
 
 {% block main %}
-<h1>Написать мне</h1>
+<div class="inbox-wrap">
+    <h1>Написать мне</h1>
+    <form class="grid" method="post" action="{{ url_for('inbox.send') }}">
+        {{ form.hidden_tag() }}
+        {% call forms.field(form.project.label.text) %}
+            {{ form.project() }}
+            {{ forms.field_errors(form.project) }}
+        {% endcall %}
+        {% call forms.field(form.text.label.text) %}
+            {{ form.text() }}
+            {{ forms.field_errors(form.text) }}
+        {% endcall %}
+        {{ forms.submit_row(form.submit) }}
+    </form>
+</div>
 {% endblock %}

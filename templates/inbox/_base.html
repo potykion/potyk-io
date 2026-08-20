@@ -1,0 +1,95 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block head_stylesheets %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/jinja/css/forms.css">
+{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    :root {
+        --ink: #1c1b19;
+        --muted: #6b6860;
+        --line: #ddd8ce;
+        --ok: #1f6b4a;
+        --ok-bg: #e5f3ec;
+        --bad: #9b2c2c;
+        --bad-bg: #f8e8e8;
+    }
+
+    .inbox-wrap {
+        max-width: 40rem;
+    }
+
+    .inbox-wrap h1 {
+        margin: 0 0 1rem;
+        font-size: 1.65rem;
+    }
+
+    .alert {
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    .alert-success { background: var(--ok-bg); color: var(--ok); }
+    .alert-error { background: var(--bad-bg); color: var(--bad); }
+
+    .inbox-pull {
+        margin: 0 0 1.5rem;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .inbox-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 12px;
+    }
+
+    .inbox-item {
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .inbox-item-head {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        align-items: baseline;
+        margin-bottom: 8px;
+    }
+
+    .inbox-item-title {
+        font-weight: 600;
+        margin: 0;
+        font-size: 1.05rem;
+    }
+
+    .inbox-meta {
+        color: var(--muted);
+        font-size: 0.85rem;
+    }
+
+    .inbox-item-text {
+        margin: 0;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font: inherit;
+        font-size: 0.95rem;
+        line-height: 1.45;
+    }
+
+    .inbox-empty {
+        color: var(--muted);
+    }
+</style>
+{% endblock %}

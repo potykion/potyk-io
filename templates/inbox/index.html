@@ -1,7 +1,42 @@
-{% extends "potyk-io/_base.html" %}
+{% extends "inbox/_base.html" %}
+{% import "jinja/forms.html" as forms %}
 
 {% block title %}Инбокс{% endblock %}
 
 {% block main %}
-<h1>Инбокс</h1>
+<div class="inbox-wrap">
+    <h1>Инбокс</h1>
+
+    {% if is_local and pull_form %}
+    <form class="grid inbox-pull" method="post" action="{{ url_for('inbox.pull') }}">
+        {{ pull_form.hidden_tag() }}
+        {% call forms.field(pull_form.secret.label.text) %}
+            {{ pull_form.secret() }}
+            {{ forms.field_errors(pull_form.secret) }}
+        {% endcall %}
+        {{ forms.submit_row(pull_form.submit) }}
+    </form>
+    {% endif %}
+
+    {% if items %}
+    <ul class="inbox-list">
+        {% for item in items %}
+        <li class="inbox-item">
+            <div class="inbox-item-head">
+                <p class="inbox-item-title">{{ item.title }}</p>
+                <span class="inbox-meta">
+                    {% if item.project %}{{ item.project }}{% endif %}
+                    {% if item.project and item.status %} · {% endif %}
+                    {% if item.status %}{{ item.status }}{% endif %}
+                    {% if item.created_at %} · {{ item.created_at }}{% endif %}
+                </span>
+            </div>
+            <pre class="inbox-item-text">{{ item.text }}</pre>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="inbox-empty">Пока пусто</p>
+    {% endif %}
+</div>
 {% endblock %}
