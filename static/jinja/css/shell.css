@@ -47,6 +47,28 @@ body {
     opacity: 0.75;
 }
 
+.auth-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    text-decoration: none;
+    color: inherit;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.auth-toggle:hover {
+    opacity: 0.75;
+}
+
 .layout {
     display: flex;
     min-height: 100vh;
@@ -182,7 +204,8 @@ body.search-open .search-shell {
 
     body.search-open .top-bar-brand,
     body.search-open .top-bar-spacer,
-    body.search-open .menu-toggle {
+    body.search-open .menu-toggle,
+    body.search-open .auth-toggle {
         display: none;
     }
 

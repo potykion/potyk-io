@@ -21,6 +21,7 @@
         {% block header_brand %}{% endblock %}
         <div class="top-bar-spacer"></div>
         {% block header_trailing %}{% endblock %}
+        {% include "jinja/_auth_header.html" %}
     </header>
 
     {% block layout %}

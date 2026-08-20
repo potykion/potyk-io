@@ -1,0 +1,11 @@
+{% if current_user.is_authenticated %}
+<a href="{{ url_for('auth.logout', next=request.path) }}"
+   class="auth-toggle"
+   aria-label="Выйти"
+   title="Выйти">🔓</a>
+{% else %}
+<a href="{{ url_for('auth.login', next=request.path) }}"
+   class="auth-toggle"
+   aria-label="Войти"
+   title="Войти">🔒</a>
+{% endif %}
