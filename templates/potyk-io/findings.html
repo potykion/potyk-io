@@ -62,15 +62,36 @@
         margin-top: 0.2rem;
     }
 
-    .findings-mark {
+    .findings-actions {
+        display: flex;
+        gap: 0.35rem;
         flex-shrink: 0;
+        align-items: center;
+    }
+
+    .findings-mark,
+    .findings-delete {
         margin: 0;
     }
 
-    .findings-mark button {
+    .findings-mark button,
+    .findings-delete button {
         font: inherit;
         cursor: pointer;
         padding: 0.25rem 0.55rem;
+    }
+
+    .findings-delete button {
+        border: none;
+        background: transparent;
+        color: #999;
+        font-size: 1.15rem;
+        line-height: 1;
+        padding: 0.15rem 0.35rem;
+    }
+
+    .findings-delete button:hover {
+        color: #c0392b;
     }
 
     .findings-empty {
@@ -117,11 +138,18 @@
                 <span class="findings-meta">добавлено {{ item.created_at.strftime('%Y-%m-%d') }}</span>
             </div>
             {% if current_user.is_authenticated %}
-            <form class="findings-mark" method="post"
-                  action="{{ url_for('potyk_io.findings_mark_watched', finding_id=item.id) }}">
-                {{ mark_form.hidden_tag() }}
-                <button type="submit">просмотрено</button>
-            </form>
+            <div class="findings-actions">
+                <form class="findings-mark" method="post"
+                      action="{{ url_for('potyk_io.findings_mark_watched', finding_id=item.id) }}">
+                    {{ mark_form.hidden_tag() }}
+                    <button type="submit">просмотрено</button>
+                </form>
+                <form class="findings-delete" method="post"
+                      action="{{ url_for('potyk_io.findings_delete', finding_id=item.id) }}">
+                    {{ delete_form.hidden_tag() }}
+                    <button type="submit" aria-label="Удалить" title="Удалить">×</button>
+                </form>
+            </div>
             {% endif %}
         </li>
         {% endfor %}
@@ -139,6 +167,15 @@
                 <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title or item.url }}</a>
                 <span class="findings-meta">просмотрено {{ item.watched_at.strftime('%Y-%m-%d') }}</span>
             </div>
+            {% if current_user.is_authenticated %}
+            <div class="findings-actions">
+                <form class="findings-delete" method="post"
+                      action="{{ url_for('potyk_io.findings_delete', finding_id=item.id) }}">
+                    {{ delete_form.hidden_tag() }}
+                    <button type="submit" aria-label="Удалить" title="Удалить">×</button>
+                </form>
+            </div>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>

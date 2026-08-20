@@ -18,3 +18,7 @@ class AddFindingForm(FlaskForm):
 
 class MarkWatchedForm(FlaskForm):
     submit = SubmitField("Просмотрено")
+
+
+class DeleteFindingForm(FlaskForm):
+    submit = SubmitField("×")

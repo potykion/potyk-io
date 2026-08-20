@@ -19,7 +19,11 @@ from potyk_io_back.potyk_io.collections.movies import (
 from potyk_io_back.core.db import db
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, random_note_batch, search_notes
 from potyk_io_back.potyk_io.findings import Finding
-from potyk_io_back.potyk_io.findings.forms import AddFindingForm, MarkWatchedForm
+from potyk_io_back.potyk_io.findings.forms import (
+    AddFindingForm,
+    DeleteFindingForm,
+    MarkWatchedForm,
+)
 from potyk_io_back.potyk_io.findings.oembed import fetch_title
 from potyk_io_back.potyk_io.md_rendering import (
     FOOD_TEMPLATES_DIR,
@@ -409,6 +413,7 @@ def findings():
         watched=watched,
         add_form=AddFindingForm(),
         mark_form=MarkWatchedForm(),
+        delete_form=DeleteFindingForm(),
         archive_html=_findings_archive_html(),
     )
 
@@ -454,6 +459,23 @@ def findings_mark_watched(finding_id: int):
         finding.watched_at = datetime.now()
         db.session.commit()
         flash("Отмечено как просмотренное", "success")
+    return redirect(url_for("potyk_io.findings"))
+
+
+@potyk_io_bp.post("/findings/<int:finding_id>/delete")
+@login_required
+def findings_delete(finding_id: int):
+    form = DeleteFindingForm()
+    if not form.validate_on_submit():
+        _flash_form_errors(form)
+        return redirect(url_for("potyk_io.findings"))
+
+    finding = db.session.get(Finding, finding_id)
+    if finding is None:
+        abort(404)
+    db.session.delete(finding)
+    db.session.commit()
+    flash("Удалено", "success")
     return redirect(url_for("potyk_io.findings"))
 
 
