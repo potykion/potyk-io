@@ -4,11 +4,7 @@ created: 2026-08-20
 
 # Как я слушаю музыку вне стримеров
 
-
-# ==ДОДЕЛАЙ МЕНЯ БРАТАН НЕ БРОСАЙ НА ПОЛПУТИ==
-
-
-Спойлер - на самом деле без стримингов никак.
+>Спойлер - на самом деле без стримингов никак.
 
 ## Проблема стримингов
 
@@ -30,4 +26,30 @@ created: 2026-08-20
 - **YouTube** - тоже очень много музыки, перезаливы, но уже встречаются недоступные композиции
 - **Яндекс Музыка** - понятно, что бедная площадка, но качать легко, так что если есть чтолюбимое, незаблоченное - смело
   качаем
+
+### Структура и синхронизация
+
+#### Windows 
+
+В папке `Музыка` создаем для каждого артиста свою папку с альбомами:
+
+- `C:\Users\admin\Music`
+- `C:\Users\admin\Music\COCTEAU TWINS`
+- `C:\Users\admin\Music\COCTEAU TWINS\1990 - Heaven Or Las Vegas (320)` 
+- `C:\Users\admin\Music\COCTEAU TWINS\1990 - Heaven Or Las Vegas (320)\01 - Cherry-Coloured Funk.mp3` 
+
+Важны метаданные - исполнитель, альбом, год, обложка и тд - для этого используем [mp3tag](https://www.mp3tag.de/en/) / [MusicBee](https://getmusicbee.com)
+
+#### Windows <=> Android 
+
+- Аналогично Винде - в папку `Music`
+- Для синхронизации - [MusicBee](https://getmusicbee.com)
+
+#### Windows <=> iOS
+
+- Ставим [Устройства Apple](https://apps.microsoft.com/detail/9np83lwlpz9k?hl=ru-RU&gl=US) + [Apple Music](https://apps.microsoft.com/detail/9pfhdd62mxs1?hl=ru-RU&gl=RU)
+- В Apple Music: Медиатека > Добавить папку в медиатеку
+- В Устройства Apple: Музыка > Синхроним все или по артистам - структура - из коробки
+
+
 
