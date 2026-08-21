@@ -1,5 +1,4 @@
 import html as html_module
-import random
 import re
 from pathlib import Path
 
@@ -116,40 +115,6 @@ def note_card_html(
     return unwrap_links(demote_headings(truncate_html(inner, limit)))
 
 
-def random_note_previews(
-    count: int = BATCH_SIZE,
-    limit: int = PREVIEW_LEN,
-    exclude: set[str] | frozenset[str] | None = None,
-) -> list[dict]:
-    skip = exclude or set()
-    candidates: list[tuple[Path, str, str, dict[str, str], str]] = []
-    for path in iter_notes():
-        for cid, url, meta, body in expand_note_entries(path):
-            if cid in skip:
-                continue
-            candidates.append((path, cid, url, meta, body))
-    random.shuffle(candidates)
-
-    result: list[dict] = []
-    for path, cid, url, meta, body in candidates:
-        if len(result) >= count:
-            break
-        preview = note_card_html(path, limit, meta=meta, body=body)
-        if not preview:
-            continue
-        card = {
-            "id": cid,
-            "url": url,
-            "preview": preview,
-            "name": path.name,
-        }
-        cover = note_cover(meta)
-        if cover:
-            card["cover"] = cover
-        result.append(card)
-    return result
-
-
 def menu_link_cards(
     exclude: set[str] | frozenset[str] | None = None,
 ) -> list[dict]:
@@ -177,27 +142,39 @@ def menu_link_cards(
     return cards
 
 
+def potyk_io_feed_spec():
+    from potyk_io_back.potyk_io.feed.notes_feed import FeedSpec
+
+    return FeedSpec(
+        id="potyk-io",
+        root=TEMPLATES_DIR,
+        url_prefix="",
+        sort="random",
+        mix_menu_links=True,
+        expand_diary=True,
+    )
+
+
+def random_note_previews(
+    count: int = BATCH_SIZE,
+    limit: int = PREVIEW_LEN,
+    exclude: set[str] | frozenset[str] | None = None,
+) -> list[dict]:
+    from potyk_io_back.potyk_io.feed.notes_feed import feed_batch
+
+    notes, _ = feed_batch(
+        potyk_io_feed_spec(), count, limit=limit, exclude=exclude
+    )
+    return notes
+
+
 def random_note_batch(
     count: int = BATCH_SIZE,
     limit: int = PREVIEW_LEN,
     exclude: set[str] | frozenset[str] | None = None,
 ) -> tuple[list[dict], bool]:
-    skip = set(exclude or ())
-    notes = random_note_previews(count + 1, limit=limit, exclude=skip)
-    for note in notes:
-        note.setdefault("kind", "note")
-        note.setdefault("external", False)
+    from potyk_io_back.potyk_io.feed.notes_feed import feed_batch
 
-    links = menu_link_cards(exclude=skip)
-    random.shuffle(links)
-    # ~1 link на 2 слота, чтобы заметки оставались основой ленты
-    link_budget = max(1, (count + 1) // 2) if links else 0
-    pool = notes + links[:link_budget]
-    random.shuffle(pool)
-
-    batch = pool[:count]
-    used = {card_id(item) for item in batch}
-    has_more = any(card_id(n) not in used for n in notes) or any(
-        card_id(link) not in used for link in links
+    return feed_batch(
+        potyk_io_feed_spec(), count, limit=limit, exclude=exclude
     )
-    return batch, has_more

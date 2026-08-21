@@ -109,6 +109,7 @@ def index():
         notes=notes,
         has_more=has_more,
         exclude=[n.get("id", n["url"]) for n in notes],
+        more_url="/feed/more",
     )
 
 
@@ -119,10 +120,11 @@ def feed_more():
     }
     notes, has_more = random_note_batch(BATCH_SIZE, exclude=exclude)
     return flask.render_template(
-        "potyk-io/_notes_batch.html",
+        "jinja/_notes_batch.html",
         notes=notes,
         has_more=has_more,
         exclude=[*exclude, *(n.get("id", n["url"]) for n in notes)],
+        more_url="/feed/more",
     )
 
 
@@ -535,5 +537,6 @@ def page(page_path: str):
             notes=notes,
             has_more=has_more,
             exclude=[n.get("id", n["url"]) for n in notes],
+            more_url="/feed/more",
         )
     return flask.render_template(template_name, **ctx)

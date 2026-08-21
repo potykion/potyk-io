@@ -1,0 +1,21 @@
+{% extends "potyk-mu/_base.html" %}
+{% from "jinja/_feed.html" import feed %}
+
+{% block style %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/potyk-io/css/index.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main %}
+    <h1>potyk-mu</h1>
+    <div class="flex-center" style="color: #9f9f9f; margin-bottom: 24px;">
+        <span>музыка и около</span>
+    </div>
+
+    {{ feed(notes, has_more=has_more, exclude=exclude, more_url=more_url) }}
+{% endblock %}
+
+{% block script %}
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+{% endblock %}
