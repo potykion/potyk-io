@@ -19,10 +19,12 @@ from potyk_io_back.potyk_io.menu import MENU_GROUPS
 
 inbox_bp = Blueprint("inbox", __name__, url_prefix="/inbox")
 
-PROD_EXPORT_URL = os.environ.get(
+PROD_BASE_URL = os.environ.get(
     "POTYK_IO_PROD_URL",
     "https://potyk.io",
-).rstrip("/") + "/inbox/export.json"
+).rstrip("/")
+PROD_EXPORT_URL = PROD_BASE_URL + "/inbox/export.json"
+PROD_ACK_URL = PROD_BASE_URL + "/inbox/ack.json"
 
 
 @inbox_bp.context_processor
@@ -122,6 +124,65 @@ def export_json():
     return jsonify({"items": [row.to_dict() for row in rows]})
 
 
+@inbox_bp.post("/ack.json")
+def ack_json():
+    secret = request.headers.get("X-Inbox-Secret") or request.args.get("secret")
+    if not check_export_secret(secret):
+        abort(401)
+
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        abort(400)
+    raw_ids = payload.get("ids")
+    if not isinstance(raw_ids, list):
+        abort(400)
+
+    ids: list[int] = []
+    for value in raw_ids:
+        if isinstance(value, bool):
+            continue
+        if isinstance(value, int):
+            ids.append(value)
+        elif isinstance(value, str) and value.isdigit():
+            ids.append(int(value))
+    ids = list(dict.fromkeys(ids))
+    if not ids:
+        return jsonify({"deleted": 0})
+
+    rows = db.session.scalars(select(Issue).where(Issue.id.in_(ids))).all()
+    for row in rows:
+        db.session.delete(row)
+    db.session.commit()
+    return jsonify({"deleted": len(rows)})
+
+
+def _prod_headers(secret: str) -> dict[str, str]:
+    return {
+        "X-Inbox-Secret": secret,
+        "Accept": "application/json",
+        "User-Agent": "potyk-io-inbox-pull",
+    }
+
+
+def ack_prod_items(secret: str, ids: list[int]) -> int:
+    body = json.dumps({"ids": ids}).encode("utf-8")
+    req = Request(
+        PROD_ACK_URL,
+        data=body,
+        headers={
+            **_prod_headers(secret),
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    with urlopen(req, timeout=30) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
+    deleted = payload.get("deleted") if isinstance(payload, dict) else None
+    if not isinstance(deleted, int):
+        raise ValueError("ack вернул странный ответ")
+    return deleted
+
+
 @inbox_bp.post("/pull")
 @login_required
 def pull():
@@ -133,13 +194,10 @@ def pull():
         flash_form_errors(form)
         return redirect(url_for("inbox.index"))
 
+    secret = form.secret.data
     req = Request(
         PROD_EXPORT_URL,
-        headers={
-            "X-Inbox-Secret": form.secret.data,
-            "Accept": "application/json",
-            "User-Agent": "potyk-io-inbox-pull",
-        },
+        headers=_prod_headers(secret),
     )
     try:
         with urlopen(req, timeout=30) as resp:
@@ -162,9 +220,43 @@ def pull():
         flash("Прод вернул странный ответ", "error")
         return redirect(url_for("inbox.index"))
 
-    saved, skipped = save_prod_items(items)
+    saved, skipped, synced_ids = save_prod_items(items)
     if saved == 0 and skipped == 0:
         flash("На проде пусто", "success")
-    else:
-        flash(f"Выгружено {saved}, пропущено {skipped}", "success")
+        return redirect(url_for("inbox.index"))
+
+    deleted: int | None = None
+    if synced_ids:
+        try:
+            deleted = ack_prod_items(secret, synced_ids)
+        except HTTPError as exc:
+            if exc.code == 401:
+                flash(
+                    f"Выгружено {saved}, пропущено {skipped}; "
+                    "на проде не удалил — неверный секрет",
+                    "error",
+                )
+            else:
+                flash(
+                    f"Выгружено {saved}, пропущено {skipped}; "
+                    f"на проде не удалил — ответ {exc.code}",
+                    "error",
+                )
+            return redirect(url_for("inbox.index"))
+        except URLError as exc:
+            flash(
+                f"Выгружено {saved}, пропущено {skipped}; "
+                f"на проде не удалил: {exc.reason}",
+                "error",
+            )
+            return redirect(url_for("inbox.index"))
+        except (json.JSONDecodeError, ValueError, TypeError):
+            flash(
+                f"Выгружено {saved}, пропущено {skipped}; "
+                "на проде не удалил — странный ответ ack",
+                "error",
+            )
+            return redirect(url_for("inbox.index"))
+
+    flash(f"Выгружено {saved}, пропущено {skipped}, удалено на проде {deleted or 0}", "success")
     return redirect(url_for("inbox.index"))

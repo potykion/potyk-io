@@ -64,14 +64,22 @@ def already_pulled(item_id: object) -> bool:
     return any(path.name.endswith(suffix) for path in TASKS_DIR.glob("*.md"))
 
 
-def save_prod_items(items: list[dict]) -> tuple[int, int]:
+def save_prod_items(items: list[dict]) -> tuple[int, int, list[int]]:
+    """Write prod issues to local task md files.
+
+    Returns (saved, skipped, synced_ids). synced_ids are issue ids that are
+    present locally after this call (newly written or already on disk) and
+    should be acknowledged/deleted on prod.
+    """
     TASKS_DIR.mkdir(parents=True, exist_ok=True)
     saved = 0
     skipped = 0
+    synced_ids: list[int] = []
     for item in items:
         item_id = item.get("id")
         if item_id is not None and already_pulled(item_id):
             skipped += 1
+            synced_ids.append(int(item_id))
             continue
 
         project = (item.get("project") or "potyk-io").strip() or "potyk-io"
@@ -81,10 +89,14 @@ def save_prod_items(items: list[dict]) -> tuple[int, int]:
         path = TASKS_DIR / name
         if path.exists():
             skipped += 1
+            if item_id is not None:
+                synced_ids.append(int(item_id))
             continue
         path.write_text(
             f"---\nstatus: {status}\nproject: {project}\n---\n{text}\n",
             encoding="utf-8",
         )
         saved += 1
-    return saved, skipped
+        if item_id is not None:
+            synced_ids.append(int(item_id))
+    return saved, skipped, synced_ids

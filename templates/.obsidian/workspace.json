@@ -11,10 +11,12 @@
             "id": "0f76d3e8fb0c1057",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.13.7"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.13.7"
             }
           }
         ]
@@ -183,9 +185,13 @@
   },
   "active": "0f76d3e8fb0c1057",
   "lastOpenFiles": [
+    "potyk-io/tasks/Закладочки находки как продукт-1.md",
+    "potyk-io/tasks/Потик фин сделать лендинг вместо редиректа на логин добавить туда кнопку хочу и -2.md",
+    "Clippings/Рецепт Чашушули на RussianFood.com.md",
+    "potyk-food/recipes/04-main-course/chashushuli.md",
+    "Clippings",
     "potyk-io/tasks/done/Закладочки находки как продукт-1.md",
     "potyk-io/findings.html",
-    "potyk-io/tasks/Закладочки находки как продукт-1.md",
     "inbox/_base.html"
   ]
 }
