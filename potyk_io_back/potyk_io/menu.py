@@ -26,41 +26,53 @@ MENU_GROUPS: list[MenuGroup] = [
         "title": "Проекты",
         "links": [
             {
-                "icon": "🖼️",
-                "title": "potyk.art",
-                "url": "https://www.instagram.com/potyk.art",
-                "description": "Рисую чертей по фану",
-            },
-            {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
-            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
-            {
-                "icon": "💰",
-                "title": "potyk-fin",
-                "url": "/fin",
-                "description": "Простой учет расходов и сберижений",
-            },             {
-                "icon": "💰",
-                "title": "potyk-invest",
-                "url": "/invest",
-                "description": "Новостюшки про рашн фондю",
-            },
-            {
                 "icon": "✍️",
                 "title": "Написать мне",
                 "url": "/inbox/send",
                 "description": "",
             },
             {
-                "icon": "📥",
-                "title": "Инбокс",
-                "url": "/inbox",
-                "description": "",
+                "icon": "💰",
+                "title": "potyk-fin",
+                "url": "/fin",
+                "description": "Простой учет расходов и сберижений",
+            },
+            {
+                "icon": "💰",
+                "title": "potyk-invest",
+                "url": "/invest",
+                "description": "Новостюшки про рашн фондю",
             },
             {
                 "icon": "🍕",
                 "title": "potyk-food",
                 "url": "/food",
                 "description": "Ворую рецепты",
+            },
+            {
+                "icon": "🎵",
+                "title": "potyk-mu",
+                "url": "/mu/",
+                "description": "",
+            },
+            {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
+            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
+            {
+                "icon": "📥",
+                "title": "Инбокс",
+                "url": "/inbox",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "ссылочки",
+        "links": [
+            {
+                "icon": "🖼️",
+                "title": "potyk.art",
+                "url": "https://www.instagram.com/potyk.art",
+                "description": "Рисую чертей по фану",
             },
             {
                 "icon": "👩‍💻",
@@ -112,42 +124,12 @@ MENU_GROUPS: list[MenuGroup] = [
         ],
     },
     {
-        "title": "Музыка/Кино",
+        "title": "Кино",
         "links": [
-            {
-                "icon": "📝",
-                "title": "Музыка в 2к26",
-                "url": "/mu/2026",
-                "description": "",
-            },
-            {
-                "icon": "📊",
-                "title": "Альбомы: стата",
-                "url": "https://docs.google.com/spreadsheets/d/1Dy9fxDgLzxy84PsIAoyappVB9xfTYHls1rn9KNe4gDs/edit?usp=sharing",
-                "description": "",
-            },
             {
                 "icon": "📊",
                 "title": "Кино-подпорочки",
                 "url": "/collections/movies",
-                "description": "",
-            },
-            {
-                "icon": "📝",
-                "title": "Скачать музыку",
-                "url": "/guides/music",
-                "description": "",
-            },
-            {
-                "icon": "📺",
-                "title": "танцевальное по лайту",
-                "url": "https://www.youtube.com/playlist?list=PLdb8DVmvU9i5bGINNz10f-ga_bqD41O4q",
-                "description": "хорошо заходит в нетрезвом виде",
-            },
-            {
-                "icon": "🤝",
-                "title": "Го дружить в RYM",
-                "url": "https://rateyourmusic.com/~potykion",
                 "description": "",
             },
         ],
