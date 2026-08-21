@@ -1,0 +1,12 @@
+{% extends "potyk-mu/_base.html" %}
+
+{% block style %}
+{{ super() }}
+<link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main_class %}md-content{% endblock %}
+
+{% block main %}
+    {{ content | safe }}
+{% endblock %}

@@ -87,6 +87,7 @@ def render_body_html(
     created: date | None = None,
     base_href: str | None = None,
     link_rewriter: Callable[[str], str | None] | None = None,
+    template: str = "potyk-io/page.html",
 ) -> str:
     if title:
         body = ensure_h1(body, title)
@@ -103,7 +104,7 @@ def render_body_html(
         content = inject_created(content, created, title)
     show_header = str(meta.get("header", "true")).strip().lower() not in FALSEY
     return flask.render_template(
-        "potyk-io/page.html",
+        template,
         content=content,
         show_header=show_header,
         base_href=base_href,

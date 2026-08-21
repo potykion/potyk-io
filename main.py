@@ -11,6 +11,7 @@ from potyk_io_back.fin.entities import get_settings
 from potyk_io_back.fin.pres import fin_bp
 from potyk_io_back.inbox import inbox_bp
 from potyk_io_back.invest import invest_bp
+from potyk_io_back.mu import mu_bp
 from potyk_io_back.potyk_io.pres import potyk_io_bp
 
 
@@ -39,6 +40,7 @@ def create_app():
         return f"{value:,}".replace(",", " ")
 
     app.register_blueprint(invest_bp)
+    app.register_blueprint(mu_bp)
     app.register_blueprint(inbox_bp)
     app.register_blueprint(potyk_io_bp)
     return app
