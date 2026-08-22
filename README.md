@@ -6,12 +6,15 @@
 
 - [Github](https://github.com/potykion/potyk-io.git)
 
-## Prod Setup
+## Prod 
 
 - ВМ (Yandex Cloud): 2 vCPU (100%), 2 ГБ RAM, 20 ГБ диск, Intel Ice Lake.  
 - Gunicorn: `workers=2` / `threads=4` / `gthread` — под 2 ядра и SQLite (см. `gunicorn.conf.py`).
 
-### First
+## Operations 
+
+
+### First time deploy to prod 
 
 ```shell
 ssh-keygen
@@ -70,4 +73,10 @@ sudo cp ./potyk-io.service /etc/systemd/system/potyk-io.service
 sudo systemctl daemon-reload
 sudo systemctl restart potyk-io.service
 sudo systemctl reload caddy
+```
+
+### Load db from prod to local 
+
+```sh 
+scp leybovich-nikita@84.201.131.244:/home/leybovich-nikita/potyk-io/instance/main.db instance/main.db
 ```
