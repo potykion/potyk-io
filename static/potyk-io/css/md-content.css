@@ -7,8 +7,17 @@
     margin: 0;
 }
 
+.md-content ul,
+.md-content ol {
+    padding-left: 1.5em;
+}
+
 .md-content ul {
-    padding: 0;
+    list-style: disc;
+}
+
+.md-content ol {
+    list-style: decimal;
 }
 
 .md-content blockquote {
