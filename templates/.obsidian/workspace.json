@@ -11,10 +11,14 @@
             "id": "0f76d3e8fb0c1057",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "potyk-io/code/ai.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Новая вкладка"
+              "title": "ai"
             }
           }
         ]
@@ -162,13 +166,23 @@
               "icon": "lucide-list",
               "title": "Outline"
             }
+          },
+          {
+            "id": "4bbb2471279f864a",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 628.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -178,11 +192,14 @@
       "daily-notes:Сегодняшняя заметка": false,
       "templates:Вставить шаблон": false,
       "command-palette:Открыть палитру команд": false,
-      "bases:Создать новую базу": false
+      "bases:Создать новую базу": false,
+      "obsidian-git:Open Git source control": false
     }
   },
   "active": "0f76d3e8fb0c1057",
   "lastOpenFiles": [
+    "potyk-io/code/ai-coding.md",
+    "potyk-io/code/ai.md",
     "potyk-food/recipes/04-main-course/chkmeruli.md",
     "Clippings/Рецепт Чкмерули (курица по-грузински) на RussianFood.com 1.md",
     "Clippings/Рецепт Чкмерули (курица по-грузински) на RussianFood.com.md",
