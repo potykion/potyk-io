@@ -1,0 +1,152 @@
+.restaurants-page {
+    --ink: #111;
+    --muted: #666;
+    --form-line: #ccc;
+    --line: #ccc;
+}
+
+.restaurants-page .rest-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.restaurants-page .rest-header h1 {
+    margin: 0;
+}
+
+.restaurants-page .rest-admin-btn {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid #111;
+    border-radius: 6px;
+    background: #111;
+    color: #fff;
+}
+
+.restaurants-page .rest-admin-btn:hover {
+    opacity: 0.85;
+}
+
+.restaurants-page a.btn.secondary,
+.restaurants-page .btn.secondary {
+    background: transparent;
+    color: inherit;
+    border-color: #ccc;
+}
+
+.rest-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 1.25rem;
+}
+
+.rest-chip {
+    margin: 0;
+    min-height: 34px;
+    padding: 4px 12px;
+    border: 1px solid #d0d0d0;
+    border-radius: 999px;
+    background: #fff;
+    color: inherit;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.rest-chip:hover {
+    border-color: #999;
+}
+
+.rest-chip.is-active {
+    background: #111;
+    border-color: #111;
+    color: #fff;
+}
+
+.rest-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rest-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.rest-item[hidden] {
+    display: none !important;
+}
+
+.rest-name {
+    font-weight: 600;
+    text-decoration: none;
+    color: inherit;
+}
+
+.rest-name:hover {
+    text-decoration: underline;
+}
+
+.rest-metro {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.rest-metro::before {
+    content: "🚇 ";
+}
+
+.rest-tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+}
+
+.rest-tag {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #f3f3f3;
+    color: #444;
+}
+
+.rest-empty {
+    color: #666;
+    font-style: italic;
+    margin: 0.5rem 0;
+}
+
+.rest-guide-link {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.restaurants-page .ts-wrapper {
+    width: 100%;
+}
+
+.restaurants-page .ts-control {
+    border: 1px solid var(--form-line, #ccc);
+    border-radius: 6px;
+    padding: 6px 10px;
+    min-height: 44px;
+}

@@ -1,0 +1,99 @@
+{% extends "potyk-io/_base.html" %}
+{% import "jinja/forms.html" as forms %}
+
+{% block title %}Админка: рестораны — potyk-food{% endblock %}
+
+{% block head_stylesheets %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/jinja/css/forms.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/restaurants.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css">
+{% endblock %}
+
+{% block main_class %}md-content restaurants-page{% endblock %}
+
+{% block main %}
+    <div class="rest-header">
+        <h1>Админка: рестораны</h1>
+        <a class="btn secondary rest-admin-btn" href="{{ url_for('potyk_io.restaurants') }}">← К списку</a>
+    </div>
+
+    <form class="grid cols-2" method="post" action="{{ url_for('potyk_io.restaurants_admin_add') }}">
+        {{ form.hidden_tag() }}
+        {% call forms.field(form.name.label.text, "full") %}
+            {{ form.name(required=true) }}
+            {{ forms.field_errors(form.name) }}
+        {% endcall %}
+        {% call forms.field(form.maps_url.label.text, "full") %}
+            {{ form.maps_url(required=true) }}
+            {{ forms.field_errors(form.maps_url) }}
+        {% endcall %}
+        {% call forms.field(form.metro.label.text) %}
+            <select name="{{ form.metro.name }}"
+                    id="{{ form.metro.id }}"
+                    data-tom-select
+                    data-create="true"
+                    data-placeholder="станция метро">
+                <option value=""></option>
+                {% for m in metros %}
+                <option value="{{ m }}"{% if form.metro.data == m %} selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+                {% if form.metro.data and form.metro.data not in metros %}
+                <option value="{{ form.metro.data }}" selected>{{ form.metro.data }}</option>
+                {% endif %}
+            </select>
+            {{ forms.field_errors(form.metro) }}
+        {% endcall %}
+        {% call forms.field(form.tags.label.text) %}
+            <select name="{{ form.tags.name }}"
+                    id="{{ form.tags.id }}"
+                    multiple
+                    data-tom-select
+                    data-create="true"
+                    data-placeholder="пиво, мясо…">
+                {% for t in tags %}
+                <option value="{{ t }}"{% if form.tags.data and t in form.tags.data %} selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+                {% if form.tags.data %}
+                    {% for t in form.tags.data if t not in tags %}
+                    <option value="{{ t }}" selected>{{ t }}</option>
+                    {% endfor %}
+                {% endif %}
+            </select>
+            {{ forms.field_errors(form.tags) }}
+        {% endcall %}
+        {{ forms.submit_row(form.submit) }}
+    </form>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+<script>
+(() => {
+  const initTomSelect = (root = document) => {
+    if (typeof TomSelect !== "function") return;
+    root.querySelectorAll("select[data-tom-select]").forEach((el) => {
+      if (el.tomselect) return;
+      const multiple = el.hasAttribute("multiple");
+      new TomSelect(el, {
+        create: el.dataset.create === "true",
+        createOnBlur: true,
+        persist: false,
+        maxOptions: 200,
+        closeAfterSelect: !multiple,
+        plugins: multiple ? ["remove_button"] : [],
+        placeholder: el.dataset.placeholder || "",
+        sortField: [{ field: "text", direction: "asc" }],
+      });
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => initTomSelect());
+  } else {
+    initTomSelect();
+  }
+})();
+</script>
+{% endblock %}

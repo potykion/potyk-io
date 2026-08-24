@@ -1,0 +1,94 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}Рестораны — potyk-food{% endblock %}
+
+{% block head_stylesheets %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/restaurants.css">
+{% endblock %}
+
+{% block main_class %}md-content restaurants-page{% endblock %}
+
+{% block main %}
+    <div class="rest-header">
+        <h1>Рестораны</h1>
+        <a class="btn rest-admin-btn" href="{{ url_for('potyk_io.restaurants_admin') }}">Админка</a>
+    </div>
+
+    {% if all_tags %}
+    <div class="rest-chips" id="rest-chips" role="group" aria-label="Фильтр по тегам">
+        {% for tag in all_tags %}
+        <button type="button" class="rest-chip" data-tag="{{ tag }}" aria-pressed="false">{{ tag }}</button>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <ul class="rest-list" id="rest-list">
+        {% for r in restaurants %}
+        <li class="rest-item"
+            data-tags="{{ r.tags | join(',') }}">
+            <a class="rest-name" href="{{ r.maps_url }}" target="_blank" rel="noopener">{{ r.name }}</a>
+            {% if r.metro %}
+            <span class="rest-metro">{{ r.metro }}</span>
+            {% endif %}
+            {% if r.tags %}
+            <span class="rest-tags">
+                {% for tag in r.tags %}
+                <span class="rest-tag">{{ tag }}</span>
+                {% endfor %}
+            </span>
+            {% endif %}
+        </li>
+        {% else %}
+        <li class="rest-empty">Пока пусто — добавь первый ресторан в админке</li>
+        {% endfor %}
+    </ul>
+
+    <p class="rest-empty" id="rest-filter-empty" hidden>Нет ресторанов с такими тегами</p>
+
+    <p class="rest-guide-link">
+        <a href="/food/rest/guide">Что / где пробовать →</a>
+    </p>
+{% endblock %}
+
+{% block script %}
+<script>
+(() => {
+  const chips = document.getElementById("rest-chips");
+  const list = document.getElementById("rest-list");
+  const empty = document.getElementById("rest-filter-empty");
+  if (!chips || !list) return;
+
+  const selected = new Set();
+
+  const apply = () => {
+    const items = list.querySelectorAll(".rest-item");
+    let visible = 0;
+    items.forEach((el) => {
+      const tags = (el.dataset.tags || "").split(",").map((t) => t.trim()).filter(Boolean);
+      const ok = [...selected].every((t) => tags.includes(t));
+      el.hidden = !ok;
+      if (ok) visible += 1;
+    });
+    if (empty) empty.hidden = visible > 0 || selected.size === 0;
+  };
+
+  chips.addEventListener("click", (e) => {
+    const chip = e.target.closest(".rest-chip");
+    if (!chip) return;
+    const tag = chip.dataset.tag;
+    if (selected.has(tag)) {
+      selected.delete(tag);
+      chip.classList.remove("is-active");
+      chip.setAttribute("aria-pressed", "false");
+    } else {
+      selected.add(tag);
+      chip.classList.add("is-active");
+      chip.setAttribute("aria-pressed", "true");
+    }
+    apply();
+  });
+})();
+</script>
+{% endblock %}
