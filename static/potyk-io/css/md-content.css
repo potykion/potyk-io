@@ -47,3 +47,29 @@
     font-size: 0.9rem;
     margin: -0.4rem 0 1.1rem;
 }
+
+.md-content .md-toc {
+    margin: 0 0 1.5rem;
+    padding: 0.75rem 1rem;
+    background: #f7f7f7;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.md-content .md-toc ul {
+    margin: 0.25em 0;
+    padding-left: 1.25em;
+}
+
+.md-content .md-toc > ul {
+    margin: 0;
+    padding-left: 1.1em;
+}
+
+.md-content .md-toc a {
+    text-decoration: none;
+}
+
+.md-content .md-toc a:hover {
+    text-decoration: underline;
+}

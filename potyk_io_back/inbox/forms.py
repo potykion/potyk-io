@@ -2,6 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length
 
+from potyk_io_back.inbox.tasks import TASK_STATUSES
+
 PROJECT_CHOICES = [
     ("potyk-io", "potyk-io"),
     ("potyk-invest", "potyk-invest"),
@@ -25,6 +27,15 @@ class SendForm(FlaskForm):
         render_kw={"rows": 8, "placeholder": "идея, баг, что починить…"},
     )
     submit = SubmitField("Отправить")
+
+
+class TaskStatusForm(FlaskForm):
+    status = SelectField(
+        "Статус",
+        choices=[(value, value) for value in TASK_STATUSES],
+        validators=[DataRequired()],
+    )
+    submit = SubmitField("Сохранить")
 
 
 class PullForm(FlaskForm):

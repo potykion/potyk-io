@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from pathlib import Path
 
-from potyk_io_back.potyk_io.md_rendering.render import split_frontmatter
+from potyk_io_back.potyk_io.md_rendering.render import FRONTMATTER_RE, split_frontmatter
 from potyk_io_back.potyk_io.md_rendering.templates import TEMPLATES_DIR
 
 TASKS_DIR = TEMPLATES_DIR / "tasks"
+DONE_DIR = TASKS_DIR / "done"
 SKIP_NAMES = {"README.md", "ЗАДАЧИ СПИСОК.md"}
 INVALID_FILENAME = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
+TASK_STATUSES = ("idea", "draft", "new", "wip", "done")
 
 
 @dataclass
@@ -18,6 +21,7 @@ class InboxEntry:
     text: str
     created_at: str | None = None
     title: str = ""
+    filename: str = ""
 
 
 def _title_from_text(text: str, fallback: str) -> str:
@@ -28,29 +32,105 @@ def _title_from_text(text: str, fallback: str) -> str:
     return first or fallback
 
 
-def load_local_tasks() -> list[InboxEntry]:
+def is_done_status(status: str) -> bool:
+    return status.strip().lower() == "done"
+
+
+def _is_listed_task(path: Path) -> bool:
+    return (
+        path.is_file()
+        and path.suffix.lower() == ".md"
+        and path.name not in SKIP_NAMES
+        and not path.name.startswith("_")
+    )
+
+
+def _entry_from_path(path: Path) -> InboxEntry:
+    meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
+    text = body.strip()
+    return InboxEntry(
+        project=meta.get("project", ""),
+        status=meta.get("status", "").strip(),
+        text=text,
+        title=_title_from_text(text, path.stem),
+        filename=path.name,
+    )
+
+
+def load_local_tasks(*, include_done: bool = False) -> list[InboxEntry]:
     if not TASKS_DIR.is_dir():
         return []
 
     entries: list[InboxEntry] = []
-    paths = [
-        path
-        for path in TASKS_DIR.glob("*.md")
-        if path.name not in SKIP_NAMES and not path.name.startswith("_")
-    ]
+    paths = [path for path in TASKS_DIR.glob("*.md") if _is_listed_task(path)]
     paths.sort(key=lambda path: path.stat().st_mtime, reverse=True)
     for path in paths:
-        meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
-        text = body.strip()
-        entries.append(
-            InboxEntry(
-                project=meta.get("project", ""),
-                status=meta.get("status", ""),
-                text=text,
-                title=_title_from_text(text, path.stem),
-            )
-        )
+        entry = _entry_from_path(path)
+        if not include_done and is_done_status(entry.status):
+            continue
+        entries.append(entry)
     return entries
+
+
+def resolve_task_file(filename: str) -> Path | None:
+    name = Path(filename).name
+    if not filename or name != filename:
+        return None
+    path = TASKS_DIR / name
+    try:
+        path.resolve().relative_to(TASKS_DIR.resolve())
+    except ValueError:
+        return None
+    if not _is_listed_task(path):
+        return None
+    return path
+
+
+def get_local_task(filename: str) -> InboxEntry | None:
+    path = resolve_task_file(filename)
+    if path is None:
+        return None
+    return _entry_from_path(path)
+
+
+def _unique_path(directory: Path, name: str) -> Path:
+    dest = directory / name
+    if not dest.exists():
+        return dest
+    stem = Path(name).stem
+    suffix = Path(name).suffix
+    i = 2
+    while True:
+        dest = directory / f"{stem}-{i}{suffix}"
+        if not dest.exists():
+            return dest
+        i += 1
+
+
+def set_status_text(raw: str, status: str) -> str:
+    match = FRONTMATTER_RE.match(raw)
+    if not match:
+        return f"---\nstatus: {status}\n---\n{raw}"
+    block = match.group(1)
+    if re.search(r"(?m)^status\s*:", block):
+        block = re.sub(r"(?m)^status\s*:.*$", f"status: {status}", block, count=1)
+    else:
+        block = f"status: {status}\n{block}"
+    return f"---\n{block}\n---\n{raw[match.end():]}"
+
+
+def update_local_task_status(filename: str, status: str) -> InboxEntry | None:
+    path = resolve_task_file(filename)
+    if path is None:
+        return None
+    raw = path.read_text(encoding="utf-8-sig")
+    path.write_text(set_status_text(raw, status), encoding="utf-8")
+    if is_done_status(status):
+        DONE_DIR.mkdir(parents=True, exist_ok=True)
+        dest = _unique_path(DONE_DIR, path.name)
+        path.rename(dest)
+        return _entry_from_path(dest)
+    return _entry_from_path(path)
 
 
 def _stem_for(item: dict) -> str:

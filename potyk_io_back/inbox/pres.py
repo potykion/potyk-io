@@ -13,8 +13,16 @@ from sqlalchemy import select
 
 from potyk_io_back.core.db import db
 from potyk_io_back.inbox.entities import Issue
-from potyk_io_back.inbox.forms import PullForm, SendForm
-from potyk_io_back.inbox.tasks import InboxEntry, load_local_tasks, save_prod_items
+from potyk_io_back.inbox.forms import PullForm, SendForm, TaskStatusForm
+from potyk_io_back.inbox.tasks import (
+    InboxEntry,
+    TASK_STATUSES,
+    get_local_task,
+    is_done_status,
+    load_local_tasks,
+    save_prod_items,
+    update_local_task_status,
+)
 from potyk_io_back.potyk_io.menu import MENU_GROUPS
 
 inbox_bp = Blueprint("inbox", __name__, url_prefix="/inbox")
@@ -260,3 +268,46 @@ def pull():
 
     flash(f"Выгружено {saved}, пропущено {skipped}, удалено на проде {deleted or 0}", "success")
     return redirect(url_for("inbox.index"))
+
+
+def _status_form(current: str) -> TaskStatusForm:
+    form = TaskStatusForm()
+    choices = [(value, value) for value in TASK_STATUSES]
+    if current and current not in TASK_STATUSES:
+        choices = [(current, current), *choices]
+    elif not current:
+        choices = [("", "—"), *choices]
+    form.status.choices = choices
+    return form
+
+
+@inbox_bp.route("/task/<filename>", methods=["GET", "POST"])
+@login_required
+def task(filename: str):
+    if not is_local():
+        abort(404)
+
+    item = get_local_task(filename)
+    if item is None:
+        abort(404)
+
+    form = _status_form(item.status)
+    if form.validate_on_submit():
+        updated = update_local_task_status(filename, form.status.data)
+        if updated is None:
+            abort(404)
+        flash("Статус сохранён", "success")
+        if is_done_status(updated.status):
+            return redirect(url_for("inbox.index"))
+        return redirect(url_for("inbox.task", filename=updated.filename))
+    if form.is_submitted():
+        flash_form_errors(form)
+    elif item.status:
+        form.status.data = item.status
+
+    return render_template(
+        "inbox/task.html",
+        item=item,
+        form=form,
+        is_local=True,
+    )

@@ -4,6 +4,7 @@ from datetime import date
 
 import flask
 import markdown
+from markdown.extensions.toc import slugify_unicode
 
 from potyk_io_back.potyk_io.md_rendering.created import (
     created_from_meta,
@@ -14,8 +15,14 @@ from potyk_io_back.potyk_io.md_rendering.hashtags import linkify_hashtags
 MD_EXTENSIONS = ["extra", "sane_lists", "nl2br", "pymdownx.magiclink"]
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 FALSEY = {"false", "0", "no", "off"}
+TRUEY = {"true", "1", "yes", "on"}
 H1_RE = re.compile(r"(<h1\b[^>]*>.*?</h1>)", re.IGNORECASE | re.DOTALL)
+CREATED_RE = re.compile(
+    r'(<time\s+class="note-created"[^>]*>.*?</time>)',
+    re.IGNORECASE | re.DOTALL,
+)
 MARKDOWN_LINK_RE = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)")
+TOC_CONFIG = {"toc_depth": "2-4", "slugify": slugify_unicode}
 
 
 def split_frontmatter(text: str) -> tuple[dict[str, str], str]:
@@ -67,6 +74,29 @@ def inject_created(html: str, created: date, title: str | None) -> str:
     return f"{stamp}\n{html}"
 
 
+def meta_flag(meta: dict[str, str], key: str, *, default: bool = False) -> bool:
+    raw = unquote_meta(str(meta.get(key, "")))
+    if not raw:
+        return default
+    value = raw.strip().lower()
+    if value in TRUEY:
+        return True
+    if value in FALSEY:
+        return False
+    return default
+
+
+def inject_toc(html: str, toc: str) -> str:
+    if "<li>" not in toc:
+        return html
+    block = toc.replace('class="toc"', 'class="toc md-toc"', 1)
+    if CREATED_RE.search(html):
+        return CREATED_RE.sub(rf"\1\n{block}", html, count=1)
+    if H1_RE.search(html):
+        return H1_RE.sub(rf"\1\n{block}", html, count=1)
+    return f"{block}\n{html}"
+
+
 def rewrite_markdown_links(
     body: str, link_rewriter: Callable[[str], str | None]
 ) -> str:
@@ -93,15 +123,28 @@ def render_body_html(
         body = ensure_h1(body, title)
     if link_rewriter is not None:
         body = rewrite_markdown_links(body, link_rewriter)
-    content = markdown.markdown(
-        linkify_hashtags(body),
-        extensions=MD_EXTENSIONS,
+
+    show_toc = meta_flag(meta, "toc")
+    extensions = list(MD_EXTENSIONS)
+    extension_configs: dict = {}
+    if show_toc:
+        extensions.append("toc")
+        extension_configs["toc"] = TOC_CONFIG
+
+    md = markdown.Markdown(
+        extensions=extensions,
+        extension_configs=extension_configs,
         output_format="html",
     )
+    content = md.convert(linkify_hashtags(body))
+
     if created is None:
         created = created_from_meta(meta)
     if created is not None:
         content = inject_created(content, created, title)
+    if show_toc:
+        content = inject_toc(content, md.toc)
+
     show_header = str(meta.get("header", "true")).strip().lower() not in FALSEY
     return flask.render_template(
         template,

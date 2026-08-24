@@ -21,17 +21,32 @@
     {% if items %}
     <ul class="inbox-list">
         {% for item in items %}
-        <li class="inbox-item">
-            <div class="inbox-item-head">
-                <p class="inbox-item-title">{{ item.title }}</p>
-                <span class="inbox-meta">
-                    {% if item.project %}{{ item.project }}{% endif %}
-                    {% if item.project and item.status %} · {% endif %}
-                    {% if item.status %}{{ item.status }}{% endif %}
-                    {% if item.created_at %} · {{ item.created_at }}{% endif %}
-                </span>
+        <li>
+            {% if is_local and item.filename %}
+            <a class="inbox-item inbox-item-link" href="{{ url_for('inbox.task', filename=item.filename) }}">
+                <div class="inbox-item-head">
+                    <p class="inbox-item-title">{{ item.title }}</p>
+                    <span class="inbox-meta">
+                        {% if item.project %}{{ item.project }}{% endif %}
+                        {% if item.project and item.status %} · {% endif %}
+                        {% if item.status %}{{ item.status }}{% endif %}
+                    </span>
+                </div>
+            </a>
+            {% else %}
+            <div class="inbox-item">
+                <div class="inbox-item-head">
+                    <p class="inbox-item-title">{{ item.title }}</p>
+                    <span class="inbox-meta">
+                        {% if item.project %}{{ item.project }}{% endif %}
+                        {% if item.project and item.status %} · {% endif %}
+                        {% if item.status %}{{ item.status }}{% endif %}
+                        {% if item.created_at %} · {{ item.created_at }}{% endif %}
+                    </span>
+                </div>
+                <pre class="inbox-item-text">{{ item.text }}</pre>
             </div>
-            <pre class="inbox-item-text">{{ item.text }}</pre>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>

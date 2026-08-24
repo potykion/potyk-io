@@ -60,6 +60,20 @@
         background: #fff;
     }
 
+    a.inbox-item-link {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    a.inbox-item-link:hover {
+        border-color: var(--ink);
+    }
+
+    a.inbox-item-link .inbox-item-head {
+        margin-bottom: 0;
+    }
+
     .inbox-item-head {
         display: flex;
         flex-wrap: wrap;
@@ -90,6 +104,24 @@
 
     .inbox-empty {
         color: var(--muted);
+    }
+
+    .inbox-back {
+        margin: 0 0 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .inbox-back a {
+        color: var(--muted);
+        text-decoration: none;
+    }
+
+    .inbox-back a:hover {
+        color: var(--ink);
+    }
+
+    .inbox-status {
+        margin: 0 0 1.25rem;
     }
 </style>
 {% endblock %}

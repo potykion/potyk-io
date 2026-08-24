@@ -1,0 +1,27 @@
+{% extends "inbox/_base.html" %}
+{% import "jinja/forms.html" as forms %}
+
+{% block title %}{{ item.title }}{% endblock %}
+
+{% block main %}
+<div class="inbox-wrap">
+    <p class="inbox-back"><a href="{{ url_for('inbox.index') }}">← Инбокс</a></p>
+    <h1>{{ item.title }}</h1>
+    <p class="inbox-meta">
+        {% if item.project %}{{ item.project }}{% endif %}
+        {% if item.project and item.status %} · {% endif %}
+        {% if item.status %}{{ item.status }}{% endif %}
+    </p>
+
+    <form class="grid inbox-status" method="post" action="{{ url_for('inbox.task', filename=item.filename) }}">
+        {{ form.hidden_tag() }}
+        {% call forms.field(form.status.label.text) %}
+            {{ form.status() }}
+            {{ forms.field_errors(form.status) }}
+        {% endcall %}
+        {{ forms.submit_row(form.submit) }}
+    </form>
+
+    <pre class="inbox-item-text">{{ item.text }}</pre>
+</div>
+{% endblock %}
