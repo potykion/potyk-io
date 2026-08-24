@@ -251,7 +251,7 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
             },
             {
                 "icon": "🍽️",
-                "title": "Кафе и рестораны",
+                "title": "Рестораны",
                 "url": "/food/rest",
                 "description": "",
             },

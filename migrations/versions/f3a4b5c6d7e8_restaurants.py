@@ -1,7 +1,7 @@
 """restaurants table + seed from potyk-food/rest guide
 
-Revision ID: e1f2a3b4c5d6
-Revises: d0e1f2a3b4c5
+Revision ID: f3a4b5c6d7e8
+Revises: e1f2a3b4c5d6
 Create Date: 2026-08-24 13:10:00.000000
 
 """
@@ -10,8 +10,8 @@ from typing import Sequence, Union
 import sqlalchemy as sa
 from alembic import op
 
-revision: str = "e1f2a3b4c5d6"
-down_revision: Union[str, Sequence[str], None] = "d0e1f2a3b4c5"
+revision: str = "f3a4b5c6d7e8"
+down_revision: Union[str, Sequence[str], None] = "e1f2a3b4c5d6"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

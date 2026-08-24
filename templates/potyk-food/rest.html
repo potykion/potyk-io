@@ -67,7 +67,7 @@
     let visible = 0;
     items.forEach((el) => {
       const tags = (el.dataset.tags || "").split(",").map((t) => t.trim()).filter(Boolean);
-      const ok = [...selected].every((t) => tags.includes(t));
+      const ok = selected.size === 0 || [...selected].some((t) => tags.includes(t));
       el.hidden = !ok;
       if (ok) visible += 1;
     });
