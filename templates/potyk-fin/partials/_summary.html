@@ -26,7 +26,10 @@
                 <details class="stats-cat">
                     <summary>
                         <span class="stats-cat-head">
-                            <span class="stats-cat-name">{{ row.category }}</span>
+                            <span class="stats-cat-lead">
+                                <span class="stats-cat-name">{{ row.category }}</span>
+                                <span class="stats-cat-meta muted">{{ row.count }} оп. · ср. {{ row.avg | rub }}</span>
+                            </span>
                             <span class="stats-cat-total">{{ row.total | rub }}</span>
                         </span>
                         <span class="stats-bar" aria-hidden="true">

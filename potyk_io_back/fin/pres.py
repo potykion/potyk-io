@@ -49,10 +49,13 @@ def category_stats_for_period(
     rows = []
     for key, total in totals.items():
         items = sorted(ops[key], key=lambda e: (e.date, e.id), reverse=True)
+        count = len(items)
         rows.append(
             {
                 "category": display[key],
                 "total": total,
+                "count": count,
+                "avg": round(total / count) if count else 0,
                 "share": (total / max_total) if max_total else 0,
                 "expenses": items,
             }
