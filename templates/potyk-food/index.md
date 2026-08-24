@@ -91,6 +91,7 @@
 
 - [Брауни с вишней](recipes/06-dessert/brownie.md)
 - [Шарлотка с яблоками](recipes/06-dessert/charlotte-w-apples.md)
+- [Гренки с сахаром](recipes/06-dessert/french-toast.md)
 
 ### 🪓 Крафт
 

@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
@@ -6,7 +6,13 @@ from sqlalchemy import func, select
 
 from potyk_io_back.core.db import db
 from potyk_io_back.fin.budget import compute_days
-from potyk_io_back.fin.entities import ClosedDay, Expense, Saving, get_settings
+from potyk_io_back.fin.entities import (
+    ClosedDay,
+    Expense,
+    Saving,
+    get_settings,
+    normalize_expense_category,
+)
 from potyk_io_back.fin.forms import BudgetForm, CloseDayForm, DeleteForm, ExpenseForm, SavingForm
 
 fin_bp = Blueprint("fin", __name__, url_prefix="/fin")
@@ -29,18 +35,28 @@ def category_stats_for_period(
 ) -> tuple[list[dict], int]:
     totals: dict[str, int] = {}
     display: dict[str, str] = {}
+    ops: dict[str, list[Expense]] = {}
     for expense in expenses:
         if expense.date < date_from or expense.date > date_to:
             continue
         key = expense.category.casefold()
         totals[key] = totals.get(key, 0) + expense.amount
         if key not in display:
-            display[key] = expense.category
+            display[key] = normalize_expense_category(expense.category)
+        ops.setdefault(key, []).append(expense)
 
-    rows = [
-        {"category": display[key], "total": total}
-        for key, total in totals.items()
-    ]
+    max_total = max(totals.values(), default=0)
+    rows = []
+    for key, total in totals.items():
+        items = sorted(ops[key], key=lambda e: (e.date, e.id), reverse=True)
+        rows.append(
+            {
+                "category": display[key],
+                "total": total,
+                "share": (total / max_total) if max_total else 0,
+                "expenses": items,
+            }
+        )
     rows.sort(key=lambda r: (-r["total"], r["category"].casefold()))
     return rows, sum(r["total"] for r in rows)
 
@@ -59,9 +75,13 @@ def index_context(
     savings = db.session.scalars(
         select(Saving).order_by(Saving.date.desc(), Saving.id.desc())
     ).all()
-    categories = db.session.scalars(
-        select(Expense.category).distinct().order_by(Expense.category)
-    ).all()
+    raw_categories = db.session.scalars(select(Expense.category).distinct()).all()
+    categories_by_key = {
+        normalize_expense_category(c).casefold(): normalize_expense_category(c)
+        for c in raw_categories
+        if c
+    }
+    categories = sorted(categories_by_key.values(), key=str.casefold)
     closed_dates = set(
         db.session.scalars(select(ClosedDay.date).order_by(ClosedDay.date)).all()
     )
@@ -80,7 +100,7 @@ def index_context(
     days_desc = list(reversed(days))
     today = date.today()
     stats_to = today
-    stats_from = today - timedelta(days=6)
+    stats_from = today.replace(day=1)
 
     stats_from_raw = request.args.get("stats_from")
     stats_to_raw = request.args.get("stats_to")
@@ -174,7 +194,7 @@ def add_expense():
     expense = Expense(
         date=form.date.data,
         amount=form.amount.data,
-        category=form.category.data.strip(),
+        category=normalize_expense_category(form.category.data),
         description=(form.description.data or "").strip(),
         optional=form.optional.data,
     )

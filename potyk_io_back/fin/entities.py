@@ -1,6 +1,13 @@
 from potyk_io_back.core.db import db
 
 
+def normalize_expense_category(category: str) -> str:
+    text = (category or "").strip()
+    if not text:
+        return text
+    return text[0].upper() + text[1:].casefold()
+
+
 class Expense(db.Model):
     __tablename__ = "expenses"
 

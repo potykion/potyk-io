@@ -219,6 +219,93 @@
         text-align: right;
     }
 
+    .stats-cat-row > td {
+        padding: 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .stats-cat {
+        padding: 8px 4px 10px;
+    }
+
+    .stats-cat > summary {
+        cursor: pointer;
+        list-style: none;
+        display: block;
+        user-select: none;
+    }
+
+    .stats-cat > summary::-webkit-details-marker { display: none; }
+
+    .stats-cat-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .stats-cat-name {
+        font-weight: 500;
+    }
+
+    .stats-cat-name::before {
+        content: "›";
+        display: inline-block;
+        margin-right: 6px;
+        color: var(--muted);
+        transition: transform 0.15s ease;
+    }
+
+    .stats-cat[open] .stats-cat-name::before {
+        transform: rotate(90deg);
+    }
+
+    .stats-cat-total {
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+
+    .stats-bar {
+        display: block;
+        height: 7px;
+        margin-top: 8px;
+        background: #eeeae2;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .stats-bar-fill {
+        display: block;
+        height: 100%;
+        width: calc(var(--p) * 100%);
+        border-radius: inherit;
+        background: color-mix(in srgb, var(--accent) calc(35% + 65% * var(--p)), #c9b8a0);
+        opacity: calc(0.45 + 0.55 * var(--p));
+    }
+
+    .stats-ops {
+        width: 100%;
+        margin-top: 10px;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .stats-ops th,
+    .stats-ops td {
+        padding: 5px 4px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        font-weight: 400;
+    }
+
+    .stats-ops th {
+        font-size: 0.72rem;
+        color: var(--muted);
+    }
+
+    .stats-ops .num { text-align: right; }
+
     .panel {
         background: var(--card);
         border: 1px solid var(--line);
