@@ -11,12 +11,14 @@
             "id": "0f76d3e8fb0c1057",
             "type": "leaf",
             "state": {
-              "type": "release-notes",
+              "type": "markdown",
               "state": {
-                "currentVersion": "1.13.7"
+                "file": "potyk-io/code/ai.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-book-up",
-              "title": "Release Notes 1.13.7"
+              "icon": "lucide-file",
+              "title": "ai"
             }
           }
         ]
@@ -44,7 +46,7 @@
                 "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "Файловый менеджер"
             }
           },
           {
@@ -164,27 +166,44 @@
               "icon": "lucide-list",
               "title": "Outline"
             }
+          },
+          {
+            "id": "4bbb2471279f864a",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 628.5
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false,
+      "obsidian-git:Open Git source control": false
     }
   },
   "active": "0f76d3e8fb0c1057",
   "lastOpenFiles": [
+    "potyk-io/code/ai-coding.md",
+    "potyk-io/code/ai.md",
+    "potyk-food/recipes/04-main-course/chkmeruli.md",
+    "Clippings/Рецепт Чкмерули (курица по-грузински) на RussianFood.com 1.md",
+    "Clippings/Рецепт Чкмерули (курица по-грузински) на RussianFood.com.md",
+    "Clippings",
     "potyk-io/tasks/Task-Movies.md",
     "potyk-io/Озадаченный.md",
     "potyk-io/Драфты ПИШИ БЛЯТЬ НЕ ОСТАВЛЯЙ НА СТО ЛЕТ/music-2.md",
@@ -202,7 +221,6 @@
     "potyk-io/tasks/Потик фин сделать лендинг вместо редиректа на логин добавить туда кнопку хочу и -2.md",
     "Clippings/Рецепт Чашушули на RussianFood.com.md",
     "potyk-food/recipes/04-main-course/chashushuli.md",
-    "Clippings",
     "potyk-io/tasks/done/Закладочки находки как продукт-1.md",
     "potyk-io/findings.html",
     "inbox/_base.html"

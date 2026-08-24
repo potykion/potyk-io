@@ -1,6 +1,37 @@
 (function () {
     "use strict";
 
+    function parseTitleWithYear(raw) {
+        const match = String(raw).trim().match(/^(.+?)\s*\((\d{4})\)\s*$/);
+        if (!match) return null;
+        return { title: match[1].trim(), year: match[2] };
+    }
+
+    function setupAddMovieForm() {
+        const form = document.getElementById("movies-add-form");
+        if (!form) return;
+
+        const titleInput = form.querySelector('input[name="title_ru"]');
+        const yearInput = form.querySelector('input[name="year"]');
+        if (!titleInput) return;
+
+        function applyParse() {
+            const parsed = parseTitleWithYear(titleInput.value);
+            if (!parsed) return;
+            titleInput.value = parsed.title;
+            if (yearInput && !yearInput.value) {
+                yearInput.value = parsed.year;
+            }
+        }
+
+        titleInput.addEventListener("paste", function () {
+            window.setTimeout(applyParse, 0);
+        });
+        titleInput.addEventListener("blur", applyParse);
+    }
+
+    setupAddMovieForm();
+
     const dataEl = document.getElementById("movies-admin-kanban-data");
     const boardEl = document.getElementById("movies-kanban");
     const statusEl = document.getElementById("movies-kanban-status");

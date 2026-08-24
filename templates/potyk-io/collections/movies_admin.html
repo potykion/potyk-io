@@ -14,16 +14,15 @@
 
     <section>
         <h2>Добавить фильм</h2>
-        <form method="post" action="{{ url_for('potyk_io.movies_admin_add_movie') }}">
-            <p>
-                <label>ID<br>
-                    <input name="id" required style="width: 420px" />
-                </label>
-            </p>
+        <form id="movies-add-form" method="post" action="{{ url_for('potyk_io.movies_admin_add_movie') }}">
             <p>
                 <label>Title RU<br>
-                    <input name="title_ru" required style="width: 420px" />
+                    <input name="title_ru" required style="width: 420px" placeholder="Секретарша (2001)" />
                 </label>
+            </p>
+            <p style="opacity: 0.75; font-size: 0.95em">
+                Можно вставить «Название (год)» — название и год разберутся автоматически.
+                `id` возьмётся из Kinopoisk URL.
             </p>
             <p>
                 <label>Title EN<br>
@@ -43,6 +42,16 @@
             <p>
                 <label>Kinopoisk URL<br>
                     <input name="kinopoisk" required style="width: 520px" />
+                </label>
+            </p>
+            <p>
+                <label>Добавить в коллекцию (необязательно)<br>
+                    <select name="collection_id" style="width: 420px">
+                        <option value="">— не добавлять —</option>
+                        {% for c in collections %}
+                            <option value="{{ c.id }}">{{ c.title }} ({{ c.id }})</option>
+                        {% endfor %}
+                    </select>
                 </label>
             </p>
             <button type="submit">Сохранить фильм</button>
