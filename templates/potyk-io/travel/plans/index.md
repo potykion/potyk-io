@@ -10,3 +10,4 @@
 - [Питер Планы на 2027-...](/travel/plans/spb-27)
 - [Тула](/travel/plans/tula)
 - [Ярик × Ростов × Переславль-Залесский](/travel/plans/yarik)
+- [Пермь](/travel/plans/perm)
