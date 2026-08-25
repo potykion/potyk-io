@@ -24,16 +24,24 @@
     let spinning = false;
     let wheelVersion = 0;
     let pool = [];
+    let lastWinner = null;
 
     let selectedCollectionId = collectionSelect ? collectionSelect.value : defaultCollectionId;
     if (!selectedCollectionId) selectedCollectionId = defaultCollectionId;
 
     function resetPool() {
         pool = (moviesByCollection[selectedCollectionId] || []).slice();
+        lastWinner = null;
     }
 
     function getSelectedMovies() {
         return pool;
+    }
+
+    /** Фильмы, из которых ещё можно крутить (без уже выпавшего, пока он висит на колесе). */
+    function moviesAvailableToSpin() {
+        if (!lastWinner) return pool;
+        return pool.filter(function (m) { return m !== lastWinner; });
     }
 
     function movieLabel(movie) {
@@ -104,8 +112,8 @@
     }
 
     function updateSpinState() {
-        const movies = getSelectedMovies();
-        const hasMovies = movies.length > 0;
+        const available = moviesAvailableToSpin();
+        const hasMovies = available.length > 0;
         if (spinBtn) spinBtn.disabled = !hasMovies || spinning;
         if (emptyEl) {
             emptyEl.hidden = hasMovies;
@@ -153,8 +161,22 @@
     }
 
     function spinWheel() {
+        if (spinning) return;
+
+        // Убираем прошлый выигрыш только при новом кручении — чтобы он оставался под стрелкой.
+        if (lastWinner) {
+            const idx = pool.indexOf(lastWinner);
+            if (idx !== -1) pool.splice(idx, 1);
+            lastWinner = null;
+            resetWheelVisual();
+            drawWheel();
+        }
+
         const movies = getSelectedMovies();
-        if (movies.length === 0 || spinning) return;
+        if (movies.length === 0) {
+            updateSpinState();
+            return;
+        }
 
         const version = wheelVersion;
         spinning = true;
@@ -179,11 +201,8 @@
             canvas.removeEventListener("transitionend", onEnd);
             if (wheelVersion !== version) return;
             spinning = false;
-            const winner = movies[winnerIdx];
-            showResult(winner);
-            pool.splice(winnerIdx, 1);
-            resetWheelVisual();
-            drawWheel();
+            lastWinner = movies[winnerIdx];
+            showResult(lastWinner);
             updateSpinState();
         };
         canvas.addEventListener("transitionend", onEnd);
