@@ -23,12 +23,17 @@
     let rotation = 0;
     let spinning = false;
     let wheelVersion = 0;
+    let pool = [];
 
     let selectedCollectionId = collectionSelect ? collectionSelect.value : defaultCollectionId;
     if (!selectedCollectionId) selectedCollectionId = defaultCollectionId;
 
+    function resetPool() {
+        pool = (moviesByCollection[selectedCollectionId] || []).slice();
+    }
+
     function getSelectedMovies() {
-        return moviesByCollection[selectedCollectionId] || [];
+        return pool;
     }
 
     function movieLabel(movie) {
@@ -102,7 +107,15 @@
         const movies = getSelectedMovies();
         const hasMovies = movies.length > 0;
         if (spinBtn) spinBtn.disabled = !hasMovies || spinning;
-        if (emptyEl) emptyEl.hidden = hasMovies;
+        if (emptyEl) {
+            emptyEl.hidden = hasMovies;
+            if (!hasMovies) {
+                const original = moviesByCollection[selectedCollectionId] || [];
+                emptyEl.textContent = original.length > 0
+                    ? "Все фильмы уже выпали — смени коллекцию или обнови страницу"
+                    : "В выбранной коллекции пока пусто";
+            }
+        }
     }
 
     function showResult(movie) {
@@ -120,11 +133,22 @@
         resultEl.hidden = false;
     }
 
+    function resetWheelVisual() {
+        if (!canvas) return;
+        const prev = canvas.style.transition;
+        canvas.style.transition = "none";
+        rotation = 0;
+        canvas.style.transform = "rotate(0deg)";
+        // Force reflow so the next spin animates from 0 again.
+        void canvas.offsetWidth;
+        canvas.style.transition = prev;
+    }
+
     function invalidateSpin() {
         wheelVersion += 1;
         spinning = false;
-        rotation = 0;
-        if (canvas) canvas.style.transform = "rotate(0deg)";
+        resetPool();
+        resetWheelVisual();
         if (resultEl) resultEl.hidden = true;
     }
 
@@ -139,9 +163,15 @@
 
         const winnerIdx = Math.floor(Math.random() * movies.length);
         const slice = 360 / movies.length;
+        // Absolute landing: winner center under the top pointer (0°).
+        const landing = -((winnerIdx + 0.5) * slice);
+        const landingMod = ((landing % 360) + 360) % 360;
+        const currentMod = ((rotation % 360) + 360) % 360;
+        let delta = (landingMod - currentMod + 360) % 360;
         const fullSpins = 5 + Math.floor(Math.random() * 3);
-        const target = fullSpins * 360 - (winnerIdx + 0.5) * slice;
-        rotation += target;
+        if (delta === 0) delta = 360;
+        delta += fullSpins * 360;
+        rotation += delta;
 
         canvas.style.transform = "rotate(" + rotation + "deg)";
 
@@ -149,8 +179,12 @@
             canvas.removeEventListener("transitionend", onEnd);
             if (wheelVersion !== version) return;
             spinning = false;
+            const winner = movies[winnerIdx];
+            showResult(winner);
+            pool.splice(winnerIdx, 1);
+            resetWheelVisual();
+            drawWheel();
             updateSpinState();
-            showResult(movies[winnerIdx]);
         };
         canvas.addEventListener("transitionend", onEnd);
     }
@@ -168,6 +202,7 @@
         });
     }
 
+    resetPool();
     drawWheel();
     updateSpinState();
 })();
