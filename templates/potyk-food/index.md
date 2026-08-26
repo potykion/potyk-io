@@ -45,7 +45,7 @@
 - [Тефтели с овощами в одной сковороде](recipes/04-main-course/meatballs-w-veggies.md)
 - [Курица с рисом по-испански](recipes/04-main-course/chicken-w-rice-spain.md)
 - [Куриные окорочка с овощами](recipes/04-main-course/glazed-chicken-w-veggies.md)
-- [Куриные бёдрышки, запечённые с яблоками в медово-горчичном соусе](recipes/04-main-course/chicken-thighs-w-apples.md)
+- [Куриные бёдрышки, запечённые с яблоками в медово-горчичном соусе](experiments/chicken-thighs-w-apples.md)
 - [Кролик с розмарином и розовым перцем](recipes/04-main-course/rabbit.md)
 - [Печень с яблоками по-берлински](recipes/04-main-course/liver-w-apples.md)
 - [Свиные медальоны с яблочно-горчичным соусом](recipes/04-main-course/pork-w-apples.md)

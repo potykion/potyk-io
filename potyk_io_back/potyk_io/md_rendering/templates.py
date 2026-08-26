@@ -1,7 +1,13 @@
+import re
 from pathlib import Path
 
 TEMPLATES_DIR = Path(__file__).resolve().parents[3] / "templates" / "potyk-io"
 FOOD_TEMPLATES_DIR = Path(__file__).resolve().parents[3] / "templates" / "potyk-food"
+
+_INDEX_NAMES = {"index.md", "index.html"}
+_SKIP_PAGE_NAMES = _INDEX_NAMES | {"menu.html"}
+_H1_HTML_RE = re.compile(r"<h1[^>]*>(.*?)</h1>", re.I | re.S)
+_TAG_RE = re.compile(r"<[^>]+>")
 
 
 def resolve_page(
@@ -20,6 +26,7 @@ def resolve_page(
         root / f"{page_path}.md",
         root / page_path / "index.md",
         root / f"{page_path}.html",
+        root / page_path / "index.html",
         root / page_path / "menu.html",
     ]
     if allow_assets:
@@ -36,3 +43,41 @@ def resolve_page(
             return resolved
 
     return None
+
+
+def _page_title(path: Path) -> str:
+    try:
+        text = path.read_text(encoding="utf-8-sig")
+    except OSError:
+        return path.stem
+
+    if path.suffix.lower() == ".md":
+        from potyk_io_back.potyk_io.md_rendering.render import (
+            extract_h1,
+            split_frontmatter,
+        )
+
+        _, body = split_frontmatter(text)
+        return extract_h1(body) or path.stem
+
+    match = _H1_HTML_RE.search(text)
+    if match:
+        title = _TAG_RE.sub("", match.group(1)).strip()
+        if title:
+            return title
+    return path.stem
+
+
+def list_folder_pages(folder: Path, *, url_prefix: str) -> list[dict[str, str]]:
+    """Список страниц папки (title + url) для index.html-оглавлений."""
+    prefix = url_prefix.rstrip("/")
+    pages: list[dict[str, str]] = []
+    for path in sorted(folder.iterdir(), key=lambda p: p.name.casefold()):
+        if not path.is_file():
+            continue
+        if path.name.startswith(("_", ".")) or path.name in _SKIP_PAGE_NAMES:
+            continue
+        if path.suffix.lower() not in {".md", ".html"}:
+            continue
+        pages.append({"title": _page_title(path), "url": f"{prefix}/{path.stem}"})
+    return pages

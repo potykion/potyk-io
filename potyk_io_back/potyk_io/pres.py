@@ -30,6 +30,7 @@ from potyk_io_back.potyk_io.restaurants.forms import RestaurantForm
 from potyk_io_back.potyk_io.md_rendering import (
     FOOD_TEMPLATES_DIR,
     TEMPLATES_DIR,
+    list_folder_pages,
     render_body_html,
     resolve_page,
     split_frontmatter,
@@ -54,7 +55,7 @@ def inject_menu():
 
 
 def food_page_url(path: PurePosixPath) -> str:
-    if path.name == "index.md":
+    if path.name in ("index.md", "index.html"):
         parent = path.parent.as_posix()
         return "/food" if parent == "." else f"/food/{parent}"
     return f"/food/{path.with_suffix('').as_posix()}"
@@ -651,6 +652,18 @@ def food_page(page_path: str):
 
     if file.suffix == ".md":
         return render_food_markdown(file)
+
+    if file.suffix == ".html":
+        template_name = f"potyk-food/{file.relative_to(FOOD_TEMPLATES_DIR).as_posix()}"
+        ctx = {}
+        if file.name == "index.html":
+            ctx["pages"] = list_folder_pages(
+                file.parent,
+                url_prefix=food_page_url(
+                    PurePosixPath(file.relative_to(FOOD_TEMPLATES_DIR).as_posix())
+                ),
+            )
+        return render_template(template_name, **ctx)
 
     return send_file(file)
 

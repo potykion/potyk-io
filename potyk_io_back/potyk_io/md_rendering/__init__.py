@@ -14,6 +14,7 @@ from potyk_io_back.potyk_io.md_rendering.render import (
 from potyk_io_back.potyk_io.md_rendering.templates import (
     FOOD_TEMPLATES_DIR,
     TEMPLATES_DIR,
+    list_folder_pages,
     resolve_page,
 )
 
@@ -23,6 +24,7 @@ __all__ = [
     "demote_headings",
     "extract_h1",
     "html_text",
+    "list_folder_pages",
     "main_inner_html",
     "render_body_html",
     "resolve_page",
