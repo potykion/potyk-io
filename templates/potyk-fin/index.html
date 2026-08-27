@@ -67,20 +67,29 @@
   };
   const save = (state) => localStorage.setItem(key, JSON.stringify(state));
 
-  document.querySelectorAll("details[data-panel]").forEach((el) => {
-    const id = el.dataset.panel;
-    const state = load();
-    if (el.open) {
-      state[id] = true;
-      save(state);
-    } else if (state[id]) {
-      el.open = true;
-    }
-    el.addEventListener("toggle", () => {
-      const next = load();
-      next[id] = el.open;
-      save(next);
+  const bindPanels = (root = document) => {
+    root.querySelectorAll("details[data-panel]").forEach((el) => {
+      if (el.dataset.panelBound) return;
+      el.dataset.panelBound = "1";
+      const id = el.dataset.panel;
+      const state = load();
+      if (el.open) {
+        state[id] = true;
+        save(state);
+      } else if (state[id]) {
+        el.open = true;
+      }
+      el.addEventListener("toggle", () => {
+        const next = load();
+        next[id] = el.open;
+        save(next);
+      });
     });
+  };
+
+  bindPanels();
+  document.body.addEventListener("htmx:load", (event) => {
+    bindPanels(event.target);
   });
 
   const evalFormula = (raw) => {

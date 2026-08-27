@@ -1,74 +1,77 @@
-<div id="summary" class="stats-panel">
-    <form class="stats-period" method="get" action="{{ url_for('fin.index') }}">
-        <label>
-            <span class="label">С</span>
-            <input type="date" name="stats_from" value="{{ stats_from.isoformat() }}" required>
-        </label>
-        <label>
-            <span class="label">По</span>
-            <input type="date" name="stats_to" value="{{ stats_to.isoformat() }}" required>
-        </label>
-        <button type="submit" class="secondary">Показать</button>
-    </form>
+<div id="summary" class="panel">
+    <details data-panel="stats">
+        <summary>Статистика</summary>
+        <form class="stats-period" method="get" action="{{ url_for('fin.index') }}">
+            <label>
+                <span class="label">С</span>
+                <input type="date" name="stats_from" value="{{ stats_from.isoformat() }}" required>
+            </label>
+            <label>
+                <span class="label">По</span>
+                <input type="date" name="stats_to" value="{{ stats_to.isoformat() }}" required>
+            </label>
+            <button type="submit" class="secondary">Показать</button>
+        </form>
 
-    {% if category_stats %}
-    <table class="stats-table">
-        <thead>
-        <tr>
-            <th>Категория</th>
-            <th class="num">Сумма</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for row in category_stats %}
-        <tr class="stats-cat-row" style="--p: {{ '%.4f'|format(row.share) }}">
-            <td colspan="2">
-                <details class="stats-cat">
-                    <summary>
-                        <span class="stats-cat-head">
-                            <span class="stats-cat-lead">
-                                <span class="stats-cat-name">{{ row.category }}</span>
-                                <span class="stats-cat-meta muted">{{ row.count }} оп. · ср. {{ row.avg | rub }}</span>
+        {% if category_stats %}
+        <table class="stats-table">
+            <thead>
+            <tr>
+                <th>Категория</th>
+                <th class="num">Сумма</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in category_stats %}
+            <tr class="stats-cat-row" style="--p: {{ '%.4f'|format(row.share) }}">
+                <td colspan="2">
+                    <details class="stats-cat">
+                        <summary>
+                            <span class="stats-cat-head">
+                                <span class="stats-cat-lead">
+                                    <span class="stats-cat-name">{{ row.category }}</span>
+                                    <span class="stats-cat-meta muted">{{ row.count }} оп. · ср. {{ row.avg | rub }}</span>
+                                </span>
+                                <span class="stats-cat-total">{{ row.total | rub }}</span>
                             </span>
-                            <span class="stats-cat-total">{{ row.total | rub }}</span>
-                        </span>
-                        <span class="stats-bar" aria-hidden="true">
-                            <span class="stats-bar-fill"></span>
-                        </span>
-                    </summary>
-                    {% if row.expenses %}
-                    <table class="stats-ops">
-                        <thead>
-                        <tr>
-                            <th>Дата</th>
-                            <th class="num">Сумма</th>
-                            <th>Комментарий</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for e in row.expenses %}
-                        <tr>
-                            <td>{{ e.date.isoformat() }}</td>
-                            <td class="num">{{ e.amount | rub }}</td>
-                            <td class="muted">{{ e.description or '—' }}</td>
-                        </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                    {% endif %}
-                </details>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-        <tfoot>
-        <tr>
-            <th>Итого</th>
-            <td class="num">{{ stats_total | rub }}</td>
-        </tr>
-        </tfoot>
-    </table>
-    {% else %}
-    <p class="empty">За выбранный период трат нет</p>
-    {% endif %}
+                            <span class="stats-bar" aria-hidden="true">
+                                <span class="stats-bar-fill"></span>
+                            </span>
+                        </summary>
+                        {% if row.expenses %}
+                        <table class="stats-ops">
+                            <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th class="num">Сумма</th>
+                                <th>Комментарий</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for e in row.expenses %}
+                            <tr>
+                                <td>{{ e.date.isoformat() }}</td>
+                                <td class="num">{{ e.amount | rub }}</td>
+                                <td class="muted">{{ e.description or '—' }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+                    </details>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>Итого</th>
+                <td class="num">{{ stats_total | rub }}</td>
+            </tr>
+            </tfoot>
+        </table>
+        {% else %}
+        <p class="empty">За выбранный период трат нет</p>
+        {% endif %}
+    </details>
 </div>
