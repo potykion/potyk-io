@@ -17,6 +17,7 @@ FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 FALSEY = {"false", "0", "no", "off"}
 TRUEY = {"true", "1", "yes", "on"}
 H1_RE = re.compile(r"(<h1\b[^>]*>.*?</h1>)", re.IGNORECASE | re.DOTALL)
+INLINE_CODE_RE = re.compile(r"`([^`]*)`")
 CREATED_RE = re.compile(
     r'(<time\s+class="note-created"[^>]*>.*?</time>)',
     re.IGNORECASE | re.DOTALL,
@@ -53,6 +54,10 @@ def extract_h1(body: str) -> str | None:
         if line.startswith("# "):
             return line[2:].strip() or None
     return None
+
+
+def plain_h1(title: str) -> str:
+    return INLINE_CODE_RE.sub(r"\1", title).strip()
 
 
 def ensure_h1(body: str, title: str) -> str:
@@ -121,6 +126,7 @@ def render_body_html(
 ) -> str:
     if title:
         body = ensure_h1(body, title)
+    page_title = plain_h1(extract_h1(body) or title or "")
     if link_rewriter is not None:
         body = rewrite_markdown_links(body, link_rewriter)
 
@@ -151,4 +157,5 @@ def render_body_html(
         content=content,
         show_header=show_header,
         base_href=base_href,
+        page_title=page_title,
     )

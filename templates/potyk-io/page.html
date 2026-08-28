@@ -1,5 +1,7 @@
 {% extends "potyk-io/_base.html" %}
 
+{% block title %}{% if page_title %}{{ page_title }} — {% endif %}{{ section_brand_title|default('potyk.io') }}{% endblock %}
+
 {% block style %}
 {{ super() }}
 <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">

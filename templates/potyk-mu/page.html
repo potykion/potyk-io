@@ -1,5 +1,7 @@
 {% extends "potyk-mu/_base.html" %}
 
+{% block title %}{% if page_title %}{{ page_title }} — {% endif %}potyk-mu{% endblock %}
+
 {% block style %}
 {{ super() }}
 <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
