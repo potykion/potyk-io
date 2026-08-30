@@ -204,15 +204,15 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
         "title": "potyk-food",
         "links": [
             {
-                "icon": "🧪",
-                "title": "Эксперименты",
-                "url": "/food/experiments",
-                "description": "",
-            },
-            {
                 "icon": "🍳",
                 "title": "Рецепты",
                 "url": "/food",
+                "description": "",
+            },
+            {
+                "icon": "🧪",
+                "title": "Эксперименты",
+                "url": "/food/experiments",
                 "description": "",
             },
             {
@@ -221,39 +221,38 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
                 "url": "/food/rest",
                 "description": "",
             },
-            {
-                "icon": "🍷",
-                "title": "Дегустации",
-                "url": "/food/tasting",
-                "description": "",
-            },
-            {
-                "icon": "←",
-                "title": "potyk-io",
-                "url": "/",
-                "description": "",
-            },
         ],
     },
     {
         "title": "Алко",
         "links": [
             {
-                "icon": "📊",
+                "icon": "🍷",
                 "title": "Винный погребок",
                 "url": "/food/tasting/wine",
                 "description": "",
             },
             {
-                "icon": "📊",
+                "icon": "🍺",
                 "title": "Пив холодильник",
                 "url": "/food/tasting/beer",
                 "description": "",
             },
             {
-                "icon": "📊",
+                "icon": "🍺",
                 "title": "Пиво Россия",
                 "url": "https://docs.google.com/spreadsheets/d/1JdhEktmNFFrolieF7O4pkmlic3urTROx8Fq8C2RNWY4/edit?usp=sharing",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
                 "description": "",
             },
         ],

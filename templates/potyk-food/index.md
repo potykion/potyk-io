@@ -106,8 +106,3 @@
 #### 🌭 Колбасные изделия
 
 - [Колбаски из индейки](recipes/07-craft/sausage-turkey.md)
-
-## Дегустации
-
-- 🍷 [Вино](tasting/wine.md)
-- 🍺 [Пиво](tasting/beer.md)

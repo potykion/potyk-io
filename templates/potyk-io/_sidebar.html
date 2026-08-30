@@ -28,7 +28,9 @@
     <nav class="sidebar-nav" id="sidebar-nav">
         {% for group in menu_groups %}
         <section class="sidebar-group">
+            {% if group.title %}
             <h2 class="sidebar-group-title">{{ group.title }}</h2>
+            {% endif %}
             <div class="sidebar-group-links">
                 {% for item in group.links %}
                     {{ nav_link(item.icon, item.title, item.url) }}
