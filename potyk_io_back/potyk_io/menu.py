@@ -138,22 +138,10 @@ MENU_GROUPS: list[MenuGroup] = [
         "title": "Тревел",
         "links": [
             {
-                "icon": "📝",
-                "title": "Хау ту тревел",
-                "url": "/travel/how-to",
-                "description": "",
-            },
-            {
-                "icon": "📝",
-                "title": "Планы",
-                "url": "/travel/plans",
-                "description": "Куда хочу съездить",
-            },
-            {
-                "icon": "📝",
-                "title": "Впечатлы",
-                "url": "/travel/memories",
-                "description": "Воспоминания о поездках",
+                "icon": "✈️",
+                "title": "Тревел",
+                "url": "/travel",
+                "description": "Гайд, планы и воспоминания",
             },
         ],
     },

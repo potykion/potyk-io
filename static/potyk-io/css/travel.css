@@ -1,0 +1,101 @@
+.travel-index h1 {
+    margin-bottom: 24px;
+}
+
+.travel-section {
+    margin-bottom: 32px;
+}
+
+.travel-section > h2 {
+    margin: 0 0 12px;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.travel-section > h2 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.travel-section > h2 a:hover {
+    text-decoration: underline;
+}
+
+.travel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    align-items: stretch;
+}
+
+.travel-grid .card {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    padding: 20px;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.travel-grid .card:hover {
+    box-shadow: 0 2px 4px rgba(120, 70, 30, 0.08),
+        0 8px 20px rgba(120, 70, 30, 0.12),
+        0 16px 36px rgba(120, 70, 30, 0.1);
+    transform: translateY(-1px);
+}
+
+.travel-grid .card h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.travel-guide {
+    margin-bottom: 32px;
+}
+
+.travel-guide .card {
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 20px 24px;
+    color: inherit;
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.travel-guide .card:hover {
+    box-shadow: 0 2px 4px rgba(120, 70, 30, 0.08),
+        0 8px 20px rgba(120, 70, 30, 0.12),
+        0 16px 36px rgba(120, 70, 30, 0.1);
+    transform: translateY(-1px);
+}
+
+.travel-guide .card h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+@media screen and (min-width: 768px) {
+    .travel-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    .travel-guide {
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
