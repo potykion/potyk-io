@@ -155,29 +155,6 @@ MENU_GROUPS: list[MenuGroup] = [
         ],
     },
     {
-        "title": "Алко",
-        "links": [
-            {
-                "icon": "📊",
-                "title": "Винный погребок",
-                "url": "/collections/wine",
-                "description": "",
-            },
-            {
-                "icon": "📊",
-                "title": "Пив холодильник",
-                "url": "/collections/beer",
-                "description": "",
-            },
-            {
-                "icon": "📊",
-                "title": "Пиво Россия",
-                "url": "https://docs.google.com/spreadsheets/d/1JdhEktmNFFrolieF7O4pkmlic3urTROx8Fq8C2RNWY4/edit?usp=sharing",
-                "description": "",
-            },
-        ],
-    },
-    {
         "title": "Отношач",
         "links": [
             {
@@ -257,7 +234,30 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
         ],
-    }
+    },
+    {
+        "title": "Алко",
+        "links": [
+            {
+                "icon": "📊",
+                "title": "Винный погребок",
+                "url": "/food/tasting/wine",
+                "description": "",
+            },
+            {
+                "icon": "📊",
+                "title": "Пив холодильник",
+                "url": "/food/tasting/beer",
+                "description": "",
+            },
+            {
+                "icon": "📊",
+                "title": "Пиво Россия",
+                "url": "https://docs.google.com/spreadsheets/d/1JdhEktmNFFrolieF7O4pkmlic3urTROx8Fq8C2RNWY4/edit?usp=sharing",
+                "description": "",
+            },
+        ],
+    },
 ]
 
 
