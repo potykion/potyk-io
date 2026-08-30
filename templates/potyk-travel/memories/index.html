@@ -1,0 +1,15 @@
+{% extends "potyk-travel/_base.html" %}
+
+{% block title %}Воспоминания — potyk-travel{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="/static/potyk-io/css/index.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/travel.css">
+{% endblock %}
+
+{% block main_class %}travel-index{% endblock %}
+
+{% block main %}
+    <h1>Воспоминания</h1>
+    {% include "potyk-travel/_grid.html" %}
+{% endblock %}

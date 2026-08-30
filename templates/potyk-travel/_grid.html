@@ -1,0 +1,9 @@
+<div class="travel-grid">
+    {% for page in pages %}
+        <a class="card" href="{{ page.url }}">
+            <h3>{{ page.title }}</h3>
+        </a>
+    {% else %}
+        <p class="travel-empty">Пока пусто</p>
+    {% endfor %}
+</div>

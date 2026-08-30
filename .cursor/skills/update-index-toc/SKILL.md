@@ -1,6 +1,6 @@
 ---
 name: update-index-toc
-description: Rebuilds a folder's index.md as a TOC of all pages in that folder (titles + links). Use when the user asks to update/fill an index, TOC, оглавление, or points at a content folder like travel/plans, travel/memories, cool-stories.
+description: Rebuilds a folder's index.md as a TOC of all pages in that folder (titles + links). Use when the user asks to update/fill an index, TOC, оглавление, or points at a content folder like cool-stories. Not for `templates/potyk-travel/memories` or `templates/potyk-travel/plans` — those lists are auto-generated from `index.html`.
 ---
 
 # Update folder index TOC
@@ -60,6 +60,10 @@ Include empty stub files (title from rule 4).
 1. Keep the order of pages that already appear in the index.
 2. Append newly discovered pages, sorted by title (locale-aware if easy, else alphabetical).
 3. If the user asks for a specific order (e.g. by year descending), follow that instead.
+
+## Exceptions
+
+- `templates/potyk-travel/memories` and `templates/potyk-travel/plans` — оглавление строится автоматически в `index.html` через `list_folder_pages`; ручной `index.md` не нужен.
 
 ## Examples
 

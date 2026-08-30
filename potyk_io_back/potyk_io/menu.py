@@ -55,6 +55,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/mu/",
                 "description": "",
             },
+            {
+                "icon": "✈️",
+                "title": "potyk-travel",
+                "url": "/travel/",
+                "description": "Гайд, планы и воспоминания",
+            },
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
             {
@@ -131,17 +137,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "title": "Кино-подпорочки",
                 "url": "/collections/movies",
                 "description": "",
-            },
-        ],
-    },
-    {
-        "title": "Тревел",
-        "links": [
-            {
-                "icon": "✈️",
-                "title": "Тревел",
-                "url": "/travel",
-                "description": "Гайд, планы и воспоминания",
             },
         ],
     },

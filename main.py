@@ -13,6 +13,7 @@ from potyk_io_back.inbox import inbox_bp
 from potyk_io_back.invest import invest_bp
 from potyk_io_back.mu import mu_bp
 from potyk_io_back.potyk_io.pres import potyk_io_bp
+from potyk_io_back.travel import travel_bp
 
 
 def create_app():
@@ -41,6 +42,7 @@ def create_app():
 
     app.register_blueprint(invest_bp)
     app.register_blueprint(mu_bp)
+    app.register_blueprint(travel_bp)
     app.register_blueprint(inbox_bp)
     app.register_blueprint(potyk_io_bp)
     return app

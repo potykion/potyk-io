@@ -1,0 +1,34 @@
+{% extends "potyk-travel/_base.html" %}
+
+{% block title %}potyk-travel{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="/static/potyk-io/css/index.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/travel.css">
+{% endblock %}
+
+{% block main_class %}travel-index{% endblock %}
+
+{% block main %}
+    <h1>potyk-travel</h1>
+
+    <div class="travel-guide">
+        <a class="card card-link" href="/travel/how-to">
+            <h2>Гайд по тревелу</h2>
+        </a>
+    </div>
+
+    <section class="travel-section">
+        <h2><a href="/travel/memories">Воспоминания</a></h2>
+        {% with pages=memories %}
+            {% include "potyk-travel/_grid.html" %}
+        {% endwith %}
+    </section>
+
+    <section class="travel-section">
+        <h2><a href="/travel/plans">Планы</a></h2>
+        {% with pages=plans %}
+            {% include "potyk-travel/_grid.html" %}
+        {% endwith %}
+    </section>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "jinja/base.html" %}
+
+{% block title %}potyk-travel{% endblock %}
+
+{% block head_fonts %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap"
+          rel="stylesheet">
+{% endblock %}
+
+{% block head_stylesheets %}
+    <link rel="stylesheet" href="/static/potyk-io/css/sidebar.css">
+    <style>
+        body.site-travel {
+            font-family: "IBM Plex Sans", system-ui;
+        }
+
+        body.site-travel main {
+            padding: 8px;
+        }
+    </style>
+{% endblock %}
+
+{% block body_class %}menu-collapsed site-travel{% endblock %}
+
+{% block header_leading %}
+    <button type="button"
+            class="menu-toggle"
+            id="menu-toggle"
+            aria-controls="sidebar"
+            aria-expanded="false"
+            aria-label="Меню">≡</button>
+{% endblock %}
+
+{% block header_brand %}
+    <a href="{{ url_for('travel.index') }}" class="top-bar-brand">potyk-travel</a>
+{% endblock %}
+
+{% block style %}{% endblock %}
+
+{% block layout %}
+    <div class="layout">
+        {% include "potyk-travel/_sidebar.html" %}
+
+        <div class="layout-main">
+            <main class="{% block main_class %}{% endblock %}">
+                {% include "jinja/_flashes.html" %}
+                {% block main %}{% endblock %}
+            </main>
+        </div>
+    </div>
+{% endblock %}
+
+{% block layout_script %}
+    {% include "jinja/_menu_script.html" %}
+{% endblock %}
