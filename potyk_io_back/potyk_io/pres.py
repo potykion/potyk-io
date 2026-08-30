@@ -37,7 +37,7 @@ from potyk_io_back.potyk_io.md_rendering import (
 )
 from potyk_io_back.potyk_io.md_rendering.hashtags import linkify_hashtags
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
-from potyk_io_back.potyk_io.md_rendering.render import MD_EXTENSIONS
+from potyk_io_back.potyk_io.md_rendering.render import MD_EXTENSIONS, MD_EXTENSION_CONFIGS
 from potyk_io_back.potyk_io.menu import FOOD_MENU_GROUPS, MENU_GROUPS
 
 potyk_io_bp = Blueprint("potyk_io", __name__)
@@ -430,6 +430,7 @@ def _findings_archive_html() -> str:
     return markdown.markdown(
         linkify_hashtags(body),
         extensions=MD_EXTENSIONS,
+        extension_configs=MD_EXTENSION_CONFIGS,
         output_format="html",
     )
 

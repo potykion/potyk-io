@@ -20,6 +20,9 @@ MD_EXTENSIONS = [
     "pymdownx.mark",
     "pymdownx.tasklist",
 ]
+MD_EXTENSION_CONFIGS = {
+    "pymdownx.tasklist": {"custom_checkbox": True},
+}
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 FALSEY = {"false", "0", "no", "off"}
 TRUEY = {"true", "1", "yes", "on"}
@@ -139,7 +142,7 @@ def render_body_html(
 
     show_toc = meta_flag(meta, "toc")
     extensions = list(MD_EXTENSIONS)
-    extension_configs: dict = {}
+    extension_configs: dict = dict(MD_EXTENSION_CONFIGS)
     if show_toc:
         extensions.append("toc")
         extension_configs["toc"] = TOC_CONFIG

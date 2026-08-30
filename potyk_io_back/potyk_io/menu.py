@@ -211,6 +211,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/cool-stories",
                 "description": "",
             },
+            {
+                "icon": "🎯",
+                "title": "Цели 2026",
+                "url": "/n/2026-goals",
+                "description": "",
+            },
         ],
     },
 ]

@@ -83,9 +83,56 @@
 
 .md-content .task-list-item {
     list-style-type: none;
+    margin: 0.35em 0;
 }
 
-.md-content .task-list-item input[type="checkbox"] {
-    margin: 0 0.4em 0.25em 0;
-    vertical-align: middle;
+.md-content ul.task-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.md-content .task-list-item > .task-list {
+    padding-left: 1.5em;
+}
+
+.md-content .task-list-control {
+    display: inline;
+    position: relative;
+    cursor: default;
+    margin-right: 0.45em;
+}
+
+.md-content .task-list-control input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.md-content .task-list-indicator {
+    display: inline-block;
+    width: 1.05em;
+    height: 1.05em;
+    border: 2px solid #c8c8c8;
+    border-radius: 50%;
+    vertical-align: -0.12em;
+    box-sizing: border-box;
+    background: #fff;
+}
+
+.md-content .task-list-control input[type="checkbox"]:checked + .task-list-indicator {
+    border-color: #22c55e;
+    background: #22c55e;
+}
+
+.md-content .task-list-control input[type="checkbox"]:checked + .task-list-indicator::after {
+    content: "";
+    display: block;
+    width: 0.22em;
+    height: 0.42em;
+    margin: 0.1em auto 0;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }

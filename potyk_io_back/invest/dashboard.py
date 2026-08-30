@@ -11,7 +11,7 @@ from sqlalchemy import select
 
 from potyk_io_back.core.db import db
 from potyk_io_back.invest.entities import InvestNews, InvestTicker
-from potyk_io_back.potyk_io.md_rendering.render import MD_EXTENSIONS
+from potyk_io_back.potyk_io.md_rendering.render import MD_EXTENSIONS, MD_EXTENSION_CONFIGS
 
 EMPTY_SECTOR = "Без сектора"
 
@@ -92,7 +92,16 @@ def load_news_page(slug: str) -> NewsPage | None:
         return None
 
     body = (row.content or "").strip()
-    content_html = markdown.markdown(body, extensions=MD_EXTENSIONS, output_format="html") if body else ""
+    content_html = (
+        markdown.markdown(
+            body,
+            extensions=MD_EXTENSIONS,
+            extension_configs=MD_EXTENSION_CONFIGS,
+            output_format="html",
+        )
+        if body
+        else ""
+    )
 
     return NewsPage(
         title=row.slug,
