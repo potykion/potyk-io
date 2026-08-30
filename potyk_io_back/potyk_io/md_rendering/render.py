@@ -12,7 +12,13 @@ from potyk_io_back.potyk_io.md_rendering.created import (
 )
 from potyk_io_back.potyk_io.md_rendering.hashtags import linkify_hashtags
 
-MD_EXTENSIONS = ["extra", "sane_lists", "nl2br", "pymdownx.magiclink"]
+MD_EXTENSIONS = [
+    "extra",
+    "sane_lists",
+    "nl2br",
+    "pymdownx.magiclink",
+    "pymdownx.mark",
+]
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 FALSEY = {"false", "0", "no", "off"}
 TRUEY = {"true", "1", "yes", "on"}
