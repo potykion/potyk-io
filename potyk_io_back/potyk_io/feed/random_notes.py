@@ -105,14 +105,14 @@ def note_card_html(
     if preview_meta:
         parts: list[str] = []
         h1 = extract_h1(body) or title
-        parts.append(f"<h2>{html_module.escape(h1)}</h2>")
+        parts.append(f"<h3>{html_module.escape(h1)}</h3>")
         parts.append(f"<p>{html_module.escape(preview_meta)}</p>")
         return "".join(parts)
 
     inner = main_inner_html(render_body_html(body, meta, title=title))
     if not html_text(inner):
         return None
-    return unwrap_links(demote_headings(truncate_html(inner, limit)))
+    return unwrap_links(demote_headings(truncate_html(inner, limit), levels=2))
 
 
 def menu_link_cards(
@@ -126,7 +126,7 @@ def menu_link_cards(
         if url in skip:
             continue
         title = html_module.escape(item["title"])
-        parts = [f"<h2>{title}</h2>"]
+        parts = [f"<h3>{title}</h3>"]
         if item.get("description"):
             parts.append(f"<p>{html_module.escape(item['description'])}</p>")
         cards.append(

@@ -78,7 +78,7 @@ def search_notes(query: str) -> list[dict]:
                 snippet = preview_meta or _snippet(plain, q if q in hay_plain else needle)
 
             mark = q if q in hay_title or q in hay_plain else needle
-            parts = [f"<h2>{_highlight(title, mark)}</h2>"]
+            parts = [f"<h3>{_highlight(title, mark)}</h3>"]
             if snippet:
                 parts.append(f"<p>{_highlight(snippet, mark)}</p>")
 
