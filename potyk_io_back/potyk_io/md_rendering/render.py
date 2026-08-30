@@ -18,6 +18,7 @@ MD_EXTENSIONS = [
     "nl2br",
     "pymdownx.magiclink",
     "pymdownx.mark",
+    "pymdownx.tasklist",
 ]
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 FALSEY = {"false", "0", "no", "off"}

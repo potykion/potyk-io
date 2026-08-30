@@ -80,3 +80,12 @@
     padding: 0 0.1em;
     border-radius: 0.15em;
 }
+
+.md-content .task-list-item {
+    list-style-type: none;
+}
+
+.md-content .task-list-item input[type="checkbox"] {
+    margin: 0 0.4em 0.25em 0;
+    vertical-align: middle;
+}
