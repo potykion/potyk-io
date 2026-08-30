@@ -1,5 +1,8 @@
 import re
+from datetime import date
 from pathlib import Path
+
+from potyk_io_back.potyk_io.md_rendering.created import created_from_meta, parse_iso_date
 
 TEMPLATES_DIR = Path(__file__).resolve().parents[3] / "templates" / "potyk-io"
 FOOD_TEMPLATES_DIR = Path(__file__).resolve().parents[3] / "templates" / "potyk-food"
@@ -8,6 +11,7 @@ _INDEX_NAMES = {"index.md", "index.html"}
 _SKIP_PAGE_NAMES = _INDEX_NAMES | {"menu.html"}
 _H1_HTML_RE = re.compile(r"<h1[^>]*>(.*?)</h1>", re.I | re.S)
 _TAG_RE = re.compile(r"<[^>]+>")
+_CREATED_HTML_RE = re.compile(r"<!--\s*created:\s*(\d{4}-\d{2}-\d{2})\s*-->", re.I)
 
 
 def resolve_page(
@@ -68,16 +72,65 @@ def _page_title(path: Path) -> str:
     return path.stem
 
 
-def list_folder_pages(folder: Path, *, url_prefix: str) -> list[dict[str, str]]:
+def _page_created(path: Path) -> date | None:
+    try:
+        text = path.read_text(encoding="utf-8-sig")
+    except OSError:
+        return None
+
+    if path.suffix.lower() == ".md":
+        from potyk_io_back.potyk_io.md_rendering.render import split_frontmatter
+
+        meta, _ = split_frontmatter(text)
+        return created_from_meta(meta)
+
+    match = _CREATED_HTML_RE.search(text)
+    if match:
+        return parse_iso_date(match.group(1))
+    return None
+
+
+def list_folder_pages(
+    folder: Path,
+    *,
+    url_prefix: str,
+    sort: str = "name",
+) -> list[dict[str, str | date | None]]:
     """Список страниц папки (title + url) для index.html-оглавлений."""
     prefix = url_prefix.rstrip("/")
-    pages: list[dict[str, str]] = []
-    for path in sorted(folder.iterdir(), key=lambda p: p.name.casefold()):
+    pages: list[dict[str, str | date | None]] = []
+    for path in folder.iterdir():
         if not path.is_file():
             continue
         if path.name.startswith(("_", ".")) or path.name in _SKIP_PAGE_NAMES:
             continue
         if path.suffix.lower() not in {".md", ".html"}:
             continue
-        pages.append({"title": _page_title(path), "url": f"{prefix}/{path.stem}"})
+        pages.append(
+            {
+                "title": _page_title(path),
+                "url": f"{prefix}/{path.stem}",
+                "created": _page_created(path),
+            }
+        )
+
+    if sort == "date_desc":
+        pages.sort(
+            key=lambda page: (
+                page.get("created") is not None,
+                page.get("created") or date.min,
+                str(page["title"]).casefold(),
+            ),
+            reverse=True,
+        )
+    elif sort == "date_asc":
+        pages.sort(
+            key=lambda page: (
+                page.get("created") is None,
+                page.get("created") or date.max,
+                str(page["title"]).casefold(),
+            )
+        )
+    else:
+        pages.sort(key=lambda page: str(page["title"]).casefold())
     return pages

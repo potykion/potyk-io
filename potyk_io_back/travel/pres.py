@@ -1,3 +1,4 @@
+from datetime import date
 from pathlib import Path, PurePosixPath
 
 from flask import Blueprint, abort, render_template, request, send_file
@@ -87,10 +88,11 @@ def render_travel_markdown(file: Path):
     )
 
 
-def _folder_pages(folder: str) -> list[dict[str, str]]:
+def _folder_pages(folder: str, *, sort: str = "name") -> list[dict[str, str | date | None]]:
     return list_folder_pages(
         TRAVEL_TEMPLATES_DIR / folder,
         url_prefix=f"/travel/{folder}",
+        sort=sort,
     )
 
 
@@ -98,7 +100,7 @@ def _folder_pages(folder: str) -> list[dict[str, str]]:
 def index():
     return render_template(
         "potyk-travel/index.html",
-        memories=_folder_pages("memories"),
+        memories=_folder_pages("memories", sort="date_desc"),
         plans=_folder_pages("plans"),
     )
 
@@ -116,11 +118,13 @@ def page(page_path: str):
         if file.name == "index.html":
             rel = PurePosixPath(file.relative_to(TRAVEL_TEMPLATES_DIR).as_posix())
             template_name = f"potyk-travel/{rel.as_posix()}"
+            sort = "date_desc" if file.parent.name == "memories" else "name"
             return render_template(
                 template_name,
                 pages=list_folder_pages(
                     file.parent,
                     url_prefix=travel_page_url(rel),
+                    sort=sort,
                 ),
             )
         return send_file(file)
