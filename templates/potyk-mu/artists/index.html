@@ -1,0 +1,20 @@
+{% extends "potyk-mu/_base.html" %}
+{% from "jinja/_feed.html" import feed %}
+
+{% block title %}Исполнители — potyk-mu{% endblock %}
+
+{% block style %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/potyk-io/css/index.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main %}
+    <h1>Исполнители</h1>
+
+    {{ feed(notes, has_more=has_more, exclude=exclude, more_url=more_url) }}
+{% endblock %}
+
+{% block script %}
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+{% endblock %}

@@ -1,5 +1,6 @@
 ---
 artist: Nia Archives
+artist-link: ../artists/nia-archives.md
 album: Emotional Junglist
 year: 2026
 yandex: https://music.yandex.ru/album/43099974

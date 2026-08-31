@@ -1,5 +1,6 @@
 ---
 artist: Benzii
+artist-link: ../artists/benzii.md
 album: 8 Forever
 year: 2026
 yandex: https://music.yandex.ru/album/43000953

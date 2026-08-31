@@ -1,5 +1,6 @@
 ---
 artist:
+artist-link:
 album:
 year:
 yandex:

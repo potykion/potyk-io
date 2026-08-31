@@ -14,6 +14,11 @@ MU_MENU_ITEMS: list[MuMenuItem] = [
         "url": "/mu/",
     },
     {
+        "icon": "🎤",
+        "title": "Исполнители",
+        "url": "/mu/artists/",
+    },
+    {
         "icon": "📊",
         "title": "Альбомы: стата",
         "url": "https://docs.google.com/spreadsheets/d/1Dy9fxDgLzxy84PsIAoyappVB9xfTYHls1rn9KNe4gDs/edit?usp=sharing",

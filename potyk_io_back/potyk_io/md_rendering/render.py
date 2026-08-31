@@ -112,6 +112,12 @@ def inject_toc(html: str, toc: str) -> str:
     return f"{block}\n{html}"
 
 
+def inject_after_h1(html: str, block: str) -> str:
+    if H1_RE.search(html):
+        return H1_RE.sub(rf"\1\n{block}", html, count=1)
+    return f"{block}\n{html}"
+
+
 def rewrite_markdown_links(
     body: str, link_rewriter: Callable[[str], str | None]
 ) -> str:
@@ -133,6 +139,8 @@ def render_body_html(
     base_href: str | None = None,
     link_rewriter: Callable[[str], str | None] | None = None,
     template: str = "potyk-io/page.html",
+    after_h1_html: str | None = None,
+    **template_context,
 ) -> str:
     if title:
         body = ensure_h1(body, title)
@@ -158,6 +166,8 @@ def render_body_html(
         created = created_from_meta(meta)
     if created is not None:
         content = inject_created(content, created, title)
+    if after_h1_html:
+        content = inject_after_h1(content, after_h1_html)
     if show_toc:
         content = inject_toc(content, md.toc)
 
@@ -168,4 +178,5 @@ def render_body_html(
         show_header=show_header,
         base_href=base_href,
         page_title=page_title,
+        **template_context,
     )

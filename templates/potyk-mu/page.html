@@ -1,14 +1,23 @@
 {% extends "potyk-mu/_base.html" %}
+{% from "jinja/_feed.html" import feed %}
 
 {% block title %}{% if page_title %}{{ page_title }} — {% endif %}potyk-mu{% endblock %}
 
 {% block style %}
 {{ super() }}
 <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% if artist_albums %}
+<link rel="stylesheet" href="/static/potyk-io/css/index.css">
+{% endif %}
 {% endblock %}
 
 {% block main_class %}md-content{% endblock %}
 
 {% block main %}
     {{ content | safe }}
+
+    {% if artist_albums %}
+    <h2>Альбомы</h2>
+    {{ feed(artist_albums) }}
+    {% endif %}
 {% endblock %}
