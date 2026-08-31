@@ -41,14 +41,11 @@
 
 ### 🍽️ Основные блюда
 
-- [Сердечки по-строгоновски](recipes/04-main-course/heart-stroganoff.md)
 - [Тефтели с овощами в одной сковороде](recipes/04-main-course/meatballs-w-veggies.md)
 - [Курица с рисом по-испански](recipes/04-main-course/chicken-w-rice-spain.md)
 - [Куриные окорочка с овощами](recipes/04-main-course/glazed-chicken-w-veggies.md)
 - [Куриные бёдрышки, запечённые с яблоками в медово-горчичном соусе](experiments/chicken-thighs-w-apples.md)
 - [Кролик с розмарином и розовым перцем](recipes/04-main-course/rabbit.md)
-- [Печень с яблоками по-берлински](recipes/04-main-course/liver-w-apples.md)
-- [Печень говяжья по-строгановски](recipes/04-main-course/liver-stroganoff.md)
 - [Свиные медальоны с яблочно-горчичным соусом](recipes/04-main-course/pork-w-apples.md)
 - [Рагу с говядиной и корнем сельдерея ](recipes/04-main-course/ragout-celery-root.md)
 - [Бигус](recipes/04-main-course/bigus.md)
@@ -56,12 +53,21 @@
 - [Жаркое из курицы с картошкой](recipes/04-main-course/chicken-w-potato.md)
 - [Бешбармак](recipes/04-main-course/beshbarmak.md)
 - [Плов, который всегда получается](recipes/04-main-course/plov.md)
-- [Чашушули](recipes/04-main-course/chashushuli.md)
-- [Чкмерули (курица по-грузински)](recipes/04-main-course/chkmeruli.md)
 - [Гречка с куриным филе](recipes/04-main-course/buckwheat-w-chicken.md)
 - [Рыба, запеченная с помидорами и оливками по-средиземноморски](recipes/04-main-course/fish-w-tomatoes-olives.md)
 - [Ленивые голубцы в духовке](recipes/04-main-course/lazy-golubtsy.md)
 - [Рататуй (овощное рагу)](recipes/04-main-course/ratatouille.md)
+
+#### Субпродукты
+
+- [Печень с яблоками по-берлински](recipes/04-main-course/offal/liver-w-apples.md)
+- [Печень говяжья по-строгановски](recipes/04-main-course/offal/liver-stroganoff.md)
+- [Сердечки по-строгоновски](recipes/04-main-course/offal/heart-stroganoff.md)
+
+#### Грузинская
+
+- [Чашушули](recipes/04-main-course/georgian/chashushuli.md)
+- [Чкмерули (курица по-грузински)](recipes/04-main-course/georgian/chkmeruli.md)
 
 #### 🍝 Паста
 
