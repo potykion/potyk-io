@@ -1,0 +1,19 @@
+/* Shared card grid layouts (travel, mu feed, …) */
+
+.card-grid {
+    display: grid;
+    gap: 16px;
+    align-items: stretch;
+}
+
+.card-grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media screen and (min-width: 768px) {
+    .card-grid--2-to-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-width: 960px;
+        margin: 0 auto;
+    }
+}

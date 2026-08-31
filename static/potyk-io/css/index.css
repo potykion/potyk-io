@@ -1,3 +1,5 @@
+@import url("card-grid.css");
+
 body {
     font-family: "IBM Plex Sans", system-ui;
     margin: 0;
@@ -151,10 +153,23 @@ h1 {
 
 .notes {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 400px));
-    justify-content: center;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
     align-items: stretch;
+    justify-content: stretch;
+}
+
+@container layout-main (min-width: 495px) {
+    .notes {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@container layout-main (min-width: 768px) {
+    .notes {
+        grid-template-columns: repeat(3, minmax(0, 400px));
+        justify-content: center;
+    }
 }
 
 .note-cover {
@@ -193,12 +208,6 @@ h1 {
 .notes-more {
     grid-column: 1 / -1;
     min-height: 48px;
-}
-
-@media screen and (max-width: 767px) {
-    .notes {
-        grid-template-columns: minmax(0, 400px);
-    }
 }
 
 .card-link h3 {
