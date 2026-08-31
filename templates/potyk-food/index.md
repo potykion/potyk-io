@@ -55,6 +55,7 @@
 - [Ёжики](recipes/04-main-course/ezhiki.md)
 - [Жаркое из курицы с картошкой](recipes/04-main-course/chicken-w-potato.md)
 - [Бешбармак](recipes/04-main-course/beshbarmak.md)
+- [Плов, который всегда получается](recipes/04-main-course/plov.md)
 - [Чашушули](recipes/04-main-course/chashushuli.md)
 - [Чкмерули (курица по-грузински)](recipes/04-main-course/chkmeruli.md)
 - [Гречка с куриным филе](recipes/04-main-course/buckwheat-w-chicken.md)
