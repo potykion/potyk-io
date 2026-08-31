@@ -1,9 +1,9 @@
-<div class="card-grid card-grid--2 card-grid--2-to-3">
+<div class="card-grid">
     {% for page in pages %}
-        <a class="card" href="{{ page.url }}">
+        <a class="card card-text" href="{{ page.url }}">
             <h3>{{ page.title }}</h3>
         </a>
     {% else %}
-        <p class="travel-empty">Пока пусто</p>
+        <p class="card-grid-empty">Пока пусто</p>
     {% endfor %}
 </div>

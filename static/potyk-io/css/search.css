@@ -42,7 +42,7 @@
     text-align: center;
 }
 
-.notes mark {
+.card-grid--feed mark {
     background: #ffe566;
     color: inherit;
     padding: 0 0.1em;

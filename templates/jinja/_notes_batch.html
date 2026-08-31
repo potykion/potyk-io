@@ -9,7 +9,7 @@
     </a>
 {% endfor %}
 {% if has_more and more_url %}
-    <div class="notes-more"
+    <div class="card-grid-more"
          hx-get="{{ more_url }}{% if '?' in more_url %}&{% else %}?{% endif %}exclude={{ exclude|join(',')|urlencode }}"
          hx-trigger="revealed"
          hx-swap="outerHTML"></div>

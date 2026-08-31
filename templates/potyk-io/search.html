@@ -23,7 +23,7 @@
     {% if q %}
         {% if results %}
             <p class="search-meta">Найдено: {{ results|length }}</p>
-            <div class="notes">
+            <div class="card-grid card-grid--feed">
                 {% with notes=results, has_more=false %}
                     {% include "potyk-io/_notes_batch.html" %}
                 {% endwith %}
