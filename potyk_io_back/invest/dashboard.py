@@ -76,11 +76,11 @@ class SectorBlock:
 @dataclass
 class FundRow:
     ticker: str
-    label: str
-    sector: str
+    name: str
     deps: str
     fee: str
     returns: dict[int, str]
+    return_values: dict[int, Decimal | None]
 
 
 @dataclass
@@ -209,13 +209,6 @@ def fmt_return_pct(value) -> str:
     return f"{signed}%"
 
 
-def ticker_label(ticker: str, name: str) -> str:
-    name = (name or "").strip()
-    if not name or name == ticker:
-        return ticker
-    return f"{ticker} {name}"
-
-
 def build_funds_dashboard(return_years: list[int] | None = None) -> tuple[list[int], list[FundSectorBlock]]:
     fund_rows = db.session.scalars(
         select(InvestTicker)
@@ -225,10 +218,12 @@ def build_funds_dashboard(return_years: list[int] | None = None) -> tuple[list[i
 
     return_rows = db.session.scalars(select(InvestFundReturn)).all()
     returns_by_ticker: dict[str, dict[int, str]] = {}
+    return_values_by_ticker: dict[str, dict[int, Decimal | None]] = {}
     years_set: set[int] = set(return_years or [])
     for row in return_rows:
         years_set.add(row.year)
         returns_by_ticker.setdefault(row.ticker, {})[row.year] = fmt_return_pct(row.return_pct)
+        return_values_by_ticker.setdefault(row.ticker, {})[row.year] = Decimal(row.return_pct)
 
     years = sorted(years_set)
     if not years:
@@ -244,11 +239,11 @@ def build_funds_dashboard(return_years: list[int] | None = None) -> tuple[list[i
         current.funds.append(
             FundRow(
                 ticker=fund.ticker,
-                label=ticker_label(fund.ticker, fund.name),
-                sector=fund.sector or "",
+                name=(fund.name or "").strip(),
                 deps=normalize_dependencies(fund.dependencies),
                 fee=fmt_fee(fund.fee),
                 returns=returns_by_ticker.get(fund.ticker, {}),
+                return_values=return_values_by_ticker.get(fund.ticker, {}),
             )
         )
 

@@ -48,6 +48,20 @@
         text-align: right;
     }
 
+    th.year-sort {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    th.year-sort:hover {
+        color: var(--ink);
+    }
+
+    th.year-sort.is-active {
+        color: var(--ink);
+        font-weight: 600;
+    }
+
     td.ticker-name {
         font-weight: 600;
         white-space: nowrap;
@@ -77,23 +91,21 @@
     {% for sector in sectors %}
     <h2 class="sector">{{ sector.title }}</h2>
     <div class="table-wrap">
-        <table>
+        <table class="funds-table">
             <thead>
                 <tr>
                     <th>Тикер</th>
-                    <th>Сектор</th>
                     <th>Зависимости</th>
                     <th class="num">Комиссия</th>
                     {% for year in years %}
-                    <th class="num">{{ year }}</th>
+                    <th class="num year-sort" data-year="{{ year }}" title="Сортировать по {{ year }}">{{ year }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
                 {% for fund in sector.funds %}
-                <tr>
-                    <td class="ticker-name">{{ fund.label }}</td>
-                    <td>{{ fund.sector or "—" }}</td>
+                <tr{% for year in years %} data-return-{{ year }}="{{ fund.return_values.get(year) if fund.return_values.get(year) is not none else '' }}"{% endfor %}>
+                    <td class="ticker-name"{% if fund.name and fund.name != fund.ticker %} title="{{ fund.name }}"{% endif %}>{{ fund.ticker }}</td>
                     <td class="deps">{{ fund.deps or "—" }}</td>
                     <td class="num">{{ fund.fee }}</td>
                     {% for year in years %}
@@ -111,4 +123,42 @@
     </div>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+(() => {
+  const sortTablesByYear = (year) => {
+    document.querySelectorAll(".funds-table").forEach((table) => {
+      const tbody = table.querySelector("tbody");
+      if (!tbody) return;
+
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      const attr = `return${year}`;
+
+      rows.sort((a, b) => {
+        const av = Number.parseFloat(a.dataset[attr]);
+        const bv = Number.parseFloat(b.dataset[attr]);
+        const aMissing = Number.isNaN(av);
+        const bMissing = Number.isNaN(bv);
+        if (aMissing && bMissing) return 0;
+        if (aMissing) return 1;
+        if (bMissing) return -1;
+        return bv - av;
+      });
+
+      rows.forEach((row) => tbody.appendChild(row));
+    });
+
+    document.querySelectorAll(".year-sort").forEach((th) => {
+      th.classList.toggle("is-active", th.dataset.year === String(year));
+    });
+  };
+
+  document.querySelectorAll(".year-sort").forEach((th) => {
+    th.addEventListener("click", () => sortTablesByYear(th.dataset.year));
+  });
+})();
+</script>
 {% endblock %}
