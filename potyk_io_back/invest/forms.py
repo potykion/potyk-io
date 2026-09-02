@@ -15,6 +15,13 @@ _PCT_RE = re.compile(r"^([+-]?\d+(?:\.\d+)?)\s*%$")
 _OFFSET_RE = re.compile(r"^([+-]\d+(?:\.\d+)?)$")
 _ABS_RE = re.compile(r"^(\d+(?:\.\d+)?)$")
 
+LEVEL_UNIT_CHOICES = [
+    ("", "—"),
+    ("rub", "₽"),
+    ("pct", "%"),
+    ("price", "цена"),
+]
+
 
 def _normalize_number(raw: str) -> str:
     return raw.strip().replace(" ", "").replace(",", ".")
@@ -50,6 +57,63 @@ def parse_level(raw: str | None, buy_price: Decimal) -> Decimal | None:
     if price <= 0:
         raise ValueError("Цена должна быть больше нуля")
     return price.quantize(PRICE_QUANT, rounding=ROUND_HALF_UP)
+
+
+def encode_level(value: str | None, unit: str | None, *, is_stop: bool) -> str:
+    val_text = _normalize_number(value or "")
+    unit = (unit or "").strip()
+    if not val_text and not unit:
+        return ""
+    if val_text and not unit:
+        raise ValueError("Выбери единицу: ₽, % или цена")
+    if unit and not val_text:
+        raise ValueError("Укажи значение")
+
+    try:
+        n = Decimal(val_text)
+    except InvalidOperation as exc:
+        raise ValueError("Укажи число") from exc
+
+    if unit == "pct":
+        n = -abs(n) if is_stop else abs(n)
+        return f"{n}%"
+    if unit == "rub":
+        n = -abs(n) if is_stop else abs(n)
+        sign = "+" if n >= 0 else ""
+        return f"{sign}{n}"
+    if unit == "price":
+        if n <= 0:
+            raise ValueError("Цена должна быть больше нуля")
+        return val_text
+    raise ValueError("Выбери единицу: ₽, % или цена")
+
+
+def decode_level(raw: str | None) -> tuple[str, str]:
+    text = _normalize_number(raw or "")
+    if not text:
+        return ("", "")
+    if match := _PCT_RE.match(text):
+        pct = Decimal(match.group(1))
+        return (str(abs(pct)), "pct")
+    if match := _OFFSET_RE.match(text):
+        offset = Decimal(match.group(1))
+        return (str(abs(offset)), "rub")
+    if match := _ABS_RE.match(text):
+        return (match.group(1), "price")
+    return ("", "")
+
+
+def level_from_fields(
+    value: str | None,
+    unit: str | None,
+    buy_price: Decimal,
+    *,
+    is_stop: bool,
+) -> tuple[str, Decimal | None]:
+    raw = encode_level(value, unit, is_stop=is_stop)
+    if not raw:
+        return ("", None)
+    return raw, parse_level(raw, buy_price)
 
 
 def volume_money(deposit: Decimal, volume_pct: Decimal) -> Decimal:
@@ -125,15 +189,25 @@ class DealForm(FlaskForm):
         rounding=ROUND_HALF_UP,
         validators=[Optional(), NumberRange(min=0)],
     )
-    take_profit = StringField(
+    take_profit_value = StringField(
         "Тейк-профит",
-        validators=[Optional(), Length(max=32)],
-        description="+10, 10% или цена",
+        validators=[Optional(), Length(max=16)],
     )
-    stop_loss = StringField(
+    take_profit_unit = SelectField(
+        "Ед.",
+        choices=LEVEL_UNIT_CHOICES,
+        validators=[Optional()],
+        default="",
+    )
+    stop_loss_value = StringField(
         "Стоп-лосс",
-        validators=[Optional(), Length(max=32)],
-        description="-10, -5% или цена",
+        validators=[Optional(), Length(max=16)],
+    )
+    stop_loss_unit = SelectField(
+        "Ед.",
+        choices=LEVEL_UNIT_CHOICES,
+        validators=[Optional()],
+        default="",
     )
     thoughts = TextAreaField("Причина входа", validators=[Optional()], default="")
     submit = SubmitField("Добавить сделку")
@@ -147,9 +221,27 @@ class DealForm(FlaskForm):
         super().__init__(**kwargs)
         self.deposit = deposit if deposit is not None else Decimal("0")
         self.ticker.choices = [("", "")] + (ticker_choices or [])
+        self.take_profit_raw: str = ""
         self.take_profit_price: Decimal | None = None
+        self.stop_loss_raw: str = ""
         self.stop_loss_price: Decimal | None = None
         self.volume_amount: Decimal | None = None
+
+    def populate_from_deal(self, deal) -> None:
+        self.ticker.data = deal.ticker
+        self.opened_at.data = deal.opened_at
+        self.volume.data = deal.volume
+        self.buy_price.data = deal.buy_price
+        self.qty.data = deal.qty
+        self.entry_level.data = deal.entry_level
+        self.exit_level.data = deal.exit_level
+        tp_value, tp_unit = decode_level(deal.take_profit_raw)
+        self.take_profit_value.data = tp_value
+        self.take_profit_unit.data = tp_unit
+        sl_value, sl_unit = decode_level(deal.stop_loss_raw)
+        self.stop_loss_value.data = sl_value
+        self.stop_loss_unit.data = sl_unit
+        self.thoughts.data = deal.thoughts
 
     def validate_volume(self, field: CommaDecimalField) -> None:
         if field.data is None:
@@ -189,18 +281,36 @@ class DealForm(FlaskForm):
         self.volume_amount = volume_money(self.deposit, volume_pct)
 
         try:
-            self.take_profit_price = parse_level(self.take_profit.data, buy_price)
+            self.take_profit_raw, self.take_profit_price = level_from_fields(
+                self.take_profit_value.data,
+                self.take_profit_unit.data,
+                buy_price,
+                is_stop=False,
+            )
         except ValueError as exc:
-            self.take_profit.errors.append(str(exc))
+            self.take_profit_value.errors.append(str(exc))
             return False
 
         try:
-            self.stop_loss_price = parse_level(self.stop_loss.data, buy_price)
+            self.stop_loss_raw, self.stop_loss_price = level_from_fields(
+                self.stop_loss_value.data,
+                self.stop_loss_unit.data,
+                buy_price,
+                is_stop=True,
+            )
         except ValueError as exc:
-            self.stop_loss.errors.append(str(exc))
+            self.stop_loss_value.errors.append(str(exc))
             return False
 
         return True
+
+
+class EditDealForm(DealForm):
+    submit = SubmitField("Сохранить изменения")
+
+
+class DealDeleteForm(FlaskForm):
+    submit = SubmitField("×")
 
 
 def compute_pnl(qty: Decimal, buy_price: Decimal, sell_price: Decimal) -> Decimal:

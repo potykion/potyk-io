@@ -18,8 +18,10 @@ from potyk_io_back.invest.entities import (
 from potyk_io_back.invest.forms import (
     MAX_VOLUME_PCT,
     CloseDealForm,
+    DealDeleteForm,
     DealForm,
     DepositForm,
+    EditDealForm,
     NewsForm,
     TickerLevelForm,
     compute_pnl,
@@ -168,9 +170,12 @@ def deals_context(
     *,
     deposit_form: DepositForm | None = None,
     deal_form: DealForm | None = None,
+    edit_form: EditDealForm | None = None,
+    edit_deal: InvestDeal | None = None,
     level_form: TickerLevelForm | None = None,
     close_form: CloseDealForm | None = None,
     close_deal: InvestDeal | None = None,
+    delete_form: DealDeleteForm | None = None,
     open_panel: str | None = None,
 ) -> dict:
     deposit = current_deposit()
@@ -197,9 +202,12 @@ def deals_context(
         "ticker_levels_json": ticker_levels_map(),
         "deposit_form": deposit_form,
         "deal_form": deal_form or DealForm(deposit=deposit, ticker_choices=ticker_choices),
+        "edit_form": edit_form,
+        "edit_deal": edit_deal,
         "level_form": level_form or TickerLevelForm(ticker_choices=ticker_choices),
         "close_form": close_form or CloseDealForm(),
         "close_deal": close_deal,
+        "delete_form": delete_form or DealDeleteForm(),
         "open_panel": open_panel,
         "max_volume_pct": MAX_VOLUME_PCT,
         "deal_stats": deal_stats(deals),
@@ -267,9 +275,9 @@ def add_deal():
             qty=form.qty.data,
             entry_level=form.entry_level.data,
             exit_level=form.exit_level.data,
-            take_profit_raw=(form.take_profit.data or "").strip(),
+            take_profit_raw=form.take_profit_raw,
             take_profit_price=form.take_profit_price,
-            stop_loss_raw=(form.stop_loss.data or "").strip(),
+            stop_loss_raw=form.stop_loss_raw,
             stop_loss_price=form.stop_loss_price,
             thoughts=(form.thoughts.data or "").strip(),
         )
@@ -326,4 +334,78 @@ def close_deal(deal_id: int):
     deal.close_errors = (form.mistakes.data or "").strip() if deal.pnl < 0 else ""
     db.session.commit()
     flash("Сделка закрыта", "success")
+    return redirect(url_for("invest.deals"))
+
+
+@invest_bp.route("/deals/<int:deal_id>/edit")
+@login_required
+def edit_deal_form(deal_id: int):
+    deal = db.session.get(InvestDeal, deal_id)
+    if deal is None:
+        flash("Сделка не найдена", "error")
+        return redirect(url_for("invest.deals"))
+
+    deposit = current_deposit()
+    form = EditDealForm(deposit=deposit, ticker_choices=load_ticker_choices_from_db())
+    form.populate_from_deal(deal)
+    return render_deals(edit_form=form, edit_deal=deal, open_panel="edit")
+
+
+@invest_bp.post("/deals/<int:deal_id>/edit")
+@login_required
+def edit_deal(deal_id: int):
+    deal = db.session.get(InvestDeal, deal_id)
+    if deal is None:
+        flash("Сделка не найдена", "error")
+        return redirect(url_for("invest.deals"))
+
+    deposit = current_deposit()
+    form = EditDealForm(deposit=deposit, ticker_choices=load_ticker_choices_from_db())
+    if not form.validate_on_submit():
+        flash_form_errors(form)
+        return render_deals(edit_form=form, edit_deal=deal, open_panel="edit"), 400
+
+    deal.ticker = form.ticker.data.strip().upper()
+    deal.opened_at = form.opened_at.data
+    deal.volume = form.volume.data
+    deal.buy_price = form.buy_price.data
+    deal.qty = form.qty.data
+    deal.entry_level = form.entry_level.data
+    deal.exit_level = form.exit_level.data
+    deal.take_profit_raw = form.take_profit_raw
+    deal.take_profit_price = form.take_profit_price
+    deal.stop_loss_raw = form.stop_loss_raw
+    deal.stop_loss_price = form.stop_loss_price
+    deal.thoughts = (form.thoughts.data or "").strip()
+
+    if deal.is_closed and deal.sell_price is not None:
+        deal.pnl = compute_pnl(
+            Decimal(deal.qty),
+            Decimal(deal.buy_price),
+            Decimal(deal.sell_price),
+        )
+        if deal.pnl >= 0:
+            deal.close_errors = ""
+
+    db.session.commit()
+    flash("Сделка обновлена", "success")
+    return redirect(url_for("invest.deals"))
+
+
+@invest_bp.post("/deals/<int:deal_id>/delete")
+@login_required
+def delete_deal(deal_id: int):
+    form = DealDeleteForm()
+    if not form.validate_on_submit():
+        flash("Не удалось удалить сделку", "error")
+        return redirect(url_for("invest.deals"))
+
+    deal = db.session.get(InvestDeal, deal_id)
+    if deal is None:
+        flash("Сделка не найдена", "error")
+        return redirect(url_for("invest.deals"))
+
+    db.session.delete(deal)
+    db.session.commit()
+    flash("Сделка удалена", "success")
     return redirect(url_for("invest.deals"))

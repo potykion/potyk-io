@@ -1,6 +1,72 @@
 {% extends "potyk-invest/_base.html" %}
 {% import "jinja/forms.html" as forms %}
 
+{% macro deal_level_field(value_field, unit_field) %}
+<div class="level-input">
+    {{ value_field(inputmode="decimal", placeholder="10") }}
+    {{ unit_field() }}
+</div>
+<span class="hint">₽ — смещение от цены, % — процент, цена — абсолютная</span>
+{{ forms.field_errors(value_field) }}
+{{ forms.field_errors(unit_field) }}
+{% endmacro %}
+
+{% macro deal_form_fields(form, form_id, form_action, deposit, max_volume_pct, ticker_levels_json) %}
+<form class="grid cols-3 deal-entry-form" method="post" action="{{ form_action }}" id="{{ form_id }}" data-deposit="{{ deposit }}" data-ticker-levels='{{ ticker_levels_json | tojson }}'>
+    {{ form.hidden_tag() }}
+    {% call forms.field(form.ticker.label.text) %}
+        {{ form.ticker(
+            required=true,
+            data_tom_select="true",
+            data_create="true",
+            data_placeholder="SBER или Самолет",
+        ) }}
+        {{ forms.field_errors(form.ticker) }}
+    {% endcall %}
+    {% call forms.field(form.opened_at.label.text, "span-2") %}
+        {{ form.opened_at(required=true) }}
+        {{ forms.field_errors(form.opened_at) }}
+    {% endcall %}
+    {% call forms.field(form.volume.label.text) %}
+        {{ form.volume(min="0.01", max="5", step="0.01", inputmode="decimal") }}
+        <span class="hint">не больше {{ max_volume_pct }}%{% if deposit > 0 %} · <span class="volume-money-hint">—</span>{% endif %}</span>
+        {{ forms.field_errors(form.volume) }}
+    {% endcall %}
+    {% call forms.field(form.buy_price.label.text) %}
+        {{ form.buy_price(min="0.000001", step="any", required=true, inputmode="decimal") }}
+        {{ forms.field_errors(form.buy_price) }}
+    {% endcall %}
+    {% call forms.field(form.qty.label.text) %}
+        {{ form.qty(min="0.000001", step="any", inputmode="decimal") }}
+        <span class="hint">связан с объёмом</span>
+        {{ forms.field_errors(form.qty) }}
+    {% endcall %}
+    <div class="full pair">
+        {% call forms.field(form.entry_level.label.text) %}
+            {{ form.entry_level(min="0", step="any", inputmode="decimal") }}
+            {{ forms.field_errors(form.entry_level) }}
+        {% endcall %}
+        {% call forms.field(form.exit_level.label.text) %}
+            {{ form.exit_level(min="0", step="any", inputmode="decimal") }}
+            {{ forms.field_errors(form.exit_level) }}
+        {% endcall %}
+    </div>
+    <div class="full pair">
+        {% call forms.field(form.take_profit_value.label.text) %}
+            {{ deal_level_field(form.take_profit_value, form.take_profit_unit) }}
+        {% endcall %}
+        {% call forms.field(form.stop_loss_value.label.text) %}
+            {{ deal_level_field(form.stop_loss_value, form.stop_loss_unit) }}
+        {% endcall %}
+    </div>
+    {% call forms.field(form.thoughts.label.text, "full") %}
+        {{ form.thoughts() }}
+        {{ forms.field_errors(form.thoughts) }}
+    {% endcall %}
+    {{ forms.submit_row(form.submit) }}
+</form>
+{% endmacro %}
+
 {% block title %}Сделки — potyk-invest{% endblock %}
 
 {% block head_stylesheets %}
@@ -124,6 +190,32 @@
     .ts-control {
         width: 100%;
     }
+
+    .level-input {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .level-input select {
+        width: auto;
+        min-width: 5.5rem;
+    }
+
+    .deal-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    button.danger, .btn.danger {
+        background: transparent;
+        color: #9b2c2c;
+        border-color: #d8a0a0;
+    }
 </style>
 {% endblock %}
 
@@ -230,65 +322,73 @@
     <section class="panel">
         <details data-panel="deal" {% if open_panel == 'deal' %}open{% endif %}>
             <summary>Добавить покупку</summary>
-            <form class="grid cols-3" method="post" action="{{ url_for('invest.add_deal') }}" id="deal-form" data-deposit="{{ deposit }}" data-ticker-levels='{{ ticker_levels_json | tojson }}'>
-                {{ deal_form.hidden_tag() }}
-                {% call forms.field(deal_form.ticker.label.text) %}
-                    {{ deal_form.ticker(
-                        required=true,
-                        data_tom_select="true",
-                        data_create="true",
-                        data_placeholder="SBER или Самолет",
-                    ) }}
-                    {{ forms.field_errors(deal_form.ticker) }}
-                {% endcall %}
-                {% call forms.field(deal_form.opened_at.label.text, "span-2") %}
-                    {{ deal_form.opened_at(required=true) }}
-                    {{ forms.field_errors(deal_form.opened_at) }}
-                {% endcall %}
-                {% call forms.field(deal_form.volume.label.text) %}
-                    {{ deal_form.volume(min="0.01", max="5", step="0.01", inputmode="decimal") }}
-                    <span class="hint">не больше {{ max_volume_pct }}%{% if deposit > 0 %} · <span id="volume-money-hint">—</span>{% endif %}</span>
-                    {{ forms.field_errors(deal_form.volume) }}
-                {% endcall %}
-                {% call forms.field(deal_form.buy_price.label.text) %}
-                    {{ deal_form.buy_price(min="0.000001", step="any", required=true, inputmode="decimal") }}
-                    {{ forms.field_errors(deal_form.buy_price) }}
-                {% endcall %}
-                {% call forms.field(deal_form.qty.label.text) %}
-                    {{ deal_form.qty(min="0.000001", step="any", inputmode="decimal") }}
-                    <span class="hint">связан с объёмом</span>
-                    {{ forms.field_errors(deal_form.qty) }}
-                {% endcall %}
-                <div class="full pair">
-                    {% call forms.field(deal_form.entry_level.label.text) %}
-                        {{ deal_form.entry_level(min="0", step="any", inputmode="decimal") }}
-                        {{ forms.field_errors(deal_form.entry_level) }}
-                    {% endcall %}
-                    {% call forms.field(deal_form.exit_level.label.text) %}
-                        {{ deal_form.exit_level(min="0", step="any", inputmode="decimal") }}
-                        {{ forms.field_errors(deal_form.exit_level) }}
-                    {% endcall %}
-                </div>
-                <div class="full pair">
-                    {% call forms.field(deal_form.take_profit.label.text) %}
-                        {{ deal_form.take_profit(placeholder="+10 или 10%") }}
-                        <span class="hint">{{ deal_form.take_profit.description }}</span>
-                        {{ forms.field_errors(deal_form.take_profit) }}
-                    {% endcall %}
-                    {% call forms.field(deal_form.stop_loss.label.text) %}
-                        {{ deal_form.stop_loss(placeholder="-10 или -5%") }}
-                        <span class="hint">{{ deal_form.stop_loss.description }}</span>
-                        {{ forms.field_errors(deal_form.stop_loss) }}
-                    {% endcall %}
-                </div>
-                {% call forms.field(deal_form.thoughts.label.text, "full") %}
-                    {{ deal_form.thoughts() }}
-                    {{ forms.field_errors(deal_form.thoughts) }}
-                {% endcall %}
-                {{ forms.submit_row(deal_form.submit) }}
-            </form>
+            {{ deal_form_fields(deal_form, "deal-form", url_for('invest.add_deal'), deposit, max_volume_pct, ticker_levels_json) }}
         </details>
     </section>
+
+    {% if edit_form and edit_deal %}
+    <section class="panel" id="edit-panel">
+        <h2>Редактировать {{ edit_deal.ticker }}</h2>
+        <form class="grid cols-3 deal-entry-form" method="post" id="edit-form"
+              action="{{ url_for('invest.edit_deal', deal_id=edit_deal.id) }}"
+              data-deposit="{{ deposit }}" data-ticker-levels='{{ ticker_levels_json | tojson }}'>
+            {{ edit_form.hidden_tag() }}
+            {% call forms.field(edit_form.ticker.label.text) %}
+                {{ edit_form.ticker(
+                    required=true,
+                    data_tom_select="true",
+                    data_create="true",
+                    data_placeholder="SBER или Самолет",
+                ) }}
+                {{ forms.field_errors(edit_form.ticker) }}
+            {% endcall %}
+            {% call forms.field(edit_form.opened_at.label.text, "span-2") %}
+                {{ edit_form.opened_at(required=true) }}
+                {{ forms.field_errors(edit_form.opened_at) }}
+            {% endcall %}
+            {% call forms.field(edit_form.volume.label.text) %}
+                {{ edit_form.volume(min="0.01", max="5", step="0.01", inputmode="decimal") }}
+                <span class="hint">не больше {{ max_volume_pct }}%{% if deposit > 0 %} · <span class="volume-money-hint">—</span>{% endif %}</span>
+                {{ forms.field_errors(edit_form.volume) }}
+            {% endcall %}
+            {% call forms.field(edit_form.buy_price.label.text) %}
+                {{ edit_form.buy_price(min="0.000001", step="any", required=true, inputmode="decimal") }}
+                {{ forms.field_errors(edit_form.buy_price) }}
+            {% endcall %}
+            {% call forms.field(edit_form.qty.label.text) %}
+                {{ edit_form.qty(min="0.000001", step="any", inputmode="decimal") }}
+                <span class="hint">связан с объёмом</span>
+                {{ forms.field_errors(edit_form.qty) }}
+            {% endcall %}
+            <div class="full pair">
+                {% call forms.field(edit_form.entry_level.label.text) %}
+                    {{ edit_form.entry_level(min="0", step="any", inputmode="decimal") }}
+                    {{ forms.field_errors(edit_form.entry_level) }}
+                {% endcall %}
+                {% call forms.field(edit_form.exit_level.label.text) %}
+                    {{ edit_form.exit_level(min="0", step="any", inputmode="decimal") }}
+                    {{ forms.field_errors(edit_form.exit_level) }}
+                {% endcall %}
+            </div>
+            <div class="full pair">
+                {% call forms.field(edit_form.take_profit_value.label.text) %}
+                    {{ deal_level_field(edit_form.take_profit_value, edit_form.take_profit_unit) }}
+                {% endcall %}
+                {% call forms.field(edit_form.stop_loss_value.label.text) %}
+                    {{ deal_level_field(edit_form.stop_loss_value, edit_form.stop_loss_unit) }}
+                {% endcall %}
+            </div>
+            {% call forms.field(edit_form.thoughts.label.text, "full") %}
+                {{ edit_form.thoughts() }}
+                {{ forms.field_errors(edit_form.thoughts) }}
+            {% endcall %}
+            <div class="full" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                {{ edit_form.submit() }}
+                <a href="{{ url_for('invest.deals') }}" class="btn secondary">Отмена</a>
+            </div>
+        </form>
+    </section>
+    {% endif %}
 
     <section class="panel" id="close-panel"{% if open_panel != 'close' %} hidden{% endif %}
              data-buy="{{ close_deal.buy_price if close_deal else '' }}"
@@ -358,8 +458,18 @@
                             {{ deal.entry_level | invest_price }} – {{ deal.exit_level | invest_price }}
                         {%- else -%}—{%- endif -%}
                     </td>
-                    <td class="num">{{ deal.take_profit_price | invest_price }}</td>
-                    <td class="num">{{ deal.stop_loss_price | invest_price }}</td>
+                    <td class="num">
+                        {{ deal.take_profit_price | invest_price }}
+                        {% if deal.take_profit_raw %}
+                        <div class="muted">{{ deal.take_profit_raw }}</div>
+                        {% endif %}
+                    </td>
+                    <td class="num">
+                        {{ deal.stop_loss_price | invest_price }}
+                        {% if deal.stop_loss_raw %}
+                        <div class="muted">{{ deal.stop_loss_raw }}</div>
+                        {% endif %}
+                    </td>
                     <td>
                         {% if deal.is_closed %}
                             {{ deal.closed_at.strftime('%Y-%m-%d %H:%M') }}
@@ -391,15 +501,25 @@
                         {% if not deal.thoughts and not deal.close_thoughts and not deal.close_errors %}—{% endif %}
                     </td>
                     <td class="actions">
-                        {% if not deal.is_closed %}
-                        <button type="button"
-                                class="secondary close-deal-btn"
-                                data-id="{{ deal.id }}"
-                                data-ticker="{{ deal.ticker }}"
-                                data-buy="{{ deal.buy_price }}"
-                                data-qty="{{ deal.qty }}"
-                                data-action="{{ url_for('invest.close_deal', deal_id=deal.id) }}">Закрыть</button>
-                        {% endif %}
+                        <div class="deal-actions">
+                            <a href="{{ url_for('invest.edit_deal_form', deal_id=deal.id) }}"
+                               class="btn secondary">Изменить</a>
+                            {% if not deal.is_closed %}
+                            <button type="button"
+                                    class="secondary close-deal-btn"
+                                    data-id="{{ deal.id }}"
+                                    data-ticker="{{ deal.ticker }}"
+                                    data-buy="{{ deal.buy_price }}"
+                                    data-qty="{{ deal.qty }}"
+                                    data-action="{{ url_for('invest.close_deal', deal_id=deal.id) }}">Закрыть</button>
+                            {% endif %}
+                            <form method="post"
+                                  action="{{ url_for('invest.delete_deal', deal_id=deal.id) }}"
+                                  onsubmit="return confirm('Удалить сделку {{ deal.ticker }}?')">
+                                {{ delete_form.hidden_tag() }}
+                                <button type="submit" class="danger" aria-label="Удалить" title="Удалить">×</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -443,102 +563,93 @@
 })();
 
 (() => {
-  const form = document.getElementById("deal-form");
-  const volume = document.querySelector('#deal-form [name="volume"]');
-  const price = document.querySelector('#deal-form [name="buy_price"]');
-  const qty = document.querySelector('#deal-form [name="qty"]');
-  const moneyHint = document.getElementById("volume-money-hint");
-  if (!form || !volume || !price || !qty) return;
+  const initDealForm = (form) => {
+    const volume = form.querySelector('[name="volume"]');
+    const price = form.querySelector('[name="buy_price"]');
+    const qty = form.querySelector('[name="qty"]');
+    const moneyHint = form.querySelector(".volume-money-hint");
+    if (!volume || !price || !qty) return;
 
-  const deposit = Number(String(form.dataset.deposit || "0").replace(",", "."));
-  let source = "volume";
-  let lock = false;
+    const deposit = Number(String(form.dataset.deposit || "0").replace(",", "."));
+    let source = "volume";
+    let lock = false;
 
-  const parseNum = (raw) => {
-    const n = Number(String(raw).trim().replace(/\s+/g, "").replace(",", "."));
-    return Number.isFinite(n) && n !== 0 ? n : null;
-  };
+    const parseNum = (raw) => {
+      const n = Number(String(raw).trim().replace(/\s+/g, "").replace(",", "."));
+      return Number.isFinite(n) && n !== 0 ? n : null;
+    };
 
-  const fmt = (n, digits) => {
-    const text = n.toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
-    return text.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  };
+    const fmtInput = (n, digits) =>
+      n.toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
 
-  const fmtInput = (n, digits) =>
-    n.toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
+    const setVal = (el, value) => {
+      lock = true;
+      el.value = value;
+      lock = false;
+    };
 
-  const setVal = (el, value) => {
-    lock = true;
-    el.value = value;
-    lock = false;
-  };
+    const updateHint = (amount) => {
+      if (moneyHint) moneyHint.textContent = amount ? `≈ ${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽` : "—";
+    };
 
-  const updateHint = (amount) => {
-    if (moneyHint) moneyHint.textContent = amount ? `≈ ${fmt(amount, 2)} ₽` : "—";
-  };
+    const fromVolume = () => {
+      const pct = parseNum(volume.value);
+      const p = parseNum(price.value);
+      const amount = pct && deposit ? deposit * pct / 100 : null;
+      updateHint(amount);
+      if (amount && p) setVal(qty, fmtInput(amount / p, 6));
+    };
 
-  const fromVolume = () => {
-    const pct = parseNum(volume.value);
-    const p = parseNum(price.value);
-    const amount = pct && deposit ? deposit * pct / 100 : null;
-    updateHint(amount);
-    if (amount && p) setVal(qty, fmtInput(amount / p, 6));
-  };
+    const fromQty = () => {
+      const q = parseNum(qty.value);
+      const p = parseNum(price.value);
+      const amount = q && p ? q * p : null;
+      updateHint(amount);
+      if (amount && deposit) setVal(volume, fmtInput(amount / deposit * 100, 2));
+    };
 
-  const fromQty = () => {
-    const q = parseNum(qty.value);
-    const p = parseNum(price.value);
-    const amount = q && p ? q * p : null;
-    updateHint(amount);
-    if (amount && deposit) setVal(volume, fmtInput(amount / deposit * 100, 2));
-  };
+    volume.addEventListener("input", () => {
+      if (lock) return;
+      source = "volume";
+      fromVolume();
+    });
+    qty.addEventListener("input", () => {
+      if (lock) return;
+      source = "qty";
+      fromQty();
+    });
+    price.addEventListener("input", () => {
+      if (lock) return;
+      if (source === "qty") fromQty();
+      else fromVolume();
+    });
 
-  volume.addEventListener("input", () => {
-    if (lock) return;
-    source = "volume";
-    fromVolume();
-  });
-  qty.addEventListener("input", () => {
-    if (lock) return;
-    source = "qty";
-    fromQty();
-  });
-  price.addEventListener("input", () => {
-    if (lock) return;
+    if (parseNum(qty.value) && !parseNum(volume.value)) source = "qty";
     if (source === "qty") fromQty();
     else fromVolume();
-  });
-
-  if (parseNum(qty.value) && !parseNum(volume.value)) source = "qty";
-  if (source === "qty") fromQty();
-  else fromVolume();
-})();
-
-(() => {
-  const form = document.getElementById("deal-form");
-  if (!form) return;
-
-  let levels = {};
-  try {
-    levels = JSON.parse(form.dataset.tickerLevels || "{}");
-  } catch {
-    levels = {};
-  }
-
-  const entry = form.querySelector('[name="entry_level"]');
-  const exit = form.querySelector('[name="exit_level"]');
-  const ticker = form.querySelector('[name="ticker"]');
-  if (!entry || !exit || !ticker) return;
-
-  const applyLevels = (symbol) => {
-    const key = String(symbol || "").trim().toUpperCase();
-    const row = levels[key];
-    if (!row) return;
-    if (row.entry) entry.value = row.entry;
-    if (row.exit) exit.value = row.exit;
   };
 
-  const bind = () => {
+  const initTickerLevels = (form) => {
+    let levels = {};
+    try {
+      levels = JSON.parse(form.dataset.tickerLevels || "{}");
+    } catch {
+      levels = {};
+    }
+
+    const entry = form.querySelector('[name="entry_level"]');
+    const exit = form.querySelector('[name="exit_level"]');
+    const ticker = form.querySelector('[name="ticker"]');
+    if (!entry || !exit || !ticker) return;
+
+    const applyLevels = (symbol) => {
+      const key = String(symbol || "").trim().toUpperCase();
+      const row = levels[key];
+      if (!row) return;
+      if (row.entry) entry.value = row.entry;
+      if (row.exit) exit.value = row.exit;
+    };
+
     if (ticker.tomselect) {
       ticker.tomselect.on("change", applyLevels);
       if (ticker.tomselect.getValue()) applyLevels(ticker.tomselect.getValue());
@@ -548,10 +659,17 @@
     if (ticker.value) applyLevels(ticker.value);
   };
 
+  const bindDealForms = (root = document) => {
+    root.querySelectorAll(".deal-entry-form").forEach((form) => {
+      initDealForm(form);
+      initTickerLevels(form);
+    });
+  };
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bind);
+    document.addEventListener("DOMContentLoaded", () => bindDealForms());
   } else {
-    bind();
+    bindDealForms();
   }
 })();
 
@@ -609,6 +727,11 @@
 
   sell.addEventListener("input", recalcPnl);
   recalcPnl();
+})();
+
+(() => {
+  const panel = document.getElementById("edit-panel");
+  if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
 })();
 </script>
 {% endblock %}
