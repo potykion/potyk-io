@@ -62,12 +62,23 @@
         font-weight: 600;
     }
 
+    th.year-sort .year-arrow {
+        display: none;
+        font-size: 0.85em;
+        line-height: 1;
+        opacity: 0.75;
+    }
+
+    th.year-sort.is-active .year-arrow {
+        display: inline;
+    }
+
     td.ticker-name {
         font-weight: 600;
         white-space: nowrap;
     }
 
-    td.ticker-name.has-title {
+    .ticker-code.has-title {
         border-bottom: 1px dotted var(--muted);
         cursor: help;
     }
@@ -103,14 +114,18 @@
                     <th>Зависимости</th>
                     <th class="num">Комиссия</th>
                     {% for year in years %}
-                    <th class="num year-sort" data-year="{{ year }}" title="Сортировать по {{ year }}">{{ year }}</th>
+                    <th class="num year-sort" data-year="{{ year }}" title="Сортировать по {{ year }}">
+                        {{ year }}<span class="year-arrow" aria-hidden="true"> ↓</span>
+                    </th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
                 {% for fund in sector.funds %}
                 <tr{% for year in years %} data-return-{{ year }}="{{ fund.return_values.get(year) if fund.return_values.get(year) is not none else '' }}"{% endfor %}>
-                    <td class="ticker-name{% if fund.name and fund.name != fund.ticker %} has-title{% endif %}"{% if fund.name and fund.name != fund.ticker %} title="{{ fund.name }}"{% endif %}>{{ fund.ticker }}</td>
+                    <td class="ticker-name">
+                        <span class="ticker-code{% if fund.name and fund.name != fund.ticker %} has-title{% endif %}"{% if fund.name and fund.name != fund.ticker %} title="{{ fund.name }}"{% endif %}>{{ fund.ticker }}</span>
+                    </td>
                     <td class="deps">{{ fund.deps or "—" }}</td>
                     <td class="num">{{ fund.fee }}</td>
                     {% for year in years %}
