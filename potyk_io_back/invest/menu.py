@@ -22,6 +22,12 @@ INVEST_MENU_ITEMS: list[InvestMenuItem] = [
         "login_required": True,
     },
     {
+        "icon": "📊",
+        "title": "Фонды",
+        "url": "/invest/funds",
+        "login_required": False,
+    },
+    {
         "icon": "←",
         "title": "potyk-io",
         "url": "/",
@@ -36,4 +42,6 @@ def is_invest_link_active(url: str, path: str) -> bool:
         return path.rstrip("/") == "/invest" or path.startswith("/invest/Новости")
     if normalized == "/invest/deals":
         return path == "/invest/deals" or path.startswith("/invest/deals/")
+    if normalized == "/invest/funds":
+        return path == "/invest/funds"
     return path == url

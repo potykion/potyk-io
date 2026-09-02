@@ -5,7 +5,7 @@ from flask_login import login_required
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
-from potyk_io_back.invest.dashboard import build_dashboard, load_news_page
+from potyk_io_back.invest.dashboard import build_dashboard, build_funds_dashboard, load_news_page
 from potyk_io_back.invest.entities import (
     InvestDeal,
     InvestDepositChange,
@@ -230,6 +230,16 @@ def deal_stats(deals: list[InvestDeal]) -> dict:
 
 def render_deals(**kwargs):
     return render_template("potyk-invest/deals.html", **deals_context(**kwargs))
+
+
+@invest_bp.route("/funds")
+def funds():
+    years, sectors = build_funds_dashboard()
+    return render_template(
+        "potyk-invest/funds.html",
+        years=years,
+        sectors=sectors,
+    )
 
 
 @invest_bp.route("/deals")

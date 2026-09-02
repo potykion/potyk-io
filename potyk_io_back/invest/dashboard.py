@@ -4,13 +4,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from decimal import Decimal
 from urllib.parse import quote
 
 import markdown
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
-from potyk_io_back.invest.entities import InvestNews, InvestTicker
+from potyk_io_back.invest.entities import InvestFundReturn, InvestNews, InvestTicker
 from potyk_io_back.potyk_io.md_rendering.render import MD_EXTENSIONS, MD_EXTENSION_CONFIGS
 
 EMPTY_SECTOR = "Без сектора"
@@ -70,6 +71,22 @@ class TickerGroup:
 class SectorBlock:
     title: str
     tickers: list[TickerGroup] = field(default_factory=list)
+
+
+@dataclass
+class FundRow:
+    ticker: str
+    label: str
+    sector: str
+    deps: str
+    fee: str
+    returns: dict[int, str]
+
+
+@dataclass
+class FundSectorBlock:
+    title: str
+    funds: list[FundRow] = field(default_factory=list)
 
 
 @dataclass
@@ -172,3 +189,67 @@ def build_dashboard() -> list[SectorBlock]:
         current.tickers.append(group)
 
     return blocks
+
+
+def fmt_fee(value) -> str:
+    if value is None:
+        return "—"
+    text = format(Decimal(value).normalize(), "f")
+    if "." in text:
+        text = text.rstrip("0").rstrip(".")
+    return f"{text}%"
+
+
+def fmt_return_pct(value) -> str:
+    quantized = Decimal(value).quantize(Decimal("0.01"))
+    text = format(quantized, "f")
+    if "." in text:
+        text = text.rstrip("0").rstrip(".")
+    signed = f"+{text}" if quantized > 0 else text
+    return f"{signed}%"
+
+
+def ticker_label(ticker: str, name: str) -> str:
+    name = (name or "").strip()
+    if not name or name == ticker:
+        return ticker
+    return f"{ticker} {name}"
+
+
+def build_funds_dashboard(return_years: list[int] | None = None) -> tuple[list[int], list[FundSectorBlock]]:
+    fund_rows = db.session.scalars(
+        select(InvestTicker)
+        .where(InvestTicker.asset_type == "Фонд")
+        .order_by(InvestTicker.sector.asc(), InvestTicker.ticker.asc())
+    ).all()
+
+    return_rows = db.session.scalars(select(InvestFundReturn)).all()
+    returns_by_ticker: dict[str, dict[int, str]] = {}
+    years_set: set[int] = set(return_years or [])
+    for row in return_rows:
+        years_set.add(row.year)
+        returns_by_ticker.setdefault(row.ticker, {})[row.year] = fmt_return_pct(row.return_pct)
+
+    years = sorted(years_set)
+    if not years:
+        years = list(return_years or [])
+
+    blocks: list[FundSectorBlock] = []
+    current: FundSectorBlock | None = None
+    for fund in fund_rows:
+        title = fund.sector or EMPTY_SECTOR
+        if current is None or current.title != title:
+            current = FundSectorBlock(title=title)
+            blocks.append(current)
+        current.funds.append(
+            FundRow(
+                ticker=fund.ticker,
+                label=ticker_label(fund.ticker, fund.name),
+                sector=fund.sector or "",
+                deps=normalize_dependencies(fund.dependencies),
+                fee=fmt_fee(fund.fee),
+                returns=returns_by_ticker.get(fund.ticker, {}),
+            )
+        )
+
+    return years, blocks

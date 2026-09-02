@@ -1,0 +1,114 @@
+{% extends "potyk-invest/_base.html" %}
+
+{% block title %}Фонды — potyk-invest{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    body.site-invest .wrap {
+        max-width: 1100px;
+    }
+
+    h2.sector {
+        margin: 1.5rem 0 0.5rem;
+        font-size: 1.15rem;
+        font-weight: 600;
+        opacity: 0.85;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 0 1.25rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px 6px;
+        border-bottom: 1px solid var(--none-border);
+        vertical-align: top;
+    }
+
+    th {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--muted);
+        white-space: nowrap;
+    }
+
+    th.num, td.num {
+        text-align: right;
+    }
+
+    td.ticker-name {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    td.deps {
+        max-width: 200px;
+        overflow-wrap: anywhere;
+        font-size: 0.88em;
+        color: var(--muted);
+    }
+
+    .ret-pos { color: #1f6b4a; }
+    .ret-neg { color: #9b2c2c; }
+    .ret-zero { color: var(--muted); }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="wrap">
+    <h1>Фонды</h1>
+
+    {% if not sectors %}
+    <p class="empty">Фондов пока нет.</p>
+    {% endif %}
+
+    {% for sector in sectors %}
+    <h2 class="sector">{{ sector.title }}</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Тикер</th>
+                    <th>Сектор</th>
+                    <th>Зависимости</th>
+                    <th class="num">Комиссия</th>
+                    {% for year in years %}
+                    <th class="num">{{ year }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for fund in sector.funds %}
+                <tr>
+                    <td class="ticker-name">{{ fund.label }}</td>
+                    <td>{{ fund.sector or "—" }}</td>
+                    <td class="deps">{{ fund.deps or "—" }}</td>
+                    <td class="num">{{ fund.fee }}</td>
+                    {% for year in years %}
+                    <td class="num">
+                        {% set ret = fund.returns.get(year) %}
+                        {% if ret %}
+                        <span class="{% if ret.startswith('+') %}ret-pos{% elif ret.startswith('-') %}ret-neg{% else %}ret-zero{% endif %}">{{ ret }}</span>
+                        {% else %}—{% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

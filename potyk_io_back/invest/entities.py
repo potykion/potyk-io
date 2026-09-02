@@ -70,6 +70,19 @@ class InvestTicker(db.Model):
     management_company = db.Column(db.String(255), nullable=False, default="")
 
 
+class InvestFundReturn(db.Model):
+    __tablename__ = "invest_fund_returns"
+
+    id = db.Column(db.Integer, primary_key=True)
+    ticker = db.Column(db.String(64), nullable=False, index=True)
+    year = db.Column(db.Integer, nullable=False, index=True)
+    return_pct = db.Column(db.Numeric(8, 2), nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint("ticker", "year", name="uq_invest_fund_returns_ticker_year"),
+    )
+
+
 class InvestNews(db.Model):
     __tablename__ = "invest_news"
 
