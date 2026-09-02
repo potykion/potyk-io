@@ -10,6 +10,7 @@ from potyk_io_back.invest.entities import (
     InvestDeal,
     InvestDepositChange,
     InvestNews,
+    InvestTickerLevel,
     current_deposit,
     load_source_choices_from_db,
     load_ticker_choices_from_db,
@@ -20,6 +21,7 @@ from potyk_io_back.invest.forms import (
     DealForm,
     DepositForm,
     NewsForm,
+    TickerLevelForm,
     compute_pnl,
 )
 from potyk_io_back.invest.menu import INVEST_MENU_ITEMS, is_invest_link_active
@@ -149,10 +151,24 @@ def news(slug: str):
     return render_template("potyk-invest/news.html", page=page)
 
 
+def ticker_levels_map() -> dict[str, dict[str, str | None]]:
+    rows = db.session.scalars(
+        select(InvestTickerLevel).order_by(InvestTickerLevel.ticker.asc())
+    ).all()
+    result: dict[str, dict[str, str | None]] = {}
+    for row in rows:
+        result[row.ticker] = {
+            "entry": price(row.entry_level) if row.entry_level is not None else None,
+            "exit": price(row.exit_level) if row.exit_level is not None else None,
+        }
+    return result
+
+
 def deals_context(
     *,
     deposit_form: DepositForm | None = None,
     deal_form: DealForm | None = None,
+    level_form: TickerLevelForm | None = None,
     close_form: CloseDealForm | None = None,
     close_deal: InvestDeal | None = None,
     open_panel: str | None = None,
@@ -168,14 +184,20 @@ def deals_context(
     deals = db.session.scalars(
         select(InvestDeal).order_by(InvestDeal.opened_at.desc(), InvestDeal.id.desc())
     ).all()
+    ticker_levels = db.session.scalars(
+        select(InvestTickerLevel).order_by(InvestTickerLevel.ticker.asc())
+    ).all()
     if deposit_form is None:
         deposit_form = DepositForm(data={"amount": deposit})
     return {
         "deposit": deposit,
         "deposit_changes": changes,
         "deals": deals,
+        "ticker_levels": ticker_levels,
+        "ticker_levels_json": ticker_levels_map(),
         "deposit_form": deposit_form,
         "deal_form": deal_form or DealForm(deposit=deposit, ticker_choices=ticker_choices),
+        "level_form": level_form or TickerLevelForm(ticker_choices=ticker_choices),
         "close_form": close_form or CloseDealForm(),
         "close_deal": close_deal,
         "open_panel": open_panel,
@@ -254,6 +276,29 @@ def add_deal():
     )
     db.session.commit()
     flash("Сделка добавлена", "success")
+    return redirect(url_for("invest.deals"))
+
+
+@invest_bp.post("/deals/ticker-levels")
+@login_required
+def save_ticker_levels():
+    ticker_choices = load_ticker_choices_from_db()
+    form = TickerLevelForm(ticker_choices=ticker_choices)
+    if not form.validate_on_submit():
+        flash_form_errors(form)
+        return render_deals(level_form=form, open_panel="levels"), 400
+
+    ticker = form.ticker.data.strip().upper()
+    row = db.session.scalars(
+        select(InvestTickerLevel).where(InvestTickerLevel.ticker == ticker)
+    ).first()
+    if row is None:
+        row = InvestTickerLevel(ticker=ticker)
+        db.session.add(row)
+    row.entry_level = form.entry_level.data
+    row.exit_level = form.exit_level.data
+    db.session.commit()
+    flash("Уровни сохранены", "success")
     return redirect(url_for("invest.deals"))
 
 

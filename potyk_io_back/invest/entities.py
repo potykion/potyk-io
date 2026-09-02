@@ -48,6 +48,15 @@ class InvestDeal(db.Model):
         return ((sell - buy) / buy * Decimal(100)).quantize(Decimal("0.01"))
 
 
+class InvestTickerLevel(db.Model):
+    __tablename__ = "invest_ticker_levels"
+
+    id = db.Column(db.Integer, primary_key=True)
+    ticker = db.Column(db.String(32), nullable=False, unique=True, index=True)
+    entry_level = db.Column(db.Numeric(18, 6), nullable=True)
+    exit_level = db.Column(db.Numeric(18, 6), nullable=True)
+
+
 class InvestTicker(db.Model):
     __tablename__ = "invest_tickers"
 

@@ -207,6 +207,42 @@ def compute_pnl(qty: Decimal, buy_price: Decimal, sell_price: Decimal) -> Decima
     return ((sell_price - buy_price) * qty).quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
 
 
+class TickerLevelForm(FlaskForm):
+    ticker = SelectField(
+        "Тикер",
+        validators=[DataRequired(message="Укажи тикер"), Length(max=32)],
+        filters=[lambda value: value.strip().upper() if isinstance(value, str) else value],
+        validate_choice=False,
+    )
+    entry_level = CommaDecimalField(
+        "Поддержка",
+        places=6,
+        rounding=ROUND_HALF_UP,
+        validators=[Optional(), NumberRange(min=0)],
+    )
+    exit_level = CommaDecimalField(
+        "Сопротивление",
+        places=6,
+        rounding=ROUND_HALF_UP,
+        validators=[Optional(), NumberRange(min=0)],
+    )
+    submit = SubmitField("Сохранить уровни")
+
+    def __init__(self, ticker_choices: list[tuple[str, str]] | None = None, **kwargs):
+        super().__init__(**kwargs)
+        self.ticker.choices = [("", "")] + (ticker_choices or [])
+
+    def validate(self, extra_validators=None) -> bool:
+        if not super().validate(extra_validators):
+            return False
+        if self.entry_level.data is None and self.exit_level.data is None:
+            message = "Укажи хотя бы один уровень"
+            self.entry_level.errors.append(message)
+            self.exit_level.errors.append(message)
+            return False
+        return True
+
+
 class CloseDealForm(FlaskForm):
     closed_at = DateTimeField(
         "Дата и время",

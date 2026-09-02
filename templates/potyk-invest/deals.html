@@ -176,9 +176,61 @@
     </section>
 
     <section class="panel">
+        <details data-panel="levels" {% if open_panel == 'levels' %}open{% endif %}>
+            <summary>Уровни по тикерам</summary>
+            <p class="muted" style="margin: 0 0 12px;">Поддержка и сопротивление подставятся в форму покупки при выборе тикера.</p>
+            <form class="grid cols-3" method="post" action="{{ url_for('invest.save_ticker_levels') }}" id="level-form">
+                {{ level_form.hidden_tag() }}
+                {% call forms.field(level_form.ticker.label.text) %}
+                    {{ level_form.ticker(
+                        required=true,
+                        data_tom_select="true",
+                        data_create="true",
+                        data_placeholder="LKOH или Лукойл",
+                    ) }}
+                    {{ forms.field_errors(level_form.ticker) }}
+                {% endcall %}
+                {% call forms.field(level_form.entry_level.label.text) %}
+                    {{ level_form.entry_level(min="0", step="any", inputmode="decimal") }}
+                    {{ forms.field_errors(level_form.entry_level) }}
+                {% endcall %}
+                {% call forms.field(level_form.exit_level.label.text) %}
+                    {{ level_form.exit_level(min="0", step="any", inputmode="decimal") }}
+                    {{ forms.field_errors(level_form.exit_level) }}
+                {% endcall %}
+                {{ forms.submit_row(level_form.submit) }}
+            </form>
+            {% if ticker_levels %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Тикер</th>
+                            <th class="num">Поддержка</th>
+                            <th class="num">Сопротивление</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in ticker_levels %}
+                        <tr>
+                            <td>{{ row.ticker }}</td>
+                            <td class="num">{{ row.entry_level | invest_price if row.entry_level is not none else "—" }}</td>
+                            <td class="num">{{ row.exit_level | invest_price if row.exit_level is not none else "—" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="empty">Уровней пока нет.</p>
+            {% endif %}
+        </details>
+    </section>
+
+    <section class="panel">
         <details data-panel="deal" {% if open_panel == 'deal' %}open{% endif %}>
             <summary>Добавить покупку</summary>
-            <form class="grid cols-3" method="post" action="{{ url_for('invest.add_deal') }}" id="deal-form" data-deposit="{{ deposit }}">
+            <form class="grid cols-3" method="post" action="{{ url_for('invest.add_deal') }}" id="deal-form" data-deposit="{{ deposit }}" data-ticker-levels='{{ ticker_levels_json | tojson }}'>
                 {{ deal_form.hidden_tag() }}
                 {% call forms.field(deal_form.ticker.label.text) %}
                     {{ deal_form.ticker(
@@ -460,6 +512,47 @@
   if (parseNum(qty.value) && !parseNum(volume.value)) source = "qty";
   if (source === "qty") fromQty();
   else fromVolume();
+})();
+
+(() => {
+  const form = document.getElementById("deal-form");
+  if (!form) return;
+
+  let levels = {};
+  try {
+    levels = JSON.parse(form.dataset.tickerLevels || "{}");
+  } catch {
+    levels = {};
+  }
+
+  const entry = form.querySelector('[name="entry_level"]');
+  const exit = form.querySelector('[name="exit_level"]');
+  const ticker = form.querySelector('[name="ticker"]');
+  if (!entry || !exit || !ticker) return;
+
+  const applyLevels = (symbol) => {
+    const key = String(symbol || "").trim().toUpperCase();
+    const row = levels[key];
+    if (!row) return;
+    if (row.entry) entry.value = row.entry;
+    if (row.exit) exit.value = row.exit;
+  };
+
+  const bind = () => {
+    if (ticker.tomselect) {
+      ticker.tomselect.on("change", applyLevels);
+      if (ticker.tomselect.getValue()) applyLevels(ticker.tomselect.getValue());
+      return;
+    }
+    ticker.addEventListener("change", () => applyLevels(ticker.value));
+    if (ticker.value) applyLevels(ticker.value);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bind);
+  } else {
+    bind();
+  }
 })();
 
 (() => {
