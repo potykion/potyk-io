@@ -67,6 +67,11 @@
         white-space: nowrap;
     }
 
+    td.ticker-name.has-title {
+        border-bottom: 1px dotted var(--muted);
+        cursor: help;
+    }
+
     td.deps {
         max-width: 200px;
         overflow-wrap: anywhere;
@@ -105,7 +110,7 @@
             <tbody>
                 {% for fund in sector.funds %}
                 <tr{% for year in years %} data-return-{{ year }}="{{ fund.return_values.get(year) if fund.return_values.get(year) is not none else '' }}"{% endfor %}>
-                    <td class="ticker-name"{% if fund.name and fund.name != fund.ticker %} title="{{ fund.name }}"{% endif %}>{{ fund.ticker }}</td>
+                    <td class="ticker-name{% if fund.name and fund.name != fund.ticker %} has-title{% endif %}"{% if fund.name and fund.name != fund.ticker %} title="{{ fund.name }}"{% endif %}>{{ fund.ticker }}</td>
                     <td class="deps">{{ fund.deps or "—" }}</td>
                     <td class="num">{{ fund.fee }}</td>
                     {% for year in years %}
@@ -126,20 +131,21 @@
 {% endblock %}
 
 {% block script %}
-{{ super() }}
 <script>
 (() => {
+  const parseReturn = (row, year) => {
+    const raw = row.getAttribute(`data-return-${year}`);
+    if (!raw) return NaN;
+    const value = Number.parseFloat(raw);
+    return Number.isFinite(value) ? value : NaN;
+  };
+
   const sortTablesByYear = (year) => {
-    document.querySelectorAll(".funds-table").forEach((table) => {
-      const tbody = table.querySelector("tbody");
-      if (!tbody) return;
-
+    document.querySelectorAll(".funds-table tbody").forEach((tbody) => {
       const rows = Array.from(tbody.querySelectorAll("tr"));
-      const attr = `return${year}`;
-
       rows.sort((a, b) => {
-        const av = Number.parseFloat(a.dataset[attr]);
-        const bv = Number.parseFloat(b.dataset[attr]);
+        const av = parseReturn(a, year);
+        const bv = parseReturn(b, year);
         const aMissing = Number.isNaN(av);
         const bMissing = Number.isNaN(bv);
         if (aMissing && bMissing) return 0;
@@ -147,7 +153,6 @@
         if (bMissing) return -1;
         return bv - av;
       });
-
       rows.forEach((row) => tbody.appendChild(row));
     });
 
@@ -156,8 +161,10 @@
     });
   };
 
-  document.querySelectorAll(".year-sort").forEach((th) => {
-    th.addEventListener("click", () => sortTablesByYear(th.dataset.year));
+  document.addEventListener("click", (event) => {
+    const th = event.target.closest(".year-sort");
+    if (!th) return;
+    sortTablesByYear(th.dataset.year);
   });
 })();
 </script>
