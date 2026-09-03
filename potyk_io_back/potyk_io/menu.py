@@ -189,6 +189,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {
+                "icon": "❤️",
+                "title": "Благотворительность",
+                "url": "/charity",
+                "description": "",
+            },
+            {
                 "icon": "🎯",
                 "title": "Цели 2026",
                 "url": "/n/2026-goals",
