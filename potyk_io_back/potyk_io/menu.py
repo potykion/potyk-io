@@ -200,6 +200,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/n/2026-goals",
                 "description": "",
             },
+            {
+                "icon": "🪦",
+                "title": "Некролог",
+                "url": "/necrolog",
+                "description": "",
+            },
         ],
     },
 ]
