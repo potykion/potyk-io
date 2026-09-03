@@ -6,7 +6,7 @@ import re
 from pathlib import Path, PurePosixPath
 
 from potyk_io_back.potyk_io.feed.notes_feed import FeedSpec, iter_note_paths, note_url
-from potyk_io_back.potyk_io.feed.random_notes import note_card_html, note_cover
+from potyk_io_back.potyk_io.feed.random_notes import apply_cover, note_card_html
 from potyk_io_back.potyk_io.md_rendering import split_frontmatter, unquote_meta
 
 _ARTIST_SLUG_RE = re.compile(r"[^\w\s-]", flags=re.UNICODE)
@@ -80,9 +80,7 @@ def albums_for_artist(artist_file: Path, *, albums_spec: FeedSpec) -> list[dict]
             "external": False,
             "_sort_key": _album_sort_date(meta),
         }
-        cover = note_cover(meta)
-        if cover:
-            card["cover"] = cover
+        apply_cover(card, meta)
         cards.append(card)
 
     return sorted(cards, key=lambda c: c.get("_sort_key") or "", reverse=True)

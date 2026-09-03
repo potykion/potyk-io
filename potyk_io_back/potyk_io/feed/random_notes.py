@@ -84,8 +84,25 @@ def card_id(card: dict) -> str:
     return card.get("id", card["url"])
 
 
+VIDEO_COVER_EXTS = {".mp4", ".webm", ".mov", ".m4v", ".ogg", ".ogv"}
+
+
 def note_cover(meta: dict[str, str]) -> str:
     return unquote_meta(meta.get("cover", ""))
+
+
+def is_video_cover(url: str) -> bool:
+    path = url.split("?", 1)[0].split("#", 1)[0]
+    return Path(path).suffix.lower() in VIDEO_COVER_EXTS
+
+
+def apply_cover(card: dict, meta: dict[str, str]) -> None:
+    cover = note_cover(meta)
+    if not cover:
+        return
+    card["cover"] = cover
+    if is_video_cover(cover):
+        card["cover_video"] = True
 
 
 def note_card_html(

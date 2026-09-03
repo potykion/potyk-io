@@ -3,7 +3,11 @@
        href="{{ note.url }}"
        {% if note.external %}target="_blank" rel="noopener"{% endif %}>
         {% if note.cover %}
-            <img class="note-cover" src="{{ note.cover }}" alt="" loading="lazy">
+            {% if note.cover_video %}
+                <video class="note-cover" src="{{ note.cover }}" muted autoplay loop playsinline preload="metadata"></video>
+            {% else %}
+                <img class="note-cover" src="{{ note.cover }}" alt="" loading="lazy">
+            {% endif %}
         {% endif %}
         <div class="note-preview md-content">{{ note.preview | safe }}</div>
     </a>

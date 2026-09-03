@@ -131,6 +131,10 @@ h1 {
     object-fit: cover;
 }
 
+video.note-cover {
+    pointer-events: none;
+}
+
 .note-preview {
     line-height: 1.5;
     max-width: 100%;

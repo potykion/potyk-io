@@ -17,7 +17,7 @@ from potyk_io_back.potyk_io.feed.random_notes import (
     is_diary_note,
     menu_link_cards,
     note_card_html,
-    note_cover,
+    apply_cover,
     split_diary_entries,
 )
 from potyk_io_back.potyk_io.md_rendering import TEMPLATES_DIR, split_frontmatter
@@ -126,9 +126,7 @@ def list_feed_cards(spec: FeedSpec, *, limit: int = PREVIEW_LEN) -> list[dict]:
                 "external": False,
                 "_sort_date": _sort_date(path, meta),
             }
-            cover = note_cover(meta)
-            if cover:
-                card["cover"] = cover
+            apply_cover(card, meta)
             result.append(card)
     return result
 

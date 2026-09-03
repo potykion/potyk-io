@@ -27,7 +27,8 @@
     font-style: italic;
 }
 
-.md-content img {
+.md-content img,
+.md-content video {
     width: 100%;
 }
 
