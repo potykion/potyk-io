@@ -4,7 +4,6 @@
 {% block title %}Создание поста{% endblock %}
 
 {% block admin_main %}
-<p class="admin-back"><a href="{{ url_for('admin.index') }}">← Админка</a></p>
 <h1>Создание поста</h1>
 <form class="grid" method="post" action="{{ url_for('admin.new_post') }}" enctype="multipart/form-data">
     {{ form.hidden_tag() }}

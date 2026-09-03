@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 
 class MenuItem(TypedDict):
@@ -6,6 +6,7 @@ class MenuItem(TypedDict):
     title: str
     url: str
     description: str
+    badge: NotRequired[int]
 
 
 class MenuGroup(TypedDict):
@@ -269,6 +270,68 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
         ],
     },
 ]
+
+
+def admin_menu_groups(*, local: bool, inbox_badge: int | None = None) -> list[MenuGroup]:
+    links: list[MenuItem] = [
+        {
+            "icon": "📥",
+            "title": "Инбокс",
+            "url": "/inbox",
+            "description": "",
+        },
+        {
+            "icon": "✍️",
+            "title": "Создание поста",
+            "url": "/admin/posts/new",
+            "description": "",
+        },
+    ]
+    if inbox_badge:
+        links[0]["badge"] = inbox_badge
+    if local:
+        links.append(
+            {
+                "icon": "⬆",
+                "title": "Коммит и пуш",
+                "url": "/admin/commit",
+                "description": "",
+            }
+        )
+    return [
+        {
+            "title": "Админка",
+            "links": links,
+        },
+        {
+            "title": "Ссылки",
+            "links": [
+                {
+                    "icon": "📊",
+                    "title": "Яндекс Метрика",
+                    "url": "https://metrika.yandex.ru/overview?id=82960681",
+                    "description": "",
+                },
+                {
+                    "icon": "👩‍💻",
+                    "title": "GitHub",
+                    "url": "https://github.com/potykion/potyk-io",
+                    "description": "",
+                },
+            ],
+        },
+        {
+            "title": "",
+            "links": [
+                {
+                    "icon": "←",
+                    "title": "potyk-io",
+                    "url": "/",
+                    "description": "",
+                },
+            ],
+        },
+    ]
 
 
 def is_external_url(url: str) -> bool:

@@ -37,9 +37,19 @@ PROD_ACK_URL = PROD_BASE_URL + "/inbox/ack.json"
 
 @inbox_bp.context_processor
 def inject_menu():
-    return {
-        "menu_groups": MENU_GROUPS,
-    }
+    # Lazy import: admin.pres imports entries_from_db from this module.
+    from potyk_io_back.admin.pres import admin_nav_context
+
+    if request.endpoint in {"inbox.send", "inbox.export_json", "inbox.ack_json"}:
+        if request.endpoint == "inbox.send":
+            return {
+                "menu_groups": MENU_GROUPS,
+                "section_brand_title": "potyk.io",
+                "section_brand_url": "/",
+            }
+        return {}
+    return admin_nav_context()
+
 
 
 def flash_form_errors(form) -> None:

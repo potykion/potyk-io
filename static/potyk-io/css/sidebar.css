@@ -74,6 +74,24 @@
 .sidebar-link-title {
     min-width: 0;
     word-break: break-word;
+    flex: 1;
+}
+
+.sidebar-link-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 0.35rem;
+    margin-left: 0.25rem;
+    border-radius: 999px;
+    background: #ff3b30;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
 }
 
 @media screen and (max-width: 767px) {
