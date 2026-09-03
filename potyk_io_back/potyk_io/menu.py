@@ -63,18 +63,6 @@ MENU_GROUPS: list[MenuGroup] = [
             },
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
-            {
-                "icon": "📥",
-                "title": "Инбокс",
-                "url": "/inbox",
-                "description": "",
-            },
-            {
-                "icon": "🛠️",
-                "title": "Админка",
-                "url": "/admin",
-                "description": "",
-            },
         ],
     },
     {
@@ -85,12 +73,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "title": "potyk.art",
                 "url": "https://www.instagram.com/potyk.art",
                 "description": "Рисую чертей по фану",
-            },
-            {
-                "icon": "👩‍💻",
-                "title": "github",
-                "url": "https://github.com/potykion/potyk-io",
-                "description": "",
             },
             {
                 "icon": "🔗",
@@ -210,6 +192,17 @@ MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🪦",
                 "title": "Некролог",
                 "url": "/necrolog",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "Всякое",
+        "links": [
+            {
+                "icon": "🛠️",
+                "title": "Админка",
+                "url": "/admin",
                 "description": "",
             },
         ],

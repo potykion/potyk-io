@@ -5,6 +5,7 @@
 
 {% block main %}
 <div class="inbox-wrap">
+    <p class="inbox-back"><a href="{{ url_for('admin.index') }}">← Админка</a></p>
     <h1>Инбокс</h1>
 
     {% if is_local and pull_form %}

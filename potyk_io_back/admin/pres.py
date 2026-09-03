@@ -13,6 +13,8 @@ from flask_login import login_required
 from potyk_io_back.admin.forms import CommitPushForm, NewPostForm
 from potyk_io_back.admin.git_ops import commit_and_push, list_uncommitted
 from potyk_io_back.admin.posts import create_post
+from potyk_io_back.inbox.pres import entries_from_db
+from potyk_io_back.inbox.tasks import load_local_tasks
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -39,14 +41,28 @@ def flash_form_errors(form) -> None:
             flash(message, "error")
 
 
+def inbox_count() -> int:
+    if is_local():
+        return len(load_local_tasks())
+    return len(entries_from_db())
+
+
 @admin_bp.get("/")
 @login_required
 def index():
+    count = inbox_count()
     sections = [
+        {
+            "title": "Инбокс",
+            "url": url_for("inbox.index"),
+            "description": "Заметки и задачи",
+            "badge": count if count else None,
+        },
         {
             "title": "Создание поста",
             "url": url_for("admin.new_post"),
             "description": "Название и обложка (картинка или видео)",
+            "badge": None,
         },
     ]
     if is_local():
@@ -55,9 +71,35 @@ def index():
                 "title": "Коммит и пуш",
                 "url": url_for("admin.commit"),
                 "description": "Незакоммиченные файлы → commit + push",
+                "badge": None,
             }
         )
-    return render_template("admin/index.html", sections=sections)
+
+    links = [
+        {
+            "title": "Яндекс Метрика",
+            "url": "https://metrika.yandex.ru/overview?id=82960681",
+            "description": "Обзор счётчика",
+            "external": True,
+        },
+        {
+            "title": "GitHub",
+            "url": "https://github.com/potykion/potyk-io",
+            "description": "Репозиторий potyk-io",
+            "external": True,
+        },
+        {
+            "title": "potyk-io",
+            "url": "/",
+            "description": "На главную",
+            "external": False,
+        },
+    ]
+    return render_template(
+        "admin/index.html",
+        sections=sections,
+        links=links,
+    )
 
 
 @admin_bp.route("/posts/new", methods=["GET", "POST"])
