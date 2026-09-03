@@ -1,0 +1,24 @@
+{% extends "admin/_base.html" %}
+{% import "jinja/forms.html" as forms %}
+
+{% block title %}Коммит и пуш{% endblock %}
+
+{% block admin_main %}
+<p class="admin-back"><a href="{{ url_for('admin.index') }}">← Админка</a></p>
+<h1>Коммит и пуш</h1>
+
+{% if files %}
+<p>Незакоммиченные файлы ({{ files|length }}):</p>
+<ul class="admin-files">
+    {% for path in files %}
+    <li>{{ path }}</li>
+    {% endfor %}
+</ul>
+<form method="post" action="{{ url_for('admin.commit') }}">
+    {{ form.hidden_tag() }}
+    {{ forms.submit_row(form.submit) }}
+</form>
+{% else %}
+<p class="admin-empty">Нечего коммитить — всё чисто.</p>
+{% endif %}
+{% endblock %}

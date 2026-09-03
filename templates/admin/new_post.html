@@ -1,0 +1,21 @@
+{% extends "admin/_base.html" %}
+{% import "jinja/forms.html" as forms %}
+
+{% block title %}Создание поста{% endblock %}
+
+{% block admin_main %}
+<p class="admin-back"><a href="{{ url_for('admin.index') }}">← Админка</a></p>
+<h1>Создание поста</h1>
+<form class="grid" method="post" action="{{ url_for('admin.new_post') }}" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    {% call forms.field(form.title.label.text) %}
+        {{ form.title() }}
+        {{ forms.field_errors(form.title) }}
+    {% endcall %}
+    {% call forms.field(form.cover.label.text) %}
+        {{ form.cover() }}
+        {{ forms.field_errors(form.cover) }}
+    {% endcall %}
+    {{ forms.submit_row(form.submit) }}
+</form>
+{% endblock %}

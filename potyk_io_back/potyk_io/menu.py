@@ -69,6 +69,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/inbox",
                 "description": "",
             },
+            {
+                "icon": "🛠️",
+                "title": "Админка",
+                "url": "/admin",
+                "description": "",
+            },
         ],
     },
     {

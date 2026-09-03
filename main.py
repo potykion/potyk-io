@@ -5,6 +5,7 @@ from flask import Flask
 
 load_dotenv()
 
+from potyk_io_back.admin import admin_bp
 from potyk_io_back.auth import auth_bp, setup_login
 from potyk_io_back.core.db import db
 from potyk_io_back.fin.entities import get_settings
@@ -26,6 +27,7 @@ def create_app():
     }
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///main.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024
 
     db.init_app(app)
     setup_login(app)
@@ -44,6 +46,7 @@ def create_app():
     app.register_blueprint(mu_bp)
     app.register_blueprint(travel_bp)
     app.register_blueprint(inbox_bp)
+    app.register_blueprint(admin_bp)
     app.register_blueprint(potyk_io_bp)
     return app
 
