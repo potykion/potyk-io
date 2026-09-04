@@ -2,6 +2,37 @@
 
 {% block title %}potyk-art{% endblock %}
 
+{% block style %}
+{{ super() }}
+<style>
+    .art-project {
+        margin: 0 0 2rem;
+    }
+
+    .art-project h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .art-project img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: 0 0 1rem;
+    }
+</style>
+{% endblock %}
+
 {% block main %}
 <h1>potyk-art</h1>
+
+{% for project in projects %}
+<section class="art-project">
+    <h2>{{ project.title }}</h2>
+    {% for image in project.images %}
+    <img src="{{ image.url }}" alt="{{ image.alt }}">
+    {% endfor %}
+</section>
+{% endfor %}
 {% endblock %}
