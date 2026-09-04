@@ -6,9 +6,18 @@
     {{ value_field(inputmode="decimal", placeholder="10") }}
     {{ unit_field() }}
 </div>
-<span class="hint">₽ — смещение от цены, % — процент, цена — абсолютная</span>
+<span class="hint">% — от цены покупки, ₽ — абсолютная цена</span>
 {{ forms.field_errors(value_field) }}
 {{ forms.field_errors(unit_field) }}
+{% endmacro %}
+
+{% macro level_cell(level_price, level_pct) %}
+{%- if level_price is not none -%}
+{{ level_price | invest_price }}
+{% if level_pct is not none %}
+<div class="muted">{% if level_pct > 0 %}+{% endif %}{{ level_pct | invest_price }}%</div>
+{% endif %}
+{%- else -%}—{%- endif -%}
 {% endmacro %}
 
 {% macro deal_form_fields(form, form_id, form_action, deposit, max_volume_pct, ticker_levels_json) %}
@@ -270,7 +279,7 @@
     <section class="panel">
         <details data-panel="levels" {% if open_panel == 'levels' %}open{% endif %}>
             <summary>Уровни по тикерам</summary>
-            <p class="muted" style="margin: 0 0 12px;">Поддержка и сопротивление подставятся в форму покупки при выборе тикера.</p>
+            <p class="muted" style="margin: 0 0 12px;">Поддержка и сопротивление появятся в выборе уровней формы покупки при выборе тикера.</p>
             <form class="grid cols-3" method="post" action="{{ url_for('invest.save_ticker_levels') }}" id="level-form">
                 {{ level_form.hidden_tag() }}
                 {% call forms.field(level_form.ticker.label.text) %}
@@ -441,6 +450,7 @@
                     <th class="num">SL</th>
                     <th>Закрытие</th>
                     <th class="num">P/L</th>
+                    <th class="num">Баланс</th>
                     <th>Причины</th>
                     <th></th>
                 </tr>
@@ -459,16 +469,10 @@
                         {%- else -%}—{%- endif -%}
                     </td>
                     <td class="num">
-                        {{ deal.take_profit_price | invest_price }}
-                        {% if deal.take_profit_raw %}
-                        <div class="muted">{{ deal.take_profit_raw }}</div>
-                        {% endif %}
+                        {{ level_cell(deal.take_profit_price, deal.take_profit_pct) }}
                     </td>
                     <td class="num">
-                        {{ deal.stop_loss_price | invest_price }}
-                        {% if deal.stop_loss_raw %}
-                        <div class="muted">{{ deal.stop_loss_raw }}</div>
-                        {% endif %}
+                        {{ level_cell(deal.stop_loss_price, deal.stop_loss_pct) }}
                     </td>
                     <td>
                         {% if deal.is_closed %}
@@ -486,6 +490,23 @@
                         {% if deal.pnl_pct is not none %}
                         <div class="muted">{% if deal.pnl_pct > 0 %}+{% endif %}{{ deal.pnl_pct | invest_price }}%</div>
                         {% endif %}
+                        {% else %}—{% endif %}
+                    </td>
+                    <td class="num">
+                        {% if deal.is_closed and deal.deposit_before is not none and deal.balance_after is not none %}
+                        <div class="muted">{{ deal.deposit_before | invest_money }}</div>
+                        <div class="{% if deal.pnl >= 0 %}pnl-pos{% else %}pnl-neg{% endif %}">
+                            {{ deal.balance_after | invest_money }}
+                        </div>
+                        <form method="post"
+                              action="{{ url_for('invest.apply_deal_balance', deal_id=deal.id) }}"
+                              style="margin-top: 4px;">
+                            {{ apply_balance_form.hidden_tag() }}
+                            <button type="submit"
+                                    class="secondary"
+                                    title="Обновить текущий депозит"
+                                    aria-label="Обновить текущий депозит">🔄</button>
+                        </form>
                         {% else %}—{% endif %}
                     </td>
                     <td class="thoughts">
@@ -640,23 +661,72 @@
     const entry = form.querySelector('[name="entry_level"]');
     const exit = form.querySelector('[name="exit_level"]');
     const ticker = form.querySelector('[name="ticker"]');
-    if (!entry || !exit || !ticker) return;
+    if (!entry || !exit || !ticker || typeof TomSelect !== "function") return;
 
-    const applyLevels = (symbol) => {
+    const ensureLevelSelect = (el) => {
+      if (el.tomselect) return el.tomselect;
+      // Tom Select лучше на text, чем на number.
+      if (el.type === "number") el.type = "text";
+      return new TomSelect(el, {
+        create: true,
+        createOnBlur: true,
+        persist: false,
+        maxItems: 1,
+        maxOptions: 50,
+        closeAfterSelect: true,
+        placeholder: el.placeholder || "",
+        allowEmptyOption: true,
+        createFilter: (input) => {
+          const n = Number(String(input).trim().replace(/\s+/g, "").replace(",", "."));
+          return Number.isFinite(n) && n >= 0;
+        },
+      });
+    };
+
+    const entryTs = ensureLevelSelect(entry);
+    const exitTs = ensureLevelSelect(exit);
+
+    const levelOptions = (row) => {
+      const opts = [];
+      if (row?.entry) opts.push({ value: row.entry, text: `${row.entry} · поддержка` });
+      if (row?.exit) opts.push({ value: row.exit, text: `${row.exit} · сопротивление` });
+      return opts;
+    };
+
+    const syncOptions = (ts, opts, preferred) => {
+      const current = ts.getValue();
+      ts.clearOptions();
+      opts.forEach((opt) => ts.addOption(opt));
+      ts.refreshOptions(false);
+      if (preferred && opts.some((o) => o.value === preferred)) {
+        ts.setValue(preferred, true);
+      } else if (current) {
+        if (!ts.options[current]) {
+          ts.addOption({ value: current, text: current });
+        }
+        ts.setValue(current, true);
+      }
+    };
+
+    const applyLevels = (symbol, { autofill = true } = {}) => {
       const key = String(symbol || "").trim().toUpperCase();
       const row = levels[key];
-      if (!row) return;
-      if (row.entry) entry.value = row.entry;
-      if (row.exit) exit.value = row.exit;
+      const opts = levelOptions(row);
+      syncOptions(entryTs, opts, autofill && row?.entry ? row.entry : null);
+      syncOptions(exitTs, opts, autofill && row?.exit ? row.exit : null);
     };
 
     if (ticker.tomselect) {
-      ticker.tomselect.on("change", applyLevels);
-      if (ticker.tomselect.getValue()) applyLevels(ticker.tomselect.getValue());
+      ticker.tomselect.on("change", (value) => applyLevels(value, { autofill: true }));
+      if (ticker.tomselect.getValue()) {
+        applyLevels(ticker.tomselect.getValue(), { autofill: !entry.value && !exit.value });
+      }
       return;
     }
-    ticker.addEventListener("change", () => applyLevels(ticker.value));
-    if (ticker.value) applyLevels(ticker.value);
+    ticker.addEventListener("change", () => applyLevels(ticker.value, { autofill: true }));
+    if (ticker.value) {
+      applyLevels(ticker.value, { autofill: !entry.value && !exit.value });
+    }
   };
 
   const bindDealForms = (root = document) => {

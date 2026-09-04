@@ -325,6 +325,10 @@ class DealDeleteForm(FlaskForm):
     submit = SubmitField("×")
 
 
+class ApplyDealBalanceForm(FlaskForm):
+    submit = SubmitField("🔄")
+
+
 def compute_pnl(qty: Decimal, buy_price: Decimal, sell_price: Decimal) -> Decimal:
     return ((sell_price - buy_price) * qty).quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
 

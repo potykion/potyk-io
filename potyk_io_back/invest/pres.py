@@ -1,5 +1,6 @@
-from datetime import date, timedelta
 from decimal import Decimal
+
+from datetime import date, timedelta
 
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import login_required
@@ -26,6 +27,7 @@ from potyk_io_back.invest.entities import (
 )
 from potyk_io_back.invest.forms import (
     MAX_VOLUME_PCT,
+    ApplyDealBalanceForm,
     CloseDealForm,
     DealDeleteForm,
     DealForm,
@@ -249,6 +251,21 @@ def ticker_levels_map() -> dict[str, dict[str, str | None]]:
     return result
 
 
+def upsert_ticker_levels(ticker: str, entry_level, exit_level) -> None:
+    if entry_level is None and exit_level is None:
+        return
+    row = db.session.scalars(
+        select(InvestTickerLevel).where(InvestTickerLevel.ticker == ticker)
+    ).first()
+    if row is None:
+        row = InvestTickerLevel(ticker=ticker)
+        db.session.add(row)
+    if entry_level is not None:
+        row.entry_level = entry_level
+    if exit_level is not None:
+        row.exit_level = exit_level
+
+
 def deals_context(
     *,
     deposit_form: DepositForm | None = None,
@@ -259,6 +276,7 @@ def deals_context(
     close_form: CloseDealForm | None = None,
     close_deal: InvestDeal | None = None,
     delete_form: DealDeleteForm | None = None,
+    apply_balance_form: ApplyDealBalanceForm | None = None,
     open_panel: str | None = None,
 ) -> dict:
     deposit = current_deposit()
@@ -291,6 +309,7 @@ def deals_context(
         "close_form": close_form or CloseDealForm(),
         "close_deal": close_deal,
         "delete_form": delete_form or DealDeleteForm(),
+        "apply_balance_form": apply_balance_form or ApplyDealBalanceForm(),
         "open_panel": open_panel,
         "max_volume_pct": MAX_VOLUME_PCT,
         "deal_stats": deal_stats(deals),
@@ -375,6 +394,11 @@ def add_deal():
             thoughts=(form.thoughts.data or "").strip(),
         )
     )
+    upsert_ticker_levels(
+        form.ticker.data.strip().upper(),
+        form.entry_level.data,
+        form.exit_level.data,
+    )
     db.session.commit()
     flash("Сделка добавлена", "success")
     return redirect(url_for("invest.deals"))
@@ -423,10 +447,39 @@ def close_deal(deal_id: int):
     deal.closed_at = form.closed_at.data
     deal.sell_price = sell_price
     deal.pnl = compute_pnl(Decimal(deal.qty), Decimal(deal.buy_price), Decimal(sell_price))
+    deal.deposit_before = current_deposit()
     deal.close_thoughts = (form.thoughts.data or "").strip()
     deal.close_errors = (form.mistakes.data or "").strip() if deal.pnl < 0 else ""
     db.session.commit()
     flash("Сделка закрыта", "success")
+    return redirect(url_for("invest.deals"))
+
+
+@invest_bp.post("/deals/<int:deal_id>/apply-balance")
+@login_required
+def apply_deal_balance(deal_id: int):
+    form = ApplyDealBalanceForm()
+    if not form.validate_on_submit():
+        flash("Не удалось обновить баланс", "error")
+        return redirect(url_for("invest.deals"))
+
+    deal = db.session.get(InvestDeal, deal_id)
+    if deal is None:
+        flash("Сделка не найдена", "error")
+        return redirect(url_for("invest.deals"))
+    if not deal.is_closed or deal.deposit_before is None or deal.pnl is None:
+        flash("Нет данных для обновления баланса", "error")
+        return redirect(url_for("invest.deals"))
+
+    amount = (Decimal(deal.deposit_before) + Decimal(deal.pnl)).quantize(Decimal("0.01"))
+    db.session.add(
+        InvestDepositChange(
+            date=date.today(),
+            amount=amount,
+        )
+    )
+    db.session.commit()
+    flash("Депозит обновлён", "success")
     return redirect(url_for("invest.deals"))
 
 
@@ -470,6 +523,8 @@ def edit_deal(deal_id: int):
     deal.stop_loss_raw = form.stop_loss_raw
     deal.stop_loss_price = form.stop_loss_price
     deal.thoughts = (form.thoughts.data or "").strip()
+
+    upsert_ticker_levels(deal.ticker, form.entry_level.data, form.exit_level.data)
 
     if deal.is_closed and deal.sell_price is not None:
         deal.pnl = compute_pnl(
