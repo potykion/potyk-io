@@ -62,6 +62,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/travel/",
                 "description": "Гайд, планы и воспоминания",
             },
+            {
+                "icon": "🖼️",
+                "title": "potyk-art",
+                "url": "/art/",
+                "description": "Рисую чертей по фану",
+            },
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
         ],
@@ -69,12 +75,6 @@ MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "ссылочки",
         "links": [
-            {
-                "icon": "🖼️",
-                "title": "potyk.art",
-                "url": "https://www.instagram.com/potyk.art",
-                "description": "Рисую чертей по фану",
-            },
             {
                 "icon": "🔗",
                 "title": "Бесконечный потик",
@@ -204,6 +204,32 @@ MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🛠️",
                 "title": "Админка",
                 "url": "/admin",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+ART_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "potyk-art",
+        "links": [
+            {
+                "icon": "🖼️",
+                "title": "Инста",
+                "url": "https://www.instagram.com/potyk.art",
+                "description": "Рисую чертей по фану",
+            },
+        ],
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
                 "description": "",
             },
         ],

@@ -6,6 +6,7 @@ from flask import Flask
 load_dotenv()
 
 from potyk_io_back.admin import admin_bp
+from potyk_io_back.art import art_bp
 from potyk_io_back.auth import auth_bp, setup_login
 from potyk_io_back.core.db import db
 from potyk_io_back.fin.entities import get_settings
@@ -45,6 +46,7 @@ def create_app():
     app.register_blueprint(invest_bp)
     app.register_blueprint(mu_bp)
     app.register_blueprint(travel_bp)
+    app.register_blueprint(art_bp)
     app.register_blueprint(inbox_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(potyk_io_bp)
