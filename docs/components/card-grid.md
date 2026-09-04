@@ -12,7 +12,8 @@
 - главная potyk-mu (`/mu/`) — лента блога;
 - индекс исполнителей (`/mu/artists/`);
 - страница исполнителя (`/mu/artists/<slug>`) — блок «Альбомы»;
-- potyk-travel (`/travel/`, `/travel/memories/`, `/travel/plans/`) — списки поездок и планов.
+- potyk-travel (`/travel/`, `/travel/memories/`, `/travel/plans/`) — списки поездок и планов;
+- potyk-art (`/art/`) — проекты с обложками `.jpg`.
 
 Подробнее про содержимое карточек ленты (обложки, превью, догрузка) — в [feed.md](feed.md).
 

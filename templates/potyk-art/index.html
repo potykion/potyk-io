@@ -4,35 +4,23 @@
 
 {% block style %}
 {{ super() }}
-<style>
-    .art-project {
-        margin: 0 0 2rem;
-    }
-
-    .art-project h2 {
-        margin: 0 0 0.75rem;
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-
-    .art-project img {
-        display: block;
-        max-width: 100%;
-        height: auto;
-        margin: 0 0 1rem;
-    }
-</style>
+<link rel="stylesheet" href="/static/potyk-io/css/index.css">
+<link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
 {% endblock %}
 
 {% block main %}
 <h1>potyk-art</h1>
 
-{% for project in projects %}
-<section class="art-project">
-    <h2>{{ project.title }}</h2>
-    {% for image in project.images %}
-    <img src="{{ image.url }}" alt="{{ image.alt }}">
+<div class="card-grid card-grid--feed">
+    {% for project in projects %}
+        {% for image in project.images %}
+        <a class="card" href="{{ image.url }}">
+            <img class="note-cover" src="{{ image.url }}" alt="{{ image.alt }}" loading="lazy">
+            <div class="note-preview md-content"><h3>{{ project.title }}</h3></div>
+        </a>
+        {% endfor %}
+    {% else %}
+        <p class="card-grid-empty">Пока пусто</p>
     {% endfor %}
-</section>
-{% endfor %}
+</div>
 {% endblock %}
