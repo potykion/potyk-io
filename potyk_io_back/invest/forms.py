@@ -98,13 +98,6 @@ def decode_level(raw: str | None) -> tuple[str, str]:
     return ("", "")
 
 
-def _format_price_value(value) -> str:
-    text = format(Decimal(value).normalize(), "f")
-    if "." in text:
-        text = text.rstrip("0").rstrip(".")
-    return text
-
-
 def level_from_fields(
     value: str | None,
     unit: str | None,
@@ -239,8 +232,11 @@ class DealForm(FlaskForm):
         self.exit_level.data = deal.exit_level
         tp_value, tp_unit = decode_level(deal.take_profit_raw)
         if tp_unit == "rub":
+            # Старое смещение в ₽ → абсолютная цена для новой формы.
             if deal.take_profit_price is not None:
-                tp_value = _format_price_value(deal.take_profit_price)
+                tp_value = format(Decimal(deal.take_profit_price).normalize(), "f")
+                if "." in tp_value:
+                    tp_value = tp_value.rstrip("0").rstrip(".")
                 tp_unit = "price"
             else:
                 tp_value, tp_unit = "", ""
@@ -249,7 +245,9 @@ class DealForm(FlaskForm):
         sl_value, sl_unit = decode_level(deal.stop_loss_raw)
         if sl_unit == "rub":
             if deal.stop_loss_price is not None:
-                sl_value = _format_price_value(deal.stop_loss_price)
+                sl_value = format(Decimal(deal.stop_loss_price).normalize(), "f")
+                if "." in sl_value:
+                    sl_value = sl_value.rstrip("0").rstrip(".")
                 sl_unit = "price"
             else:
                 sl_value, sl_unit = "", ""
@@ -325,10 +323,6 @@ class EditDealForm(DealForm):
 
 class DealDeleteForm(FlaskForm):
     submit = SubmitField("×")
-
-
-class ApplyDealBalanceForm(FlaskForm):
-    submit = SubmitField("🔄")
 
 
 def compute_pnl(qty: Decimal, buy_price: Decimal, sell_price: Decimal) -> Decimal:

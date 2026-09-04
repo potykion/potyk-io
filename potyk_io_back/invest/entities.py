@@ -34,7 +34,6 @@ class InvestDeal(db.Model):
     pnl = db.Column(db.Numeric(18, 2), nullable=True)
     close_thoughts = db.Column(db.Text, nullable=False, default="")
     close_errors = db.Column(db.Text, nullable=False, default="")
-    deposit_before = db.Column(db.Numeric(18, 2), nullable=True)
 
     @property
     def is_closed(self) -> bool:
@@ -47,27 +46,6 @@ class InvestDeal(db.Model):
         buy = Decimal(self.buy_price)
         sell = Decimal(self.sell_price)
         return ((sell - buy) / buy * Decimal(100)).quantize(Decimal("0.01"))
-
-    def _level_pct(self, level_price) -> Decimal | None:
-        if level_price is None or not self.buy_price:
-            return None
-        buy = Decimal(self.buy_price)
-        level = Decimal(level_price)
-        return ((level - buy) / buy * Decimal(100)).quantize(Decimal("0.01"))
-
-    @property
-    def take_profit_pct(self) -> Decimal | None:
-        return self._level_pct(self.take_profit_price)
-
-    @property
-    def stop_loss_pct(self) -> Decimal | None:
-        return self._level_pct(self.stop_loss_price)
-
-    @property
-    def balance_after(self) -> Decimal | None:
-        if self.deposit_before is None or self.pnl is None:
-            return None
-        return (Decimal(self.deposit_before) + Decimal(self.pnl)).quantize(Decimal("0.01"))
 
 
 class InvestTickerLevel(db.Model):
