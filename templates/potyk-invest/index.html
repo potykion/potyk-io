@@ -11,12 +11,25 @@
 {% block style %}
 {{ super() }}
 <style>
-    h2.sector {
-        margin: 1.5rem 0 0.5rem;
+    details.sector-block {
+        margin: 1.25rem 0 0;
+        border: 1px solid var(--none-border);
+        border-radius: 8px;
+        background: #fff;
+        padding: 0.35rem 0.85rem 0.85rem;
+    }
+
+    details.sector-block > summary {
+        cursor: pointer;
+        list-style: none;
+        user-select: none;
         font-size: 1.15rem;
         font-weight: 600;
-        opacity: 0.85;
+        opacity: 0.9;
+        padding: 0.55rem 0;
     }
+
+    details.sector-block > summary::-webkit-details-marker { display: none; }
 
     .ticker-section {
         margin: 0 0 1.25rem;
@@ -26,6 +39,16 @@
         margin: 0;
         font-size: 1.05rem;
         font-weight: 700;
+    }
+
+    .ticker-heading a {
+        color: var(--link);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    .ticker-heading a:hover {
+        opacity: 0.85;
     }
 
     .ticker-deps {
@@ -129,12 +152,52 @@
         font-size: 0.95rem;
     }
 
-    h2 {
-        margin: 1.5rem 0 0.5rem;
+    .filter-presets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin: 0 0 0.85rem;
+    }
+
+    .filter-presets a {
+        display: inline-block;
+        padding: 0.25rem 0.65rem;
+        border: 1px solid var(--none-border);
+        border-radius: 6px;
+        color: var(--ink);
+        text-decoration: none;
+        font-size: 0.9rem;
+        background: #f7f6f3;
+    }
+
+    .filter-presets a:hover {
+        border-color: var(--link);
+    }
+
+    .filter-presets a.active {
+        background: rgba(107, 78, 163, 0.12);
+        border-color: var(--link);
+        color: var(--link);
+        font-weight: 600;
+    }
+
+    .filter-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+        margin-top: 0.35rem;
+    }
+
+    .filter-actions a.reset {
+        color: var(--muted);
+        font-size: 0.92rem;
     }
 
     #news-form .ts-wrapper,
-    #news-form .ts-control {
+    #news-form .ts-control,
+    #news-filters .ts-wrapper,
+    #news-filters .ts-control {
         width: 100%;
     }
 </style>
@@ -142,6 +205,45 @@
 
 {% block main %}
     <h1>Новости</h1>
+
+    <section class="panel">
+        <form class="grid cols-3" method="get" action="{{ url_for('invest.index') }}" id="news-filters">
+            <div class="full">
+                <div class="filter-presets">
+                    {% for preset in date_presets %}
+                    <a href="{{ preset.url }}" class="{% if preset.active %}active{% endif %}">{{ preset.label }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% call forms.field(filter_form.date_from.label.text) %}
+                {{ filter_form.date_from() }}
+            {% endcall %}
+
+            {% call forms.field(filter_form.date_to.label.text) %}
+                {{ filter_form.date_to() }}
+            {% endcall %}
+
+            {% call forms.field(filter_form.sentiment.label.text) %}
+                {{ filter_form.sentiment() }}
+            {% endcall %}
+
+            {% call forms.field(filter_form.ticker.label.text) %}
+                {{ filter_form.ticker(data_tom_select="true", data_placeholder="Все тикеры") }}
+            {% endcall %}
+
+            {% call forms.field(filter_form.sector.label.text) %}
+                {{ filter_form.sector(data_tom_select="true", data_placeholder="Все сектора") }}
+            {% endcall %}
+
+            <div class="full filter-actions">
+                {{ filter_form.submit(class_="btn") }}
+                {% if filters.active %}
+                <a class="reset" href="{{ url_for('invest.index') }}">Сбросить</a>
+                {% endif %}
+            </div>
+        </form>
+    </section>
 
     {% if current_user.is_authenticated %}
     <section class="panel">
@@ -197,40 +299,42 @@
     {% endif %}
 
     {% if not sectors %}
-    <p class="empty">Новостей пока нет.</p>
+    <p class="empty">{% if filters.active %}Ничего не найдено по фильтрам.{% else %}Новостей пока нет.{% endif %}</p>
     {% endif %}
 
     {% for sector in sectors %}
-    <h2 class="sector">{{ sector.title }}</h2>
-    {% for ticker in sector.tickers %}
-    <section class="ticker-section">
-        <h3 class="ticker-heading">
-            {{ ticker.key }}{% if ticker.deps %}<span class="ticker-deps"> · {{ ticker.deps }}</span>{% endif %}
-        </h3>
-        <div class="news-grid" data-hscroll>
-            {% for item in ticker.news %}
-            <article class="news-card tone-{{ item.sentiment_tone }}">
-                <div class="title">
-                    <a href="{{ item.url }}">{{ item.title }}</a>
-                </div>
-                {% if item.datetime_fmt %}
-                <div class="when">{{ item.datetime_fmt }}</div>
-                {% endif %}
-                {% if item.action or item.sentiment or item.price %}
-                <div class="meta">
-                    {%- if item.action -%}action: {{ item.action }}{%- endif -%}
-                    {%- if item.action and (item.sentiment or item.price) %} · {% endif -%}
-                    {%- if item.sentiment -%}sentiment: {{ item.sentiment }}{%- endif -%}
-                    {%- if item.sentiment and item.price %} · {% endif -%}
-                    {%- if item.price -%}price: {{ item.price }}{%- endif -%}
-                </div>
-                {% endif %}
-                <div class="summary">{{ item.summary }}</div>
-            </article>
-            {% endfor %}
-        </div>
-    </section>
-    {% endfor %}
+    <details class="sector-block" open>
+        <summary>{{ sector.title }}</summary>
+        {% for ticker in sector.tickers %}
+        <section class="ticker-section">
+            <h3 class="ticker-heading">
+                <a href="{{ ticker.url }}">{{ ticker.key }}</a>{% if ticker.deps %}<span class="ticker-deps"> · {{ ticker.deps }}</span>{% endif %}
+            </h3>
+            <div class="news-grid" data-hscroll>
+                {% for item in ticker.news %}
+                <article class="news-card tone-{{ item.sentiment_tone }}">
+                    <div class="title">
+                        <a href="{{ item.url }}">{{ item.title }}</a>
+                    </div>
+                    {% if item.datetime_fmt %}
+                    <div class="when">{{ item.datetime_fmt }}</div>
+                    {% endif %}
+                    {% if item.action or item.sentiment or item.price %}
+                    <div class="meta">
+                        {%- if item.action -%}action: {{ item.action }}{%- endif -%}
+                        {%- if item.action and (item.sentiment or item.price) %} · {% endif -%}
+                        {%- if item.sentiment -%}sentiment: {{ item.sentiment }}{%- endif -%}
+                        {%- if item.sentiment and item.price %} · {% endif -%}
+                        {%- if item.price -%}price: {{ item.price }}{%- endif -%}
+                    </div>
+                    {% endif %}
+                    <div class="summary">{{ item.summary }}</div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endfor %}
+    </details>
     {% endfor %}
 {% endblock %}
 
@@ -247,6 +351,7 @@
             createOnBlur: true,
             persist: false,
             maxOptions: 200,
+            allowEmptyOption: true,
             closeAfterSelect: true,
             placeholder: el.dataset.placeholder || "",
             searchField: ["text", "value"],

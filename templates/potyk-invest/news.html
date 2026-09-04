@@ -42,6 +42,12 @@
         color: var(--muted);
     }
 
+    .meta-row a {
+        color: var(--link);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
     .summary {
         margin-top: 0.65rem;
         white-space: pre-wrap;
@@ -85,7 +91,7 @@
             <div class="meta-row"><span class="label">date:</span> {{ page.datetime_fmt }}</div>
             {% endif %}
             {% if page.ticker %}
-            <div class="meta-row"><span class="label">ticker:</span> {{ page.ticker }}</div>
+            <div class="meta-row"><span class="label">ticker:</span> <a href="{{ page.ticker_url }}">{{ page.ticker }}</a></div>
             {% endif %}
             {% if page.source %}
             <div class="meta-row"><span class="label">source:</span> {{ page.source }}</div>

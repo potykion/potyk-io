@@ -34,6 +34,7 @@ class InvestDeal(db.Model):
     pnl = db.Column(db.Numeric(18, 2), nullable=True)
     close_thoughts = db.Column(db.Text, nullable=False, default="")
     close_errors = db.Column(db.Text, nullable=False, default="")
+    deposit_before = db.Column(db.Numeric(18, 2), nullable=True)
 
     @property
     def is_closed(self) -> bool:
@@ -46,6 +47,27 @@ class InvestDeal(db.Model):
         buy = Decimal(self.buy_price)
         sell = Decimal(self.sell_price)
         return ((sell - buy) / buy * Decimal(100)).quantize(Decimal("0.01"))
+
+    def _level_pct(self, level_price) -> Decimal | None:
+        if level_price is None or not self.buy_price:
+            return None
+        buy = Decimal(self.buy_price)
+        level = Decimal(level_price)
+        return ((level - buy) / buy * Decimal(100)).quantize(Decimal("0.01"))
+
+    @property
+    def take_profit_pct(self) -> Decimal | None:
+        return self._level_pct(self.take_profit_price)
+
+    @property
+    def stop_loss_pct(self) -> Decimal | None:
+        return self._level_pct(self.stop_loss_price)
+
+    @property
+    def balance_after(self) -> Decimal | None:
+        if self.deposit_before is None or self.pnl is None:
+            return None
+        return (Decimal(self.deposit_before) + Decimal(self.pnl)).quantize(Decimal("0.01"))
 
 
 class InvestTickerLevel(db.Model):
@@ -119,20 +141,51 @@ def load_source_choices_from_db() -> list[tuple[str, str]]:
     return [(s, s) for s in rows if s]
 
 
-def load_ticker_choices_from_db() -> list[tuple[str, str]]:
+NEWS_FEED_ASSET_TYPES = ("Акция", "Рынок")
+
+
+def _ticker_choice_label(ticker: str, name: str) -> str:
+    name = (name or "").strip()
+    if not name or name == ticker:
+        return ticker
+    return f"{ticker} {name}"
+
+
+def load_ticker_choices_from_db(
+    *,
+    asset_types: tuple[str, ...] | None = None,
+) -> list[tuple[str, str]]:
     """
     (value, label) для Tom Select: value = тикер, label = "TICKER Имя".
     """
-    rows = db.session.scalars(select(InvestTicker).order_by(InvestTicker.ticker.asc()))
+    stmt = select(InvestTicker).order_by(InvestTicker.ticker.asc())
+    if asset_types is not None:
+        stmt = stmt.where(InvestTicker.asset_type.in_(asset_types))
+    rows = db.session.scalars(stmt)
     choices: list[tuple[str, str]] = []
     for r in rows:
         ticker = (r.ticker or "").strip()
-        name = (r.name or "").strip()
         if not ticker:
             continue
-        label = ticker if (not name or name == ticker) else f"{ticker} {name}"
-        choices.append((ticker, label))
+        choices.append((ticker, _ticker_choice_label(ticker, r.name)))
     return choices
+
+
+def load_sector_choices_from_db(
+    *,
+    asset_types: tuple[str, ...] | None = NEWS_FEED_ASSET_TYPES,
+) -> list[tuple[str, str]]:
+    """Уникальные непустые сектора для фильтра новостей."""
+    stmt = (
+        select(InvestTicker.sector)
+        .where(InvestTicker.sector != "")
+        .group_by(InvestTicker.sector)
+        .order_by(InvestTicker.sector.asc())
+    )
+    if asset_types is not None:
+        stmt = stmt.where(InvestTicker.asset_type.in_(asset_types))
+    rows = db.session.execute(stmt).scalars().all()
+    return [(s, s) for s in rows if s]
 
 
 def current_deposit() -> Decimal:

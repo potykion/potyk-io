@@ -17,9 +17,8 @@ _ABS_RE = re.compile(r"^(\d+(?:\.\d+)?)$")
 
 LEVEL_UNIT_CHOICES = [
     ("", "—"),
-    ("rub", "₽"),
     ("pct", "%"),
-    ("price", "цена"),
+    ("price", "₽"),
 ]
 
 
@@ -65,7 +64,7 @@ def encode_level(value: str | None, unit: str | None, *, is_stop: bool) -> str:
     if not val_text and not unit:
         return ""
     if val_text and not unit:
-        raise ValueError("Выбери единицу: ₽, % или цена")
+        raise ValueError("Выбери единицу: % или ₽")
     if unit and not val_text:
         raise ValueError("Укажи значение")
 
@@ -77,15 +76,11 @@ def encode_level(value: str | None, unit: str | None, *, is_stop: bool) -> str:
     if unit == "pct":
         n = -abs(n) if is_stop else abs(n)
         return f"{n}%"
-    if unit == "rub":
-        n = -abs(n) if is_stop else abs(n)
-        sign = "+" if n >= 0 else ""
-        return f"{sign}{n}"
     if unit == "price":
         if n <= 0:
             raise ValueError("Цена должна быть больше нуля")
         return val_text
-    raise ValueError("Выбери единицу: ₽, % или цена")
+    raise ValueError("Выбери единицу: % или ₽")
 
 
 def decode_level(raw: str | None) -> tuple[str, str]:
@@ -101,6 +96,13 @@ def decode_level(raw: str | None) -> tuple[str, str]:
     if match := _ABS_RE.match(text):
         return (match.group(1), "price")
     return ("", "")
+
+
+def _format_price_value(value) -> str:
+    text = format(Decimal(value).normalize(), "f")
+    if "." in text:
+        text = text.rstrip("0").rstrip(".")
+    return text
 
 
 def level_from_fields(
@@ -236,9 +238,21 @@ class DealForm(FlaskForm):
         self.entry_level.data = deal.entry_level
         self.exit_level.data = deal.exit_level
         tp_value, tp_unit = decode_level(deal.take_profit_raw)
+        if tp_unit == "rub":
+            if deal.take_profit_price is not None:
+                tp_value = _format_price_value(deal.take_profit_price)
+                tp_unit = "price"
+            else:
+                tp_value, tp_unit = "", ""
         self.take_profit_value.data = tp_value
         self.take_profit_unit.data = tp_unit
         sl_value, sl_unit = decode_level(deal.stop_loss_raw)
+        if sl_unit == "rub":
+            if deal.stop_loss_price is not None:
+                sl_value = _format_price_value(deal.stop_loss_price)
+                sl_unit = "price"
+            else:
+                sl_value, sl_unit = "", ""
         self.stop_loss_value.data = sl_value
         self.stop_loss_unit.data = sl_unit
         self.thoughts.data = deal.thoughts
@@ -313,6 +327,10 @@ class DealDeleteForm(FlaskForm):
     submit = SubmitField("×")
 
 
+class ApplyDealBalanceForm(FlaskForm):
+    submit = SubmitField("🔄")
+
+
 def compute_pnl(qty: Decimal, buy_price: Decimal, sell_price: Decimal) -> Decimal:
     return ((sell_price - buy_price) * qty).quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
 
@@ -370,6 +388,60 @@ class CloseDealForm(FlaskForm):
     thoughts = TextAreaField("Причина выхода", validators=[Optional()], default="")
     mistakes = TextAreaField("Ошибки", validators=[Optional()], default="")
     submit = SubmitField("Закрыть сделку")
+
+
+class NewsFilterForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    date_from = DateField(
+        "С",
+        format="%Y-%m-%d",
+        validators=[Optional()],
+        render_kw={"type": "date"},
+    )
+    date_to = DateField(
+        "По",
+        format="%Y-%m-%d",
+        validators=[Optional()],
+        render_kw={"type": "date"},
+    )
+    sentiment = SelectField(
+        "Сентимент",
+        choices=[
+            ("", "Все"),
+            ("🟢", "🟢 Позитив"),
+            ("🟡", "🟡 Нейтрально"),
+            ("🔴", "🔴 Негатив"),
+        ],
+        validators=[Optional()],
+        default="",
+    )
+    ticker = SelectField(
+        "Тикер",
+        validators=[Optional()],
+        validate_choice=False,
+        default="",
+    )
+    sector = SelectField(
+        "Сектор",
+        validators=[Optional()],
+        validate_choice=False,
+        default="",
+    )
+    submit = SubmitField("Применить")
+
+    def __init__(
+        self,
+        formdata=None,
+        *args,
+        ticker_choices: list[tuple[str, str]] | None = None,
+        sector_choices: list[tuple[str, str]] | None = None,
+        **kwargs,
+    ):
+        super().__init__(formdata, *args, **kwargs)
+        self.ticker.choices = [("", "Все")] + (ticker_choices or [])
+        self.sector.choices = [("", "Все")] + (sector_choices or [])
 
 
 class NewsForm(FlaskForm):

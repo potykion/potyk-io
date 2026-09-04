@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from decimal import Decimal
 
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
@@ -5,13 +6,21 @@ from flask_login import login_required
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
-from potyk_io_back.invest.dashboard import build_dashboard, build_funds_dashboard, load_news_page
+from potyk_io_back.invest.dashboard import (
+    NewsFilters,
+    build_dashboard,
+    build_funds_dashboard,
+    load_news_page,
+    load_ticker_page,
+)
 from potyk_io_back.invest.entities import (
+    NEWS_FEED_ASSET_TYPES,
     InvestDeal,
     InvestDepositChange,
     InvestNews,
     InvestTickerLevel,
     current_deposit,
+    load_sector_choices_from_db,
     load_source_choices_from_db,
     load_ticker_choices_from_db,
 )
@@ -22,6 +31,7 @@ from potyk_io_back.invest.forms import (
     DealForm,
     DepositForm,
     EditDealForm,
+    NewsFilterForm,
     NewsForm,
     TickerLevelForm,
     compute_pnl,
@@ -83,17 +93,90 @@ def inject_invest_menu():
     return {"invest_menu_items": items}
 
 
-@invest_bp.route("/")
-def index():
+def news_filter_form_from_request() -> tuple[NewsFilterForm, NewsFilters]:
+    ticker_choices = load_ticker_choices_from_db(asset_types=NEWS_FEED_ASSET_TYPES)
+    sector_choices = load_sector_choices_from_db()
+    form = NewsFilterForm(
+        request.args,
+        ticker_choices=ticker_choices,
+        sector_choices=sector_choices,
+    )
+    form.validate()
+    filters = NewsFilters(
+        date_from=form.date_from.data,
+        date_to=form.date_to.data,
+        sentiment=(form.sentiment.data or "").strip(),
+        ticker=(form.ticker.data or "").strip(),
+        sector=(form.sector.data or "").strip(),
+    )
+    return form, filters
+
+
+def news_date_presets(filters: NewsFilters) -> list[dict]:
+    today = date.today()
+    base = {}
+    if filters.sentiment:
+        base["sentiment"] = filters.sentiment
+    if filters.ticker:
+        base["ticker"] = filters.ticker
+    if filters.sector:
+        base["sector"] = filters.sector
+
+    presets = [
+        ("7d", "7 дней", today - timedelta(days=6), today),
+        ("30d", "30 дней", today - timedelta(days=29), today),
+        ("90d", "90 дней", today - timedelta(days=89), today),
+    ]
+    result = []
+    for key, label, date_from, date_to in presets:
+        active = filters.date_from == date_from and filters.date_to == date_to
+        result.append(
+            {
+                "key": key,
+                "label": label,
+                "active": active,
+                "url": url_for(
+                    "invest.index",
+                    date_from=date_from.isoformat(),
+                    date_to=date_to.isoformat(),
+                    **base,
+                ),
+            }
+        )
+    return result
+
+
+def render_news_index(
+    *,
+    news_form: NewsForm | None = None,
+    filter_form: NewsFilterForm | None = None,
+    filters: NewsFilters | None = None,
+    open_panel: str | None = None,
+    status: int | None = None,
+):
+    if filter_form is None or filters is None:
+        filter_form, filters = news_filter_form_from_request()
     ticker_choices = load_ticker_choices_from_db()
     source_choices = load_source_choices_from_db()
-    news_form = NewsForm(ticker_choices=ticker_choices, source_choices=source_choices)
-    return render_template(
+    if news_form is None:
+        news_form = NewsForm(ticker_choices=ticker_choices, source_choices=source_choices)
+    response = render_template(
         "potyk-invest/index.html",
-        sectors=build_dashboard(),
+        sectors=build_dashboard(filters),
         news_form=news_form,
-        open_panel=None,
+        filter_form=filter_form,
+        filters=filters,
+        date_presets=news_date_presets(filters),
+        open_panel=open_panel,
     )
+    if status is not None:
+        return response, status
+    return response
+
+
+@invest_bp.route("/")
+def index():
+    return render_news_index()
 
 
 @invest_bp.post("/")
@@ -104,15 +187,7 @@ def add_news():
     form = NewsForm(ticker_choices=ticker_choices, source_choices=source_choices)
     if not form.validate_on_submit():
         flash_form_errors(form)
-        return (
-            render_template(
-                "potyk-invest/index.html",
-                sectors=build_dashboard(),
-                news_form=form,
-                open_panel="news",
-            ),
-            400,
-        )
+        return render_news_index(news_form=form, open_panel="news", status=400)
 
     dt = form.datetime.data
     ticker = form.ticker.data.strip().upper()
@@ -151,6 +226,14 @@ def news(slug: str):
     if page is None:
         abort(404)
     return render_template("potyk-invest/news.html", page=page)
+
+
+@invest_bp.route("/tickers/<path:ticker>")
+def ticker_page(ticker: str):
+    page = load_ticker_page(ticker)
+    if not page.ticker:
+        abort(404)
+    return render_template("potyk-invest/ticker.html", page=page)
 
 
 def ticker_levels_map() -> dict[str, dict[str, str | None]]:

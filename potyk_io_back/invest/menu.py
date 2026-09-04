@@ -39,7 +39,11 @@ INVEST_MENU_ITEMS: list[InvestMenuItem] = [
 def is_invest_link_active(url: str, path: str) -> bool:
     normalized = url.rstrip("/") or "/"
     if normalized == "/invest":
-        return path.rstrip("/") == "/invest" or path.startswith("/invest/Новости")
+        return (
+            path.rstrip("/") == "/invest"
+            or path.startswith("/invest/Новости")
+            or path.startswith("/invest/tickers/")
+        )
     if normalized == "/invest/deals":
         return path == "/invest/deals" or path.startswith("/invest/deals/")
     if normalized == "/invest/funds":

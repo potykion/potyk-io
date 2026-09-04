@@ -1,0 +1,229 @@
+{% extends "potyk-invest/_base.html" %}
+
+{% block title %}{{ page.ticker }} — potyk-invest{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    body.site-invest .wrap {
+        max-width: 900px;
+    }
+
+    .meta-card {
+        border-radius: 8px;
+        padding: 0.9rem 1rem;
+        border: 1px solid var(--none-border);
+        background: var(--none-bg);
+        margin-bottom: 1.25rem;
+    }
+
+    .meta-row {
+        font-size: 0.95em;
+        margin: 0.2rem 0;
+    }
+
+    .meta-row .label {
+        color: var(--muted);
+    }
+
+    .subtitle {
+        color: var(--muted);
+        margin: -0.25rem 0 1rem;
+        font-size: 1.05rem;
+    }
+
+    h2 {
+        margin: 1.5rem 0 0.65rem;
+        font-size: 1.2rem;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        margin: 0.5rem 0 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 0.45rem 0.55rem;
+        border-bottom: 1px solid var(--none-border);
+        vertical-align: top;
+    }
+
+    th {
+        font-weight: 600;
+        color: var(--muted);
+        font-size: 0.85em;
+    }
+
+    td.num, th.num {
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .news-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+    }
+
+    .news-card {
+        border-radius: 8px;
+        padding: 0.85rem 1rem;
+        border: 1px solid var(--none-border);
+        background: var(--none-bg);
+    }
+
+    .news-card.tone-pos {
+        background: var(--pos-bg);
+        border-color: var(--pos-border);
+    }
+
+    .news-card.tone-neu {
+        background: var(--neu-bg);
+        border-color: var(--neu-border);
+    }
+
+    .news-card.tone-neg {
+        background: var(--neg-bg);
+        border-color: var(--neg-border);
+    }
+
+    .news-card .title a {
+        color: var(--link);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        font-weight: 600;
+    }
+
+    .news-card .when {
+        font-size: 0.85em;
+        opacity: 0.7;
+        margin: 0.3rem 0;
+    }
+
+    .news-card .meta {
+        font-size: 0.9em;
+        margin-bottom: 0.45rem;
+        opacity: 0.9;
+    }
+
+    .news-card .summary {
+        font-size: 0.92em;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .pill {
+        display: inline-block;
+        font-size: 0.8em;
+        padding: 0.1rem 0.45rem;
+        border-radius: 4px;
+        border: 1px solid var(--none-border);
+        color: var(--muted);
+        margin-left: 0.35rem;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="wrap">
+    <a class="back" href="{{ url_for('invest.index') }}">← Новости</a>
+    <h1>
+        {{ page.ticker }}
+        {% if page.asset_type %}<span class="pill">{{ page.asset_type }}</span>{% endif %}
+    </h1>
+    {% if page.name and page.name != page.ticker %}
+    <p class="subtitle">{{ page.name }}</p>
+    {% endif %}
+
+    <div class="meta-card">
+        <div class="meta-row">
+            <span class="label">сектор:</span>
+            {{ page.sector or "—" }}
+        </div>
+        <div class="meta-row">
+            <span class="label">зависимости:</span>
+            {{ page.deps or "—" }}
+        </div>
+        <div class="meta-row">
+            <span class="label">поддержка:</span>
+            {{ page.entry_level | invest_price if page.entry_level is not none else "—" }}
+            ·
+            <span class="label">сопротивление:</span>
+            {{ page.exit_level | invest_price if page.exit_level is not none else "—" }}
+        </div>
+    </div>
+
+    <h2>Сделки</h2>
+    {% if page.deals %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Открыта</th>
+                    <th class="num">Объём %</th>
+                    <th class="num">Цена</th>
+                    <th class="num">Кол-во</th>
+                    <th>Статус</th>
+                    <th class="num">P/L</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for deal in page.deals %}
+                <tr>
+                    <td>{{ deal.opened_at.strftime("%d.%m.%Y %H:%M") }}</td>
+                    <td class="num">{{ deal.volume | invest_price }}</td>
+                    <td class="num">{{ deal.buy_price | invest_price }}</td>
+                    <td class="num">{{ deal.qty | invest_price }}</td>
+                    <td>{% if deal.is_closed %}закрыта{% else %}открыта{% endif %}</td>
+                    <td class="num">
+                        {% if deal.pnl is not none %}
+                        {{ deal.pnl | invest_money }} ₽
+                        {% else %}
+                        —
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Сделок по тикеру нет.</p>
+    {% endif %}
+
+    <h2>Новости</h2>
+    {% if page.news %}
+    <div class="news-list">
+        {% for item in page.news %}
+        <article class="news-card tone-{{ item.sentiment_tone }}">
+            <div class="title"><a href="{{ item.url }}">{{ item.title }}</a></div>
+            {% if item.datetime_fmt %}
+            <div class="when">{{ item.datetime_fmt }}</div>
+            {% endif %}
+            {% if item.action or item.sentiment or item.price %}
+            <div class="meta">
+                {%- if item.action -%}action: {{ item.action }}{%- endif -%}
+                {%- if item.action and (item.sentiment or item.price) %} · {% endif -%}
+                {%- if item.sentiment -%}sentiment: {{ item.sentiment }}{%- endif -%}
+                {%- if item.sentiment and item.price %} · {% endif -%}
+                {%- if item.price -%}price: {{ item.price }}{%- endif -%}
+            </div>
+            {% endif %}
+            <div class="summary">{{ item.summary }}</div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty">Новостей по тикеру нет.</p>
+    {% endif %}
+</div>
+{% endblock %}
