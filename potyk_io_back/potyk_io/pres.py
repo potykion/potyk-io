@@ -101,6 +101,7 @@ def render_food_markdown(file: Path):
         created=created,
         base_href=base_href,
         link_rewriter=make_food_link_rewriter(file),
+        recipe_ui=True,
     )
 
 

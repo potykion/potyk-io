@@ -12,3 +12,9 @@
 {% block main %}
     {{ content | safe }}
 {% endblock %}
+
+{% block script %}
+{% if recipe_ui %}
+<script src="/static/potyk-io/js/recipe-page.js"></script>
+{% endif %}
+{% endblock %}
