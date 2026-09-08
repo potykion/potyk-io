@@ -12,14 +12,14 @@ description: >-
 
 ## Когда применять
 
-Пользователь даёт путь к конспекту в `templates/potyk-invest/Источники/Деньги не спят/` и просит разнести выпуск по новостям.
+Пользователь даёт путь к конспекту (или `/dns-episode-to-news` / свежий выпуск) и просит разнести его по новостям.
 
 ## Вход
 
-1. Файл источника, напр. `Источники/Деньги не спят/YYYY-MM-DD ДнС <название>.md`
-2. Локальная БД: `instance/main.db` — таблица `invest_tickers`
+1. Файл источника: обычно `templates/potyk-invest/Источники/Деньги не спят/днс-YYYY-MM-DD.md` (или `YYYY-MM-DD ДнС <название>.md`). Если лежит в `templates/` — перенеси в эту папку до/вместе с миграцией
+2. Локальная БД: `instance/main.db` — таблица `invest_tickers` (не `.md` в `Тикеры/` / `Новости/`)
 3. Схема новостей: `potyk_io_back/invest/entities.py` → `InvestNews`
-4. Образцы миграций: `migrations/versions/e1f2a3b4c5d6_dns_2026_08_21.py`, `d0e1f2a3b4c5_seed_findings_from_md.py`
+4. Образцы миграций: `migrations/versions/f7a8b9c0d1e2_dns_2026_08_28.py`, `c1d2e3f4a5b6_dns_2026_09_04.py`
 
 ## Workflow
 
@@ -79,8 +79,18 @@ description: >-
 | x5 | X5 |
 | русал | RUAL |
 | эн+ / энп | ENGP |
+| лукойл | LKOH |
+| газпром / газик | GAZP |
+| газпром нефть / sibn | SIBN |
+| роснефть | ROSN |
+| полюс | PLZL |
+| аэрофлот | AFLT |
+| ростелек | RTLK |
+| мвидео / mvid | MVID |
+| русгидро | HYDR |
+| usd/cny / юань | CNY |
 
-Не путать **MGNT (Магнит)** и **MAGN (ММК)**.
+Не путать **MGNT (Магнит)** и **MAGN (ММК)**; **RTLK** (обычка) vs **RTLKP** (преф).
 
 ### 2. Тикеры из SQL
 
@@ -141,7 +151,7 @@ rows = c.execute("SELECT ticker, name, asset_type, sector FROM invest_tickers OR
 - **source** — имя файла конспекта без `.md` (не wiki-ссылка)
 - **ticker** — код из `invest_tickers.ticker`, не `name`
 - **summary** — сжатый смысл (1–3 фразы). **Не дублировать текущую цену** — она только в `price`. Уровни/таргеты в summary оставлять
-- **price** — из `тек`; нет цены → `""`
+- **price** — из `тек`; нет цены → `""`; для usd/cny два числа → `"12.8, 86"`
 - **sentiment** — 🟢/🟡/🔴 из конспекта
 - **datetime** — дата выпуска, время `20:00:00` если неизвестно
 - **action** — по умолчанию `"наблюдать"`
