@@ -460,7 +460,10 @@
                 <tr{% if deal.is_closed %} class="is-closed"{% endif %}>
                     <td>{{ deal.opened_at.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td>{{ deal.ticker }}</td>
-                    <td class="num">{{ deal.volume | invest_price }}%</td>
+                    <td class="num">
+                        {{ deal.volume | invest_price }}%
+                        <div class="muted">{{ (deal.buy_price * deal.qty) | invest_money }}</div>
+                    </td>
                     <td class="num">{{ deal.buy_price | invest_price }}</td>
                     <td class="num">{{ deal.qty | invest_price }}</td>
                     <td class="num">
