@@ -24,6 +24,8 @@
 }
 
 .travel-guide {
+    display: grid;
+    gap: 12px;
     margin-bottom: 32px;
 }
 
@@ -36,6 +38,7 @@
     text-decoration: none;
     justify-content: center;
     align-items: center;
+    text-align: center;
     transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
@@ -54,7 +57,8 @@
 
 @media screen and (min-width: 768px) {
     .travel-guide {
-        max-width: 480px;
+        grid-template-columns: 1fr 1fr;
+        max-width: 720px;
         margin-left: auto;
         margin-right: auto;
     }
