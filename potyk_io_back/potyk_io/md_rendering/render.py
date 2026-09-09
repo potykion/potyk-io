@@ -34,6 +34,7 @@ CREATED_RE = re.compile(
 )
 MARKDOWN_LINK_RE = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)")
 TOC_CONFIG = {"toc_depth": "2-4", "slugify": slugify_unicode}
+TOC_CONFIG_H2 = {"toc_depth": "2-2", "slugify": slugify_unicode}
 
 
 def split_frontmatter(text: str) -> tuple[dict[str, str], str]:
@@ -101,6 +102,18 @@ def meta_flag(meta: dict[str, str], key: str, *, default: bool = False) -> bool:
     return default
 
 
+def resolve_toc_config(meta: dict[str, str]) -> dict | None:
+    """Конфиг TOC из frontmatter: true → h2–h4, h2 → только h2, иначе выкл."""
+    raw = unquote_meta(str(meta.get("toc", ""))).strip().lower()
+    if not raw or raw in FALSEY:
+        return None
+    if raw in TRUEY:
+        return TOC_CONFIG
+    if raw == "h2":
+        return TOC_CONFIG_H2
+    return None
+
+
 def inject_toc(html: str, toc: str) -> str:
     if "<li>" not in toc:
         return html
@@ -148,12 +161,12 @@ def render_body_html(
     if link_rewriter is not None:
         body = rewrite_markdown_links(body, link_rewriter)
 
-    show_toc = meta_flag(meta, "toc")
+    toc_config = resolve_toc_config(meta)
     extensions = list(MD_EXTENSIONS)
     extension_configs: dict = dict(MD_EXTENSION_CONFIGS)
-    if show_toc:
+    if toc_config is not None:
         extensions.append("toc")
-        extension_configs["toc"] = TOC_CONFIG
+        extension_configs["toc"] = toc_config
 
     md = markdown.Markdown(
         extensions=extensions,
@@ -168,7 +181,7 @@ def render_body_html(
         content = inject_created(content, created, title)
     if after_h1_html:
         content = inject_after_h1(content, after_h1_html)
-    if show_toc:
+    if toc_config is not None:
         content = inject_toc(content, md.toc)
 
     show_header = str(meta.get("header", "true")).strip().lower() not in FALSEY

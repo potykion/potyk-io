@@ -1,6 +1,6 @@
 ---
 created: 2026-08-05
-toc: true
+toc: h2
 ---
 # Куда сходить в Москве
 
@@ -11,12 +11,11 @@ toc: true
 - [China Today](https://yandex.ru/maps/-/CPg34M-Y)
 - [Парк Победы](https://yandex.ru/maps/org/park_pobedy/1342962517/) + [Музей Победы](https://yandex.ru/maps/org/muzey_pobedy/1246851295/) (под вечер)
 
-### Арбат / Площадь Революции / Лубянка
+### Арбат / Площадь Революции
 
 - [Таверна Под Ведьмачьим Мечом](https://yandex.ru/maps/-/CPg3yYJ1)
 - [Исси и биси](https://yandex.ru/maps/-/CPg3JFJK)
 - [Hello Kitty and friends](https://yandex.ru/maps/-/CPg~UZ~g)
-- [Underdog](https://yandex.ru/maps/-/CTG86S57) (Маросейка, 6-8с1)
 - [Музей архитектуры им. Щусева](https://muar.ru/) (Воздвиженка)
 
 ### Крылатское
@@ -66,28 +65,9 @@ toc: true
 - Парк Сокольники
 - Альпака Парк
 
-## 🟧 D1
+### Лубянка
 
-### Сити
-
-- [Смотровая Москва-Сити](https://yandex.ru/maps/org/panorama360/8131993535/) (Panorama360)
-
-### Немчиновка
-
-- [Парк Малевича × Парк Раздолье](https://yandex.ru/maps/-/CTrzRZPK)
-
-### Долгопрудный
-
-- [Чистая линия](https://chlclub.ru)
-
-### Окружная
-
-- [Ёшки Матрёшки](https://yandex.ru/maps/-/CPg~YVZW)
-
-### Кубинка
-
-- [Усадьба Васильевское князей Щербатовых](https://yandex.ru/maps/-/CPg3JI2z)
-- [Храм Вооружённых сил / Патриот](https://parkpatriot.ru/obekty/glavnyy-khram-vooruzhennykh-sil-rossiyskoy-federatsii-/)
+- [Underdog](https://yandex.ru/maps/-/CTG86S57) (Маросейка, 6-8с1)
 
 ## 🟣 Фиолетовая ветка
 
@@ -135,6 +115,29 @@ toc: true
 ### Ш. Энтузиастов / Перово
 
 - [Frais](https://frais.ru/) — мануфактура / малина в шоколаде (шоссе Энтузиастов, 54Б)
+
+## 🟧 D1
+
+### Сити
+
+- [Смотровая Москва-Сити](https://yandex.ru/maps/org/panorama360/8131993535/) (Panorama360)
+
+### Немчиновка
+
+- [Парк Малевича × Парк Раздолье](https://yandex.ru/maps/-/CTrzRZPK)
+
+### Долгопрудный
+
+- [Чистая линия](https://chlclub.ru)
+
+### Окружная
+
+- [Ёшки Матрёшки](https://yandex.ru/maps/-/CPg~YVZW)
+
+### Кубинка
+
+- [Усадьба Васильевское князей Щербатовых](https://yandex.ru/maps/-/CPg3JI2z)
+- [Храм Вооружённых сил / Патриот](https://parkpatriot.ru/obekty/glavnyy-khram-vooruzhennykh-sil-rossiyskoy-federatsii-/)
 
 ## Ебеня
 
