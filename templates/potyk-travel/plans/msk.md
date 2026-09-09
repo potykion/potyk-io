@@ -16,7 +16,7 @@ toc: h2
 - [Таверна Под Ведьмачьим Мечом](https://yandex.ru/maps/-/CPg3yYJ1)
 - [Исси и биси](https://yandex.ru/maps/-/CPg3JFJK)
 - [Hello Kitty and friends](https://yandex.ru/maps/-/CPg~UZ~g)
-- [Музей архитектуры им. Щусева](https://muar.ru/) · [карты](https://yandex.ru/maps/org/schusev_state_museum_of_architecture/216214002632/) (Воздвиженка)
+- [Музей архитектуры им. Щусева](https://yandex.ru/maps/org/schusev_state_museum_of_architecture/216214002632/) ([сайт](https://muar.ru/))
 
 ### Крылатское
 
@@ -26,7 +26,7 @@ toc: h2
 
 ### Курская
 
-- [ARTPLAY](https://artplay.ru/) · [карты](https://yandex.ru/maps/org/artplay/207202729761/)
+- [ARTPLAY](https://yandex.ru/maps/org/artplay/207202729761/) ([сайт](https://artplay.ru/))
 
 ## 🟠 Оранжевая ветка
 
@@ -39,7 +39,7 @@ toc: h2
 - [Futurione](https://yandex.ru/maps/-/CPSS4JMp)
 - [Останкинская](https://yandex.ru/maps/-/CPSS4CZm)
 - [Смотровая ВДНХ (павильон АТОМ)](https://yandex.ru/maps/org/atom/72801243895/)
-- [Союзмультфильм](https://souzmult.ru/contacts) · [карты](https://yandex.ru/maps/org/soyuzmultfilm/1372297276/) (ул. Академика Королёва, 21)
+- [Союзмультфильм](https://yandex.ru/maps/org/soyuzmultfilm/1372297276/) ([сайт](https://souzmult.ru/contacts))
 
 ### КГ / Тургеневская
 
@@ -50,7 +50,7 @@ toc: h2
 ### ЮЗАО
 
 - [Палеонтологический музей](https://yandex.ru/maps/org/paleontologicheskiy_muzey_imeni_yu_a_orlova_ran/1122338357/)
-- [ТЦ Саларис](https://salaris.ru/) · [карты](https://yandex.ru/maps/org/salaris/235455881116/) (на тачке)
+- [ТЦ Саларис](https://yandex.ru/maps/org/salaris/235455881116/) ([сайт](https://salaris.ru/)) (на тачке)
 
 ## ⚪ Серая ветка
 
@@ -67,7 +67,7 @@ toc: h2
 
 ### Лубянка
 
-- [Underdog](https://yandex.ru/maps/-/CTG86S57) (Маросейка, 6-8с1)
+- [Underdog](https://yandex.ru/maps/-/CTG86S57)
 
 ## 🟣 Фиолетовая ветка
 
@@ -79,7 +79,7 @@ toc: h2
 ### Пушкинская
 
 - [Twins Garden](https://yandex.ru/maps/org/twins_garden/192990200894/)
-- [Cube.Moscow](https://cube.moscow/) · [карты](https://yandex.ru/maps/org/art_platforma_kub/210297753915/) (Тверская, 3)
+- [Cube.Moscow](https://yandex.ru/maps/org/art_platforma_kub/210297753915/) ([сайт](https://cube.moscow/))
 
 ### Таганка
 
@@ -90,7 +90,7 @@ toc: h2
 
 ### Маяковская
 
-- [Рамен Тэн](https://yandex.ru/maps/org/ramen_ten/123259143390/) (Долгоруковская)
+- [Рамен Тэн](https://yandex.ru/maps/org/ramen_ten/123259143390/)
 
 ### Новокузнецкая
 
@@ -114,7 +114,7 @@ toc: h2
 
 ### Ш. Энтузиастов / Перово
 
-- [Frais](https://frais.ru/) · [карты](https://yandex.ru/maps/org/frais/240424634701/) — мануфактура / малина в шоколаде (шоссе Энтузиастов, 54Б)
+- [Frais](https://yandex.ru/maps/org/frais/240424634701/) ([сайт](https://frais.ru/)) — мануфактура / малина в шоколаде
 
 ## 🟧 D1
 
@@ -128,7 +128,7 @@ toc: h2
 
 ### Долгопрудный
 
-- [Чистая линия](https://chlclub.ru) · [карты](https://yandex.ru/maps/org/chistaya_liniya/88957967550/)
+- [Чистая линия](https://yandex.ru/maps/org/chistaya_liniya/88957967550/) ([сайт](https://chlclub.ru))
 
 ### Окружная
 
@@ -137,17 +137,17 @@ toc: h2
 ### Кубинка
 
 - [Усадьба Васильевское князей Щербатовых](https://yandex.ru/maps/-/CPg3JI2z)
-- [Храм Вооружённых сил / Патриот](https://parkpatriot.ru/obekty/glavnyy-khram-vooruzhennykh-sil-rossiyskoy-federatsii-/) · [карты](https://yandex.ru/maps/org/the_cathedral_of_the_resurrection_of_christ/198463998170/)
+- [Храм Вооружённых сил / Патриот](https://yandex.ru/maps/org/the_cathedral_of_the_resurrection_of_christ/198463998170/) ([сайт](https://parkpatriot.ru/obekty/glavnyy-khram-vooruzhennykh-sil-rossiyskoy-federatsii-/))
 
 ## Ебеня
 
 ### Мытищи
 
-- [МПК](https://mosbrew.ru) · [карты](https://yandex.ru/maps/org/moscow_brewing_company/1144143659/)
+- [МПК](https://yandex.ru/maps/org/moscow_brewing_company/1144143659/) ([сайт](https://mosbrew.ru))
 
 ### Пушкинский р-н
 
-- [Завод сырков Б.Ю. Александров](https://a-rostagrokomplex.ru/nash-muzey/) · [карты](https://yandex.ru/maps/org/museum_of_the_history_of_milk_and_glazed_cheese/107895149733/) (музей сырка, РостАгроКомплекс)
+- [Завод сырков Б.Ю. Александров](https://yandex.ru/maps/org/museum_of_the_history_of_milk_and_glazed_cheese/107895149733/) ([сайт](https://a-rostagrokomplex.ru/nash-muzey/))
 
 ### Покров / Владимирская обл.
 
