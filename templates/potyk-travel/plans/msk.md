@@ -1,19 +1,22 @@
 ---
 created: 2026-08-05
 ---
-# Мск
+# Куда сходить в Москве
 
 ## Районы
 
 ### 🔵 Славик/Кутуза
 
 - [China Today](https://yandex.ru/maps/-/CPg34M-Y)
+- [Парк Победы](https://yandex.ru/maps/org/park_pobedy/1342962517/) + [Музей Победы](https://yandex.ru/maps/org/muzey_pobedy/1246851295/) (под вечер)
 
 ### 🔵 Арбат / Площадь Революции / Лубянка
 
 - [Таверна Под Ведьмачьим Мечом](https://yandex.ru/maps/-/CPg3yYJ1)
 - [Исси и биси](https://yandex.ru/maps/-/CPg3JFJK)
 - [Hello Kitty and friends](https://yandex.ru/maps/-/CPg~UZ~g)
+- [Underdog](https://yandex.ru/maps/-/CTG86S57) (Маросейка, 6-8с1)
+- [Музей архитектуры им. Щусева](https://muar.ru/) (Воздвиженка)
 
 ### 🔵 Крылатское
 
@@ -30,6 +33,8 @@ created: 2026-08-05
 - [Лабиринт](https://yandex.ru/maps/-/CPSSUT~5)
 - [Futurione](https://yandex.ru/maps/-/CPSS4JMp)
 - [Останкинская](https://yandex.ru/maps/-/CPSS4CZm)
+- Смотровая ВДНХ (павильон АТОМ)
+- [Союзмультфильм](https://souzmult.ru/contacts) (ул. Академика Королёва, 21)
 
 ### 🟠 КГ / Тургеневская
 
@@ -37,14 +42,27 @@ created: 2026-08-05
 - [Тайцы](https://yandex.ru/maps/-/CPg~M-IK) + Китайская Грамота
 - [Сионист](https://yandex.ru/maps/-/CPsxEBzy)
 
+### 🟠 Савёловская
+
+- Тир на Савёловскую
+
 ### 🟠 ЮЗАО
 
 - Палеонтологии музей
+- [ТЦ Саларис](https://salaris.ru/) (на тачке)
 
 ### 🔴 Сокольники
 
 - Парк Сокольники
 - Альпака Парк
+
+### 🔴 Курская
+
+- [ARTPLAY](https://artplay.ru/)
+
+### 🟣 Сити
+
+- [Смотровая Москва-Сити](https://yandex.ru/maps/org/panorama360/8131993535/) (Panorama360)
 
 ### 🟣 1905 / Пресня
 
@@ -54,7 +72,7 @@ created: 2026-08-05
 ### 🟣 Пушкинская 
 
 - Twins Garden
-
+- [Cube.Moscow](https://cube.moscow/) (Тверская, 3)
 
 ### 🟣 Таганка
 
@@ -69,6 +87,7 @@ created: 2026-08-05
 
 - [Pomme Verte](https://yandex.ru/maps/org/pomme_verte/195549611589?si=potyk-io)
 - [Mitzva Bar](https://yandex.ru/maps/-/CPstz09O)
+- Красный Октябрь
 
 ### 🟢 ЮАО: ЗИЛ
 
@@ -81,6 +100,10 @@ created: 2026-08-05
 - [Роща Сакура](https://yandex.ru/maps/-/CPg3NYy9)
 - [Casa Maria](https://yandex.ru/maps/-/CPg3iP3n) + Музей Клоунов + Трактор
 - Тропинка Сказок
+
+### 🟢 Ш. Энтузиастов / Перово
+
+- [Frais](https://frais.ru/) — мануфактура / малина в шоколаде (шоссе Энтузиастов, 54Б)
 
 ---
 
@@ -101,10 +124,23 @@ created: 2026-08-05
 ### 🟧 D1: Кубинка
 
 - [Усадьба Васильевское князей Щербатовых](https://yandex.ru/maps/-/CPg3JI2z)
+- [Храм Вооружённых сил / Патриот](https://parkpatriot.ru/obekty/glavnyy-khram-vooruzhennykh-sil-rossiyskoy-federatsii-/)
 
 ### Мытищи
 
 - [МПК](https://mosbrew.ru)
+
+### Пушкинский р-н
+
+- [Завод сырков Б.Ю. Александров](https://a-rostagrokomplex.ru/nash-muzey/) (музей сырка, РостАгроКомплекс)
+
+### Покров / Владимирская обл.
+
+- Покровский пряник — МК / экскурсия на фабрику
+
+### Гжель
+
+- Музей Гжели
 
 ### Юг: Подольск, Серпухов
 
