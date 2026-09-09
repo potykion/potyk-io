@@ -16,54 +16,54 @@ toc: h2
 - [Таверна Под Ведьмачьим Мечом](https://yandex.ru/maps/-/CPg3yYJ1)
 - [Исси и биси](https://yandex.ru/maps/-/CPg3JFJK)
 - [Hello Kitty and friends](https://yandex.ru/maps/-/CPg~UZ~g)
-- [Музей архитектуры им. Щусева](https://muar.ru/) (Воздвиженка)
+- [Музей архитектуры им. Щусева](https://muar.ru/) · [карты](https://yandex.ru/maps/org/schusev_state_museum_of_architecture/216214002632/) (Воздвиженка)
 
 ### Крылатское
 
-- Крылатское
-- Серебряный бор
-- Щукинский полуост.
+- [Крылатское](https://yandex.ru/maps/org/park_krylatskiye_kholmy/151531665576/)
+- [Серебряный бор](https://yandex.ru/maps/org/serebryany_bor/23315948807/)
+- [Щукинский полуостров](https://yandex.ru/maps/org/shchukinskiy_poluostrov/199795762785/)
 
 ### Курская
 
-- [ARTPLAY](https://artplay.ru/)
+- [ARTPLAY](https://artplay.ru/) · [карты](https://yandex.ru/maps/org/artplay/207202729761/)
 
 ## 🟠 Оранжевая ветка
 
 ### ВДНХ / Бот-сад / Проспект мира
 
-- Музей Космонавтики
-- Гараж специального назначения
-- Апт огород
+- [Музей Космонавтики](https://yandex.ru/maps/org/muzey_kosmonavtiki/1144510322/)
+- [Гараж специального назначения](https://yandex.ru/maps/org/muzey_garazha_osobogo_naznacheniya/120336999540/)
+- [Аптекарский огород](https://yandex.ru/maps/org/mgu_imeni_m_v_lomonosova_botanicheskiy_sad_aptekarskiy_ogorod/10665183987/)
 - [Лабиринт](https://yandex.ru/maps/-/CPSSUT~5)
 - [Futurione](https://yandex.ru/maps/-/CPSS4JMp)
 - [Останкинская](https://yandex.ru/maps/-/CPSS4CZm)
-- Смотровая ВДНХ (павильон АТОМ)
-- [Союзмультфильм](https://souzmult.ru/contacts) (ул. Академика Королёва, 21)
+- [Смотровая ВДНХ (павильон АТОМ)](https://yandex.ru/maps/org/atom/72801243895/)
+- [Союзмультфильм](https://souzmult.ru/contacts) · [карты](https://yandex.ru/maps/org/soyuzmultfilm/1372297276/) (ул. Академика Королёва, 21)
 
 ### КГ / Тургеневская
 
 - [Jinju bubble tea](https://yandex.ru/maps/-/CPg~MGPS)
-- [Тайцы](https://yandex.ru/maps/-/CPg~M-IK) + Китайская Грамота
+- [Тайцы](https://yandex.ru/maps/-/CPg~M-IK) + [Китайская Грамота](https://yandex.ru/maps/org/china_gramota/1203520086/)
 - [Сионист](https://yandex.ru/maps/-/CPsxEBzy)
 
 ### ЮЗАО
 
-- Палеонтологии музей
-- [ТЦ Саларис](https://salaris.ru/) (на тачке)
+- [Палеонтологический музей](https://yandex.ru/maps/org/paleontologicheskiy_muzey_imeni_yu_a_orlova_ran/1122338357/)
+- [ТЦ Саларис](https://salaris.ru/) · [карты](https://yandex.ru/maps/org/salaris/235455881116/) (на тачке)
 
 ## ⚪ Серая ветка
 
 ### Савёловская
 
-- Тир на Савёловскую
+- [Тир на Савёловскую (Shooter)](https://yandex.ru/maps/org/shooter/88831235877/)
 
 ## 🔴 Красная ветка
 
 ### Сокольники
 
-- Парк Сокольники
-- Альпака Парк
+- [Парк Сокольники](https://yandex.ru/maps/org/park_sokolniki/1607357284/)
+- [Альпака Парк](https://yandex.ru/maps/org/alpaca_park/70394768508/)
 
 ### Лубянка
 
@@ -78,8 +78,8 @@ toc: h2
 
 ### Пушкинская
 
-- Twins Garden
-- [Cube.Moscow](https://cube.moscow/) (Тверская, 3)
+- [Twins Garden](https://yandex.ru/maps/org/twins_garden/192990200894/)
+- [Cube.Moscow](https://cube.moscow/) · [карты](https://yandex.ru/maps/org/art_platforma_kub/210297753915/) (Тверская, 3)
 
 ### Таганка
 
@@ -90,31 +90,31 @@ toc: h2
 
 ### Маяковская
 
-- Рамен Тэн
+- [Рамен Тэн](https://yandex.ru/maps/org/ramen_ten/123259143390/) (Долгоруковская)
 
 ### Новокузнецкая
 
 - [Pomme Verte](https://yandex.ru/maps/org/pomme_verte/195549611589?si=potyk-io)
 - [Mitzva Bar](https://yandex.ru/maps/-/CPstz09O)
-- Красный Октябрь
+- [Красный Октябрь](https://yandex.ru/maps/org/krasny_oktyabr/43070086151/)
 
 ### ЮАО: ЗИЛ
 
-- Коломенское
+- [Коломенское](https://yandex.ru/maps/org/muzey_zapovednik_kolomenskoye/129437528946/)
 - [Дом с зайцами](https://yandex.ru/maps/-/CPwQ70NC)
 
 ### ЮВАО: Марьино, Царицыно, Кузьминки
 
-- Царицыно
+- [Царицыно](https://yandex.ru/maps/org/state_historical_and_architectural_art_and_landscape_museum_reserve_tsaritsyno/1144253805/)
 - [Роща Сакура](https://yandex.ru/maps/-/CPg3NYy9)
-- [Casa Maria](https://yandex.ru/maps/-/CPg3iP3n) + Музей Клоунов + Трактор
-- Тропинка Сказок
+- [Casa Maria](https://yandex.ru/maps/-/CPg3iP3n) + [Музей Клоунов](https://yandex.ru/maps/org/muzey_klounov/1221839628/) + Трактор
+- [Тропинка Сказок](https://yandex.ru/maps/org/tropa_skazok/61359560738/)
 
 ## 🟡 Жёлтая ветка
 
 ### Ш. Энтузиастов / Перово
 
-- [Frais](https://frais.ru/) — мануфактура / малина в шоколаде (шоссе Энтузиастов, 54Б)
+- [Frais](https://frais.ru/) · [карты](https://yandex.ru/maps/org/frais/240424634701/) — мануфактура / малина в шоколаде (шоссе Энтузиастов, 54Б)
 
 ## 🟧 D1
 
@@ -128,7 +128,7 @@ toc: h2
 
 ### Долгопрудный
 
-- [Чистая линия](https://chlclub.ru)
+- [Чистая линия](https://chlclub.ru) · [карты](https://yandex.ru/maps/org/chistaya_liniya/88957967550/)
 
 ### Окружная
 
@@ -137,25 +137,25 @@ toc: h2
 ### Кубинка
 
 - [Усадьба Васильевское князей Щербатовых](https://yandex.ru/maps/-/CPg3JI2z)
-- [Храм Вооружённых сил / Патриот](https://parkpatriot.ru/obekty/glavnyy-khram-vooruzhennykh-sil-rossiyskoy-federatsii-/)
+- [Храм Вооружённых сил / Патриот](https://parkpatriot.ru/obekty/glavnyy-khram-vooruzhennykh-sil-rossiyskoy-federatsii-/) · [карты](https://yandex.ru/maps/org/the_cathedral_of_the_resurrection_of_christ/198463998170/)
 
 ## Ебеня
 
 ### Мытищи
 
-- [МПК](https://mosbrew.ru)
+- [МПК](https://mosbrew.ru) · [карты](https://yandex.ru/maps/org/moscow_brewing_company/1144143659/)
 
 ### Пушкинский р-н
 
-- [Завод сырков Б.Ю. Александров](https://a-rostagrokomplex.ru/nash-muzey/) (музей сырка, РостАгроКомплекс)
+- [Завод сырков Б.Ю. Александров](https://a-rostagrokomplex.ru/nash-muzey/) · [карты](https://yandex.ru/maps/org/museum_of_the_history_of_milk_and_glazed_cheese/107895149733/) (музей сырка, РостАгроКомплекс)
 
 ### Покров / Владимирская обл.
 
-- Покровский пряник — МК / экскурсия на фабрику
+- [Покровский пряник](https://yandex.ru/maps/org/pokrovskypryanik/117284089286/) — МК / экскурсия на фабрику
 
 ### Гжель
 
-- Музей Гжели
+- [Музей Гжели](https://yandex.ru/maps/org/association_gzhel/1038197476/)
 
 ### Юг: Подольск, Серпухов
 
