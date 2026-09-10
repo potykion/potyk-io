@@ -298,16 +298,15 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
                 "url": "/food/experiments",
                 "description": "",
             },
+        ],
+    },
+    {
+        "title": "Рестораны",
+        "links": [
             {
                 "icon": "🍽️",
                 "title": "Рестораны",
                 "url": "/food/rest",
-                "description": "",
-            },
-            {
-                "icon": "🧠",
-                "title": "Размышления",
-                "url": "/food/thoughts",
                 "description": "",
             },
             {
@@ -318,15 +317,44 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
             },
             {
                 "icon": "📊",
-                "title": "Корзинка",
-                "url": "https://docs.google.com/spreadsheets/d/1qreMshjaTWnI5GhAEc-CIJafXcK9iwUC16RaG7gYCsM/edit?usp=sharing",
-                "description": "Всякие вкусные и не очень продукты",
+                "title": "База",
+                "url": "https://docs.google.com/spreadsheets/d/1h56SxxWjZCJmGULhlzVsRvT4KSU4rWoYBEWhQvrecGk/edit?usp=sharing",
+                "description": "",
+            },
+            {
+                "icon": "☕",
+                "title": "Эстетика кофеен",
+                "url": "/food/thoughts/coffee",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "Пробуем",
+        "links": [
+            {
+                "icon": "🥪",
+                "title": "Размышления о сэндвичах",
+                "url": "/food/thoughts/sandwich",
+                "description": "",
+            },
+            {
+                "icon": "🍵",
+                "title": "Размышления о чае",
+                "url": "/food/thoughts/tea",
+                "description": "",
+            },
+            {
+                "icon": "🧋",
+                "title": "Бабл-ти",
+                "url": "/food/thoughts/bubble-tea",
+                "description": "",
             },
             {
                 "icon": "📊",
-                "title": "Рестики и кафешки",
-                "url": "https://docs.google.com/spreadsheets/d/1h56SxxWjZCJmGULhlzVsRvT4KSU4rWoYBEWhQvrecGk/edit?usp=sharing",
-                "description": "",
+                "title": "Корзинка",
+                "url": "https://docs.google.com/spreadsheets/d/1qreMshjaTWnI5GhAEc-CIJafXcK9iwUC16RaG7gYCsM/edit?usp=sharing",
+                "description": "Всякие вкусные и не очень продукты",
             },
         ],
     },
