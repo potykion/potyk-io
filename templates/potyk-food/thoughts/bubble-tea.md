@@ -1,432 +1,78 @@
 ---
 created: 2026-09-10
+toc: h2
 ---
 # Бабл-ти
 
-Меню с Яндекс.Карт (цены и состав могут отличаться по точкам).
-
 ## Met tea
 
-![Met tea](/food/thoughts/_img/met-tea.png)
-
-### Полный стакан · Апельсин L
-
-![Полный стакан · Апельсин L](/food/thoughts/_img/menus/mettea/01-полный-стакан-апельсин-l.jpg)
-
-Жасминовый чай со свежевыжатым соком апельсина и добавлением лайма, лимона и апельсина
-
-**490 ₽**
-
-### Чиз · Виноград L
-
-![Чиз · Виноград L](/food/thoughts/_img/menus/mettea/02-чиз-виноград-l.jpg)
-
-Напиток на основе зеленого чая, с добавлением винограда, нежного чиз-крема и жасминового желе. Подается с большим количеством льда
-
-**520 ₽**
-
-### Молоко бобо М
-
-![Молоко бобо М](/food/thoughts/_img/menus/mettea/03-молоко-бобо-м.jpg)
-
-Молочный напиток с нежным чиз-кремом и более карамелизированной тапиокой
-
-**450 ₽**
-
-### Авокадо Летте М
-
-![Авокадо Летте М](/food/thoughts/_img/menus/mettea/04-авокадо-летте-м.jpg)
-
-Напиток на основе классического латте с добавление кокосового молока и авокадо
-
-**520 ₽**
-
-### Апельсиновый Латте М
-
-![Апельсиновый Латте М](/food/thoughts/_img/menus/mettea/05-апельсиновый-латте-м.jpg)
-
-Классический кофе американо с добавление свежевыжатого апельсинного сока и апельсинового пюре
-
-**440 ₽**
-
-### Чиз Латте М
-
-![Чиз Латте М](/food/thoughts/_img/menus/mettea/06-чиз-латте-м.jpg)
-
-Классический латте с добавление творожно-сырной пенки
-
-**450 ₽**
-
-### Овалтин Мокко М
-
-![Овалтин Мокко М](/food/thoughts/_img/menus/mettea/07-овалтин-мокко-м.jpg)
-
-Напиток на основе кофе, с добавлением какао и молока, стакан украшается шоколадной пастой Овалтин
-
-**400 ₽**
-
-### Кокосовый синий латте М
-
-![Кокосовый синий латте М](/food/thoughts/_img/menus/mettea/08-кокосовый-синий-латте-м.jpg)
-
-Напиток на основе кофе с добавлением кокосового и коровьего молока, в сочетании с Анчан чая
-
-**440 ₽**
-
-### Классика M/L
-
-![Классика M/L](/food/thoughts/_img/menus/mettea/09-классика-m-l.jpg)
-
-Чёрный душистый чай с молоком и тапиокой
-
-**450 ₽**
-
-### Молочный чай с кокосом M/L
-
-![Молочный чай с кокосом M/L](/food/thoughts/_img/menus/mettea/10-молочный-чай-с-кокосом-m-l.jpg)
-
-Жасминовый чай с молоком и кокосовым желе
-
-**450 ₽**
-
-### "Три брата" молочный чай M/L
-
-!["Три брата" молочный чай M/L](/food/thoughts/_img/menus/mettea/11-три-брата-молочный-чай-m-l.jpg)
-
-Чёрный душистый чай с молоком и тремя видами желе: травяное, пудинг и тапиока
-
-**490 ₽**
-
-### Полный стакан · Маракуйя L
-
-![Полный стакан · Маракуйя L](/food/thoughts/_img/menus/mettea/12-полный-стакан-маракуйя-l.jpg)
-
-Жасминовый чай с маракуйей и кокосовым желе
-
-**500 ₽**
-
-### Полный стакан · Грейпфрут L
-
-![Полный стакан · Грейпфрут L](/food/thoughts/_img/menus/mettea/13-полный-стакан-грейпфрут-l.jpg)
-
-Зеленый чай с грейпфрутом
-
-**490 ₽**
-
-### Жасминовый чай с лимоном
-
-![Жасминовый чай с лимоном](/food/thoughts/_img/menus/mettea/14-жасминовый-чай-с-лимоном.jpg)
-
-Жасминовый чай с лимон и лаймом
-
-**450 ₽**
-
-### Чиз · Манго L
-
-![Чиз · Манго L](/food/thoughts/_img/menus/mettea/15-чиз-манго-l.jpg)
-
-Напиток на основе зеленого чая, с добавлением свежего манго и нежного чиз-крема. Подается с большим количеством льда.
-
-**550 ₽**
-
-### Чиз · Клубника L
-
-![Чиз · Клубника L](/food/thoughts/_img/menus/mettea/16-чиз-клубника-l.jpg)
-
-Напиток на основе зеленого чая, клубники и с добавлением чиз-крема.  Подается с большим количеством льда
-
-**580 ₽**
-
-### Чиз · Жасминовый чай М
-
-![Чиз · Жасминовый чай М](/food/thoughts/_img/menus/mettea/17-чиз-жасминовый-чай-м.jpg)
-
-Жасминовый чай с нежной шапочкой чиз-крема. Для украшения используется матча
-
-**400 ₽**
-
-### Жасминовый чай с молоком
-
-![Жасминовый чай с молоком](/food/thoughts/_img/menus/mettea/18-жасминовый-чай-с-молоком.jpg)
-
-Жасминовый чай с молоком со взбитыми сливками и орешками Пекан для украшения
-
-**490 ₽**
-
-### Чиз · Да Хон Пао М
-
-![Чиз · Да Хон Пао М](/food/thoughts/_img/menus/mettea/19-чиз-да-хон-пао-м.jpg)
-
-Чёрный чай Да Хон Пао с нежной шапочкой чиз-крема. Для украшения используется матча
-
-**410 ₽**
-
-### Персиковый улун М
-
-![Персиковый улун М](/food/thoughts/_img/menus/mettea/20-персиковый-улун-м.jpg)
-
-Персиковый чай латте со взбитыми сливками и дробленными фисташками для украшения
-
-**510 ₽**
-
-### Орхидея латте М
-
-![Орхидея латте М](/food/thoughts/_img/menus/mettea/21-орхидея-латте-м.jpg)
-
-Черный чай Да Хон Пао латте со взбитыми сливками и орешками Пекан для украшения
-
-**520 ₽**
-
-### Манго манна M
-
-![Манго манна M](/food/thoughts/_img/menus/mettea/22-манго-манна-m.jpg)
-
-Традиционный китайский напиток с начинкой: "саго, мякоть манго и помело, кокосовое молоко". Сам напиток на основе цельного молока, свежего манго, сиропа и с добавлением льда.
-
-**490 ₽**
-
-### Авокадо манна М
-
-![Авокадо манна М](/food/thoughts/_img/menus/mettea/23-авокадо-манна-м.jpg)
-
-Традиционный китайский напиток с начинкой: "саго, мякоть манго и помело, кокосовое молоко". Сам напиток на основе цельного молока, свежего авокадо, сиропа и с добавлением льда.
-
-**520 ₽**
-
-### Клубника гора Фудзи М
-
-![Клубника гора Фудзи М](/food/thoughts/_img/menus/mettea/24-клубника-гора-фудзи-м.jpg)
-
-Молочный напиток с клубникой и взбитыми сливками для украшения
-
-**550 ₽**
-
-### Матча Бобо М
-
-![Матча Бобо М](/food/thoughts/_img/menus/mettea/25-матча-бобо-м.jpg)
-
-Матча латте с чиз-кремом и карамелизированной тапиокой
-
-**460 ₽**
-
-### Овалтин · Какао бобо
-
-![Овалтин · Какао бобо](/food/thoughts/_img/menus/mettea/26-овалтин-какао-бобо.jpg)
-
-Какао с молоком, нежным чиз-кремом и классической тапиокой
-
-**510 ₽**
-
-### Овалтин Какао
-
-![Овалтин Какао](/food/thoughts/_img/menus/mettea/27-овалтин-какао.jpg)
-
-Какао на молоке с чиз-кремом и карамелизированной тапиокой
-
-**510 ₽**
+<img class="brand-logo" src="/food/thoughts/_img/met-tea.png" alt="Met tea">
+
+<table class="menu-table">
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/01-полный-стакан-апельсин-l.jpg" alt="Полный стакан · Апельсин" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Полный стакан · Апельсин</strong><br>Жасминовый чай со свежевыжатым соком апельсина и добавлением лайма, лимона и апельсина</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/02-чиз-виноград-l.jpg" alt="Чиз · Виноград" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз · Виноград</strong><br>Напиток на основе зеленого чая, с добавлением винограда, нежного чиз-крема и жасминового желе. Подается с большим количеством льда</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/03-молоко-бобо-м.jpg" alt="Молоко бобо" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Молоко бобо</strong><br>Молочный напиток с нежным чиз-кремом и более карамелизированной тапиокой</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/04-авокадо-летте-м.jpg" alt="Авокадо Летте" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Авокадо Летте</strong><br>Напиток на основе классического латте с добавление кокосового молока и авокадо</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/05-апельсиновый-латте-м.jpg" alt="Апельсиновый Латте" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Апельсиновый Латте</strong><br>Классический кофе американо с добавление свежевыжатого апельсинного сока и апельсинового пюре</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/06-чиз-латте-м.jpg" alt="Чиз Латте" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз Латте</strong><br>Классический латте с добавление творожно-сырной пенки</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/07-овалтин-мокко-м.jpg" alt="Овалтин Мокко" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Овалтин Мокко</strong><br>Напиток на основе кофе, с добавлением какао и молока, стакан украшается шоколадной пастой Овалтин</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/08-кокосовый-синий-латте-м.jpg" alt="Кокосовый синий латте" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Кокосовый синий латте</strong><br>Напиток на основе кофе с добавлением кокосового и коровьего молока, в сочетании с Анчан чая</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/09-классика-m-l.jpg" alt="Классика" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Классика</strong><br>Чёрный душистый чай с молоком и тапиокой</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/10-молочный-чай-с-кокосом-m-l.jpg" alt="Молочный чай с кокосом" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Молочный чай с кокосом</strong><br>Жасминовый чай с молоком и кокосовым желе</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/11-три-брата-молочный-чай-m-l.jpg" alt="Три брата молочный чай" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>«Три брата» молочный чай</strong><br>Чёрный душистый чай с молоком и тремя видами желе: травяное, пудинг и тапиока</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/12-полный-стакан-маракуйя-l.jpg" alt="Полный стакан · Маракуйя" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Полный стакан · Маракуйя</strong><br>Жасминовый чай с маракуйей и кокосовым желе</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/13-полный-стакан-грейпфрут-l.jpg" alt="Полный стакан · Грейпфрут" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Полный стакан · Грейпфрут</strong><br>Зеленый чай с грейпфрутом</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/14-жасминовый-чай-с-лимоном.jpg" alt="Жасминовый чай с лимоном" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Жасминовый чай с лимоном</strong><br>Жасминовый чай с лимон и лаймом</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/15-чиз-манго-l.jpg" alt="Чиз · Манго" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз · Манго</strong><br>Напиток на основе зеленого чая, с добавлением свежего манго и нежного чиз-крема. Подается с большим количеством льда.</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/16-чиз-клубника-l.jpg" alt="Чиз · Клубника" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз · Клубника</strong><br>Напиток на основе зеленого чая, клубники и с добавлением чиз-крема.  Подается с большим количеством льда</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/17-чиз-жасминовый-чай-м.jpg" alt="Чиз · Жасминовый чай" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз · Жасминовый чай</strong><br>Жасминовый чай с нежной шапочкой чиз-крема. Для украшения используется матча</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/18-жасминовый-чай-с-молоком.jpg" alt="Жасминовый чай с молоком" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Жасминовый чай с молоком</strong><br>Жасминовый чай с молоком со взбитыми сливками и орешками Пекан для украшения</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/19-чиз-да-хон-пао-м.jpg" alt="Чиз · Да Хон Пао" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз · Да Хон Пао</strong><br>Чёрный чай Да Хон Пао с нежной шапочкой чиз-крема. Для украшения используется матча</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/20-персиковый-улун-м.jpg" alt="Персиковый улун" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Персиковый улун</strong><br>Персиковый чай латте со взбитыми сливками и дробленными фисташками для украшения</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/21-орхидея-латте-м.jpg" alt="Орхидея латте" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Орхидея латте</strong><br>Черный чай Да Хон Пао латте со взбитыми сливками и орешками Пекан для украшения</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/22-манго-манна-m.jpg" alt="Манго манна" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Манго манна</strong><br>Традиционный китайский напиток с начинкой: "саго, мякоть манго и помело, кокосовое молоко". Сам напиток на основе цельного молока, свежего манго, сиропа и с добавлением льда.</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/23-авокадо-манна-м.jpg" alt="Авокадо манна" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Авокадо манна</strong><br>Традиционный китайский напиток с начинкой: "саго, мякоть манго и помело, кокосовое молоко". Сам напиток на основе цельного молока, свежего авокадо, сиропа и с добавлением льда.</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/24-клубника-гора-фудзи-м.jpg" alt="Клубника гора Фудзи" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Клубника гора Фудзи</strong><br>Молочный напиток с клубникой и взбитыми сливками для украшения</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/25-матча-бобо-м.jpg" alt="Матча Бобо" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Матча Бобо</strong><br>Матча латте с чиз-кремом и карамелизированной тапиокой</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/26-овалтин-какао-бобо.jpg" alt="Овалтин · Какао бобо" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Овалтин · Какао бобо</strong><br>Какао с молоком, нежным чиз-кремом и классической тапиокой</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/27-овалтин-какао.jpg" alt="Овалтин Какао" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Овалтин Какао</strong><br>Какао на молоке с чиз-кремом и карамелизированной тапиокой</td></tr>
+</table>
 
 ## Teacha
 
-![Teacha](/food/thoughts/_img/teacha.png)
+<img class="brand-logo" src="/food/thoughts/_img/teacha.png" alt="Teacha">
 
-На Картах выложено только чай-латте (меню давно не обновлялось).
-
-### Снежный бутон жасмина
-
-![Снежный бутон жасмина](/food/thoughts/_img/menus/teacha/01-snezhnyy-buton-zhasmina.jpg)
-
-Чай латте на безлактозных сливках из селекционного жасминового чая
-
-**420 ₽**
-
-### Красная Гора
-
-![Красная Гора](/food/thoughts/_img/menus/teacha/02-krasnaya-gora.jpg)
-
-Чай латте на безлактозных сливках из тёмного китайского чая
-
-**420 ₽**
-
-### Камелия Улун
-
-![Камелия Улун](/food/thoughts/_img/menus/teacha/03-kameliya-ulun.jpg)
-
-Чай латте Камелия Улун
-
-**420 ₽**
+<table class="menu-table">
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/teacha/01-snezhnyy-buton-zhasmina.jpg" alt="Снежный бутон жасмина" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Снежный бутон жасмина</strong><br>Чай латте на безлактозных сливках из селекционного жасминового чая</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/teacha/02-krasnaya-gora.jpg" alt="Красная Гора" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Красная Гора</strong><br>Чай латте на безлактозных сливках из тёмного китайского чая</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/teacha/03-kameliya-ulun.jpg" alt="Камелия Улун" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Камелия Улун</strong><br>Чай латте Камелия Улун</td></tr>
+</table>
 
 ## Pims
 
-![Pims](/food/thoughts/_img/pims.png)
-
-### Габа персик-манго
-
-![Габа персик-манго](/food/thoughts/_img/menus/pims/01-габа-персик-манго.jpg)
-
-Медовые ноты габы, дополненные сладким манго и мягким персиком с кремовой молочной основой.
-
-**450 ₽**
-
-### Матча клубника
-
-![Матча клубника](/food/thoughts/_img/menus/pims/02-матча-клубника.jpg)
-
-Насыщенный вкус матчи, цветочные ноты Жасмина, сладкая клубника и мягкая молочная основа
-
-**450 ₽**
-
-### Пуэр вишня
-
-![Пуэр вишня](/food/thoughts/_img/menus/pims/03-пуэр-вишня.jpg)
-
-Глубокий шу пуэр с естественной сладостью. Яркая вишневая кислинка и нежная молочная основа.
-
-**450 ₽**
-
-### Габа
-
-Традиционный китайский сильно тонизирующий чай с фруктово-пряным ароматом, в котором чувствуются медовые и цитрусовые нотки
-
-**250 ₽**
-
-### Да Хун Пао
-
-Тонизирующий красный чай с хлебно-пряными нотками сухофруктов
-
-**250 ₽**
-
-### Жасмин
-
-![Жасмин](/food/thoughts/_img/menus/pims/06-жасмин.jpg)
-
-Свежий и сочный букет жасмина с легкой кислинкой
-
-**250 ₽**
-
-### Шу Пуэр
-
-![Шу Пуэр](/food/thoughts/_img/menus/pims/07-шу-пуэр.jpg)
-
-Выдержанный чернй чай со сладковатым послевкусием, карамельными оттенками и тонкими древесными нотами
-
-**250 ₽**
-
-### Мангоу
-
-![Мангоу](/food/thoughts/_img/menus/pims/08-мангоу.jpg)
-
-Напиток на основе освежающего чая с жасмином и с ярким вкусом спелого манго, приготовленный методом бленд и украшенный авторским кремом
-
-**650 ₽**
-
-### Момо
-
-![Момо](/food/thoughts/_img/menus/pims/09-момо.jpg)
-
-Напиток на основе чая габа с добавлением сочного ананаса, голубики с богатым послевкусием персика, приготовленный методом бленд и украшенный авторским кремом
-
-**650 ₽**
-
-### Персик Личи
-
-![Персик Личи](/food/thoughts/_img/menus/pims/10-персик-личи.jpg)
-
-Напиток на основе освежающего чая с жасмином и с нежным персиковым вкусом, приготовленный методом бленд и украшенный авторским кремом
-
-**650 ₽**
-
-### Строугрени
-
-![Строугрени](/food/thoughts/_img/menus/pims/11-строугрени.jpg)
-
-Напиток на основе тонизирующего чая габа с добавлением клубники, приготовленный методом бленд и украшенный авторским кремом
-
-**650 ₽**
-
-### Тропик PIMS
-
-![Тропик PIMS](/food/thoughts/_img/menus/pims/12-тропик-pims.jpg)
-
-Напиток на основе освежающего чая с жасмином и с легкой кислинкой маракуйи, приготовленный методом бленд с добавлением авторского крема
-
-**650 ₽**
-
-### Матча и Жасмин
-
-![Матча и Жасмин](/food/thoughts/_img/menus/pims/13-матча-и-жасмин.jpg)
-
-Напиток на основе жасминового чая с добавлением японского сильно тонизирующего зеленого чая матча. Вкус сладко-терпкий с луговыми оттенками
-
-**320 ₽**
-
-### Молочная Матча
-
-![Молочная Матча](/food/thoughts/_img/menus/pims/14-молочная-матча.jpg)
-
-Напиток на основе жасминового чая с добавлением японского сильно тонизирующего зеленого чая матча. Вкус сладко-терпкий с луговыми оттенками. Молоко на выбор
-
-**320 ₽**
-
-### Бергамот Тапиока
-
-![Бергамот Тапиока](/food/thoughts/_img/menus/pims/15-бергамот-тапиока.jpg)
-
-Сливочный напиток на основе кофе холодного заваривания Колд Брю с добавлением бергамота и тапиоки. Название объединяет шелковистую текстуру с отсылкой к восточным культурам
-
-**500 ₽**
-
-### Да Хун Пао Тапиока
-
-![Да Хун Пао Тапиока](/food/thoughts/_img/menus/pims/16-да-хун-пао-тапиока.jpg)
-
-Напиток на основе тонизирующего чая Да Хун Пао с добавлением тапиоки и молока на выбор. С легким шоколадным оттенком
-
-**500 ₽**
-
-### Жасмин Тапиока
-
-![Жасмин Тапиока](/food/thoughts/_img/menus/pims/17-жасмин-тапиока.jpg)
-
-Напиток на основе освежающего жасминового чая с молоком на выбор и тапиокой. С легким медовым вкусом
-
-**500 ₽**
-
-### Колд Брю Тапиока
-
-![Колд Брю Тапиока](/food/thoughts/_img/menus/pims/18-колд-брю-тапиока.jpg)
-
-Напиток на основе кофе колд брю с тапиокой и молоком на выбор. Украшен авторским кремом и крошкой шоколадного печенья
-
-**500 ₽**
-
-### Берис х Берис
-
-![Берис х Берис](/food/thoughts/_img/menus/pims/19-берис-х-берис.jpg)
-
-Напиток на основе тонизирующего чая Да Хун Пао с добавлением сочных ягод ежевики и малины
-
-**550 ₽**
-
-### Киви Алоэ
-
-![Киви Алоэ](/food/thoughts/_img/menus/pims/20-киви-алоэ.jpg)
-
-Напиток на основе сильно тонизирующего чая Габа с добавлением свежего киви, мёда и алоэ
-
-**550 ₽**
-
-### Личи Манго
-
-![Личи Манго](/food/thoughts/_img/menus/pims/21-личи-манго.jpg)
-
-Напиток на основе освежающего чая жасмин с добавлением сладкого манго и личи.
-
-**550 ₽**
-
-### Олл Ин
-
-![Олл Ин](/food/thoughts/_img/menus/pims/22-олл-ин.jpg)
-
-Напиток на основе освежающего чая с жасмином с сочным миксом из цитрусов: личи, лайм, голубика, маракуйя, грейпфрут, жасмин, апельсин, ананас
-
-**650 ₽**
+<img class="brand-logo" src="/food/thoughts/_img/pims.png" alt="Pims">
+
+<table class="menu-table">
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/01-габа-персик-манго.jpg" alt="Габа персик-манго" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Габа персик-манго</strong><br>Медовые ноты габы, дополненные сладким манго и мягким персиком с кремовой молочной основой.</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/02-матча-клубника.jpg" alt="Матча клубника" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Матча клубника</strong><br>Насыщенный вкус матчи, цветочные ноты Жасмина, сладкая клубника и мягкая молочная основа</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/03-пуэр-вишня.jpg" alt="Пуэр вишня" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Пуэр вишня</strong><br>Глубокий шу пуэр с естественной сладостью. Яркая вишневая кислинка и нежная молочная основа.</td></tr>
+<tr><td class="menu-thumb-cell"></td><td class="menu-text-cell"><strong>Габа</strong><br>Традиционный китайский сильно тонизирующий чай с фруктово-пряным ароматом, в котором чувствуются медовые и цитрусовые нотки</td></tr>
+<tr><td class="menu-thumb-cell"></td><td class="menu-text-cell"><strong>Да Хун Пао</strong><br>Тонизирующий красный чай с хлебно-пряными нотками сухофруктов</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/06-жасмин.jpg" alt="Жасмин" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Жасмин</strong><br>Свежий и сочный букет жасмина с легкой кислинкой</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/07-шу-пуэр.jpg" alt="Шу Пуэр" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Шу Пуэр</strong><br>Выдержанный чернй чай со сладковатым послевкусием, карамельными оттенками и тонкими древесными нотами</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/08-мангоу.jpg" alt="Мангоу" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Мангоу</strong><br>Напиток на основе освежающего чая с жасмином и с ярким вкусом спелого манго, приготовленный методом бленд и украшенный авторским кремом</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/09-момо.jpg" alt="Момо" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Момо</strong><br>Напиток на основе чая габа с добавлением сочного ананаса, голубики с богатым послевкусием персика, приготовленный методом бленд и украшенный авторским кремом</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/10-персик-личи.jpg" alt="Персик Личи" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Персик Личи</strong><br>Напиток на основе освежающего чая с жасмином и с нежным персиковым вкусом, приготовленный методом бленд и украшенный авторским кремом</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/11-строугрени.jpg" alt="Строугрени" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Строугрени</strong><br>Напиток на основе тонизирующего чая габа с добавлением клубники, приготовленный методом бленд и украшенный авторским кремом</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/12-тропик-pims.jpg" alt="Тропик PIMS" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Тропик PIMS</strong><br>Напиток на основе освежающего чая с жасмином и с легкой кислинкой маракуйи, приготовленный методом бленд с добавлением авторского крема</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/13-матча-и-жасмин.jpg" alt="Матча и Жасмин" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Матча и Жасмин</strong><br>Напиток на основе жасминового чая с добавлением японского сильно тонизирующего зеленого чая матча. Вкус сладко-терпкий с луговыми оттенками</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/14-молочная-матча.jpg" alt="Молочная Матча" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Молочная Матча</strong><br>Напиток на основе жасминового чая с добавлением японского сильно тонизирующего зеленого чая матча. Вкус сладко-терпкий с луговыми оттенками. Молоко на выбор</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/15-бергамот-тапиока.jpg" alt="Бергамот Тапиока" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Бергамот Тапиока</strong><br>Сливочный напиток на основе кофе холодного заваривания Колд Брю с добавлением бергамота и тапиоки. Название объединяет шелковистую текстуру с отсылкой к восточным культурам</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/16-да-хун-пао-тапиока.jpg" alt="Да Хун Пао Тапиока" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Да Хун Пао Тапиока</strong><br>Напиток на основе тонизирующего чая Да Хун Пао с добавлением тапиоки и молока на выбор. С легким шоколадным оттенком</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/17-жасмин-тапиока.jpg" alt="Жасмин Тапиока" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Жасмин Тапиока</strong><br>Напиток на основе освежающего жасминового чая с молоком на выбор и тапиокой. С легким медовым вкусом</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/18-колд-брю-тапиока.jpg" alt="Колд Брю Тапиока" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Колд Брю Тапиока</strong><br>Напиток на основе кофе колд брю с тапиокой и молоком на выбор. Украшен авторским кремом и крошкой шоколадного печенья</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/19-берис-х-берис.jpg" alt="Берис х Берис" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Берис х Берис</strong><br>Напиток на основе тонизирующего чая Да Хун Пао с добавлением сочных ягод ежевики и малины</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/20-киви-алоэ.jpg" alt="Киви Алоэ" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Киви Алоэ</strong><br>Напиток на основе сильно тонизирующего чая Габа с добавлением свежего киви, мёда и алоэ</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/21-личи-манго.jpg" alt="Личи Манго" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Личи Манго</strong><br>Напиток на основе освежающего чая жасмин с добавлением сладкого манго и личи.</td></tr>
+<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/22-олл-ин.jpg" alt="Олл Ин" width="300" height="300" loading="lazy"></td><td class="menu-text-cell"><strong>Олл Ин</strong><br>Напиток на основе освежающего чая с жасмином с сочным миксом из цитрусов: личи, лайм, голубика, маракуйя, грейпфрут, жасмин, апельсин, ананас</td></tr>
+</table>
