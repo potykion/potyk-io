@@ -6,8 +6,43 @@
 {{ super() }}
 <link rel="stylesheet" href="/static/potyk-io/css/index.css">
 <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+<link rel="stylesheet" href="/static/potyk-io/css/culture.css">
 {% endblock %}
+
+{% block main_class %}md-content culture-page{% endblock %}
 
 {% block main %}
 <h1>potyk-culture</h1>
+
+<ul class="culture-list">
+    {% for v in visits %}
+    <li class="culture-item">
+        <div class="culture-item-head">
+            {% if v.title_url %}
+            <a class="culture-title" href="{{ v.title_url }}" target="_blank" rel="noopener">{{ v.title }}</a>
+            {% else %}
+            <span class="culture-title">{{ v.title }}</span>
+            {% endif %}
+            <span class="culture-kind">{{ v.kind }}</span>
+        </div>
+        <div class="culture-meta">
+            {% if v.author %}
+            <span class="culture-author">{{ v.author }}</span>
+            {% endif %}
+            {% if v.venue_url %}
+            <a class="culture-venue" href="{{ v.venue_url }}" target="_blank" rel="noopener">{{ v.venue }}</a>
+            {% else %}
+            <span class="culture-venue">{{ v.venue }}</span>
+            {% endif %}
+            <span class="culture-duration">{{ v.duration_hours | int }} ч{% if v.has_intermission %}, с антрактом{% else %}, без антракта{% endif %}</span>
+            <time class="culture-date" datetime="{{ v.visited_at.isoformat() }}">{{ v.visited_at.strftime('%d.%m.%Y') }}</time>
+        </div>
+        {% if v.comment %}
+        <p class="culture-comment">{{ v.comment }}</p>
+        {% endif %}
+    </li>
+    {% else %}
+    <li class="culture-empty">Пока нет посещений</li>
+    {% endfor %}
+</ul>
 {% endblock %}

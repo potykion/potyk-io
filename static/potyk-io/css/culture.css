@@ -1,0 +1,74 @@
+.culture-page {
+    max-width: 720px;
+}
+
+.culture-list {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.culture-item {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.culture-item-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.75rem;
+}
+
+.culture-title {
+    font-weight: 600;
+    color: inherit;
+    text-decoration: none;
+}
+
+a.culture-title:hover {
+    text-decoration: underline;
+}
+
+.culture-kind {
+    font-size: 0.82rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #f3f3f3;
+    color: #444;
+}
+
+.culture-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.85rem;
+    margin-top: 0.35rem;
+    font-size: 0.92rem;
+    color: #666;
+}
+
+.culture-venue {
+    color: inherit;
+    text-decoration: none;
+}
+
+a.culture-venue:hover {
+    text-decoration: underline;
+}
+
+.culture-comment {
+    margin: 0.4rem 0 0;
+    font-size: 0.92rem;
+    color: #444;
+}
+
+.culture-empty {
+    color: #666;
+    font-style: italic;
+    margin: 0.5rem 0;
+    padding: 0.9rem 0;
+}
