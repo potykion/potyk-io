@@ -8,13 +8,16 @@ load_dotenv()
 from potyk_io_back.admin import admin_bp
 from potyk_io_back.art import art_bp
 from potyk_io_back.auth import auth_bp, setup_login
+from potyk_io_back.cinema import cinema_bp
 from potyk_io_back.core.db import db
+from potyk_io_back.culture import culture_bp
 from potyk_io_back.fin.entities import get_settings
 from potyk_io_back.fin.pres import fin_bp
 from potyk_io_back.inbox import inbox_bp
 from potyk_io_back.invest import invest_bp
 from potyk_io_back.mu import mu_bp
 from potyk_io_back.potyk_io.pres import potyk_io_bp
+from potyk_io_back.reads import reads_bp
 from potyk_io_back.travel import travel_bp
 
 
@@ -47,6 +50,9 @@ def create_app():
     app.register_blueprint(mu_bp)
     app.register_blueprint(travel_bp)
     app.register_blueprint(art_bp)
+    app.register_blueprint(cinema_bp)
+    app.register_blueprint(reads_bp)
+    app.register_blueprint(culture_bp)
     app.register_blueprint(inbox_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(potyk_io_bp)

@@ -1,6 +1,6 @@
 {% extends "potyk-io/_base.html" %}
 
-{% block title %}Админка кино — potyk.io{% endblock %}
+{% block title %}Админка кино — potyk-cinema{% endblock %}
 
 {% block style %}
     {{ super() }}
@@ -14,7 +14,7 @@
 
     <section>
         <h2>Добавить фильм</h2>
-        <form id="movies-add-form" method="post" action="{{ url_for('potyk_io.movies_admin_add_movie') }}">
+        <form id="movies-add-form" method="post" action="{{ url_for('cinema.movies_admin_add_movie') }}">
             <p>
                 <label>Title RU<br>
                     <input name="title_ru" required style="width: 420px" placeholder="Секретарша (2001)" />
@@ -60,7 +60,7 @@
 
     <section style="margin-top: 2rem">
         <h2>Создать / обновить коллекцию</h2>
-        <form method="post" action="{{ url_for('potyk_io.movies_admin_create_collection') }}">
+        <form method="post" action="{{ url_for('cinema.movies_admin_create_collection') }}">
             <p>
                 <label>Title<br>
                     <input name="title" required style="width: 520px" />
@@ -90,7 +90,7 @@
 
     <section style="margin-top: 2rem">
         <h2>Добавить фильм в коллекцию</h2>
-        <form method="post" action="{{ url_for('potyk_io.movies_admin_add_movie_to_collection') }}">
+        <form method="post" action="{{ url_for('cinema.movies_admin_add_movie_to_collection') }}">
             <p>
                 <label>Коллекция<br>
                     <select name="collection_id" required style="width: 420px">

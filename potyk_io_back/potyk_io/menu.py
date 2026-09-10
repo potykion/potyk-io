@@ -68,6 +68,24 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/art/",
                 "description": "Рисую чертей по фану",
             },
+            {
+                "icon": "🎬",
+                "title": "potyk-cinema",
+                "url": "/cinema/",
+                "description": "Подборки и рулетка",
+            },
+            {
+                "icon": "📚",
+                "title": "potyk-reads",
+                "url": "/reads/",
+                "description": "",
+            },
+            {
+                "icon": "🎭",
+                "title": "potyk-culture",
+                "url": "/culture/",
+                "description": "",
+            },
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
         ],
@@ -114,17 +132,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "icon": "📊",
                 "title": "Рестики и кафешки",
                 "url": "https://docs.google.com/spreadsheets/d/1h56SxxWjZCJmGULhlzVsRvT4KSU4rWoYBEWhQvrecGk/edit?usp=sharing",
-                "description": "",
-            },
-        ],
-    },
-    {
-        "title": "Кино",
-        "links": [
-            {
-                "icon": "📊",
-                "title": "Кино-подпорочки",
-                "url": "/collections/movies",
                 "description": "",
             },
         ],
@@ -223,6 +230,62 @@ ART_MENU_GROUPS: list[MenuGroup] = [
             },
         ],
     },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+CINEMA_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "potyk-cinema",
+        "links": [
+            {
+                "icon": "🎬",
+                "title": "Подборки",
+                "url": "/cinema/",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+READS_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+CULTURE_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "",
         "links": [

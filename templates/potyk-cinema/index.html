@@ -1,6 +1,6 @@
 {% extends "potyk-io/_base.html" %}
 
-{% block title %}Кино — potyk.io{% endblock %}
+{% block title %}potyk-cinema{% endblock %}
 
 {% block style %}
     {{ super() }}
@@ -42,7 +42,7 @@
 {% endmacro %}
 
 {% block main %}
-    <h1>Кино <a href="{{ url_for('potyk_io.movies_admin') }}" style="font-size:0.6em;font-weight:400;opacity:0.55;vertical-align:middle">admin</a></h1>
+    <h1>potyk-cinema <a href="{{ url_for('cinema.movies_admin') }}" style="font-size:0.6em;font-weight:400;opacity:0.55;vertical-align:middle">admin</a></h1>
 
     <section class="movie-roulette" id="movie-roulette">
         <h2>🎰 Кино-рулетка</h2>

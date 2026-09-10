@@ -157,7 +157,7 @@
 
         setStatus("Сохраняю перенос...");
         try {
-            const response = await fetch("/collections/movies/admin/collection/move-movie", {
+            const response = await fetch("/cinema/admin/collection/move-movie", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -194,7 +194,7 @@
 
         setStatus("Убираю фильм из коллекции...");
         try {
-            const response = await fetch("/collections/movies/admin/movie/delete", {
+            const response = await fetch("/cinema/admin/movie/delete", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
