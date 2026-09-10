@@ -351,6 +351,12 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {
+                "icon": "🍬",
+                "title": "Сладости",
+                "url": "/food/tasting/sweets",
+                "description": "",
+            },
+            {
                 "icon": "📊",
                 "title": "Корзинка",
                 "url": "https://docs.google.com/spreadsheets/d/1qreMshjaTWnI5GhAEc-CIJafXcK9iwUC16RaG7gYCsM/edit?usp=sharing",
