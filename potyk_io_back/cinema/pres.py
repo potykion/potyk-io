@@ -76,6 +76,11 @@ def index():
     )
 
 
+@cinema_bp.get("/where-to-watch")
+def where_to_watch():
+    return render_template("potyk-cinema/where-to-watch.html")
+
+
 @cinema_bp.get("/admin")
 @login_required
 def movies_admin():

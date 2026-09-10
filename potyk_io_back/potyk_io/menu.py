@@ -230,6 +230,12 @@ CINEMA_MENU_GROUPS: list[MenuGroup] = [
                 "url": "/cinema/",
                 "description": "",
             },
+            {
+                "icon": "📺",
+                "title": "Где смотреть кино",
+                "url": "/cinema/where-to-watch",
+                "description": "",
+            },
         ],
     },
     {
