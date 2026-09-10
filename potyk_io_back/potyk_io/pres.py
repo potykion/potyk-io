@@ -138,6 +138,15 @@ def movies_collection_redirect(_rest=None):
     return redirect("/cinema/", code=301)
 
 
+@potyk_io_bp.route("/thoughts/food")
+@potyk_io_bp.route("/thoughts/food/")
+@potyk_io_bp.route("/thoughts/food/<path:_rest>")
+def food_thoughts_redirect(_rest=None):
+    if _rest:
+        return redirect(f"/food/thoughts/{_rest}", code=301)
+    return redirect("/food/thoughts", code=301)
+
+
 def _findings_archive_html() -> str:
     archive = TEMPLATES_DIR / "findings.md"
     if not archive.is_file():

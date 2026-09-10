@@ -307,7 +307,7 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
             {
                 "icon": "🧠",
                 "title": "Размышления",
-                "url": "/thoughts/food",
+                "url": "/food/thoughts",
                 "description": "",
             },
             {
