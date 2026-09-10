@@ -232,13 +232,13 @@
 }
 
 .md-content table.menu-table .menu-thumb-cell {
-    width: 300px;
+    width: 200px;
     padding-right: 1rem;
 }
 
 .md-content table.menu-table img.menu-thumb {
-    width: 300px !important;
-    height: 300px !important;
+    width: 200px !important;
+    height: 200px !important;
     max-width: none;
     object-fit: cover;
     display: block;
