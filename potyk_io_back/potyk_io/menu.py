@@ -51,22 +51,23 @@ MENU_GROUPS: list[MenuGroup] = [
                 "description": "Ворую рецепты",
             },
             {
-                "icon": "🎵",
-                "title": "potyk-mu",
-                "url": "/mu/",
-                "description": "",
-            },
-            {
                 "icon": "✈️",
                 "title": "potyk-travel",
                 "url": "/travel/",
                 "description": "Гайд, планы и воспоминания",
             },
+            {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
+            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
+        ],
+    },
+    {
+        "title": "Искусство",
+        "links": [
             {
-                "icon": "🖼️",
-                "title": "potyk-art",
-                "url": "/art/",
-                "description": "Рисую чертей по фану",
+                "icon": "🎵",
+                "title": "potyk-mu",
+                "url": "/mu/",
+                "description": "",
             },
             {
                 "icon": "🎬",
@@ -86,8 +87,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/culture/",
                 "description": "",
             },
-            {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
-            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
+            {
+                "icon": "🖼️",
+                "title": "potyk-art",
+                "url": "/art/",
+                "description": "Рисую чертей по фану",
+            },
         ],
     },
     {
