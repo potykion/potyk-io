@@ -113,35 +113,6 @@ MENU_GROUPS: list[MenuGroup] = [
         ],
     },
     {
-        "title": "Еда",
-        "links": [
-            {
-                "icon": "🧠",
-                "title": "Размышления",
-                "url": "/thoughts/food",
-                "description": "",
-            },
-            {
-                "icon": "📝",
-                "title": "Отзывы на ресты",
-                "url": "https://yandex.ru/maps/user/potyk-io",
-                "description": "",
-            },
-            {
-                "icon": "📊",
-                "title": "Корзинка",
-                "url": "https://docs.google.com/spreadsheets/d/1qreMshjaTWnI5GhAEc-CIJafXcK9iwUC16RaG7gYCsM/edit?usp=sharing",
-                "description": "Всякие вкусные и не очень продукты",
-            },
-            {
-                "icon": "📊",
-                "title": "Рестики и кафешки",
-                "url": "https://docs.google.com/spreadsheets/d/1h56SxxWjZCJmGULhlzVsRvT4KSU4rWoYBEWhQvrecGk/edit?usp=sharing",
-                "description": "",
-            },
-        ],
-    },
-    {
         "title": "Прога",
         "links": [
             {"icon": "👨‍💻", "title": "Резюме", "url": "/n/cv", "description": ""},
@@ -325,6 +296,30 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🍽️",
                 "title": "Рестораны",
                 "url": "/food/rest",
+                "description": "",
+            },
+            {
+                "icon": "🧠",
+                "title": "Размышления",
+                "url": "/thoughts/food",
+                "description": "",
+            },
+            {
+                "icon": "📝",
+                "title": "Отзывы на ресты",
+                "url": "https://yandex.ru/maps/user/potyk-io",
+                "description": "",
+            },
+            {
+                "icon": "📊",
+                "title": "Корзинка",
+                "url": "https://docs.google.com/spreadsheets/d/1qreMshjaTWnI5GhAEc-CIJafXcK9iwUC16RaG7gYCsM/edit?usp=sharing",
+                "description": "Всякие вкусные и не очень продукты",
+            },
+            {
+                "icon": "📊",
+                "title": "Рестики и кафешки",
+                "url": "https://docs.google.com/spreadsheets/d/1h56SxxWjZCJmGULhlzVsRvT4KSU4rWoYBEWhQvrecGk/edit?usp=sharing",
                 "description": "",
             },
         ],
