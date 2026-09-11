@@ -40,7 +40,7 @@ Slug = короткое латинское имя (`cinema`, `reads`). URL = `/<
    - `*_MENU_GROUPS` для сайдбара раздела (как `ART_MENU_GROUPS`): пункты раздела + «← potyk-io» → `/`
    - пункт в `MENU_GROUPS` → группа «Проекты» (`title: potyk-<slug>`, `url: /<slug>/`)
 5. **`main.py`** — import + `app.register_blueprint(*_bp)` **до** `potyk_io_bp` (у него catch-all)
-6. Опционально: `docs/potyk-<slug>.md` (поведение) — после правки `docs/` **запросить аппрув**
+6. Опционально: `docs/potyk-<slug>.md` (поведение) — аппрув не нужен
 
 Минимальный `pres.py`:
 
@@ -72,7 +72,7 @@ def index():
 2. **`potyk_io_back/<slug>/`**: `__init__.py`, `menu.py` (`*_MENU_ITEMS` + `is_*_link_active`), `pres.py`
 3. В `pres.py`: `*_TEMPLATES_DIR`, blueprint, context_processor, index, catch-all `/<path:page_path>` через `resolve_page` / `render_body_html` / `send_file` (скопировать с travel)
 4. `main.py` + пункт в `MENU_GROUPS`
-5. Опционально спека в `docs/` + аппрув
+5. Опционально спека в `docs/` (без аппрува)
 
 ## Тип C (как potyk-food)
 
@@ -87,4 +87,4 @@ def index():
 
 ## После создания
 
-Кратко сообщить пути и URL. Если трогал `docs/` — явно запросить аппрув спеки.
+Кратко сообщить пути и URL.
