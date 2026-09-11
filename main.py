@@ -17,6 +17,7 @@ from potyk_io_back.inbox import inbox_bp
 from potyk_io_back.invest import invest_bp
 from potyk_io_back.mu import mu_bp
 from potyk_io_back.potyk_io.pres import potyk_io_bp
+from potyk_io_back.prikol import prikol_bp
 from potyk_io_back.reads import reads_bp
 from potyk_io_back.travel import travel_bp
 
@@ -53,6 +54,7 @@ def create_app():
     app.register_blueprint(cinema_bp)
     app.register_blueprint(reads_bp)
     app.register_blueprint(culture_bp)
+    app.register_blueprint(prikol_bp)
     app.register_blueprint(inbox_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(potyk_io_bp)

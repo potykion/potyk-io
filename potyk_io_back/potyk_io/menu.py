@@ -93,6 +93,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/art/",
                 "description": "Рисую чертей по фану",
             },
+            {
+                "icon": "🤡",
+                "title": "potyk-prikol",
+                "url": "/prikol/",
+                "description": "Музей приколов",
+            },
         ],
     },
     {
@@ -206,6 +212,21 @@ ART_MENU_GROUPS: list[MenuGroup] = [
             },
         ],
     },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+PRIKOL_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "",
         "links": [

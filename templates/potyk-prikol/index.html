@@ -1,0 +1,25 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}potyk-prikol{% endblock %}
+
+{% block style %}
+{{ super() }}
+<link rel="stylesheet" href="/static/potyk-io/css/index.css">
+<link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main %}
+<h1>Приколы</h1>
+
+<h2>Музей приколов</h2>
+
+<div class="card-grid card-grid--feed">
+    <a class="card" href="https://ih1.redbubble.net/image.3053161066.9108/flat,750x,075,f-pad,750x1000,f8f8f8.webp">
+        <img class="note-cover"
+             src="https://ih1.redbubble.net/image.3053161066.9108/flat,750x,075,f-pad,750x1000,f8f8f8.webp"
+             alt="4 ways out of depression"
+             loading="lazy">
+        <div class="note-preview md-content"><h3>4 ways out of depression</h3></div>
+    </a>
+</div>
+{% endblock %}
