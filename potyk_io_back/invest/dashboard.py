@@ -343,6 +343,63 @@ def fmt_return_pct(value) -> str:
     return f"{signed}%"
 
 
+@dataclass
+class DepTickerRow:
+    ticker: str
+    name: str
+    flags: dict[str, bool]
+
+
+@dataclass
+class DepSectorBlock:
+    title: str
+    tickers: list[DepTickerRow] = field(default_factory=list)
+
+
+def dependency_labels(raw) -> list[str]:
+    if not raw:
+        return []
+    if isinstance(raw, list):
+        return [str(x).strip() for x in raw if str(x).strip()]
+    text = str(raw).strip()
+    return [text] if text else []
+
+
+def build_dependencies_matrix() -> tuple[list[str], list[DepSectorBlock]]:
+    """Матрица акций: строки — тикеры с зависимостями, столбцы — факторы."""
+    stock_rows = db.session.scalars(
+        select(InvestTicker)
+        .where(InvestTicker.asset_type == "Акция")
+        .order_by(InvestTicker.sector.asc(), InvestTicker.ticker.asc())
+    ).all()
+
+    with_deps = [
+        t for t in stock_rows if dependency_labels(t.dependencies)
+    ]
+    columns: list[str] = sorted(
+        {label for t in with_deps for label in dependency_labels(t.dependencies)},
+        key=lambda s: s.casefold(),
+    )
+
+    blocks: list[DepSectorBlock] = []
+    current: DepSectorBlock | None = None
+    for ticker in with_deps:
+        title = ticker.sector or EMPTY_SECTOR
+        if current is None or current.title != title:
+            current = DepSectorBlock(title=title)
+            blocks.append(current)
+        labels = set(dependency_labels(ticker.dependencies))
+        current.tickers.append(
+            DepTickerRow(
+                ticker=ticker.ticker,
+                name=(ticker.name or "").strip(),
+                flags={col: col in labels for col in columns},
+            )
+        )
+
+    return columns, blocks
+
+
 def build_funds_dashboard(return_years: list[int] | None = None) -> tuple[list[int], list[FundSectorBlock]]:
     fund_rows = db.session.scalars(
         select(InvestTicker)

@@ -10,6 +10,7 @@ from potyk_io_back.core.db import db
 from potyk_io_back.invest.dashboard import (
     NewsFilters,
     build_dashboard,
+    build_dependencies_matrix,
     build_funds_dashboard,
     load_news_page,
     load_ticker_page,
@@ -340,6 +341,16 @@ def funds():
     return render_template(
         "potyk-invest/funds.html",
         years=years,
+        sectors=sectors,
+    )
+
+
+@invest_bp.route("/dependencies")
+def dependencies():
+    columns, sectors = build_dependencies_matrix()
+    return render_template(
+        "potyk-invest/dependencies.html",
+        columns=columns,
         sectors=sectors,
     )
 

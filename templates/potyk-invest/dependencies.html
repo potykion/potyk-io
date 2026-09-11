@@ -1,0 +1,127 @@
+{% extends "potyk-invest/_base.html" %}
+
+{% block title %}Зависимости — potyk-invest{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    body.site-invest .wrap {
+        max-width: 1100px;
+    }
+
+    .note {
+        margin: 0 0 1.25rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.45;
+    }
+
+    h2.sector {
+        margin: 1.5rem 0 0.5rem;
+        font-size: 1.15rem;
+        font-weight: 600;
+        opacity: 0.85;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 0 1.25rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px 6px;
+        border-bottom: 1px solid var(--none-border);
+        vertical-align: middle;
+    }
+
+    th {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--muted);
+        white-space: nowrap;
+    }
+
+    th.flag, td.flag {
+        text-align: center;
+        width: 3.5rem;
+    }
+
+    td.ticker-name {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .ticker-code.has-title {
+        border-bottom: 1px dotted var(--muted);
+        cursor: help;
+    }
+
+    td.flag .mark {
+        color: #1f6b4a;
+        font-weight: 600;
+    }
+
+    td.flag .empty {
+        color: var(--muted);
+        opacity: 0.45;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="wrap">
+    <h1>Зависимости</h1>
+    <p class="note">
+        Строки — акции, столбцы — факторы. Галочка значит, что бумага чувствительна к фактору.
+        <strong>КС</strong>: рост от снижения ставки, падение от повышения/паузы.
+    </p>
+
+    {% if not sectors %}
+    <p class="empty">Зависимостей пока нет.</p>
+    {% endif %}
+
+    {% for sector in sectors %}
+    <h2 class="sector">{{ sector.title }}</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Тикер</th>
+                    {% for col in columns %}
+                    <th class="flag">{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in sector.tickers %}
+                <tr>
+                    <td class="ticker-name">
+                        <a href="/invest/tickers/{{ row.ticker }}" class="ticker-code{% if row.name and row.name != row.ticker %} has-title{% endif %}"{% if row.name and row.name != row.ticker %} title="{{ row.name }}"{% endif %}>{{ row.ticker }}</a>
+                    </td>
+                    {% for col in columns %}
+                    <td class="flag">
+                        {% if row.flags.get(col) %}
+                        <span class="mark" aria-label="есть">✓</span>
+                        {% else %}
+                        <span class="empty" aria-hidden="true">—</span>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
