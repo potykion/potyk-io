@@ -18,7 +18,8 @@
 
     .table-wrap {
         width: 100%;
-        overflow-x: auto;
+        max-height: calc(100vh - 12rem);
+        overflow: auto;
         -webkit-overflow-scrolling: touch;
         margin: 0 0 1.25rem;
     }
@@ -39,10 +40,40 @@
     }
 
     th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: var(--bg);
         font-size: 0.75rem;
         font-weight: 500;
         color: var(--muted);
         white-space: nowrap;
+        box-shadow: 0 1px 0 var(--none-border);
+    }
+
+    th.col-sort {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    th.col-sort:hover {
+        color: var(--ink);
+    }
+
+    th.col-sort.is-active {
+        color: var(--ink);
+        font-weight: 600;
+    }
+
+    th.col-sort .sort-arrow {
+        display: none;
+        font-size: 0.85em;
+        line-height: 1;
+        opacity: 0.75;
+    }
+
+    th.col-sort.is-active .sort-arrow {
+        display: inline;
     }
 
     th.flag, td.flag {
@@ -93,11 +124,15 @@
     <p class="empty">Акций пока нет.</p>
     {% else %}
     <div class="table-wrap">
-        <table>
+        <table class="deps-table">
             <thead>
                 <tr>
-                    <th>Тикер</th>
-                    <th>Сектор</th>
+                    <th class="col-sort is-active" data-sort="ticker" title="Сортировать по тикеру">
+                        Тикер<span class="sort-arrow" aria-hidden="true"> ↑</span>
+                    </th>
+                    <th class="col-sort" data-sort="sector" title="Сортировать по сектору">
+                        Сектор<span class="sort-arrow" aria-hidden="true"> ↑</span>
+                    </th>
                     {% for col in columns %}
                     <th class="flag">{{ col }}</th>
                     {% endfor %}
@@ -105,7 +140,7 @@
             </thead>
             <tbody>
                 {% for row in rows %}
-                <tr>
+                <tr data-ticker="{{ row.ticker }}" data-sector="{{ row.sector }}">
                     <td class="ticker-name">
                         <a href="/invest/tickers/{{ row.ticker }}" class="ticker-code{% if row.name and row.name != row.ticker %} has-title{% endif %}"{% if row.name and row.name != row.ticker %} title="{{ row.name }}"{% endif %}>{{ row.ticker }}</a>
                     </td>
@@ -126,4 +161,55 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block script %}
+<script>
+(() => {
+  const table = document.querySelector(".deps-table");
+  if (!table) return;
+
+  const tbody = table.querySelector("tbody");
+  const headers = table.querySelectorAll(".col-sort");
+  let sortKey = "ticker";
+  let sortDir = "asc";
+
+  const sortRows = (key, dir) => {
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const factor = dir === "asc" ? 1 : -1;
+    rows.sort((a, b) => {
+      const av = (a.getAttribute(`data-${key}`) || "").toLocaleLowerCase("ru");
+      const bv = (b.getAttribute(`data-${key}`) || "").toLocaleLowerCase("ru");
+      if (av < bv) return -1 * factor;
+      if (av > bv) return 1 * factor;
+      const at = (a.getAttribute("data-ticker") || "").toLocaleLowerCase("ru");
+      const bt = (b.getAttribute("data-ticker") || "").toLocaleLowerCase("ru");
+      if (at < bt) return -1;
+      if (at > bt) return 1;
+      return 0;
+    });
+    rows.forEach((row) => tbody.appendChild(row));
+
+    headers.forEach((th) => {
+      const active = th.dataset.sort === key;
+      th.classList.toggle("is-active", active);
+      const arrow = th.querySelector(".sort-arrow");
+      if (arrow) arrow.textContent = active ? (dir === "asc" ? " ↑" : " ↓") : " ↑";
+    });
+  };
+
+  headers.forEach((th) => {
+    th.addEventListener("click", () => {
+      const key = th.dataset.sort;
+      if (sortKey === key) {
+        sortDir = sortDir === "asc" ? "desc" : "asc";
+      } else {
+        sortKey = key;
+        sortDir = "asc";
+      }
+      sortRows(sortKey, sortDir);
+    });
+  });
+})();
+</script>
 {% endblock %}
