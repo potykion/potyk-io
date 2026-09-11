@@ -2,6 +2,54 @@
 
 {% block title %}Где смотреть кино — potyk-cinema{% endblock %}
 
+{% block style %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main_class %}md-content{% endblock %}
+
 {% block main %}
     <h1>Где смотреть кино</h1>
+
+    <h2>Кинопоиск</h2>
+    <p>
+        Начать можно с раздела
+        <a href="https://www.kinopoisk.ru/lists/movies/movies-in-cinema" target="_blank" rel="noopener">«Билеты в кино»</a>
+        на Кинопоиске: там не только новинки, но и старьё, арт-хаус и прочее, что сейчас идёт в прокате.
+    </p>
+
+    <h2>Кинотеатры</h2>
+    <p>
+        Кинотеатры полны движухи: часто показывают старьё, фестивальные программы, обсуждения.
+        Имеет смысл следить за каналами:
+    </p>
+    <ul>
+        <li>
+            <a href="https://t.me/gosfilmofond" target="_blank" rel="noopener">Госфильмофонд / Иллюзион</a>
+        </li>
+        <li>
+            <a href="https://t.me/govoritmoskino" target="_blank" rel="noopener">Говорит Москино</a>
+        </li>
+        <li>
+            <a href="https://t.me/novembercinema" target="_blank" rel="noopener">Кинотеатр «Ноябрь»</a>
+        </li>
+    </ul>
+
+    <h2>Киноклубы</h2>
+    <p>Просмотр кина не в кинотеатре — с обсуждением.</p>
+    <ul>
+        <li>
+            <a href="https://t.me/kinokommunalka" target="_blank" rel="noopener">Коммуналка</a>
+        </li>
+        <li>
+            <a href="https://t.me/neuroticlub" target="_blank" rel="noopener">невротик</a>
+        </li>
+        <li>
+            <a href="https://t.me/sasha_kino_klub" target="_blank" rel="noopener">КИНØКЛУБ!</a>
+        </li>
+        <li>
+            <a href="https://t.me/damngoodmovie" target="_blank" rel="noopener">воскресный киноклуб!</a>
+        </li>
+    </ul>
 {% endblock %}
