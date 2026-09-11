@@ -6,7 +6,9 @@
 {{ super() }}
 <style>
     body.site-invest .wrap {
-        max-width: 1100px;
+        max-width: none;
+        width: 100%;
+        margin: 0;
     }
 
     .note {
@@ -25,8 +27,8 @@
     }
 
     table {
-        width: max-content;
-        max-width: 100%;
+        width: 100%;
+        table-layout: fixed;
         border-collapse: collapse;
         font-size: 0.92rem;
         font-variant-numeric: tabular-nums;
@@ -34,9 +36,13 @@
 
     th, td {
         text-align: left;
-        padding: 8px 10px;
+        padding: 8px 6px;
         border-bottom: 1px solid var(--none-border);
         vertical-align: middle;
+        width: 1%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     th {
@@ -47,7 +53,6 @@
         font-size: 0.75rem;
         font-weight: 500;
         color: var(--muted);
-        white-space: nowrap;
         box-shadow: 0 1px 0 var(--none-border);
     }
 
@@ -76,22 +81,30 @@
         display: inline;
     }
 
+    th.col-filter {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    th.col-filter:hover {
+        color: var(--ink);
+    }
+
+    th.col-filter.is-filtered {
+        color: var(--ink);
+        font-weight: 700;
+    }
+
     th.flag, td.flag {
         text-align: center;
-        padding-left: 8px;
-        padding-right: 8px;
     }
 
     td.ticker-name {
         font-weight: 600;
-        white-space: nowrap;
-        padding-right: 16px;
     }
 
     td.sector {
         color: var(--muted);
-        white-space: nowrap;
-        padding-right: 16px;
         font-size: 0.88em;
     }
 
@@ -134,13 +147,13 @@
                         Сектор<span class="sort-arrow" aria-hidden="true"> ↑</span>
                     </th>
                     {% for col in columns %}
-                    <th class="flag">{{ col }}</th>
+                    <th class="flag col-filter" data-dep="{{ col }}" title="Показать акции с зависимостью «{{ col }}»">{{ col }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
                 {% for row in rows %}
-                <tr data-ticker="{{ row.ticker }}" data-sector="{{ row.sector }}">
+                <tr data-ticker="{{ row.ticker }}" data-sector="{{ row.sector }}" data-deps="{% for col in columns if row.flags.get(col) %}{{ col }}|{% endfor %}">
                     <td class="ticker-name">
                         <a href="/invest/tickers/{{ row.ticker }}" class="ticker-code{% if row.name and row.name != row.ticker %} has-title{% endif %}"{% if row.name and row.name != row.ticker %} title="{{ row.name }}"{% endif %}>{{ row.ticker }}</a>
                     </td>
@@ -170,9 +183,25 @@
   if (!table) return;
 
   const tbody = table.querySelector("tbody");
-  const headers = table.querySelectorAll(".col-sort");
+  const sortHeaders = table.querySelectorAll(".col-sort");
+  const filterHeaders = table.querySelectorAll(".col-filter");
   let sortKey = "ticker";
   let sortDir = "asc";
+  let filterDep = null;
+
+  const applyFilter = () => {
+    filterHeaders.forEach((th) => {
+      th.classList.toggle("is-filtered", th.dataset.dep === filterDep);
+    });
+    tbody.querySelectorAll("tr").forEach((row) => {
+      if (!filterDep) {
+        row.hidden = false;
+        return;
+      }
+      const deps = (row.dataset.deps || "").split("|").filter(Boolean);
+      row.hidden = !deps.includes(filterDep);
+    });
+  };
 
   const sortRows = (key, dir) => {
     const rows = Array.from(tbody.querySelectorAll("tr"));
@@ -190,7 +219,7 @@
     });
     rows.forEach((row) => tbody.appendChild(row));
 
-    headers.forEach((th) => {
+    sortHeaders.forEach((th) => {
       const active = th.dataset.sort === key;
       th.classList.toggle("is-active", active);
       const arrow = th.querySelector(".sort-arrow");
@@ -198,7 +227,7 @@
     });
   };
 
-  headers.forEach((th) => {
+  sortHeaders.forEach((th) => {
     th.addEventListener("click", () => {
       const key = th.dataset.sort;
       if (sortKey === key) {
@@ -208,6 +237,14 @@
         sortDir = "asc";
       }
       sortRows(sortKey, sortDir);
+    });
+  });
+
+  filterHeaders.forEach((th) => {
+    th.addEventListener("click", () => {
+      const dep = th.dataset.dep;
+      filterDep = filterDep === dep ? null : dep;
+      applyFilter();
     });
   });
 })();
