@@ -57,6 +57,13 @@
         padding-right: 16px;
     }
 
+    td.sector {
+        color: var(--muted);
+        white-space: nowrap;
+        padding-right: 16px;
+        font-size: 0.88em;
+    }
+
     .ticker-code.has-title {
         border-bottom: 1px dotted var(--muted);
         cursor: help;
@@ -90,6 +97,7 @@
             <thead>
                 <tr>
                     <th>Тикер</th>
+                    <th>Сектор</th>
                     {% for col in columns %}
                     <th class="flag">{{ col }}</th>
                     {% endfor %}
@@ -101,6 +109,7 @@
                     <td class="ticker-name">
                         <a href="/invest/tickers/{{ row.ticker }}" class="ticker-code{% if row.name and row.name != row.ticker %} has-title{% endif %}"{% if row.name and row.name != row.ticker %} title="{{ row.name }}"{% endif %}>{{ row.ticker }}</a>
                     </td>
+                    <td class="sector">{{ row.sector or "—" }}</td>
                     {% for col in columns %}
                     <td class="flag">
                         {% if row.flags.get(col) %}

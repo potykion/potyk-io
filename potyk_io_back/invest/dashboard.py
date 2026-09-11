@@ -347,6 +347,7 @@ def fmt_return_pct(value) -> str:
 class DepTickerRow:
     ticker: str
     name: str
+    sector: str
     flags: dict[str, bool]
 
 
@@ -379,6 +380,7 @@ def build_dependencies_matrix() -> tuple[list[str], list[DepTickerRow]]:
             DepTickerRow(
                 ticker=ticker.ticker,
                 name=(ticker.name or "").strip(),
+                sector=(ticker.sector or "").strip(),
                 flags={col: col in labels for col in columns},
             )
         )
