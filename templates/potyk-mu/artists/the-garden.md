@@ -1,4 +1,4 @@
-# The Garden
+# ![The Garden](/static/potyk-mu/the-garden-logo.webp)
 
 ![the-garden-jester.webp](/static/potyk-mu/the-garden-jester.webp)
 

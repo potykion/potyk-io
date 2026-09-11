@@ -7,9 +7,12 @@ yandex: https://music.yandex.ru/playlists/11daca8c-d860-eef4-b930-da60ace13e15
 rym: https://rateyourmusic.com/release/album/the-garden/bootleg/
 listened: 2026-07-10
 rate: 8
+cover: https://avatars.yandex.net/get-music-user-playlist/11184076/532265992.1111.69167/600x600?1783686569167
 ---
 
 # The Garden — Bootleg (2026)
+
+![Bootleg](https://avatars.yandex.net/get-music-user-playlist/11184076/532265992.1111.69167/600x600?1783686569167)
 
 ## Ревью
 

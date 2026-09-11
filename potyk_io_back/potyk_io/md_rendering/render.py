@@ -28,6 +28,7 @@ FALSEY = {"false", "0", "no", "off"}
 TRUEY = {"true", "1", "yes", "on"}
 H1_RE = re.compile(r"(<h1\b[^>]*>.*?</h1>)", re.IGNORECASE | re.DOTALL)
 INLINE_CODE_RE = re.compile(r"`([^`]*)`")
+MD_IMAGE_RE = re.compile(r"!\[([^\]]*)\]\([^)]*\)")
 CREATED_RE = re.compile(
     r'(<time\s+class="note-created"[^>]*>.*?</time>)',
     re.IGNORECASE | re.DOTALL,
@@ -68,7 +69,9 @@ def extract_h1(body: str) -> str | None:
 
 
 def plain_h1(title: str) -> str:
-    return INLINE_CODE_RE.sub(r"\1", title).strip()
+    title = INLINE_CODE_RE.sub(r"\1", title)
+    title = MD_IMAGE_RE.sub(r"\1", title)
+    return title.strip()
 
 
 def ensure_h1(body: str, title: str) -> str:
