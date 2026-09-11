@@ -95,8 +95,8 @@ MENU_GROUPS: list[MenuGroup] = [
             },
             {
                 "icon": "🤡",
-                "title": "potyk-prikol",
-                "url": "/prikol/",
+                "title": "potyk-prikols",
+                "url": "/prikols/",
                 "description": "Музей приколов",
             },
         ],
@@ -226,7 +226,7 @@ ART_MENU_GROUPS: list[MenuGroup] = [
 ]
 
 
-PRIKOL_MENU_GROUPS: list[MenuGroup] = [
+PRIKOLS_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "",
         "links": [

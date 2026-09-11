@@ -1,3 +1,3 @@
-from potyk_io_back.prikol.pres import prikol_bp
+from potyk_io_back.prikols.pres import prikols_bp
 
-__all__ = ["prikol_bp"]
+__all__ = ["prikols_bp"]
