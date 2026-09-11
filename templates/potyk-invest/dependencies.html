@@ -16,13 +16,6 @@
         line-height: 1.45;
     }
 
-    h2.sector {
-        margin: 1.5rem 0 0.5rem;
-        font-size: 1.15rem;
-        font-weight: 600;
-        opacity: 0.85;
-    }
-
     .table-wrap {
         width: 100%;
         overflow-x: auto;
@@ -86,12 +79,9 @@
         <strong>КС</strong>: рост от снижения ставки, падение от повышения/паузы.
     </p>
 
-    {% if not sectors %}
-    <p class="empty">Зависимостей пока нет.</p>
-    {% endif %}
-
-    {% for sector in sectors %}
-    <h2 class="sector">{{ sector.title }}</h2>
+    {% if not rows %}
+    <p class="empty">Акций пока нет.</p>
+    {% else %}
     <div class="table-wrap">
         <table>
             <thead>
@@ -103,7 +93,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for row in sector.tickers %}
+                {% for row in rows %}
                 <tr>
                     <td class="ticker-name">
                         <a href="/invest/tickers/{{ row.ticker }}" class="ticker-code{% if row.name and row.name != row.ticker %} has-title{% endif %}"{% if row.name and row.name != row.ticker %} title="{{ row.name }}"{% endif %}>{{ row.ticker }}</a>
@@ -122,6 +112,6 @@
             </tbody>
         </table>
     </div>
-    {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}

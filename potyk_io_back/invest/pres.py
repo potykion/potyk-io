@@ -347,11 +347,11 @@ def funds():
 
 @invest_bp.route("/dependencies")
 def dependencies():
-    columns, sectors = build_dependencies_matrix()
+    columns, rows = build_dependencies_matrix()
     return render_template(
         "potyk-invest/dependencies.html",
         columns=columns,
-        sectors=sectors,
+        rows=rows,
     )
 
 
