@@ -4,11 +4,10 @@
 
 {% block head_stylesheets %}
     {{ super() }}
+    <link rel="stylesheet" href="/static/potyk-io/css/index.css">
     <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
     <style>
-        .md-content table img {
-            width: 200px;
-            height: 200px;
+        .card-grid--feed .card:not(.card-text) .note-cover {
             object-fit: contain;
         }
     </style>
@@ -20,104 +19,50 @@
 <h1>Сладости</h1>
 
 <h2>🍪 Печенье и вафли</h2>
-<table>
-<thead>
-    <tr>
-        <th>Упаковка</th>
-        <th>Описание</th>
-    </tr>
-</thead>
-<tbody>
-    <tr id="1">
-        <td style="text-align: center">
-            <img src="img/sweets/01-milka-choco-waffer.png" alt="Milka Choco Wafer">
-        </td>
-        <td>
-            <a href="https://www.ozon.ru/category/milka-choco-waffer/"><b>Mondelez • Milka Choco Wafer</b></a><br>
-            Вафля в молочном шоколаде
-        </td>
-    </tr>
-    <tr id="3">
-        <td style="text-align: center">
-            <img src="img/sweets/03-belvita.png" alt="Belvita">
-        </td>
-        <td>
-            <a href="https://www.belvita.life/milk-and-cereals/"><b>Mondelez • Belvita</b></a><br>
-            Печенье с злаками
-        </td>
-    </tr>
-    <tr id="4">
-        <td style="text-align: center">
-            <img src="img/sweets/04-choco-boy.png" alt="Choco Boy">
-        </td>
-        <td>
-            <a href="https://en.orionworld.ru/choco-boy"><b>Orion • Choco Boy</b></a><br>
-            Печенье в шоколаде
-        </td>
-    </tr>
-</tbody>
-</table>
+<div class="card-grid card-grid--feed">
+    <a class="card" href="https://www.ozon.ru/category/milka-choco-waffer/" target="_blank" rel="noopener">
+        <img class="note-cover" src="img/sweets/01-milka-choco-waffer.png" alt="Milka Choco Wafer" loading="lazy">
+        <div class="note-preview md-content"><h3>Mondelez • Milka Choco Wafer</h3></div>
+    </a>
+    <a class="card" href="https://www.belvita.life/milk-and-cereals/" target="_blank" rel="noopener">
+        <img class="note-cover" src="img/sweets/03-belvita.png" alt="Belvita" loading="lazy">
+        <div class="note-preview md-content"><h3>Mondelez • Belvita</h3></div>
+    </a>
+    <a class="card" href="https://en.orionworld.ru/choco-boy" target="_blank" rel="noopener">
+        <img class="note-cover" src="img/sweets/04-choco-boy.png" alt="Choco Boy" loading="lazy">
+        <div class="note-preview md-content"><h3>Orion • Choco Boy</h3></div>
+    </a>
+</div>
 
 <h2>🍫 Батончики</h2>
-<table>
-<thead>
-    <tr>
-        <th>Упаковка</th>
-        <th>Описание</th>
-    </tr>
-</thead>
-<tbody>
-    <tr id="2">
-        <td style="text-align: center">
-            <img src="img/sweets/02-nut-go-caramel-almond-sea-salt.png" alt="Nut&amp;Go Caramel, Almond, Sea Salt">
-        </td>
-        <td>
-            <a href="https://kdvonline.ru/product/batonchik-mindalniy-22685"><b>KDV • Nut&amp;Go Caramel, Almond, Sea Salt</b></a><br>
-            Ореховый батончик: карамель, миндаль, морская соль
-        </td>
-    </tr>
-</tbody>
-</table>
+<div class="card-grid card-grid--feed">
+    <a class="card" href="https://kdvonline.ru/product/batonchik-mindalniy-22685" target="_blank" rel="noopener">
+        <img class="note-cover" src="img/sweets/02-nut-go-caramel-almond-sea-salt.png" alt="Nut&amp;Go Caramel, Almond, Sea Salt" loading="lazy">
+        <div class="note-preview md-content"><h3>KDV • Nut&amp;Go Caramel, Almond, Sea Salt</h3></div>
+    </a>
+</div>
 
 <h2>🍦 Мороженое</h2>
-<table>
-<thead>
-    <tr>
-        <th>Упаковка</th>
-        <th>Описание</th>
-    </tr>
-</thead>
-<tbody>
-    <tr id="5">
-        <td style="text-align: center">
-            <img src="img/sweets/05-severnyy-limon.png" alt="Северный лимон">
-        </td>
-        <td>
-            <a href="https://vk.com/lumipallo_karelia"><b>Lumipallo • Северный лимон</b></a><br>
-            Сорбет / мороженое, Карелия
-        </td>
-    </tr>
-</tbody>
-</table>
+<div class="card-grid card-grid--feed">
+    <a class="card" href="https://vk.com/lumipallo_karelia" target="_blank" rel="noopener">
+        <img class="note-cover" src="img/sweets/05-severnyy-limon.png" alt="Северный лимон" loading="lazy">
+        <div class="note-preview md-content"><h3>Lumipallo • Северный лимон</h3></div>
+    </a>
+</div>
 
 <h2>🧀 Сырки</h2>
-<table>
-<thead>
-    <tr>
-        <th>Упаковка</th>
-        <th>Описание</th>
-    </tr>
-</thead>
-<tbody>
-    <tr id="6">
-        <td style="text-align: center">
-            <img src="img/sweets/06-fermersky-syrok-shokolad.png" alt="Фермерский сырок шоколад">
-        </td>
-        <td>
-            <a href="https://www.selo-zelenoe.ru/catalog/molochnye-deserty/tvorozhnye-syrki/"><b>Село Зелёное • Фермерский сырок шоколад</b></a><br>
-            Творожный сырок в молочном шоколаде
-        </td>
-    </tr>
-</tbody>
-</table>
+<div class="card-grid card-grid--feed">
+    <a class="card" href="https://www.selo-zelenoe.ru/catalog/molochnye-deserty/tvorozhnye-syrki/" target="_blank" rel="noopener">
+        <img class="note-cover" src="img/sweets/06-fermersky-syrok-shokolad.png" alt="Фермерский сырок шоколад" loading="lazy">
+        <div class="note-preview md-content"><h3>Село Зелёное • Фермерский сырок шоколад</h3></div>
+    </a>
+</div>
+
+<h2>🍓 Ягоды в шоколаде</h2>
+<div class="card-grid card-grid--feed">
+    <a class="card" href="https://frambini.ru" target="_blank" rel="noopener">
+        <img class="note-cover" src="img/sweets/07-frambini-milk.png" alt="Фрамбини в белом молочном шоколаде" loading="lazy">
+        <div class="note-preview md-content"><h3>Фрамбини в белом молочном шоколаде</h3></div>
+    </a>
+</div>
 {% endblock %}
