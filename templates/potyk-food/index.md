@@ -51,6 +51,7 @@
 - [Бигус](recipes/04-main-course/bigus.md)
 - [Ёжики](recipes/04-main-course/ezhiki.md)
 - [Жаркое из курицы с картошкой](recipes/04-main-course/chicken-w-potato.md)
+- [Кордон блю](recipes/04-main-course/chicken-cordon-bleu.md)
 - [Бешбармак](recipes/04-main-course/beshbarmak.md)
 - [Плов, который всегда получается](recipes/04-main-course/plov.md)
 - [Гречка с куриным филе](recipes/04-main-course/buckwheat-w-chicken.md)
