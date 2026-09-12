@@ -68,10 +68,32 @@
                 <th>Итого</th>
                 <td class="num">{{ stats_total | rub }}</td>
             </tr>
+            <tr>
+                <th>Сейвы</th>
+                <td class="num">{{ stats_saved_total | rub }}</td>
+            </tr>
+            <tr>
+                <th>Расход и сейвы</th>
+                <td class="num">{{ stats_expenses_plus_saves | rub }}</td>
+            </tr>
             </tfoot>
         </table>
         {% else %}
         <p class="empty">За выбранный период трат нет</p>
+        {% if stats_saved_total %}
+        <table class="stats-table">
+            <tfoot>
+            <tr>
+                <th>Сейвы</th>
+                <td class="num">{{ stats_saved_total | rub }}</td>
+            </tr>
+            <tr>
+                <th>Расход и сейвы</th>
+                <td class="num">{{ stats_expenses_plus_saves | rub }}</td>
+            </tr>
+            </tfoot>
+        </table>
+        {% endif %}
         {% endif %}
     </details>
 </div>

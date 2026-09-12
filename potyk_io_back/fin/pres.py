@@ -119,6 +119,10 @@ def index_context(
     category_stats, stats_total = category_stats_for_period(
         expenses, stats_from, stats_to
     )
+    stats_saved_total = sum(
+        s.amount for s in savings if stats_from <= s.date <= stats_to
+    )
+    stats_expenses_plus_saves = stats_total + stats_saved_total
     today_state = next((d for d in days if d.date == today), None)
     total_saved = db.session.scalar(select(func.coalesce(func.sum(Saving.amount), 0))) or 0
     auto_remainder_total = sum(d.eod_remainder for d in days if d.date < today)
@@ -138,6 +142,8 @@ def index_context(
         "stats_to": stats_to,
         "category_stats": category_stats,
         "stats_total": stats_total,
+        "stats_saved_total": stats_saved_total,
+        "stats_expenses_plus_saves": stats_expenses_plus_saves,
         "closed_dates": closed_dates,
         "categories": categories,
         "expense_form": expense_form or ExpenseForm(),
