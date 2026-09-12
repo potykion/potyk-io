@@ -150,7 +150,7 @@ def code_moved():
 
 @potyk_io_bp.route("/code/<path:page_path>")
 def code_page_moved(page_path: str):
-    return redirect(f"/tech/my-code/{page_path}", code=301)
+    return redirect(f"/tech/{page_path}", code=301)
 
 
 @potyk_io_bp.route("/collections/movies")

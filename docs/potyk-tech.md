@@ -29,5 +29,7 @@
 - `/tech/devices` — архив девайсов (раньше `/collections/devices`)
 - `/tech/cv` — резюме (раньше `/n/cv`)
 - `/tech/my-code` — кодинг-проекты и заметки (раньше `/code`)
+- `/tech/ai` — заметка про ИИ (раньше `/code/ai`)
+- `/tech/ai-coding` — заметка про ИИ-кодинг (раньше `/code/ai-coding`)
 
 Старые URL ведут на новые страницы.

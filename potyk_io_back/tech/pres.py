@@ -1,6 +1,6 @@
 from pathlib import Path, PurePosixPath
 
-from flask import Blueprint, abort, render_template, request, send_file
+from flask import Blueprint, abort, redirect, render_template, request, send_file
 
 from potyk_io_back.potyk_io.md_rendering import (
     list_folder_pages,
@@ -78,6 +78,18 @@ def render_tech_markdown(file: Path):
 @tech_bp.get("/")
 def index():
     return render_template("potyk-tech/index.html")
+
+
+@tech_bp.get("/my-code/ai")
+@tech_bp.get("/my-code/ai/")
+def my_code_ai_moved():
+    return redirect("/tech/ai", code=301)
+
+
+@tech_bp.get("/my-code/ai-coding")
+@tech_bp.get("/my-code/ai-coding/")
+def my_code_ai_coding_moved():
+    return redirect("/tech/ai-coding", code=301)
 
 
 @tech_bp.route("/<path:page_path>")
