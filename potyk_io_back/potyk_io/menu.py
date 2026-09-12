@@ -56,6 +56,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/travel/",
                 "description": "Гайд, планы и воспоминания",
             },
+            {
+                "icon": "💻",
+                "title": "potyk-tech",
+                "url": "/tech/",
+                "description": "Девайсы, резюме, кодинг",
+            },
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
         ],
@@ -119,20 +125,6 @@ MENU_GROUPS: list[MenuGroup] = [
         ],
     },
     {
-        "title": "Прога",
-        "links": [
-            {"icon": "👨‍💻", "title": "Резюме", "url": "/n/cv", "description": ""},
-            {
-                "icon": "📊",
-                "title": "Софт/Сервисы",
-                "url": "https://docs.google.com/spreadsheets/d/13xf7UHVDKiCf6rbHeHe2rsgwOlWaNRhUYDqAU5M3ULk/edit?usp=sharing",
-                "description": "",
-            },
-            {"icon": "📝", "title": "Мой кодинг", "url": "/code", "description": ""},
-
-        ],
-    },
-    {
         "title": "Отношач",
         "links": [
             {
@@ -193,6 +185,50 @@ MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🛠️",
                 "title": "Админка",
                 "url": "/admin",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+TECH_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "potyk-tech",
+        "links": [
+            {
+                "icon": "📱",
+                "title": "Мои девайсы",
+                "url": "/tech/devices",
+                "description": "",
+            },
+            {
+                "icon": "👨‍💻",
+                "title": "Резюме",
+                "url": "/tech/cv",
+                "description": "",
+            },
+            {
+                "icon": "📊",
+                "title": "Софт/Сервисы",
+                "url": "https://docs.google.com/spreadsheets/d/13xf7UHVDKiCf6rbHeHe2rsgwOlWaNRhUYDqAU5M3ULk/edit?usp=sharing",
+                "description": "",
+            },
+            {
+                "icon": "📝",
+                "title": "Мой кодинг",
+                "url": "/tech/my-code",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
                 "description": "",
             },
         ],

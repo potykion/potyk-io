@@ -130,6 +130,29 @@ def search():
     return flask.render_template("potyk-io/search.html", q=q, results=results)
 
 
+@potyk_io_bp.route("/collections/devices")
+@potyk_io_bp.route("/collections/devices/")
+def devices_moved():
+    return redirect("/tech/devices", code=301)
+
+
+@potyk_io_bp.route("/n/cv")
+@potyk_io_bp.route("/n/cv/")
+def cv_moved():
+    return redirect("/tech/cv", code=301)
+
+
+@potyk_io_bp.route("/code")
+@potyk_io_bp.route("/code/")
+def code_moved():
+    return redirect("/tech/my-code", code=301)
+
+
+@potyk_io_bp.route("/code/<path:page_path>")
+def code_page_moved(page_path: str):
+    return redirect(f"/tech/my-code/{page_path}", code=301)
+
+
 @potyk_io_bp.route("/collections/movies")
 @potyk_io_bp.route("/collections/movies/<path:_rest>")
 def movies_collection_redirect(_rest=None):
