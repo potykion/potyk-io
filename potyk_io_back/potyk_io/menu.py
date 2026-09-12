@@ -220,6 +220,18 @@ TECH_MENU_GROUPS: list[MenuGroup] = [
                 "url": "/tech/my-code",
                 "description": "",
             },
+            {
+                "icon": "🤖",
+                "title": "Стейт оф ИИ",
+                "url": "/tech/ai",
+                "description": "",
+            },
+            {
+                "icon": "🧠",
+                "title": "ИИ-кодинг",
+                "url": "/tech/ai-coding",
+                "description": "",
+            },
         ],
     },
     {
