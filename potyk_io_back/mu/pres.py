@@ -3,7 +3,11 @@ from pathlib import Path, PurePosixPath
 from flask import Blueprint, abort, request, render_template, send_file, url_for
 
 from potyk_io_back.mu.albums import album_props_html, is_album_page
-from potyk_io_back.mu.artists import albums_for_artist, is_artist_page
+from potyk_io_back.mu.artists import (
+    albums_for_artist,
+    extract_artist_videos,
+    is_artist_page,
+)
 from potyk_io_back.mu.menu import MU_MENU_ITEMS, is_mu_link_active
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, FeedSpec, feed_batch, feed_more_url
 from potyk_io_back.potyk_io.md_rendering import render_body_html, resolve_page, split_frontmatter
@@ -104,7 +108,9 @@ def render_mu_markdown(file: Path):
     artists_dir = MU_TEMPLATES_DIR / "artists"
     albums_dir = MU_TEMPLATES_DIR / "albums"
     if is_artist_page(file, artists_dir=artists_dir):
+        body, artist_videos = extract_artist_videos(body)
         extra["artist_albums"] = albums_for_artist(file, albums_spec=MU_FEEDS["albums"])
+        extra["artist_videos"] = artist_videos
     if is_album_page(file, albums_dir=albums_dir):
         after_h1_html = album_props_html(meta, link_rewriter=link_rewriter)
     return render_body_html(

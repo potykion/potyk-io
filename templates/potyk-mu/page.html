@@ -6,8 +6,13 @@
 {% block style %}
 {{ super() }}
 <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
-{% if artist_albums %}
+{% if artist_albums or artist_videos %}
 <link rel="stylesheet" href="/static/potyk-io/css/index.css">
+<style>
+    .artist-section-title {
+        text-align: center;
+    }
+</style>
 {% endif %}
 {% endblock %}
 
@@ -17,7 +22,12 @@
     {{ content | safe }}
 
     {% if artist_albums %}
-    <h2>Альбомы</h2>
+    <h2 class="artist-section-title">Albums</h2>
     {{ feed(artist_albums) }}
+    {% endif %}
+
+    {% if artist_videos %}
+    <h2 class="artist-section-title">Videos</h2>
+    {{ feed(artist_videos) }}
     {% endif %}
 {% endblock %}

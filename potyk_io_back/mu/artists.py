@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import html
 import re
 from pathlib import Path, PurePosixPath
+from urllib.parse import parse_qs, urlparse
 
 from potyk_io_back.potyk_io.feed.notes_feed import FeedSpec, iter_note_paths, note_url
 from potyk_io_back.potyk_io.feed.random_notes import apply_cover, note_card_html
@@ -11,6 +13,18 @@ from potyk_io_back.potyk_io.md_rendering import split_frontmatter, unquote_meta
 
 _ARTIST_SLUG_RE = re.compile(r"[^\w\s-]", flags=re.UNICODE)
 _ARTIST_SLUG_SPACES_RE = re.compile(r"[-\s]+", flags=re.UNICODE)
+_VIDEOS_SECTION_RE = re.compile(
+    r"(?ms)^##\s+Videos\s*\n(.*?)(?=^##\s|\Z)",
+)
+_VIDEO_LINK_RE = re.compile(
+    r"^\s*[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*$",
+)
+_VIDEO_DATE_TITLE_RE = re.compile(
+    r"^(\d{4}-\d{2}-\d{2})\s*:\s*(.+)$",
+)
+_YOUTUBE_ID_RE = re.compile(
+    r"(?:youtu\.be/|youtube\.com/(?:watch\?.*?v=|embed/|shorts/|live/))([A-Za-z0-9_-]{11})",
+)
 
 
 def artist_slug(name: str) -> str:
@@ -84,3 +98,62 @@ def albums_for_artist(artist_file: Path, *, albums_spec: FeedSpec) -> list[dict]
         cards.append(card)
 
     return sorted(cards, key=lambda c: c.get("_sort_key") or "", reverse=True)
+
+
+def youtube_video_id(url: str) -> str | None:
+    match = _YOUTUBE_ID_RE.search(url)
+    if match:
+        return match.group(1)
+    parsed = urlparse(url)
+    if "youtube.com" in (parsed.hostname or "").lower():
+        vids = parse_qs(parsed.query).get("v")
+        if vids and re.fullmatch(r"[A-Za-z0-9_-]{11}", vids[0]):
+            return vids[0]
+    return None
+
+
+def youtube_hq_cover(url: str) -> str | None:
+    video_id = youtube_video_id(url)
+    if not video_id:
+        return None
+    return f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
+
+
+def extract_artist_videos(body: str) -> tuple[str, list[dict]]:
+    """Вырезать секцию ## Videos из тела и собрать карточки для сетки."""
+    match = _VIDEOS_SECTION_RE.search(body)
+    if not match:
+        return body, []
+
+    cards: list[dict] = []
+    for line in match.group(1).splitlines():
+        link = _VIDEO_LINK_RE.match(line)
+        if not link:
+            continue
+        label, url = link.group(1).strip(), link.group(2).strip()
+        if not url:
+            continue
+        dated = _VIDEO_DATE_TITLE_RE.match(label)
+        if dated:
+            subtitle, title = dated.group(1), dated.group(2).strip()
+        else:
+            title, subtitle = label, ""
+        preview = f"<h3>{html.escape(title)}</h3>"
+        if subtitle:
+            preview += f'\n<p class="card-subtitle">{html.escape(subtitle)}</p>'
+        card: dict = {
+            "url": url,
+            "preview": preview,
+            "name": title,
+            "kind": "note",
+            "external": True,
+            "_sort_key": subtitle,
+        }
+        cover = youtube_hq_cover(url)
+        if cover:
+            card["cover"] = cover
+        cards.append(card)
+
+    cards.sort(key=lambda c: c.get("_sort_key") or "", reverse=True)
+    cleaned = (body[: match.start()] + body[match.end() :]).strip() + "\n"
+    return cleaned, cards

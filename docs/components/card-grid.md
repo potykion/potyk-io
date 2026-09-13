@@ -11,7 +11,7 @@
 - главная potyk.io (`/`) — лента заметок;
 - главная potyk-mu (`/mu/`) — лента блога;
 - индекс исполнителей (`/mu/artists/`);
-- страница исполнителя (`/mu/artists/<slug>`) — блок «Альбомы»;
+- страница исполнителя (`/mu/artists/<slug>`) — блоки «Albums» и «Videos»;
 - potyk-travel (`/travel/`, `/travel/memories/`, `/travel/plans/`) — списки поездок и планов;
 - potyk-art (`/art/`) — проекты с обложками `.jpg`;
 - potyk-food (`/food/tasting/sweets`) — сладости по категориям.
