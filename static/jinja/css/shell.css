@@ -86,6 +86,31 @@ body {
     container-name: layout-main;
 }
 
+/* Ширина колонки <main>: xl (дефолт) / l / m — docs/components/main-width.md */
+main {
+    box-sizing: border-box;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1264px; /* main-xl */
+}
+
+main.main-xl {
+    max-width: 1264px;
+}
+
+main.main-l {
+    max-width: 1024px;
+}
+
+main.main-m {
+    max-width: 800px;
+}
+
+main.main-m:has(.menu-table) {
+    max-width: 900px;
+}
+
 .layout-simple .layout-main {
     width: 100%;
 }

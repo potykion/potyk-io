@@ -1,6 +1,5 @@
 .md-content {
     margin: auto;
-    max-width: 800px;
 }
 
 .md-content h4 {
@@ -206,10 +205,6 @@
 .md-content .recipe-step.is-done {
     text-decoration: line-through;
     color: #888;
-}
-
-.md-content:has(.menu-table) {
-    max-width: 900px;
 }
 
 .md-content .brand-logo {
