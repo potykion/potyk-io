@@ -67,7 +67,14 @@ h1 {
     line-height: 1.3;
 }
 
-.card-grid--feed .card:not(.card-text) .note-preview > :not(h3) {
+.card-grid--feed .card:not(.card-text) .note-preview .card-subtitle {
+    margin: 4px 0 0;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    color: #9f9f9f;
+}
+
+.card-grid--feed .card:not(.card-text) .note-preview > :not(h3):not(.card-subtitle) {
     display: none;
 }
 

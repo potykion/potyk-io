@@ -26,12 +26,16 @@
     flex-direction: column;
     box-sizing: border-box;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 4 / 3; /* текстовая карточка */
     padding: 0;
     overflow: hidden;
     color: inherit;
     text-decoration: none;
     transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.card-grid .card:not(.card-text) {
+    aspect-ratio: 3 / 4; /* контент-карточка */
 }
 
 .card-grid .card:hover {
