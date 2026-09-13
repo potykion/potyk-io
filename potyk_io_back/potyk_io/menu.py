@@ -341,6 +341,12 @@ CULTURE_MENU_GROUPS: list[MenuGroup] = [
         "title": "potyk-culture",
         "links": [
             {
+                "icon": "🎭",
+                "title": "Театр",
+                "url": "/culture/teatr",
+                "description": "",
+            },
+            {
                 "icon": "🌐",
                 "title": "Интернет",
                 "url": "/culture/internet",

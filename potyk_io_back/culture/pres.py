@@ -78,13 +78,23 @@ def render_culture_markdown(file: Path):
     )
 
 
-@culture_bp.get("/")
-def index():
+def _visits():
     seed_culture_visits_if_empty()
-    visits = db.session.scalars(
+    return db.session.scalars(
         select(CultureVisit).order_by(CultureVisit.visited_at.desc(), CultureVisit.id.desc())
     ).all()
-    return render_template("potyk-culture/index.html", visits=visits)
+
+
+@culture_bp.get("/")
+def index():
+    pages = list_folder_pages(CULTURE_TEMPLATES_DIR, url_prefix="/culture")
+    return render_template("potyk-culture/index.html", pages=pages)
+
+
+@culture_bp.get("/teatr")
+@culture_bp.get("/teatr/")
+def teatr():
+    return render_template("potyk-culture/teatr.html", visits=_visits())
 
 
 @culture_bp.route("/<path:page_path>")
@@ -106,6 +116,8 @@ def page(page_path: str):
                     PurePosixPath(file.relative_to(CULTURE_TEMPLATES_DIR).as_posix())
                 ),
             )
+        elif file.stem == "teatr":
+            ctx["visits"] = _visits()
         return render_template(template_name, **ctx)
 
     return send_file(file)
