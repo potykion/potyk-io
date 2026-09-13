@@ -338,6 +338,23 @@ READS_MENU_GROUPS: list[MenuGroup] = [
 
 CULTURE_MENU_GROUPS: list[MenuGroup] = [
     {
+        "title": "potyk-culture",
+        "links": [
+            {
+                "icon": "🌐",
+                "title": "Интернет",
+                "url": "/culture/internet",
+                "description": "",
+            },
+            {
+                "icon": "📺",
+                "title": "ТВ / Нулевые",
+                "url": "/culture/tv-nulevye",
+                "description": "",
+            },
+        ],
+    },
+    {
         "title": "",
         "links": [
             {
