@@ -6,6 +6,7 @@ from flask import Blueprint, flash, jsonify, redirect, render_template, request,
 from flask_login import login_required
 from sqlalchemy import select
 
+from potyk_io_back.cinema.covers import download_cover, movie_id_from_kinopoisk
 from potyk_io_back.core.db import db
 from potyk_io_back.potyk_io.collections.movies import (
     Movie,
@@ -16,6 +17,8 @@ from potyk_io_back.potyk_io.collections.movies import (
 from potyk_io_back.potyk_io.menu import CINEMA_MENU_GROUPS
 
 cinema_bp = Blueprint("cinema", __name__, url_prefix="/cinema")
+
+WATCH_LATER_COLLECTION_ID = "watch_later"
 
 
 @cinema_bp.context_processor
@@ -43,11 +46,6 @@ def _collection_slug_from_title(title: str) -> str:
     slug = re.sub(r"[^\w\s-]", "", title.lower(), flags=re.UNICODE)
     slug = re.sub(r"[-\s]+", "-", slug, flags=re.UNICODE).strip("-")
     return slug or "collection"
-
-
-def _movie_id_from_kinopoisk(url: str) -> str | None:
-    match = re.search(r"/film/(\d+)/?", url)
-    return match.group(1) if match else None
 
 
 def _parse_title_and_year(title: str, year_raw: str) -> tuple[str, int | None, str | None]:
@@ -117,6 +115,7 @@ def movies_admin():
         "potyk-cinema/admin.html",
         movies=movies,
         collections=collections,
+        default_collection_id=WATCH_LATER_COLLECTION_ID,
         collections_kanban_json=json.dumps(collections_kanban, ensure_ascii=False),
     )
 
@@ -126,7 +125,6 @@ def movies_admin():
 def movies_admin_add_movie():
     title_ru = (request.form.get("title_ru") or "").strip()
     title_en = (request.form.get("title_en") or "").strip() or None
-    cover = (request.form.get("cover") or "").strip() or None
     kinopoisk = (request.form.get("kinopoisk") or "").strip()
     collection_id = (request.form.get("collection_id") or "").strip()
     year_raw = (request.form.get("year") or "").strip()
@@ -142,10 +140,18 @@ def movies_admin_add_movie():
     if not kinopoisk:
         flash("Укажите `kinopoisk` (URL)", "error")
         return redirect(url_for("cinema.movies_admin"))
+    if not collection_id:
+        flash("Выберите коллекцию", "error")
+        return redirect(url_for("cinema.movies_admin"))
 
-    movie_id = _movie_id_from_kinopoisk(kinopoisk)
+    movie_id = movie_id_from_kinopoisk(kinopoisk)
     if not movie_id:
         flash("Не удалось извлечь id фильма из Kinopoisk URL", "error")
+        return redirect(url_for("cinema.movies_admin"))
+
+    col = db.session.get(MovieCollection, collection_id)
+    if col is None:
+        flash("Коллекция не найдена", "error")
         return redirect(url_for("cinema.movies_admin"))
 
     movie = db.session.get(Movie, movie_id)
@@ -160,27 +166,30 @@ def movies_admin_add_movie():
     movie.title_ru = title_ru
     movie.title_en = title_en
     movie.year = year
-    movie.cover = cover
     movie.kinopoisk = kinopoisk
 
-    added_to_collection = False
-    if collection_id:
-        col = db.session.get(MovieCollection, collection_id)
-        if col is None:
-            flash("Коллекция не найдена", "error")
-            return redirect(url_for("cinema.movies_admin"))
+    cover_ok = True
+    if not movie.cover:
+        cover = download_cover(movie_id, title_ru=title_ru, title_en=title_en)
+        if cover:
+            movie.cover = cover
+        else:
+            cover_ok = False
 
-        movie_ids = list(col.movie_ids or [])
-        if movie.id not in movie_ids:
-            movie_ids.append(movie.id)
-            col.movie_ids = movie_ids
-            added_to_collection = True
+    movie_ids = list(col.movie_ids or [])
+    added_to_collection = False
+    if movie.id not in movie_ids:
+        movie_ids.append(movie.id)
+        col.movie_ids = movie_ids
+        added_to_collection = True
 
     db.session.commit()
-    if added_to_collection:
+    if not cover_ok:
+        flash("Фильм сохранён, но обложку скачать не удалось", "error")
+    elif added_to_collection:
         flash("Фильм сохранён и добавлен в коллекцию", "success")
     else:
-        flash("Фильм сохранён", "success")
+        flash("Фильм сохранён (уже был в коллекции)", "success")
     return redirect(url_for("cinema.movies_admin"))
 
 

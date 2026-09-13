@@ -13,9 +13,12 @@
 
         const titleInput = form.querySelector('input[name="title_ru"]');
         const yearInput = form.querySelector('input[name="year"]');
-        if (!titleInput) return;
+        const kpInput = form.querySelector('input[name="kinopoisk"]');
+        const previewWrap = document.getElementById("movies-add-cover-preview");
+        const previewImg = document.getElementById("movies-add-cover-img");
 
         function applyParse() {
+            if (!titleInput) return;
             const parsed = parseTitleWithYear(titleInput.value);
             if (!parsed) return;
             titleInput.value = parsed.title;
@@ -24,10 +27,39 @@
             }
         }
 
-        titleInput.addEventListener("paste", function () {
-            window.setTimeout(applyParse, 0);
-        });
-        titleInput.addEventListener("blur", applyParse);
+        function movieIdFromKinopoisk(url) {
+            const match = String(url).match(/\/(?:film|series)\/(\d+)/);
+            return match ? match[1] : null;
+        }
+
+        function updateCoverPreview() {
+            if (!kpInput || !previewWrap || !previewImg) return;
+            const kpId = movieIdFromKinopoisk(kpInput.value);
+            if (!kpId) {
+                previewWrap.hidden = true;
+                previewImg.removeAttribute("src");
+                return;
+            }
+            previewImg.src =
+                "https://st.kp.yandex.net/images/film_iphone/iphone360_" + kpId + ".jpg";
+            previewWrap.hidden = false;
+        }
+
+        if (titleInput) {
+            titleInput.addEventListener("paste", function () {
+                window.setTimeout(applyParse, 0);
+            });
+            titleInput.addEventListener("blur", applyParse);
+        }
+
+        if (kpInput) {
+            kpInput.addEventListener("input", updateCoverPreview);
+            kpInput.addEventListener("paste", function () {
+                window.setTimeout(updateCoverPreview, 0);
+            });
+            kpInput.addEventListener("change", updateCoverPreview);
+            updateCoverPreview();
+        }
     }
 
     setupAddMovieForm();

@@ -16,13 +16,23 @@
         <h2>Добавить фильм</h2>
         <form id="movies-add-form" method="post" action="{{ url_for('cinema.movies_admin_add_movie') }}">
             <p>
+                <label>Kinopoisk URL<br>
+                    <input name="kinopoisk" id="movies-add-kinopoisk" required style="width: 520px"
+                           placeholder="https://www.kinopoisk.ru/film/367/" />
+                </label>
+            </p>
+            <div class="movies-add-cover-preview" id="movies-add-cover-preview" hidden>
+                <img id="movies-add-cover-img" alt="Обложка" width="120" height="180">
+                <p class="movies-add-cover-hint">Обложка подтянется с Кинопоиска и сохранится при сохранении фильма</p>
+            </div>
+            <p>
                 <label>Title RU<br>
                     <input name="title_ru" required style="width: 420px" placeholder="Секретарша (2001)" />
                 </label>
             </p>
             <p style="opacity: 0.75; font-size: 0.95em">
                 Можно вставить «Название (год)» — название и год разберутся автоматически.
-                `id` возьмётся из Kinopoisk URL.
+                `id` и обложка берутся из Kinopoisk URL.
             </p>
             <p>
                 <label>Title EN<br>
@@ -35,21 +45,13 @@
                 </label>
             </p>
             <p>
-                <label>Cover (путь)<br>
-                    <input name="cover" style="width: 420px" placeholder="/static/potyk-io/img/movies/..."/>
-                </label>
-            </p>
-            <p>
-                <label>Kinopoisk URL<br>
-                    <input name="kinopoisk" required style="width: 520px" />
-                </label>
-            </p>
-            <p>
-                <label>Добавить в коллекцию (необязательно)<br>
-                    <select name="collection_id" style="width: 420px">
-                        <option value="">— не добавлять —</option>
+                <label>Коллекция<br>
+                    <select name="collection_id" required style="width: 420px">
                         {% for c in collections %}
-                            <option value="{{ c.id }}">{{ c.title }} ({{ c.id }})</option>
+                            <option value="{{ c.id }}"
+                                {% if c.id == default_collection_id %}selected{% endif %}>
+                                {{ c.title }}
+                            </option>
                         {% endfor %}
                     </select>
                 </label>

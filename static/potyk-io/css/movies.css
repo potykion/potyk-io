@@ -187,6 +187,33 @@
     max-width: 100%;
 }
 
+.movies-add-cover-preview {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    margin: 0 0 1rem;
+}
+
+.movies-add-cover-preview[hidden] {
+    display: none;
+}
+
+.movies-add-cover-preview img {
+    width: 120px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background: #eee;
+}
+
+.movies-add-cover-hint {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.75;
+    max-width: 28rem;
+}
+
 .movies-kanban {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
