@@ -126,28 +126,24 @@ def render_mu_markdown(file: Path):
     )
 
 
-def _without_covers(notes: list[dict]) -> list[dict]:
-    cleaned: list[dict] = []
-    for note in notes:
-        card = dict(note)
-        card.pop("cover", None)
-        card.pop("cover_video", None)
-        cleaned.append(card)
-    return cleaned
-
-
-def _render_feed_batch(spec: FeedSpec, *, exclude: set[str] | None = None):
+def _render_feed_batch(
+    spec: FeedSpec,
+    *,
+    exclude: set[str] | None = None,
+    card_ratio: str | None = None,
+):
     skip = exclude or set()
     notes, has_more = feed_batch(spec, BATCH_SIZE, exclude=skip)
     more = feed_more_url(spec.id, endpoint=url_for("mu.feed_more"))
-    if spec.id == "blog":
-        notes = _without_covers(notes)
+    if card_ratio:
+        more = f"{more}&card_ratio={card_ratio}"
     return render_template(
         "jinja/_notes_batch.html",
         notes=notes,
         has_more=has_more,
         exclude=[*skip, *(n.get("id", n["url"]) for n in notes)],
         more_url=more,
+        card_ratio=card_ratio,
     )
 
 
@@ -155,13 +151,15 @@ def _render_feed_batch(spec: FeedSpec, *, exclude: set[str] | None = None):
 def index():
     blog = MU_FEEDS["blog"]
     notes, has_more = feed_batch(blog, BATCH_SIZE)
-    notes = _without_covers(notes)
+    more = feed_more_url(blog.id, endpoint=url_for("mu.feed_more"))
+    more = f"{more}&card_ratio=4/3"
     return render_template(
         "potyk-mu/index.html",
         notes=notes,
         has_more=has_more,
         exclude=[n.get("id", n["url"]) for n in notes],
-        more_url=feed_more_url(blog.id, endpoint=url_for("mu.feed_more")),
+        more_url=more,
+        card_ratio="4/3",
     )
 
 
@@ -172,7 +170,8 @@ def feed_more():
     if spec is None:
         abort(404)
     exclude = {u for u in request.args.get("exclude", "").split(",") if u}
-    return _render_feed_batch(spec, exclude=exclude)
+    card_ratio = request.args.get("card_ratio") or None
+    return _render_feed_batch(spec, exclude=exclude, card_ratio=card_ratio)
 
 
 def _feed_index_context(file: Path) -> dict:
