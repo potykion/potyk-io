@@ -26,7 +26,7 @@
     flex-direction: column;
     box-sizing: border-box;
     width: 100%;
-    aspect-ratio: 4 / 3; /* текстовая карточка */
+    aspect-ratio: 4 / 3; /* текст и контент по умолчанию */
     padding: 0;
     overflow: hidden;
     color: inherit;
@@ -34,12 +34,8 @@
     transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.card-grid .card:not(.card-text) {
-    aspect-ratio: 3 / 4; /* контент-карточка, по умолчанию */
-}
-
-.card-grid .card:not(.card-text).card-ratio-4-3 {
-    aspect-ratio: 4 / 3;
+.card-grid .card:not(.card-text).card-ratio-3-4 {
+    aspect-ratio: 3 / 4;
 }
 
 .card-grid .card:hover {

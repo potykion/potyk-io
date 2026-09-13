@@ -1,5 +1,5 @@
 {% for note in notes %}
-    <a class="card{% if note.kind == 'link' %} card-link{% endif %}{% if not note.cover %} card-text{% endif %}{% if card_ratio == '4/3' or note.ratio == '4/3' %} card-ratio-4-3{% endif %}"
+    <a class="card{% if note.kind == 'link' %} card-link{% endif %}{% if not note.cover %} card-text{% endif %}{% if card_ratio == '3/4' or note.ratio == '3/4' %} card-ratio-3-4{% endif %}"
        href="{{ note.url }}"
        {% if note.external %}target="_blank" rel="noopener"{% endif %}>
         {% if note.cover %}

@@ -24,11 +24,11 @@
 
     {% if artist_albums %}
     <h2 class="artist-section-title">Albums</h2>
-    {{ feed(artist_albums) }}
+    {{ feed(artist_albums, card_ratio="3/4") }}
     {% endif %}
 
     {% if artist_videos %}
     <h2 class="artist-section-title">Videos</h2>
-    {{ feed(artist_videos, card_ratio="4/3") }}
+    {{ feed(artist_videos) }}
     {% endif %}
 {% endblock %}
