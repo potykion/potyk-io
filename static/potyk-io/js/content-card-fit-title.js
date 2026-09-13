@@ -64,7 +64,11 @@
     document.querySelectorAll(".card-grid--fit-title").forEach(function (grid) {
       ro.observe(grid);
     });
+    const rouletteResult = document.getElementById("roulette-result");
+    if (rouletteResult) ro.observe(rouletteResult);
   }
+
+  window.potykFitContentCardTitles = scheduleFit;
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", watch);

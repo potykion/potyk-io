@@ -126,19 +126,36 @@
         }
     }
 
+    const COVER_PLACEHOLDER = "/static/potyk-io/img/movies/cover-placeholder.svg";
+
+    function escapeHtml(text) {
+        return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
     function showResult(movie) {
         if (!resultEl) return;
-        let html = "";
-        if (movie.cover) {
-            html += '<img class="roulette-result-cover" src="' + movie.cover + '" alt="">';
-        }
-        html += "<div><a href=\"" + movie.kinopoisk + "\" target=\"_blank\" rel=\"noopener\">"
-            + movieLabel(movie) + "</a></div>";
+        const cover = movie.cover || COVER_PLACEHOLDER;
+        const title = movieLabel(movie);
+        let html = '<div class="card-grid card-grid--feed card-grid--fit-title roulette-result-card">';
+        html += '<a class="card content-card card-ratio-9-16" href="'
+            + escapeHtml(movie.kinopoisk) + '" target="_blank" rel="noopener">';
+        html += '<img class="note-cover" src="' + escapeHtml(cover)
+            + '" alt="' + escapeHtml(movie.title_ru || "") + '">';
+        html += '<div class="note-preview md-content">';
+        html += "<h3>" + escapeHtml(title) + "</h3>";
         if (movie.title_en) {
-            html += "<div style=\"opacity:0.7;font-size:0.9em\">" + movie.title_en + "</div>";
+            html += '<p class="card-subtitle">' + escapeHtml(movie.title_en) + "</p>";
         }
+        html += "</div></a></div>";
         resultEl.innerHTML = html;
         resultEl.hidden = false;
+        if (typeof window.potykFitContentCardTitles === "function") {
+            window.potykFitContentCardTitles();
+        }
     }
 
     function resetWheelVisual() {

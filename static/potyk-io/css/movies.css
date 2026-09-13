@@ -148,22 +148,20 @@
 
 .roulette-result {
     margin-top: 1rem;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    background: #fff;
-    border: 1px solid #e0e0e0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    display: flex;
+    justify-content: center;
+    text-align: left;
 }
 
-.roulette-result a {
-    font-weight: 600;
-}
-
-.roulette-result-cover {
-    width: 100px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
+/* Одна контент-карточка как ячейка 4-колоночной сетки, по центру */
+.roulette-result .roulette-result-card {
+    width: calc((100% - 3 * 16px) / 4);
+    min-width: 140px;
+    max-width: 100%;
+    grid-template-columns: minmax(0, 1fr);
 }
 
 .roulette-empty {
