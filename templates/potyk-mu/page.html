@@ -28,6 +28,6 @@
 
     {% if artist_videos %}
     <h2 class="artist-section-title">Videos</h2>
-    {{ feed(artist_videos) }}
+    {{ feed(artist_videos, card_ratio="4/3") }}
     {% endif %}
 {% endblock %}
