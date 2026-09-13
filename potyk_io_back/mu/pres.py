@@ -130,12 +130,16 @@ def _render_feed_batch(spec: FeedSpec, *, exclude: set[str] | None = None):
     skip = exclude or set()
     notes, has_more = feed_batch(spec, BATCH_SIZE, exclude=skip)
     more = feed_more_url(spec.id, endpoint=url_for("mu.feed_more"))
+    text_cards = request.args.get("text_cards") in {"1", "true", "yes"}
+    if text_cards:
+        more = f"{more}&text_cards=1"
     return render_template(
         "jinja/_notes_batch.html",
         notes=notes,
         has_more=has_more,
         exclude=[*skip, *(n.get("id", n["url"]) for n in notes)],
         more_url=more,
+        text_cards=text_cards,
     )
 
 
@@ -143,12 +147,14 @@ def _render_feed_batch(spec: FeedSpec, *, exclude: set[str] | None = None):
 def index():
     blog = MU_FEEDS["blog"]
     notes, has_more = feed_batch(blog, BATCH_SIZE)
+    more = feed_more_url(blog.id, endpoint=url_for("mu.feed_more"))
+    more = f"{more}&text_cards=1"
     return render_template(
         "potyk-mu/index.html",
         notes=notes,
         has_more=has_more,
         exclude=[n.get("id", n["url"]) for n in notes],
-        more_url=feed_more_url(blog.id, endpoint=url_for("mu.feed_more")),
+        more_url=more,
     )
 
 
