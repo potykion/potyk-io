@@ -19,12 +19,9 @@
         grid-template-columns: repeat(3, minmax(0, 400px));
         justify-content: center;
     }
-}
 
-@container layout-main (min-width: 1100px) {
-    .card-grid {
-        grid-template-columns: repeat(4, minmax(0, 320px));
-        justify-content: center;
+    .card-grid.card-grid--4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 
@@ -41,12 +38,16 @@
     transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.card-grid .card:not(.card-text) {
+.card-grid .card.content-card {
     aspect-ratio: 3 / 4; /* контент-карточка по умолчанию */
 }
 
-.card-grid .card:not(.card-text).card-ratio-4-3 {
+.card-grid .card.content-card.card-ratio-4-3 {
     aspect-ratio: 4 / 3;
+}
+
+.card-grid .card.content-card.card-ratio-9-16 {
+    aspect-ratio: 9 / 16;
 }
 
 .card-grid .card:hover {

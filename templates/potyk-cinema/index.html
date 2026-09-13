@@ -14,9 +14,9 @@
 {% set movie_cover_placeholder = "/static/potyk-io/img/movies/cover-placeholder.svg" %}
 
 {% macro movies_grid(movies) %}
-<div class="card-grid card-grid--feed">
+<div class="card-grid card-grid--feed card-grid--4">
     {% for movie in movies %}
-    <a class="card" href="{{ movie.kinopoisk }}" target="_blank" rel="noopener">
+    <a class="card content-card card-ratio-9-16" href="{{ movie.kinopoisk }}" target="_blank" rel="noopener">
         <img class="note-cover"
              src="{{ movie.cover or movie_cover_placeholder }}"
              alt="{{ movie.title_ru }}"

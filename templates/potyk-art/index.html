@@ -14,7 +14,7 @@
 <div class="card-grid card-grid--feed">
     {% for project in projects %}
         {% for image in project.images %}
-        <a class="card" href="{{ image.url }}">
+        <a class="card content-card" href="{{ image.url }}">
             <img class="note-cover" src="{{ image.url }}" alt="{{ image.alt }}" loading="lazy">
             <div class="note-preview md-content"><h3>{{ project.title }}</h3></div>
         </a>
