@@ -8,7 +8,7 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import parse_qs, urlparse
 
 from potyk_io_back.potyk_io.feed.notes_feed import FeedSpec, iter_note_paths, note_url
-from potyk_io_back.potyk_io.feed.random_notes import apply_cover, note_card_html
+from potyk_io_back.potyk_io.feed.random_notes import apply_cover
 from potyk_io_back.potyk_io.md_rendering import split_frontmatter, unquote_meta
 
 _ARTIST_SLUG_RE = re.compile(r"[^\w\s-]", flags=re.UNICODE)
@@ -83,9 +83,11 @@ def albums_for_artist(artist_file: Path, *, albums_spec: FeedSpec) -> list[dict]
         meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
         if not album_belongs_to_artist(path, meta, artist_file=artist_file):
             continue
-        preview = note_card_html(path, meta=meta, body=body)
-        if not preview:
-            continue
+        album_title = unquote_meta(meta.get("album", "")) or path.stem
+        year = unquote_meta(meta.get("year", ""))
+        preview = f"<h3>{html.escape(album_title)}</h3>"
+        if year:
+            preview += f'\n<p class="card-subtitle">{html.escape(year)}</p>'
         card: dict = {
             "url": note_url(path, root=albums_spec.root, url_prefix=albums_spec.url_prefix),
             "preview": preview,
