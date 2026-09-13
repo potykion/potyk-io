@@ -33,6 +33,7 @@ class MovieCollection(db.Model):
     youtube = db.Column(db.Text, nullable=True)
     movie_ids = db.Column(db.JSON, nullable=False, default=list)
     sort_order = db.Column(db.Integer, nullable=False, default=0, index=True)
+    show = db.Column(db.Boolean, nullable=False, default=True)
 
 
 @dataclass
@@ -52,6 +53,7 @@ class CollectionView:
     movies: list[MovieView] = field(default_factory=list)
     youtube: str | None = None
     quote: str | None = None
+    show: bool = True
 
 
 @dataclass
@@ -117,6 +119,7 @@ def _seed_from_yaml_if_needed() -> None:
                 youtube=raw_col.get("youtube") or None,
                 movie_ids=movie_ids,
                 sort_order=idx,
+                show=True,
             )
         )
 
@@ -169,6 +172,7 @@ def load_movies_data() -> MoviesPage:
                 movies=_ordered_movies_by_ids((col.movie_ids if col.movie_ids else []) or []),
                 youtube=col.youtube,
                 quote=col.quote,
+                show=bool(col.show),
             )
         )
     return MoviesPage(collections=collections)

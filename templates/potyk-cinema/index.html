@@ -59,12 +59,12 @@
     <nav class="movies-toc">
         <ul>
 
-            {% for col in collections %}
+            {% for col in collections if col.show %}
                 <li><a href="#{{ col.id }}">{{ col.title }}</a></li>
             {% endfor %}
         </ul>
     </nav>
-    {% for col in collections %}
+    {% for col in collections if col.show %}
         <section class="movie-collection" id="{{ col.id }}">
             <h3>{{ col.title }}</h3>
 

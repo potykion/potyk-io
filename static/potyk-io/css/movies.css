@@ -1,10 +1,11 @@
 .movies-page h2 {
     margin-top: 2rem;
+    font-size: 2rem;
 }
 
 .movies-page h3 {
     margin-top: 1.25rem;
-    font-size: 1rem;
+    font-size: 1.5rem;
 }
 
 .movies-toc ul {
