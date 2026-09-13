@@ -5,40 +5,31 @@
 {% block style %}
     {{ super() }}
     <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/index.css">
     <link rel="stylesheet" href="/static/potyk-io/css/movies.css">
 {% endblock %}
 
 {% block main_class %}md-content movies-page{% endblock %}
 
-{% macro movies_table(movies) %}
-    <table class="movies-table">
-        <thead>
-        <tr>
-            <th class="col-cover">Обложка</th>
-            <th>Название</th>
-            <th>English</th>
-            <th class="col-year">Год</th>
-            <th class="col-kp">КП</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for movie in movies %}
-            <tr>
-                <td class="col-cover">
-                    {% if movie.cover %}
-                        <img src="{{ movie.cover }}" alt="{{ movie.title_ru }}" width="80" height="120" loading="lazy">
-                    {% endif %}
-                </td>
-                <td>{{ movie.title_ru }}</td>
-                <td class="col-en">{{ movie.title_en or '' }}</td>
-                <td class="col-year">{{ movie.year or '' }}</td>
-                <td class="col-kp">
-                    <a href="{{ movie.kinopoisk }}" target="_blank" rel="noopener">КП</a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+{% set movie_cover_placeholder = "/static/potyk-io/img/movies/cover-placeholder.svg" %}
+
+{% macro movies_grid(movies) %}
+<div class="card-grid card-grid--feed">
+    {% for movie in movies %}
+    <a class="card" href="{{ movie.kinopoisk }}" target="_blank" rel="noopener">
+        <img class="note-cover"
+             src="{{ movie.cover or movie_cover_placeholder }}"
+             alt="{{ movie.title_ru }}"
+             loading="lazy">
+        <div class="note-preview md-content">
+            <h3>{{ movie.title_ru }}{% if movie.year %} ({{ movie.year }}){% endif %}</h3>
+            {% if movie.title_en %}
+            <p class="card-subtitle">{{ movie.title_en }}</p>
+            {% endif %}
+        </div>
+    </a>
+    {% endfor %}
+</div>
 {% endmacro %}
 
 {% block main %}
@@ -89,7 +80,7 @@
                 </div>
             {% endif %}
 
-            {{ movies_table(col.movies) }}
+            {{ movies_grid(col.movies) }}
         </section>
     {% endfor %}
 
