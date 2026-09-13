@@ -59,6 +59,7 @@ h1 {
 .card-grid--feed .card:not(.card-text) .note-preview {
     flex-shrink: 0;
     padding: 10px 14px 12px;
+    text-align: center;
 }
 
 .card-grid--feed .card:not(.card-text) .note-preview h3 {
