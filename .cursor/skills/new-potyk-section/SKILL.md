@@ -40,7 +40,7 @@ Slug = короткое латинское имя (`cinema`, `reads`). URL = `/<
    - `*_MENU_GROUPS` для сайдбара раздела (как `ART_MENU_GROUPS`): пункты раздела + «← potyk-io» → `/`
    - пункт в `MENU_GROUPS` → группа «Проекты» (`title: potyk-<slug>`, `url: /<slug>/`)
 5. **`main.py`** — import + `app.register_blueprint(*_bp)` **до** `potyk_io_bp` (у него catch-all)
-6. Опционально: `docs/potyk-<slug>.md` (поведение) — аппрув не нужен
+6. Опционально: `docs/projects/potyk-<slug>.md` (поведение) — аппрув не нужен
 
 Минимальный `pres.py`:
 
