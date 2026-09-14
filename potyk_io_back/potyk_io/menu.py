@@ -305,6 +305,12 @@ CINEMA_MENU_GROUPS: list[MenuGroup] = [
                 "url": "/cinema/where-to-watch",
                 "description": "",
             },
+            {
+                "icon": "🇻🇳",
+                "title": "Вьетнамское кино",
+                "url": "/cinema/vietnamese-cinema",
+                "description": "",
+            },
         ],
     },
     {

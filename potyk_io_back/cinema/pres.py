@@ -79,6 +79,11 @@ def where_to_watch():
     return render_template("potyk-cinema/where-to-watch.html")
 
 
+@cinema_bp.get("/vietnamese-cinema")
+def vietnamese_cinema():
+    return render_template("potyk-cinema/vietnamese-cinema.html")
+
+
 @cinema_bp.get("/admin")
 @login_required
 def movies_admin():

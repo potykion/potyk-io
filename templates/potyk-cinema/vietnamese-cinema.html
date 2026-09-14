@@ -1,0 +1,42 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}Вьетнамское кино — potyk-cinema{% endblock %}
+
+{% block style %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main_class %}main-m md-content{% endblock %}
+
+{% block main %}
+    <h1>Вьетнамское кино</h1>
+
+    <h2>Где посмотреть</h2>
+    <p>
+        Дни вьетнамского кино от
+        <a href="https://roskino.org" target="_blank" rel="noopener">Роскино</a>.
+        Следить удобно в
+        <a href="https://t.me/roskino_rcw" target="_blank" rel="noopener">тг Роскино</a>;
+        обычно проходит в кинотеатре Иллюзион — их канал
+        <a href="https://t.me/gosfilmofond" target="_blank" rel="noopener">Госфильмофонд / Иллюзион</a>.
+    </p>
+
+    <h2>Что смотрел</h2>
+    <ul>
+        <li>
+            <a href="https://www.kinopoisk.ru/film/8041127/" target="_blank" rel="noopener">Детектив Кьен: Безголовый ужас (2025)</a>
+        </li>
+        <li>
+            <a href="https://www.kinopoisk.ru/film/11272898/" target="_blank" rel="noopener">Угнанный рейс (2025)</a>
+        </li>
+    </ul>
+
+    <h2>Какое оно</h2>
+    <p>У кинца свой аутентик вайбик, свой флёр:</p>
+    <ul>
+        <li>жестокость показывают и показывать умеют;</li>
+        <li>многослойный сюжет / твисты;</li>
+        <li>видно, что уважают свою страну и традиции — природа, сюжеты на фольклоре или реальных событиях.</li>
+    </ul>
+{% endblock %}
