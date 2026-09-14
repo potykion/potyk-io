@@ -1,0 +1,37 @@
+---
+description: Как запускать GitHub CLI (gh) на этой машине
+alwaysApply: true
+---
+
+# GitHub CLI (`gh`)
+
+На Windows в PowerShell команда `gh` часто **не в PATH**. Не тратить время на поиск каждый раз.
+
+## Как вызывать
+
+Полный путь:
+
+```powershell
+& "$env:ProgramFiles\GitHub CLI\gh.exe" <args>
+```
+
+Для удобства в начале сессии с GitHub можно один раз:
+
+```powershell
+$env:Path = "$env:ProgramFiles\GitHub CLI;$env:Path"
+```
+
+После этого обычный `gh` работает в этой сессии shell.
+
+## Типичные команды
+
+Репозиторий по умолчанию — текущий git remote (`potykion/potyk-io`).
+
+```powershell
+gh issue view <N>
+gh issue close <N> --comment "…"
+gh pr create …
+gh pr view …
+```
+
+Если без PATH: подставлять `& "$env:ProgramFiles\GitHub CLI\gh.exe"` вместо `gh`.
