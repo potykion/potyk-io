@@ -35,6 +35,7 @@ h1.site-logo img {
     margin-right: auto;
     max-width: min(400px, 100%);
     height: auto;
+    filter: drop-shadow(2px 4px 6px black);
 }
 .card,
 .icon {
