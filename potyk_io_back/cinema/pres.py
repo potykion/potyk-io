@@ -1,5 +1,6 @@
 import json
 import re
+from pathlib import Path
 
 import sqlalchemy as sa
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
@@ -15,11 +16,11 @@ from potyk_io_back.potyk_io.collections.movies import (
     movies_for_client,
 )
 from potyk_io_back.potyk_io.md_rendering import render_body_html, split_frontmatter
-from potyk_io_back.potyk_io.md_rendering.templates import TEMPLATES_DIR
 from potyk_io_back.potyk_io.menu import CINEMA_MENU_GROUPS
 
 cinema_bp = Blueprint("cinema", __name__, url_prefix="/cinema")
 
+CINEMA_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "potyk-cinema"
 WATCH_LATER_COLLECTION_ID = "watch_later"
 
 
@@ -83,7 +84,7 @@ def where_to_watch():
 
 @cinema_bp.get("/vietnamese-cinema")
 def vietnamese_cinema():
-    file = TEMPLATES_DIR / "potyk-cinema" / "vietnamese-cinema.md"
+    file = CINEMA_TEMPLATES_DIR / "vietnamese-cinema.md"
     meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
     return render_body_html(body, meta, title="Вьетнамское кино")
 
