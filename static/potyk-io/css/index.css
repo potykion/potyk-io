@@ -143,19 +143,6 @@ h1.site-logo img {
     justify-content: center;
 }
 
-.welcome-mat-wrap {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 24px;
-}
-
-.welcome-mat {
-    display: block;
-    max-width: min(480px, 100%);
-    height: auto;
-    border-radius: 4px;
-}
-
 .flex-col {
     flex-direction: column;
 }

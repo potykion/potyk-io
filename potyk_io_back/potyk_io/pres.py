@@ -1,7 +1,6 @@
 from datetime import date, datetime, timedelta
 from itertools import groupby
 from pathlib import Path, PurePosixPath
-import random
 
 import flask
 import markdown
@@ -97,21 +96,6 @@ def render_food_markdown(file: Path):
     )
 
 
-_WELCOME_MATS_DIR = Path(__file__).resolve().parents[2] / "static" / "potyk-io" / "img" / "welcome-mats"
-_WELCOME_MAT_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
-
-
-def random_welcome_mat_url() -> str:
-    mats = sorted(
-        p.name
-        for p in _WELCOME_MATS_DIR.iterdir()
-        if p.is_file() and p.suffix.lower() in _WELCOME_MAT_EXTS
-    )
-    if not mats:
-        return "/static/potyk-io/img/welcome-mat.jpg"
-    return f"/static/potyk-io/img/welcome-mats/{random.choice(mats)}"
-
-
 @potyk_io_bp.route("/")
 def index():
     notes, has_more = random_note_batch(BATCH_SIZE)
@@ -121,7 +105,6 @@ def index():
         has_more=has_more,
         exclude=[n.get("id", n["url"]) for n in notes],
         more_url="/feed/more",
-        welcome_mat_url=random_welcome_mat_url(),
     )
 
 
@@ -460,6 +443,5 @@ def page(page_path: str):
             has_more=has_more,
             exclude=[n.get("id", n["url"]) for n in notes],
             more_url="/feed/more",
-            welcome_mat_url=random_welcome_mat_url(),
         )
     return flask.render_template(template_name, **ctx)
