@@ -50,6 +50,26 @@ created: 2026-08-05
 - Треск в правом ухе (это брак?)
 - Легко подключаются по блютику
 
+### Мыши
+
+#### [Defender Accura MM-365](https://defender.ru/catalog/mice/accura-mm-365-black-6d-800-1600-dpi)
+
+Домашняя мышь. Ещё на [М.Видео](https://www.mvideo.ru/products/50129833).
+
+![defender-accura-mm-365.jpg](/static/potyk-io/img/defender-accura-mm-365.jpg)
+
+- Бортики — хуйня
+- Разные режимы DPI — круто
+
+#### [Logitech M100](https://www.logitech.com/en-us/shop/p/m100-usb-mouse)
+
+Рабочая мышь, база.
+
+![logitech-m100.jpg](/static/potyk-io/img/logitech-m100.jpg)
+
+- Нормальная база
+- Сегодня начались проблемы — решается ковриком?
+
 ## Принципы
 
 ### Как выбрать ноут
