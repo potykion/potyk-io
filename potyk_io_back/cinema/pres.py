@@ -14,6 +14,8 @@ from potyk_io_back.potyk_io.collections.movies import (
     load_movies_data,
     movies_for_client,
 )
+from potyk_io_back.potyk_io.md_rendering import render_body_html, split_frontmatter
+from potyk_io_back.potyk_io.md_rendering.templates import TEMPLATES_DIR
 from potyk_io_back.potyk_io.menu import CINEMA_MENU_GROUPS
 
 cinema_bp = Blueprint("cinema", __name__, url_prefix="/cinema")
@@ -81,7 +83,9 @@ def where_to_watch():
 
 @cinema_bp.get("/vietnamese-cinema")
 def vietnamese_cinema():
-    return render_template("potyk-cinema/vietnamese-cinema.html")
+    file = TEMPLATES_DIR / "potyk-cinema" / "vietnamese-cinema.md"
+    meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
+    return render_body_html(body, meta, title="Вьетнамское кино")
 
 
 @cinema_bp.get("/admin")
