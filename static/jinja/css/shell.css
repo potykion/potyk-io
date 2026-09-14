@@ -107,7 +107,8 @@ main.main-m {
     max-width: 800px;
 }
 
-main.main-m:has(.menu-table) {
+main.main-m:has(.menu-table),
+main.main-m:has(.tier-list) {
     max-width: 900px;
 }
 

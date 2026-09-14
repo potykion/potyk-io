@@ -10,33 +10,32 @@ toc: true
 
 ### Тир-лист
 
-**A**
-- [Чиз · Виноград](#чиз--виноград)
-
-**C**
-- [Полный стакан · Маракуйя](#полный-стакан--маракуйя)
-
-### Обзоры
-
-#### Чиз · Виноград
-
-<img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/02-чиз-виноград-l.jpg" alt="Чиз · Виноград" width="200" height="200" loading="lazy">
-
-**Описание:** Напиток на основе зеленого чая, с добавлением винограда, нежного чиз-крема и жасминового желе. Подается с большим количеством льда
-
-**Обзор:** Вкус мороженого «Улица Сезам» с виноградом и ананасом — ахуй
-
-**Тир:** A
-
-#### Полный стакан · Маракуйя
-
-<img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/12-полный-стакан-маракуйя-l.jpg" alt="Полный стакан · Маракуйя" width="200" height="200" loading="lazy">
-
-**Описание:** Жасминовый чай с маракуйей и кокосовым желе
-
-**Обзор:** Терпкий чай с семенами маракуйи и коко-желе как в сладкой водичке, на вкус как ипаха
-
-**Тир:** C
+<table class="tier-list">
+<tr>
+<th class="tier-rank tier-s" scope="row">S</th>
+<td class="tier-items"><div class="tier-flex"></div></td>
+</tr>
+<tr>
+<th class="tier-rank tier-a" scope="row">A</th>
+<td class="tier-items"><div class="tier-flex">
+<a class="tier-item" href="#met-cheese-grape" title="Чиз · Виноград"><img src="/food/thoughts/_img/menus/mettea/02-чиз-виноград-l.jpg" alt="Чиз · Виноград" loading="lazy"></a>
+</div></td>
+</tr>
+<tr>
+<th class="tier-rank tier-b" scope="row">B</th>
+<td class="tier-items"><div class="tier-flex">
+<a class="tier-item" href="#met-passion-fruit" title="Полный стакан · Маракуйя"><img src="/food/thoughts/_img/menus/mettea/12-полный-стакан-маракуйя-l.jpg" alt="Полный стакан · Маракуйя" loading="lazy"></a>
+</div></td>
+</tr>
+<tr>
+<th class="tier-rank tier-c" scope="row">C</th>
+<td class="tier-items"><div class="tier-flex"></div></td>
+</tr>
+<tr>
+<th class="tier-rank tier-d" scope="row">D</th>
+<td class="tier-items"><div class="tier-flex"></div></td>
+</tr>
+</table>
 
 ### Кофе
 
@@ -70,7 +69,7 @@ toc: true
 ### Полный фруктовый
 
 <table class="menu-table">
-<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/12-полный-стакан-маракуйя-l.jpg" alt="Полный стакан · Маракуйя" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Полный стакан · Маракуйя</strong><br>Жасминовый чай с маракуйей и кокосовым желе</td></tr>
+<tr id="met-passion-fruit"><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/12-полный-стакан-маракуйя-l.jpg" alt="Полный стакан · Маракуйя" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Полный стакан · Маракуйя</strong> <span class="menu-tier">B</span><br>Жасминовый чай с маракуйей и кокосовым желе<br><span class="menu-review">Терпкий чай с семенами маракуйи и коко-желе как в сладкой водичке, на вкус как ипаха</span></td></tr>
 <tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/01-полный-стакан-апельсин-l.jpg" alt="Полный стакан · Апельсин" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Полный стакан · Апельсин</strong><br>Жасминовый чай со свежевыжатым соком апельсина и добавлением лайма, лимона и апельсина</td></tr>
 <tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/13-полный-стакан-грейпфрут-l.jpg" alt="Полный стакан · Грейпфрут" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Полный стакан · Грейпфрут</strong><br>Зеленый чай с грейпфрутом</td></tr>
 <tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/14-жасминовый-чай-с-лимоном.jpg" alt="Жасминовый чай с лимоном" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Жасминовый чай с лимоном</strong><br>Жасминовый чай с лимон и лаймом</td></tr>
@@ -79,7 +78,7 @@ toc: true
 ### Чиз · Фруктовый
 
 <table class="menu-table">
-<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/02-чиз-виноград-l.jpg" alt="Чиз · Виноград" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз · Виноград</strong><br>Напиток на основе зеленого чая, с добавлением винограда, нежного чиз-крема и жасминового желе. Подается с большим количеством льда</td></tr>
+<tr id="met-cheese-grape"><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/02-чиз-виноград-l.jpg" alt="Чиз · Виноград" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз · Виноград</strong> <span class="menu-tier">A</span><br>Напиток на основе зеленого чая, с добавлением винограда, нежного чиз-крема и жасминового желе. Подается с большим количеством льда<br><span class="menu-review">Вкус мороженого «Улица Сезам» с виноградом и ананасом — ахуй</span></td></tr>
 <tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/15-чиз-манго-l.jpg" alt="Чиз · Манго" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз · Манго</strong><br>Напиток на основе зеленого чая, с добавлением свежего манго и нежного чиз-крема. Подается с большим количеством льда.</td></tr>
 <tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/mettea/16-чиз-клубника-l.jpg" alt="Чиз · Клубника" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Чиз · Клубника</strong><br>Напиток на основе зеленого чая, клубники и с добавлением чиз-крема.  Подается с большим количеством льда</td></tr>
 </table>
@@ -129,20 +128,30 @@ toc: true
 
 ### Тир-лист
 
-**A**
-- [Берис х Берис](#берис-х-берис)
-
-### Обзоры
-
-#### Берис х Берис
-
-<img class="menu-thumb" src="/food/thoughts/_img/menus/pims/19-берис-х-берис.jpg" alt="Берис х Берис" width="200" height="200" loading="lazy">
-
-**Описание:** Напиток на основе тонизирующего чая Да Хун Пао с добавлением сочных ягод ежевики и малины
-
-**Обзор:** Тёплый. Цвета ягодного моссика: на первом плане чай с малиновым вареньем, маслянистое послевкусие молочного шоколада / кофейных бобов и клубничного компота, немного ферментированных ноток, вишнёвая косточка, тонкая ежевика, чуть песочка от перемолотых костей. В осадке — разбухшая от жидкости битая малинка.
-
-**Тир:** A
+<table class="tier-list">
+<tr>
+<th class="tier-rank tier-s" scope="row">S</th>
+<td class="tier-items"><div class="tier-flex"></div></td>
+</tr>
+<tr>
+<th class="tier-rank tier-a" scope="row">A</th>
+<td class="tier-items"><div class="tier-flex">
+<a class="tier-item" href="#pims-beris" title="Берис х Берис"><img src="/food/thoughts/_img/menus/pims/19-берис-х-берис.jpg" alt="Берис х Берис" loading="lazy"></a>
+</div></td>
+</tr>
+<tr>
+<th class="tier-rank tier-b" scope="row">B</th>
+<td class="tier-items"><div class="tier-flex"></div></td>
+</tr>
+<tr>
+<th class="tier-rank tier-c" scope="row">C</th>
+<td class="tier-items"><div class="tier-flex"></div></td>
+</tr>
+<tr>
+<th class="tier-rank tier-d" scope="row">D</th>
+<td class="tier-items"><div class="tier-flex"></div></td>
+</tr>
+</table>
 
 ### Ла-ти
 
@@ -190,7 +199,7 @@ toc: true
 ### PIMS Фрукты
 
 <table class="menu-table">
-<tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/19-берис-х-берис.jpg" alt="Берис х Берис" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Берис х Берис</strong><br>Напиток на основе тонизирующего чая Да Хун Пао с добавлением сочных ягод ежевики и малины</td></tr>
+<tr id="pims-beris"><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/19-берис-х-берис.jpg" alt="Берис х Берис" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Берис х Берис</strong> <span class="menu-tier">A</span><br>Напиток на основе тонизирующего чая Да Хун Пао с добавлением сочных ягод ежевики и малины<br><span class="menu-review">Тёплый. Цвета ягодного моссика: на первом плане чай с малиновым вареньем, маслянистое послевкусие молочного шоколада / кофейных бобов и клубничного компота, немного ферментированных ноток, вишнёвая косточка, тонкая ежевика, чуть песочка от перемолотых костей. В осадке — разбухшая от жидкости битая малинка.</span></td></tr>
 <tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/20-киви-алоэ.jpg" alt="Киви Алоэ" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Киви Алоэ</strong><br>Напиток на основе сильно тонизирующего чая Габа с добавлением свежего киви, мёда и алоэ</td></tr>
 <tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/21-личи-манго.jpg" alt="Личи Манго" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Личи Манго</strong><br>Напиток на основе освежающего чая жасмин с добавлением сладкого манго и личи.</td></tr>
 <tr><td class="menu-thumb-cell"><img class="menu-thumb" src="/food/thoughts/_img/menus/pims/22-олл-ин.jpg" alt="Олл Ин" width="200" height="200" loading="lazy"></td><td class="menu-text-cell"><strong>Олл Ин</strong><br>Напиток на основе освежающего чая с жасмином с сочным миксом из цитрусов: личи, лайм, голубика, маракуйя, грейпфрут, жасмин, апельсин, ананас</td></tr>
