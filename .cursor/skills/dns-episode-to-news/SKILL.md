@@ -126,8 +126,15 @@ rows = c.execute("SELECT ticker, name, asset_type, sector FROM invest_tickers OR
 
 ### 3. Новости → миграция
 
-Файл: `migrations/versions/<revision>_dns_YYYY_MM_DD.py`  
-`down_revision` = текущий head alembic.
+Файл: `migrations/versions/<revision>_dns_YYYY_MM_DD.py`
+
+**Alembic (не проёбываться):** см. правило `.cursor/rules/alembic.mdc`. Кратко:
+
+1. Head = `SELECT * FROM alembic_version` в `instance/main.db`, не угадывать по именам файлов.
+2. `revision` — **уникальный** (`dns_YYYYMMDD` или random hex). Не брать короткие `a0b1…`/`b2c3…` — в репо уже заняты → cycle.
+3. `down_revision` = версия из БД (или tip ненакатанной цепочки от неё).
+4. Накат: `python -m alembic upgrade <revision>` (не `flask db`, не голый `alembic`).
+5. На Windows сложные проверки — через `_tmp_….py`, не через `python -c` с кавычками в PowerShell.
 
 Каждая новость — dict в `NEWS_ROWS`:
 
@@ -170,15 +177,17 @@ rows = c.execute("SELECT ticker, name, asset_type, sector FROM invest_tickers OR
 - На каждый блок конспекта есть строка в `NEWS_ROWS`
 - Все `ticker` есть в БД или в `NEW_TICKERS`
 - `slug` уникальны (не конфликтуют с существующими в `invest_news`)
-- После миграции: `flask db upgrade` (или `alembic upgrade head`)
+- После миграции: `python -m alembic upgrade <revision>` и проверка `SELECT … FROM invest_news WHERE source=…`
 
 ### 5. Чтение БД на Windows
 
-Если `sqlite3` CLI недоступен — Python:
+`sqlite3` CLI / сложный `python -c` в PowerShell часто ломаются. Надёжнее короткий скрипт или:
 
-```python
+```powershell
 python -c "import sqlite3; c=sqlite3.connect('instance/main.db'); print(c.execute('SELECT ticker,name FROM invest_tickers').fetchall())"
 ```
+
+(без вложенных `\"` внутри строки PowerShell).
 
 ## Не делать
 

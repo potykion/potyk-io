@@ -1,0 +1,33 @@
+---
+description: Как писать и накатывать alembic-миграции в этом репо (без коллизий revision)
+alwaysApply: true
+---
+
+# Alembic в potyk-io
+
+## Перед новой миграцией (обязательно)
+
+1. **Head брать из БД**, не угадывать по именам файлов:
+   ```powershell
+   python -c "import sqlite3; print(sqlite3.connect('instance/main.db').execute('SELECT * FROM alembic_version').fetchall())"
+   ```
+2. **Revision id — уникальный.** Перед выбором проверить, что строки `revision = "..."` с этим id **нет** ни в одном файле `migrations/versions/`. Короткие «красивые» hex вроде `a0b1c2d3e4f5` / `b2c3d4e5f6a7` в репо уже заняты и легко коллизят → **cycle / Revision present more than once**.
+3. Надёжный id: осмысленный (`dns_20260911`) или `uuid.uuid4().hex[:12]`. Не копировать паттерн соседей вслепую.
+4. `down_revision` = то, что сейчас в `alembic_version` **если** накатываешь сразу на эту БД; если в файлах уже есть ненакатанная цепочка после БД — вешать на **реальный tip цепочки файлов**, которая ведёт от версии БД (иначе ветка/два head). Обычно: БД → догнать промежуточные → новая миграция на tip.
+
+## Запуск
+
+- Команда: `python -m alembic …` (не голый `alembic`, не `flask db` — в этом окружении их часто нет).
+- Накатить свою: `python -m alembic upgrade <revision_id>` или `upgrade head`, если граф целый.
+- Если alembic орёт **Cycle** / **present more than once** — ты занял чужой `revision`. Удалить/переименовать свой файл, взять новый id, не чинить граф «магией».
+
+## Windows / PowerShell
+
+- Не пихать сложный Python с кавычками в `python -c "..."` через PowerShell — ломается escaping.
+- Писать короткий `_tmp_….py` в корень, запустить, удалить. Или here-string `@' … '@` без вложенных кавычек в SQL.
+
+## После написания
+
+- Убедиться: один файл = один уникальный `revision`; `down_revision` существует.
+- Прогнать upgrade.
+- Для data-миграций (ДнС и т.п.) — проверить строки в SQL, не только «exit 0».

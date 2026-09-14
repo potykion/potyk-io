@@ -46,7 +46,7 @@ https://st.kp.yandex.net/images/film_iphone/iphone360_{id}.jpg
 - [ ] 1. SELECT movies WHERE cover IS NULL OR cover = ''
 - [ ] 2. Скачать постеры в static/potyk-io/img/movies/
 - [ ] 3. Alembic-миграция: UPDATE movies SET cover = ... WHERE id = ... AND (cover IS NULL OR cover = '')
-- [ ] 4. down_revision = текущий alembic head; python -m alembic upgrade head (из .venv)
+- [ ] 4. down_revision из `alembic_version` в БД; уникальный revision id; `python -m alembic upgrade <rev>` (см. `.cursor/rules/alembic.mdc`)
 - [ ] 5. Проверить: missing = 0; файлы на диске есть
 ```
 
