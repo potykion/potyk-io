@@ -58,8 +58,6 @@ created: 2026-08-05
 
 ![defender-accura-mm-365.jpg](/static/potyk-io/img/defender-accura-mm-365.jpg)
 
-![defender-accura-mm-365-side.jpg](/static/potyk-io/img/defender-accura-mm-365-side.jpg)
-
 - Бортики — хуйня
 - Разные режимы DPI — круто
 
@@ -68,8 +66,6 @@ created: 2026-08-05
 Рабочая мышь, база.
 
 ![logitech-m100.jpg](/static/potyk-io/img/logitech-m100.jpg)
-
-![logitech-m100-side.jpg](/static/potyk-io/img/logitech-m100-side.jpg)
 
 - Нормальная база
 - Сегодня начались проблемы — решается ковриком?
