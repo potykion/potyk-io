@@ -262,3 +262,20 @@
     margin-bottom: 0.35rem;
     font-size: 1.05rem;
 }
+
+.md-content img.menu-thumb {
+    width: 200px !important;
+    height: 200px !important;
+    max-width: none;
+    object-fit: cover;
+    display: block;
+    border-radius: 4px;
+    margin: 0 0 1rem;
+}
+
+@media screen and (max-width: 600px) {
+    .md-content img.menu-thumb {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}
