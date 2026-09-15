@@ -19,6 +19,11 @@ MU_MENU_ITEMS: list[MuMenuItem] = [
         "url": "/mu/artists/",
     },
     {
+        "icon": "📜",
+        "title": "Лор",
+        "url": "/mu/lore",
+    },
+    {
         "icon": "📊",
         "title": "Альбомы: стата",
         "url": "https://docs.google.com/spreadsheets/d/1Dy9fxDgLzxy84PsIAoyappVB9xfTYHls1rn9KNe4gDs/edit?usp=sharing",
@@ -42,7 +47,10 @@ MU_MENU_ITEMS: list[MuMenuItem] = [
 
 
 def is_mu_link_active(url: str, path: str) -> bool:
-    normalized = url.rstrip("/") or "/"
-    if normalized == "/mu":
-        return path.rstrip("/") == "/mu" or path.startswith("/mu/")
-    return path == url
+    if url.startswith(("http://", "https://")):
+        return False
+    normalized_url = url.rstrip("/") or "/"
+    normalized_path = path.rstrip("/") or "/"
+    if normalized_url == "/mu":
+        return normalized_path == "/mu"
+    return normalized_path == normalized_url or normalized_path.startswith(f"{normalized_url}/")
