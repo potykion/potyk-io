@@ -25,7 +25,7 @@ description: >-
 
 Перед ответом быстро сверить факты:
 
-1. Свежие `templates/potyk-io/diary/YYYY-MM-DD.md` (и поездки рядом по дате: `bryansk-bytosh`, `suzdal-cucumber-26`, `tula` и т.п.).
+1. Свежие `templates/potyk-io/diary/YYYY-MM-DD.md` (и поездки в `templates/potyk-travel/memories/`: `bryansk-bytosh`, `suzdal-cucumber-26`, `tula` и т.п.).
 2. Что пользователь поправил в этом чате — это сильнее дневника.
 
 Не выдумывать поездки, людей и эмоции. Если факта нет — формулировка общая или спросить одной строкой.
