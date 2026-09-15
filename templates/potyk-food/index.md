@@ -58,6 +58,7 @@
 - [Рыба, запеченная с помидорами и оливками по-средиземноморски](recipes/04-main-course/fish-w-tomatoes-olives.md)
 - [Ленивые голубцы в духовке](recipes/04-main-course/lazy-golubtsy.md)
 - [Рататуй (овощное рагу)](recipes/04-main-course/ratatouille.md)
+- [Фаршированный болгарский перец](recipes/04-main-course/stuffed-pepper.md)
 
 #### Субпродукты
 
