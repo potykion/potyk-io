@@ -27,12 +27,6 @@ MENU_GROUPS: list[MenuGroup] = [
         "title": "Проекты",
         "links": [
             {
-                "icon": "✍️",
-                "title": "Написать мне",
-                "url": "/inbox/send",
-                "description": "",
-            },
-            {
                 "icon": "💰",
                 "title": "potyk-fin",
                 "url": "/fin",
@@ -70,82 +64,6 @@ MENU_GROUPS: list[MenuGroup] = [
             },
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
-        ],
-    },
-    {
-        "title": "ссылочки",
-        "links": [
-            {
-                "icon": "🔗",
-                "title": "Бесконечный потик",
-                "url": "https://t.me/potyk_eternal",
-                "description": "Обещаю, это последний мой тг канал",
-            },
-            {
-                "icon": "📁",
-                "title": "Папочка с моими старыми тг каналами",
-                "url": "https://t.me/addlist/jMUGZkWRI-85ZjJi",
-                "description": "Ох, ребята, перечитываю канальчик и да, пиздато всё-таки вышло, не надо забрасывать свой фристайл",
-            },
-        ],
-    },
-    {
-        "title": "Отношач",
-        "links": [
-            {
-                "icon": "🧠",
-                "title": "Размышления",
-                "url": "/thoughts/relationships",
-                "description": "",
-            },
-            {
-                "icon": "📝",
-                "title": "State",
-                "url": "/n/relationships",
-                "description": "",
-            },
-            {
-                "icon": "📝",
-                "title": "Как найти девушку",
-                "url": "/guides/find-gf",
-                "description": "",
-            },
-        ],
-    },
-    {
-        "title": "Селф",
-        "links": [
-            {"icon": "📝", "title": "Обо мне", "url": "/n", "description": ""},
-            {"icon": "📔", "title": "Днев", "url": "/diary", "description": ""},
-            {
-                "icon": "📝",
-                "title": "Кулстори",
-                "url": "/cool-stories",
-                "description": "",
-            },
-            {
-                "icon": "❤️",
-                "title": "Благотворительность",
-                "url": "/charity",
-                "description": "",
-            },
-            {
-                "icon": "🎯",
-                "title": "Цели 2026",
-                "url": "/n/2026-goals",
-                "description": "",
-            },
-            {
-                "icon": "🪦",
-                "title": "Некролог",
-                "url": "/necrolog",
-                "description": "",
-            },
-        ],
-    },
-    {
-        "title": "Всякое",
-        "links": [
             {
                 "icon": "🛠️",
                 "title": "Админка",
