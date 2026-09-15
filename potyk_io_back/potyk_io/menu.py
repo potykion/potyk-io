@@ -27,12 +27,6 @@ MENU_GROUPS: list[MenuGroup] = [
         "title": "Проекты",
         "links": [
             {
-                "icon": "✍️",
-                "title": "Написать мне",
-                "url": "/inbox/send",
-                "description": "",
-            },
-            {
                 "icon": "💰",
                 "title": "potyk-fin",
                 "url": "/fin",
@@ -68,13 +62,19 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/culture/",
                 "description": "",
             },
-            {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
-            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
+            {
+                "icon": "🛠️",
+                "title": "Админка",
+                "url": "/admin",
+                "description": "",
+            },
         ],
     },
     {
-        "title": "ссылочки",
+        "title": "Содержание",
         "links": [
+            {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
+            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
             {
                 "icon": "🔗",
                 "title": "Бесконечный потик",
@@ -87,11 +87,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "https://t.me/addlist/jMUGZkWRI-85ZjJi",
                 "description": "Ох, ребята, перечитываю канальчик и да, пиздато всё-таки вышло, не надо забрасывать свой фристайл",
             },
-        ],
-    },
-    {
-        "title": "Отношач",
-        "links": [
             {
                 "icon": "🧠",
                 "title": "Размышления",
@@ -110,11 +105,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/guides/find-gf",
                 "description": "",
             },
-        ],
-    },
-    {
-        "title": "Селф",
-        "links": [
             {"icon": "📝", "title": "Обо мне", "url": "/n", "description": ""},
             {"icon": "📔", "title": "Днев", "url": "/diary", "description": ""},
             {
@@ -139,17 +129,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🪦",
                 "title": "Некролог",
                 "url": "/necrolog",
-                "description": "",
-            },
-        ],
-    },
-    {
-        "title": "Всякое",
-        "links": [
-            {
-                "icon": "🛠️",
-                "title": "Админка",
-                "url": "/admin",
                 "description": "",
             },
         ],
