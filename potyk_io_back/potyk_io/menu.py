@@ -62,49 +62,14 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/tech/",
                 "description": "Девайсы, резюме, кодинг",
             },
-            {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
-            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
-        ],
-    },
-    {
-        "title": "potyk-culture",
-        "links": [
             {
                 "icon": "🎭",
                 "title": "potyk-culture",
                 "url": "/culture/",
                 "description": "",
             },
-            {
-                "icon": "🎵",
-                "title": "potyk-mu",
-                "url": "/mu/",
-                "description": "",
-            },
-            {
-                "icon": "🎬",
-                "title": "potyk-cinema",
-                "url": "/cinema/",
-                "description": "Подборки и рулетка",
-            },
-            {
-                "icon": "📚",
-                "title": "potyk-reads",
-                "url": "/reads/",
-                "description": "",
-            },
-            {
-                "icon": "🖼️",
-                "title": "potyk-art",
-                "url": "/art/",
-                "description": "Рисую чертей по фану",
-            },
-            {
-                "icon": "🤡",
-                "title": "potyk-prikols",
-                "url": "/prikols/",
-                "description": "Музей приколов",
-            },
+            {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
+            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
         ],
     },
     {
@@ -262,17 +227,130 @@ _CULTURE_BACK_LINK: MenuItem = {
 }
 
 
+_CULTURE_OWN_LINKS: list[MenuItem] = [
+    {
+        "icon": "🎭",
+        "title": "Театр",
+        "url": "/culture/teatr",
+        "description": "",
+    },
+    {
+        "icon": "🌐",
+        "title": "Интернет",
+        "url": "/culture/internet",
+        "description": "",
+    },
+    {
+        "icon": "📺",
+        "title": "ТВ / Нулевые",
+        "url": "/culture/tv-nulevye",
+        "description": "",
+    },
+]
+
+
+_MU_SECTION_LINKS: list[MenuItem] = [
+    {
+        "icon": "🎵",
+        "title": "Статьи",
+        "url": "/mu/",
+        "description": "",
+    },
+    {
+        "icon": "🎤",
+        "title": "Исполнители",
+        "url": "/mu/artists/",
+        "description": "",
+    },
+    {
+        "icon": "📜",
+        "title": "Лор",
+        "url": "/mu/lore",
+        "description": "",
+    },
+    {
+        "icon": "📊",
+        "title": "Альбомы: стата",
+        "url": "https://docs.google.com/spreadsheets/d/1Dy9fxDgLzxy84PsIAoyappVB9xfTYHls1rn9KNe4gDs/edit?usp=sharing",
+        "description": "",
+    },
+    {
+        "icon": "📺",
+        "title": "танцевальное по лайту",
+        "url": "https://www.youtube.com/playlist?list=PLdb8DVmvU9i5bGINNz10f-ga_bqD41O4q",
+        "description": "",
+    },
+    {
+        "icon": "🤝",
+        "title": "Го дружить в RYM",
+        "url": "https://rateyourmusic.com/~potykion",
+        "description": "",
+    },
+]
+
+
+_CINEMA_SECTION_LINKS: list[MenuItem] = [
+    {
+        "icon": "🎬",
+        "title": "Подборки",
+        "url": "/cinema/",
+        "description": "",
+    },
+    {
+        "icon": "📺",
+        "title": "Где смотреть кино",
+        "url": "/cinema/where-to-watch",
+        "description": "",
+    },
+    {
+        "icon": "🇻🇳",
+        "title": "Вьетнамское кино",
+        "url": "/cinema/vietnamese-cinema",
+        "description": "",
+    },
+]
+
+
+_ART_SECTION_LINKS: list[MenuItem] = [
+    {
+        "icon": "🖼️",
+        "title": "Главная",
+        "url": "/art/",
+        "description": "Рисую чертей по фану",
+    },
+    {
+        "icon": "🖼️",
+        "title": "Инста",
+        "url": "https://www.instagram.com/potyk.art",
+        "description": "Рисую чертей по фану",
+    },
+]
+
+
+_READS_SECTION_LINKS: list[MenuItem] = [
+    {
+        "icon": "📚",
+        "title": "Главная",
+        "url": "/reads/",
+        "description": "",
+    },
+]
+
+
+_PRIKOLS_SECTION_LINKS: list[MenuItem] = [
+    {
+        "icon": "🤡",
+        "title": "Главная",
+        "url": "/prikols/",
+        "description": "Музей приколов",
+    },
+]
+
+
 ART_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "potyk-art",
-        "links": [
-            {
-                "icon": "🖼️",
-                "title": "Инста",
-                "url": "https://www.instagram.com/potyk.art",
-                "description": "Рисую чертей по фану",
-            },
-        ],
+        "links": _ART_SECTION_LINKS,
     },
     {
         "title": "",
@@ -283,6 +361,10 @@ ART_MENU_GROUPS: list[MenuGroup] = [
 
 PRIKOLS_MENU_GROUPS: list[MenuGroup] = [
     {
+        "title": "potyk-prikols",
+        "links": _PRIKOLS_SECTION_LINKS,
+    },
+    {
         "title": "",
         "links": [_CULTURE_BACK_LINK],
     },
@@ -292,26 +374,7 @@ PRIKOLS_MENU_GROUPS: list[MenuGroup] = [
 CINEMA_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "potyk-cinema",
-        "links": [
-            {
-                "icon": "🎬",
-                "title": "Подборки",
-                "url": "/cinema/",
-                "description": "",
-            },
-            {
-                "icon": "📺",
-                "title": "Где смотреть кино",
-                "url": "/cinema/where-to-watch",
-                "description": "",
-            },
-            {
-                "icon": "🇻🇳",
-                "title": "Вьетнамское кино",
-                "url": "/cinema/vietnamese-cinema",
-                "description": "",
-            },
-        ],
+        "links": _CINEMA_SECTION_LINKS,
     },
     {
         "title": "",
@@ -322,6 +385,10 @@ CINEMA_MENU_GROUPS: list[MenuGroup] = [
 
 READS_MENU_GROUPS: list[MenuGroup] = [
     {
+        "title": "potyk-reads",
+        "links": _READS_SECTION_LINKS,
+    },
+    {
         "title": "",
         "links": [_CULTURE_BACK_LINK],
     },
@@ -331,61 +398,27 @@ READS_MENU_GROUPS: list[MenuGroup] = [
 CULTURE_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "potyk-culture",
-        "links": [
-            {
-                "icon": "🎭",
-                "title": "Театр",
-                "url": "/culture/teatr",
-                "description": "",
-            },
-            {
-                "icon": "🌐",
-                "title": "Интернет",
-                "url": "/culture/internet",
-                "description": "",
-            },
-            {
-                "icon": "📺",
-                "title": "ТВ / Нулевые",
-                "url": "/culture/tv-nulevye",
-                "description": "",
-            },
-        ],
+        "links": _CULTURE_OWN_LINKS,
     },
     {
-        "title": "Секции",
-        "links": [
-            {
-                "icon": "🎵",
-                "title": "potyk-mu",
-                "url": "/mu/",
-                "description": "",
-            },
-            {
-                "icon": "🎬",
-                "title": "potyk-cinema",
-                "url": "/cinema/",
-                "description": "Подборки и рулетка",
-            },
-            {
-                "icon": "📚",
-                "title": "potyk-reads",
-                "url": "/reads/",
-                "description": "",
-            },
-            {
-                "icon": "🖼️",
-                "title": "potyk-art",
-                "url": "/art/",
-                "description": "Рисую чертей по фану",
-            },
-            {
-                "icon": "🤡",
-                "title": "potyk-prikols",
-                "url": "/prikols/",
-                "description": "Музей приколов",
-            },
-        ],
+        "title": "Музыка",
+        "links": _MU_SECTION_LINKS,
+    },
+    {
+        "title": "Кино",
+        "links": _CINEMA_SECTION_LINKS,
+    },
+    {
+        "title": "Чтение",
+        "links": _READS_SECTION_LINKS,
+    },
+    {
+        "title": "Арт",
+        "links": _ART_SECTION_LINKS,
+    },
+    {
+        "title": "Приколы",
+        "links": _PRIKOLS_SECTION_LINKS,
     },
     {
         "title": "",
