@@ -203,6 +203,12 @@ TECH_MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {
+                "icon": "🍎",
+                "title": "Айос после андроида",
+                "url": "/tech/ios-after-android",
+                "description": "",
+            },
+            {
                 "icon": "👨‍💻",
                 "title": "Резюме",
                 "url": "/tech/cv",
