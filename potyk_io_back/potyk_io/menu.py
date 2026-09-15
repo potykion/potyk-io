@@ -67,8 +67,14 @@ MENU_GROUPS: list[MenuGroup] = [
         ],
     },
     {
-        "title": "Искусство",
+        "title": "potyk-culture",
         "links": [
+            {
+                "icon": "🎭",
+                "title": "potyk-culture",
+                "url": "/culture/",
+                "description": "",
+            },
             {
                 "icon": "🎵",
                 "title": "potyk-mu",
@@ -85,12 +91,6 @@ MENU_GROUPS: list[MenuGroup] = [
                 "icon": "📚",
                 "title": "potyk-reads",
                 "url": "/reads/",
-                "description": "",
-            },
-            {
-                "icon": "🎭",
-                "title": "potyk-culture",
-                "url": "/culture/",
                 "description": "",
             },
             {
@@ -254,6 +254,14 @@ TECH_MENU_GROUPS: list[MenuGroup] = [
 ]
 
 
+_CULTURE_BACK_LINK: MenuItem = {
+    "icon": "←",
+    "title": "potyk-culture",
+    "url": "/culture/",
+    "description": "",
+}
+
+
 ART_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "potyk-art",
@@ -268,14 +276,7 @@ ART_MENU_GROUPS: list[MenuGroup] = [
     },
     {
         "title": "",
-        "links": [
-            {
-                "icon": "←",
-                "title": "potyk-io",
-                "url": "/",
-                "description": "",
-            },
-        ],
+        "links": [_CULTURE_BACK_LINK],
     },
 ]
 
@@ -283,14 +284,7 @@ ART_MENU_GROUPS: list[MenuGroup] = [
 PRIKOLS_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "",
-        "links": [
-            {
-                "icon": "←",
-                "title": "potyk-io",
-                "url": "/",
-                "description": "",
-            },
-        ],
+        "links": [_CULTURE_BACK_LINK],
     },
 ]
 
@@ -321,14 +315,7 @@ CINEMA_MENU_GROUPS: list[MenuGroup] = [
     },
     {
         "title": "",
-        "links": [
-            {
-                "icon": "←",
-                "title": "potyk-io",
-                "url": "/",
-                "description": "",
-            },
-        ],
+        "links": [_CULTURE_BACK_LINK],
     },
 ]
 
@@ -336,14 +323,7 @@ CINEMA_MENU_GROUPS: list[MenuGroup] = [
 READS_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "",
-        "links": [
-            {
-                "icon": "←",
-                "title": "potyk-io",
-                "url": "/",
-                "description": "",
-            },
-        ],
+        "links": [_CULTURE_BACK_LINK],
     },
 ]
 
@@ -369,6 +349,41 @@ CULTURE_MENU_GROUPS: list[MenuGroup] = [
                 "title": "ТВ / Нулевые",
                 "url": "/culture/tv-nulevye",
                 "description": "",
+            },
+        ],
+    },
+    {
+        "title": "Секции",
+        "links": [
+            {
+                "icon": "🎵",
+                "title": "potyk-mu",
+                "url": "/mu/",
+                "description": "",
+            },
+            {
+                "icon": "🎬",
+                "title": "potyk-cinema",
+                "url": "/cinema/",
+                "description": "Подборки и рулетка",
+            },
+            {
+                "icon": "📚",
+                "title": "potyk-reads",
+                "url": "/reads/",
+                "description": "",
+            },
+            {
+                "icon": "🖼️",
+                "title": "potyk-art",
+                "url": "/art/",
+                "description": "Рисую чертей по фану",
+            },
+            {
+                "icon": "🤡",
+                "title": "potyk-prikols",
+                "url": "/prikols/",
+                "description": "Музей приколов",
             },
         ],
     },
