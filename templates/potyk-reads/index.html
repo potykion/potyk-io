@@ -8,6 +8,34 @@
 <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
 {% endblock %}
 
+{% block main_class %}main-l md-content{% endblock %}
+
 {% block main %}
 <h1>potyk-reads</h1>
+
+<div class="card-grid card-grid--feed card-grid--4 card-grid--fit-title">
+    {% for book in books %}
+    <a class="card content-card" href="{{ book.url }}">
+        <img class="note-cover"
+             src="{{ book.cover }}"
+             alt="{{ book.title }}"
+             loading="lazy">
+        <div class="note-preview md-content">
+            <h3>{{ book.title }}</h3>
+            {% if book.subtitle %}
+            <p class="card-subtitle">{{ book.subtitle }}</p>
+            {% endif %}
+            {% if book.author %}
+            <p class="card-subtitle">{{ book.author }}</p>
+            {% endif %}
+        </div>
+    </a>
+    {% else %}
+    <p class="card-grid-empty">Пока нет книг</p>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="/static/potyk-io/js/content-card-fit-title.js"></script>
 {% endblock %}
