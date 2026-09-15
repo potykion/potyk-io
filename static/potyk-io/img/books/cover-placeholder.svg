@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450" role="img" aria-label="5B >1;>6:8">
+  <rect width="300" height="450" fill="#ece8e1"/>
+  <rect x="36" y="48" width="228" height="354" rx="8" fill="none" stroke="#cbbfae" stroke-width="3"/>
+  <text x="150" y="240" text-anchor="middle" fill="#9f9f9f" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="18">=5B >1;>6:8</text>
+</svg>
