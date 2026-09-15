@@ -1,0 +1,38 @@
+---
+description: Коммиты в PowerShell — без bash heredoc
+alwaysApply: true
+---
+
+# Git commit на Windows (PowerShell)
+
+Shell здесь — **PowerShell**. Bash-heredoc (`$(cat <<'EOF' … EOF)`) **не работает**. Не пытаться, не объяснять, не искать обходы.
+
+## Как коммитить
+
+Один `-m` со строкой в кавычках:
+
+```powershell
+git commit -m "Короткое сообщение коммита."
+```
+
+Два абзаца — два `-m` (вторая строка станет телом):
+
+```powershell
+git commit -m "Заголовок коммита." -m "Опциональное тело."
+```
+
+Многострочное сообщение — PowerShell here-string:
+
+```powershell
+git commit -m @"
+Заголовок.
+
+Тело, если нужно.
+"@
+```
+
+## Чего не делать
+
+- Не использовать `cat <<'EOF'` / bash heredoc.
+- Не писать временные файлы ради одного сообщения коммита.
+- Не тратить ход на «в PowerShell heredoc не работает» — сразу коммитить как выше.
