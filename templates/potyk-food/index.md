@@ -18,6 +18,7 @@
 
 - [Гайд на яйца](./recipes/guides/eggs.md)
 - [Шакшука](recipes/01-breakfast/eggs/shakshouka.md)
+- [Уэвос Ранчерос (Huevos Rancheros)](recipes/01-breakfast/eggs/huevos-rancheros.md)
 - [Глазунья/Омлет запеченая с колбасками/овощами/сыром / Фриратта](recipes/01-breakfast/eggs/eggs-baked-w-sausage-and-veggies.md)
 - [Скрембл с тунцом](recipes/01-breakfast/eggs/tuna-eggs.md)
 
