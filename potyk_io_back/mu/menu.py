@@ -40,8 +40,8 @@ MU_MENU_ITEMS: list[MuMenuItem] = [
     },
     {
         "icon": "←",
-        "title": "potyk-io",
-        "url": "/",
+        "title": "potyk-culture",
+        "url": "/culture/",
     },
 ]
 
