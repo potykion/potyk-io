@@ -6,13 +6,14 @@ from datetime import datetime
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
-from potyk_io_back.potyk_io.feed.random_notes import expand_note_entries, iter_notes
+from potyk_io_back.potyk_io.feed.random_notes import iter_notes, note_url
 from potyk_io_back.potyk_io.md_rendering import (
     demote_headings,
     extract_h1,
     html_text,
     main_inner_html,
     render_body_html,
+    split_frontmatter,
 )
 from potyk_io_back.potyk_io.note_votes.entities import NoteVote
 
@@ -22,22 +23,26 @@ VALID_VOTES = frozenset({VOTE_LIKE, VOTE_DISLIKE})
 
 
 def _swipe_candidates() -> list[dict]:
-    """Лёгкий список кандидатов без рендера HTML."""
+    """Лёгкий список кандидатов без рендера HTML.
+
+    Целый md-файл = одна заметка (дневник — весь день, без нарезки по ---).
+    """
     entries: list[dict] = []
     for path in iter_notes():
-        for note_id, url, meta, body in expand_note_entries(path):
-            title = extract_h1(body) or path.stem
-            if not body.strip() and not title:
-                continue
-            entries.append(
-                {
-                    "id": note_id,
-                    "url": url,
-                    "title": title,
-                    "meta": meta,
-                    "body": body,
-                }
-            )
+        meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
+        url = note_url(path)
+        title = extract_h1(body) or path.stem
+        if not body.strip() and not title:
+            continue
+        entries.append(
+            {
+                "id": url,
+                "url": url,
+                "title": title,
+                "meta": meta,
+                "body": body,
+            }
+        )
     return entries
 
 
