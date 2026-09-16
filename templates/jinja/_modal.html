@@ -1,0 +1,26 @@
+{#
+  Usage:
+  {% with modal_id="my-modal", modal_title="Заголовок", modal_wide=true %}
+    {% set modal_body %}
+      <p>Содержимое</p>
+    {% endset %}
+    {% include "jinja/_modal.html" %}
+  {% endwith %}
+#}
+<div class="modal"
+     id="{{ modal_id }}"
+     hidden
+     role="dialog"
+     aria-modal="true"
+     {% if modal_title %}aria-labelledby="{{ modal_id }}-title"{% endif %}>
+    <div class="modal__backdrop" data-modal-close tabindex="-1"></div>
+    <div class="modal__panel{% if modal_wide %} modal__panel--wide{% endif %}">
+        <button type="button" class="modal__close" data-modal-close aria-label="Закрыть">&times;</button>
+        {% if modal_title %}
+        <h2 class="modal__title" id="{{ modal_id }}-title">{{ modal_title }}</h2>
+        {% endif %}
+        <div class="modal__body">
+            {{ modal_body }}
+        </div>
+    </div>
+</div>

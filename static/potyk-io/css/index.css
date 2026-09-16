@@ -197,3 +197,46 @@ video.note-cover {
     font-size: 1.25rem;
     font-weight: 600;
 }
+
+/* Чем заняться */
+.what-to-do {
+    margin: 0 auto 2.5rem;
+    max-width: 28rem;
+    text-align: center;
+}
+
+.what-to-do__title {
+    margin: 0 0 1rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+.what-to-do__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    align-items: stretch;
+}
+
+.what-to-do__btn {
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    width: 100%;
+    padding: 0.7rem 1.25rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+    color: #222;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(120, 70, 30, 0.06),
+        0 4px 12px rgba(120, 70, 30, 0.06);
+}
+
+.what-to-do__btn:hover {
+    background: #f7f7f7;
+    border-color: #ccc;
+}

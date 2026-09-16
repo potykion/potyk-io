@@ -1,3 +1,4 @@
+import json
 from datetime import date, datetime, timedelta
 from itertools import groupby
 from pathlib import Path, PurePosixPath
@@ -9,6 +10,7 @@ from flask_login import login_required
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
+from potyk_io_back.potyk_io.collections.movies import load_movies_data, movies_for_client
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, random_note_batch, search_notes
 from potyk_io_back.potyk_io.findings import Finding
 from potyk_io_back.potyk_io.findings.forms import (
@@ -32,6 +34,8 @@ from potyk_io_back.potyk_io.md_rendering.render import MD_EXTENSIONS, MD_EXTENSI
 from potyk_io_back.potyk_io.menu import FOOD_MENU_GROUPS, MENU_GROUPS
 
 potyk_io_bp = Blueprint("potyk_io", __name__)
+
+WATCH_LATER_COLLECTION_ID = "watch_later"
 
 
 @potyk_io_bp.context_processor
@@ -99,12 +103,20 @@ def render_food_markdown(file: Path):
 @potyk_io_bp.route("/")
 def index():
     notes, has_more = random_note_batch(BATCH_SIZE)
+    movies_page = load_movies_data()
+    movies_client = movies_for_client(movies_page)
+    watch_later_movies = movies_client.get("moviesByCollection", {}).get(WATCH_LATER_COLLECTION_ID, [])
+    movies_payload = {
+        "defaultCollectionId": WATCH_LATER_COLLECTION_ID,
+        "moviesByCollection": {WATCH_LATER_COLLECTION_ID: watch_later_movies},
+    }
     return flask.render_template(
         "potyk-io/index.html",
         notes=notes,
         has_more=has_more,
         exclude=[n.get("id", n["url"]) for n in notes],
         more_url="/feed/more",
+        movies_by_collection_json=json.dumps(movies_payload, ensure_ascii=False),
     )
 
 

@@ -102,13 +102,29 @@
     aspect-ratio: 1;
 }
 
-#roulette-canvas {
+.roulette-canvas {
     display: block;
     width: 100%;
     height: auto;
     border-radius: 50%;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+
+.movie-roulette--compact {
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+}
+
+.movie-roulette--compact .roulette-stage {
+    width: min(300px, 100%);
+}
+
+.movie-roulette--compact .roulette-result .roulette-result-card {
+    width: min(180px, 55%);
 }
 
 .roulette-pointer {

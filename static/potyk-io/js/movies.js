@@ -7,125 +7,6 @@
         "#2980b9", "#27ae60", "#d35400", "#8e44ad", "#2c3e50",
     ];
 
-    const dataEl = document.getElementById("movies-by-collection");
-    if (!dataEl) return;
-
-    const payload = JSON.parse(dataEl.textContent);
-    const moviesByCollection = payload.moviesByCollection || {};
-    const defaultCollectionId = payload.defaultCollectionId || Object.keys(moviesByCollection)[0] || "";
-
-    const canvas = document.getElementById("roulette-canvas");
-    const spinBtn = document.getElementById("roulette-spin");
-    const resultEl = document.getElementById("roulette-result");
-    const emptyEl = document.getElementById("roulette-empty");
-    const collectionSelect = document.getElementById("roulette-collection-select");
-
-    let rotation = 0;
-    let spinning = false;
-    let wheelVersion = 0;
-    let pool = [];
-    let lastWinner = null;
-
-    let selectedCollectionId = collectionSelect ? collectionSelect.value : defaultCollectionId;
-    if (!selectedCollectionId) selectedCollectionId = defaultCollectionId;
-
-    function resetPool() {
-        pool = (moviesByCollection[selectedCollectionId] || []).slice();
-        lastWinner = null;
-    }
-
-    function getSelectedMovies() {
-        return pool;
-    }
-
-    /** Фильмы, из которых ещё можно крутить (без уже выпавшего, пока он висит на колесе). */
-    function moviesAvailableToSpin() {
-        if (!lastWinner) return pool;
-        return pool.filter(function (m) { return m !== lastWinner; });
-    }
-
-    function movieLabel(movie) {
-        let label = movie.title_ru || "";
-        if (movie.year) label += " (" + movie.year + ")";
-        return label;
-    }
-
-    function drawWheel() {
-        if (!canvas) return;
-        const movies = getSelectedMovies();
-        const ctx = canvas.getContext("2d");
-        const size = canvas.width;
-        const cx = size / 2;
-        const cy = size / 2;
-        const radius = size / 2 - 4;
-
-        ctx.clearRect(0, 0, size, size);
-
-        if (movies.length === 0) {
-            ctx.beginPath();
-            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-            ctx.fillStyle = "#ddd";
-            ctx.fill();
-            ctx.fillStyle = "#888";
-            ctx.font = "16px IBM Plex Sans, sans-serif";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("Пусто", cx, cy);
-            return;
-        }
-
-        const slice = (Math.PI * 2) / movies.length;
-
-        movies.forEach((movie, i) => {
-            const start = i * slice - Math.PI / 2;
-            const end = start + slice;
-
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.arc(cx, cy, radius, start, end);
-            ctx.closePath();
-            ctx.fillStyle = COLORS[i % COLORS.length];
-            ctx.fill();
-            ctx.strokeStyle = "#fff";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            ctx.save();
-            ctx.translate(cx, cy);
-            ctx.rotate(start + slice / 2);
-            ctx.textAlign = "right";
-            ctx.fillStyle = "#fff";
-            ctx.font = "bold 11px IBM Plex Sans, sans-serif";
-            const title = movie.title_ru || "";
-            const text = title.length > 14 ? title.slice(0, 12) + "…" : title;
-            ctx.fillText(text, radius - 10, 4);
-            ctx.restore();
-        });
-
-        ctx.beginPath();
-        ctx.arc(cx, cy, 28, 0, Math.PI * 2);
-        ctx.fillStyle = "#fff";
-        ctx.fill();
-        ctx.strokeStyle = "#222";
-        ctx.lineWidth = 3;
-        ctx.stroke();
-    }
-
-    function updateSpinState() {
-        const available = moviesAvailableToSpin();
-        const hasMovies = available.length > 0;
-        if (spinBtn) spinBtn.disabled = !hasMovies || spinning;
-        if (emptyEl) {
-            emptyEl.hidden = hasMovies;
-            if (!hasMovies) {
-                const original = moviesByCollection[selectedCollectionId] || [];
-                emptyEl.textContent = original.length > 0
-                    ? "Все фильмы уже выпали — смени коллекцию или обнови страницу"
-                    : "В выбранной коллекции пока пусто";
-            }
-        }
-    }
-
     const COVER_PLACEHOLDER = "/static/potyk-io/img/movies/cover-placeholder.svg";
 
     function escapeHtml(text) {
@@ -136,109 +17,296 @@
             .replace(/"/g, "&quot;");
     }
 
-    function showResult(movie) {
-        if (!resultEl) return;
-        const cover = movie.cover || COVER_PLACEHOLDER;
-        const title = movieLabel(movie);
-        let html = '<div class="card-grid card-grid--feed card-grid--fit-title roulette-result-card">';
-        html += '<a class="card content-card card-ratio-9-16" href="'
-            + escapeHtml(movie.kinopoisk) + '" target="_blank" rel="noopener">';
-        html += '<img class="note-cover" src="' + escapeHtml(cover)
-            + '" alt="' + escapeHtml(movie.title_ru || "") + '">';
-        html += '<div class="note-preview md-content">';
-        html += "<h3>" + escapeHtml(title) + "</h3>";
-        if (movie.title_en) {
-            html += '<p class="card-subtitle">' + escapeHtml(movie.title_en) + "</p>";
-        }
-        html += "</div></a></div>";
-        resultEl.innerHTML = html;
-        resultEl.hidden = false;
-        if (typeof window.potykFitContentCardTitles === "function") {
-            window.potykFitContentCardTitles();
+    function parseMoviesPayload(dataEl) {
+        if (!dataEl) return null;
+        try {
+            return JSON.parse(dataEl.textContent);
+        } catch (e) {
+            return null;
         }
     }
 
-    function resetWheelVisual() {
-        if (!canvas) return;
-        const prev = canvas.style.transition;
-        canvas.style.transition = "none";
-        rotation = 0;
-        canvas.style.transform = "rotate(0deg)";
-        // Force reflow so the next spin animates from 0 again.
-        void canvas.offsetWidth;
-        canvas.style.transition = prev;
-    }
+    /**
+     * @param {HTMLElement} root
+     * @param {{
+     *   dataEl?: HTMLElement|null,
+     *   collectionId?: string,
+     *   hideCollectionSelect?: boolean,
+     *   autoSpin?: boolean,
+     * }} [options]
+     */
+    function initMovieRoulette(root, options) {
+        options = options || {};
+        if (!root) return null;
 
-    function invalidateSpin() {
-        wheelVersion += 1;
-        spinning = false;
-        resetPool();
-        resetWheelVisual();
-        if (resultEl) resultEl.hidden = true;
-    }
+        const dataEl = options.dataEl
+            || root.querySelector("[data-movies-by-collection]")
+            || document.getElementById("movies-by-collection");
+        const payload = parseMoviesPayload(dataEl);
+        if (!payload) return null;
 
-    function spinWheel() {
-        if (spinning) return;
+        const moviesByCollection = payload.moviesByCollection || {};
+        const defaultCollectionId = payload.defaultCollectionId || Object.keys(moviesByCollection)[0] || "";
 
-        // Убираем прошлый выигрыш только при новом кручении — чтобы он оставался под стрелкой.
-        if (lastWinner) {
-            const idx = pool.indexOf(lastWinner);
-            if (idx !== -1) pool.splice(idx, 1);
+        const canvas = root.querySelector(".roulette-canvas") || root.querySelector("#roulette-canvas");
+        const spinBtn = root.querySelector(".roulette-spin-btn") || root.querySelector("#roulette-spin");
+        const resultEl = root.querySelector(".roulette-result") || root.querySelector("#roulette-result");
+        const emptyEl = root.querySelector(".roulette-empty") || root.querySelector("#roulette-empty");
+        const collectionSelect = root.querySelector(".roulette-collection-select select")
+            || root.querySelector("#roulette-collection-select");
+        const collectionWrap = root.querySelector(".roulette-collection-select");
+
+        let rotation = 0;
+        let spinning = false;
+        let wheelVersion = 0;
+        let pool = [];
+        let lastWinner = null;
+
+        let selectedCollectionId = options.collectionId
+            || (collectionSelect ? collectionSelect.value : "")
+            || defaultCollectionId;
+
+        if (options.collectionId && collectionSelect) {
+            collectionSelect.value = options.collectionId;
+        }
+        if (options.hideCollectionSelect && collectionWrap) {
+            collectionWrap.hidden = true;
+        }
+
+        function resetPool() {
+            pool = (moviesByCollection[selectedCollectionId] || []).slice();
             lastWinner = null;
-            resetWheelVisual();
-            drawWheel();
         }
 
-        const movies = getSelectedMovies();
-        if (movies.length === 0) {
-            updateSpinState();
-            return;
+        function getSelectedMovies() {
+            return pool;
         }
 
-        const version = wheelVersion;
-        spinning = true;
-        updateSpinState();
-        if (resultEl) resultEl.hidden = true;
+        /** Фильмы, из которых ещё можно крутить (без уже выпавшего, пока он висит на колесе). */
+        function moviesAvailableToSpin() {
+            if (!lastWinner) return pool;
+            return pool.filter(function (m) { return m !== lastWinner; });
+        }
 
-        const winnerIdx = Math.floor(Math.random() * movies.length);
-        const slice = 360 / movies.length;
-        // Absolute landing: winner center under the top pointer (0°).
-        const landing = -((winnerIdx + 0.5) * slice);
-        const landingMod = ((landing % 360) + 360) % 360;
-        const currentMod = ((rotation % 360) + 360) % 360;
-        let delta = (landingMod - currentMod + 360) % 360;
-        const fullSpins = 5 + Math.floor(Math.random() * 3);
-        if (delta === 0) delta = 360;
-        delta += fullSpins * 360;
-        rotation += delta;
+        function movieLabel(movie) {
+            let label = movie.title_ru || "";
+            if (movie.year) label += " (" + movie.year + ")";
+            return label;
+        }
 
-        canvas.style.transform = "rotate(" + rotation + "deg)";
+        function drawWheel() {
+            if (!canvas) return;
+            const movies = getSelectedMovies();
+            const ctx = canvas.getContext("2d");
+            const size = canvas.width;
+            const cx = size / 2;
+            const cy = size / 2;
+            const radius = size / 2 - 4;
 
-        const onEnd = function () {
-            canvas.removeEventListener("transitionend", onEnd);
-            if (wheelVersion !== version) return;
+            ctx.clearRect(0, 0, size, size);
+
+            if (movies.length === 0) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.fillStyle = "#ddd";
+                ctx.fill();
+                ctx.fillStyle = "#888";
+                ctx.font = "16px IBM Plex Sans, sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("Пусто", cx, cy);
+                return;
+            }
+
+            const slice = (Math.PI * 2) / movies.length;
+
+            movies.forEach(function (movie, i) {
+                const start = i * slice - Math.PI / 2;
+                const end = start + slice;
+
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, radius, start, end);
+                ctx.closePath();
+                ctx.fillStyle = COLORS[i % COLORS.length];
+                ctx.fill();
+                ctx.strokeStyle = "#fff";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(start + slice / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 11px IBM Plex Sans, sans-serif";
+                const title = movie.title_ru || "";
+                const text = title.length > 14 ? title.slice(0, 12) + "…" : title;
+                ctx.fillText(text, radius - 10, 4);
+                ctx.restore();
+            });
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+            ctx.strokeStyle = "#222";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+
+        function updateSpinState() {
+            const available = moviesAvailableToSpin();
+            const hasMovies = available.length > 0;
+            if (spinBtn) spinBtn.disabled = !hasMovies || spinning;
+            if (emptyEl) {
+                emptyEl.hidden = hasMovies;
+                if (!hasMovies) {
+                    const original = moviesByCollection[selectedCollectionId] || [];
+                    if (original.length > 0) {
+                        emptyEl.textContent = options.hideCollectionSelect
+                            ? "Все фильмы уже выпали — закрой окно и открой снова"
+                            : "Все фильмы уже выпали — смени коллекцию или обнови страницу";
+                    } else {
+                        emptyEl.textContent = "В выбранной коллекции пока пусто";
+                    }
+                }
+            }
+        }
+
+        function showResult(movie) {
+            if (!resultEl) return;
+            const cover = movie.cover || COVER_PLACEHOLDER;
+            const title = movieLabel(movie);
+            let html = '<div class="card-grid card-grid--feed card-grid--fit-title roulette-result-card">';
+            html += '<a class="card content-card card-ratio-9-16" href="'
+                + escapeHtml(movie.kinopoisk) + '" target="_blank" rel="noopener">';
+            html += '<img class="note-cover" src="' + escapeHtml(cover)
+                + '" alt="' + escapeHtml(movie.title_ru || "") + '">';
+            html += '<div class="note-preview md-content">';
+            html += "<h3>" + escapeHtml(title) + "</h3>";
+            if (movie.title_en) {
+                html += '<p class="card-subtitle">' + escapeHtml(movie.title_en) + "</p>";
+            }
+            html += "</div></a></div>";
+            resultEl.innerHTML = html;
+            resultEl.hidden = false;
+            if (typeof window.potykFitContentCardTitles === "function") {
+                window.potykFitContentCardTitles();
+            }
+        }
+
+        function resetWheelVisual() {
+            if (!canvas) return;
+            const prev = canvas.style.transition;
+            canvas.style.transition = "none";
+            rotation = 0;
+            canvas.style.transform = "rotate(0deg)";
+            void canvas.offsetWidth;
+            canvas.style.transition = prev;
+        }
+
+        function invalidateSpin() {
+            wheelVersion += 1;
             spinning = false;
-            lastWinner = movies[winnerIdx];
-            showResult(lastWinner);
+            resetPool();
+            resetWheelVisual();
+            if (resultEl) resultEl.hidden = true;
+        }
+
+        function spinWheel() {
+            if (spinning) return;
+
+            if (lastWinner) {
+                const idx = pool.indexOf(lastWinner);
+                if (idx !== -1) pool.splice(idx, 1);
+                lastWinner = null;
+                resetWheelVisual();
+                drawWheel();
+            }
+
+            const movies = getSelectedMovies();
+            if (movies.length === 0) {
+                updateSpinState();
+                return;
+            }
+
+            const version = wheelVersion;
+            spinning = true;
             updateSpinState();
-        };
-        canvas.addEventListener("transitionend", onEnd);
-    }
+            if (resultEl) resultEl.hidden = true;
 
-    if (spinBtn) {
-        spinBtn.addEventListener("click", spinWheel);
-    }
+            const winnerIdx = Math.floor(Math.random() * movies.length);
+            const slice = 360 / movies.length;
+            const landing = -((winnerIdx + 0.5) * slice);
+            const landingMod = ((landing % 360) + 360) % 360;
+            const currentMod = ((rotation % 360) + 360) % 360;
+            let delta = (landingMod - currentMod + 360) % 360;
+            const fullSpins = 5 + Math.floor(Math.random() * 3);
+            if (delta === 0) delta = 360;
+            delta += fullSpins * 360;
+            rotation += delta;
 
-    if (collectionSelect) {
-        collectionSelect.addEventListener("change", function () {
-            selectedCollectionId = collectionSelect.value;
+            canvas.style.transform = "rotate(" + rotation + "deg)";
+
+            const onEnd = function () {
+                canvas.removeEventListener("transitionend", onEnd);
+                if (wheelVersion !== version) return;
+                spinning = false;
+                lastWinner = movies[winnerIdx];
+                showResult(lastWinner);
+                updateSpinState();
+            };
+            canvas.addEventListener("transitionend", onEnd);
+        }
+
+        function restartAndSpin() {
             invalidateSpin();
             drawWheel();
             updateSpinState();
-        });
+            requestAnimationFrame(function () {
+                requestAnimationFrame(spinWheel);
+            });
+        }
+
+        if (spinBtn) {
+            spinBtn.addEventListener("click", spinWheel);
+        }
+
+        if (collectionSelect && !options.hideCollectionSelect) {
+            collectionSelect.addEventListener("change", function () {
+                selectedCollectionId = collectionSelect.value;
+                invalidateSpin();
+                drawWheel();
+                updateSpinState();
+            });
+        }
+
+        resetPool();
+        drawWheel();
+        updateSpinState();
+
+        if (options.autoSpin) {
+            requestAnimationFrame(function () {
+                requestAnimationFrame(spinWheel);
+            });
+        }
+
+        return {
+            spin: spinWheel,
+            restartAndSpin: restartAndSpin,
+            invalidate: invalidateSpin,
+            redraw: function () {
+                drawWheel();
+                updateSpinState();
+            },
+        };
     }
 
-    resetPool();
-    drawWheel();
-    updateSpinState();
+    const cinemaRoot = document.getElementById("movie-roulette");
+    if (cinemaRoot && document.getElementById("movies-by-collection")) {
+        initMovieRoulette(cinemaRoot);
+    }
+
+    window.initMovieRoulette = initMovieRoulette;
 })();
