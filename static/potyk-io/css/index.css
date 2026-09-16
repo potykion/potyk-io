@@ -240,3 +240,7 @@ video.note-cover {
     background: #f7f7f7;
     border-color: #ccc;
 }
+
+.feed-title {
+    text-align: center;
+}
