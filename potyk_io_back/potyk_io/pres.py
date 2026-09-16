@@ -5,7 +5,7 @@ from pathlib import Path, PurePosixPath
 
 import flask
 import markdown
-from flask import Blueprint, abort, flash, redirect, request, render_template, send_file, url_for
+from flask import Blueprint, abort, flash, jsonify, redirect, request, render_template, send_file, url_for
 from flask_login import login_required
 from sqlalchemy import select
 
@@ -18,6 +18,11 @@ from potyk_io_back.potyk_io.findings.forms import (
     DeleteFindingForm,
     MarkWatchedForm,
 )
+from potyk_io_back.potyk_io.note_votes import (
+    random_swipe_note,
+    save_note_vote,
+)
+from potyk_io_back.potyk_io.note_votes.service import VALID_VOTES
 from potyk_io_back.potyk_io.restaurants.entities import Restaurant, seed_restaurants_if_empty
 from potyk_io_back.potyk_io.restaurants.forms import RestaurantForm
 from potyk_io_back.potyk_io.md_rendering import (
@@ -133,6 +138,32 @@ def feed_more():
         exclude=[*exclude, *(n.get("id", n["url"]) for n in notes)],
         more_url="/feed/more",
     )
+
+
+@potyk_io_bp.get("/activity/notes/random")
+def activity_notes_random():
+    exclude = {
+        u for u in flask.request.args.get("exclude", "").split(",") if u
+    }
+    note = random_swipe_note(exclude=exclude)
+    if note is None:
+        return jsonify({"ok": False, "error": "empty"}), 404
+    return jsonify({"ok": True, "note": note})
+
+
+@potyk_io_bp.post("/activity/notes/vote")
+def activity_notes_vote():
+    payload = flask.request.get_json(silent=True) or {}
+    note_id = str(payload.get("id") or "").strip()
+    note_url = str(payload.get("url") or "").strip()
+    title = str(payload.get("title") or "").strip()
+    vote = str(payload.get("vote") or "").strip()
+
+    if not note_id or not note_url or vote not in VALID_VOTES:
+        return jsonify({"ok": False, "error": "missing fields"}), 400
+
+    save_note_vote(note_id=note_id, note_url=note_url, title=title, vote=vote)
+    return jsonify({"ok": True})
 
 
 @potyk_io_bp.route("/search")

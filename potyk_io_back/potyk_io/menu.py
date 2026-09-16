@@ -485,6 +485,12 @@ def admin_menu_groups(*, local: bool, inbox_badge: int | None = None) -> list[Me
             "url": "/admin/posts/new",
             "description": "",
         },
+        {
+            "icon": "📝",
+            "title": "Разбор заметок",
+            "url": "/admin/notes-review",
+            "description": "",
+        },
     ]
     if inbox_badge:
         links[0]["badge"] = inbox_badge

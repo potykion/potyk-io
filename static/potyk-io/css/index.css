@@ -241,6 +241,99 @@ video.note-cover {
     border-color: #ccc;
 }
 
+/* Свайпать страницы */
+.note-swipe {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 12rem;
+}
+
+.note-swipe__status {
+    margin: 0;
+    min-height: 1.25rem;
+    color: #9f9f9f;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.note-swipe__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.note-swipe__open {
+    align-self: flex-start;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.note-swipe__body {
+    max-height: min(55vh, 420px);
+    overflow: auto;
+    padding: 0.25rem 0.15rem 0.5rem;
+    line-height: 1.5;
+}
+
+.note-swipe__body > :first-child {
+    margin-top: 0;
+}
+
+.note-swipe__body > :last-child {
+    margin-bottom: 0;
+}
+
+.note-swipe__empty {
+    margin: 1.5rem 0;
+    text-align: center;
+    color: #9f9f9f;
+}
+
+.note-swipe__actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: stretch;
+}
+
+.note-swipe__btn {
+    flex: 1;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.7rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+    color: #222;
+    cursor: pointer;
+}
+
+.note-swipe__btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.note-swipe__btn--like {
+    border-color: #b7dcc9;
+    background: #e5f3ec;
+    color: #1f6b4a;
+}
+
+.note-swipe__btn--dislike {
+    border-color: #e4c4c4;
+    background: #f8e8e8;
+    color: #9b2c2c;
+}
+
+.note-swipe__btn--like:hover:not(:disabled) {
+    background: #d7ecdf;
+}
+
+.note-swipe__btn--dislike:hover:not(:disabled) {
+    background: #f0dede;
+}
+
 .feed-title {
     text-align: center;
 }

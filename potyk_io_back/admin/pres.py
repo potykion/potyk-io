@@ -16,6 +16,8 @@ from potyk_io_back.admin.posts import create_post
 from potyk_io_back.inbox.pres import entries_from_db
 from potyk_io_back.inbox.tasks import load_local_tasks
 from potyk_io_back.potyk_io.menu import admin_menu_groups
+from potyk_io_back.potyk_io.note_votes import list_note_votes
+from potyk_io_back.potyk_io.note_votes.service import VOTE_DISLIKE, VOTE_LIKE
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -106,3 +108,18 @@ def commit():
         return redirect(url_for("admin.commit"))
 
     return render_template("admin/commit.html", form=form, files=files)
+
+
+@admin_bp.get("/notes-review")
+@login_required
+def notes_review():
+    votes = list_note_votes()
+    likes = sum(1 for v in votes if v.vote == VOTE_LIKE)
+    dislikes = sum(1 for v in votes if v.vote == VOTE_DISLIKE)
+    return render_template(
+        "admin/notes_review.html",
+        votes=votes,
+        likes=likes,
+        dislikes=dislikes,
+    )
+

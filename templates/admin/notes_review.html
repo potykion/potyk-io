@@ -1,0 +1,88 @@
+{% extends "admin/_base.html" %}
+
+{% block title %}Разбор заметок{% endblock %}
+
+{% block admin_main %}
+<h1>Разбор заметок</h1>
+
+<p class="notes-review-summary">
+    Лайков: <strong>{{ likes }}</strong>
+    · Дизлайков: <strong>{{ dislikes }}</strong>
+    · Всего: <strong>{{ votes|length }}</strong>
+</p>
+
+{% if votes %}
+<ul class="notes-review-list">
+    {% for v in votes %}
+    <li class="notes-review-item notes-review-item--{{ v.vote }}">
+        <span class="notes-review-vote" aria-label="{{ 'лайк' if v.vote == 'like' else 'дизлайк' }}">
+            {% if v.vote == 'like' %}👍{% else %}👎{% endif %}
+        </span>
+        <div class="notes-review-body">
+            <a class="notes-review-title" href="{{ v.note_url }}">{{ v.title or v.note_id }}</a>
+            <div class="notes-review-meta">
+                <code>{{ v.note_id }}</code>
+                · {{ v.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="admin-empty">Пока нет лайков и дизлайков. Открой на главной «Свайпать страницы».</p>
+{% endif %}
+
+<style>
+    .notes-review-summary {
+        color: var(--muted);
+        margin: 0 0 1.25rem;
+    }
+    .notes-review-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        overflow: hidden;
+    }
+    .notes-review-item {
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--line);
+    }
+    .notes-review-item:last-child {
+        border-bottom: none;
+    }
+    .notes-review-item--like {
+        border-left: 3px solid var(--ok);
+    }
+    .notes-review-item--dislike {
+        border-left: 3px solid var(--bad);
+    }
+    .notes-review-vote {
+        font-size: 1.25rem;
+        line-height: 1.4;
+        flex-shrink: 0;
+    }
+    .notes-review-title {
+        color: var(--ink);
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .notes-review-title:hover {
+        text-decoration: underline;
+    }
+    .notes-review-meta {
+        margin-top: 0.25rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+        overflow-wrap: anywhere;
+    }
+    .notes-review-meta code {
+        font-size: 0.8rem;
+    }
+</style>
+{% endblock %}
