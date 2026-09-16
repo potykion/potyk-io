@@ -1,20 +1,24 @@
-{% extends "potyk-io/_base.html" %}
+{% extends "admin/_base.html" %}
 
-{% block title %}Админка кино — potyk-cinema{% endblock %}
+{% block title %}Кино{% endblock %}
 
 {% block style %}
     {{ super() }}
     <link rel="stylesheet" href="/static/potyk-io/css/movies.css">
+    <style>
+        .admin-wrap {
+            max-width: none;
+            width: 100%;
+        }
+    </style>
 {% endblock %}
 
-{% block main_class %}main-m md-content{% endblock %}
-
-{% block main %}
-    <h1>Админка: кино</h1>
+{% block admin_main %}
+    <h1>Кино</h1>
 
     <section>
         <h2>Добавить фильм</h2>
-        <form id="movies-add-form" method="post" action="{{ url_for('cinema.movies_admin_add_movie') }}">
+        <form id="movies-add-form" method="post" action="{{ url_for('admin.cinema_add_movie') }}">
             <p>
                 <label>Kinopoisk URL<br>
                     <input name="kinopoisk" id="movies-add-kinopoisk" required style="width: 520px"
@@ -62,7 +66,7 @@
 
     <section style="margin-top: 2rem">
         <h2>Создать / обновить коллекцию</h2>
-        <form method="post" action="{{ url_for('cinema.movies_admin_create_collection') }}">
+        <form method="post" action="{{ url_for('admin.cinema_create_collection') }}">
             <p>
                 <label>Title<br>
                     <input name="title" required style="width: 520px" />
@@ -92,7 +96,7 @@
 
     <section style="margin-top: 2rem">
         <h2>Добавить фильм в коллекцию</h2>
-        <form method="post" action="{{ url_for('cinema.movies_admin_add_movie_to_collection') }}">
+        <form method="post" action="{{ url_for('admin.cinema_add_movie_to_collection') }}">
             <p>
                 <label>Коллекция<br>
                     <select name="collection_id" required style="width: 420px">
@@ -141,4 +145,3 @@
 {% block script %}
     <script src="/static/potyk-io/js/movies-admin.js"></script>
 {% endblock %}
-

@@ -70,3 +70,31 @@ def seed_restaurants_if_empty() -> None:
     for row in SEED_RESTAURANTS:
         db.session.add(Restaurant(**row))
     db.session.commit()
+
+
+def restaurant_vocab() -> tuple[list[str], list[str]]:
+    restaurants = db.session.scalars(select(Restaurant)).all()
+    metros: set[str] = set()
+    tags: set[str] = set()
+    for r in restaurants:
+        if r.metro:
+            metros.add(r.metro)
+        for tag in r.tags or []:
+            if tag:
+                tags.add(tag)
+    return sorted(metros, key=str.casefold), sorted(tags, key=str.casefold)
+
+
+def normalize_restaurant_tags(raw: list[str] | None) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in raw or []:
+        tag = (item or "").strip()
+        if not tag:
+            continue
+        key = tag.casefold()
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(tag)
+    return result

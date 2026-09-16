@@ -1,25 +1,19 @@
-{% extends "potyk-io/_base.html" %}
+{% extends "admin/_base.html" %}
 {% import "jinja/forms.html" as forms %}
 
-{% block title %}Админка: рестораны — potyk-food{% endblock %}
+{% block title %}Рестораны{% endblock %}
 
 {% block head_stylesheets %}
     {{ super() }}
-    <link rel="stylesheet" href="/static/jinja/css/forms.css">
-    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
     <link rel="stylesheet" href="/static/potyk-io/css/restaurants.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css">
 {% endblock %}
 
-{% block main_class %}main-m md-content restaurants-page{% endblock %}
+{% block admin_main %}
+    <h1>Рестораны</h1>
+    <p class="admin-back"><a href="{{ url_for('potyk_io.restaurants') }}">← К списку</a></p>
 
-{% block main %}
-    <div class="rest-header">
-        <h1>Админка: рестораны</h1>
-        <a class="btn secondary rest-admin-btn" href="{{ url_for('potyk_io.restaurants') }}">← К списку</a>
-    </div>
-
-    <form class="grid cols-2" method="post" action="{{ url_for('potyk_io.restaurants_admin_add') }}">
+    <form class="grid cols-2" method="post" action="{{ url_for('admin.restaurants') }}">
         {{ form.hidden_tag() }}
         {% call forms.field(form.name.label.text, "full") %}
             {{ form.name(required=true) }}

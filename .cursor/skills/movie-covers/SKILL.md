@@ -116,7 +116,7 @@ def upgrade() -> None:
 
 ## Админка: автообложка
 
-В форме «Добавить фильм» (`/cinema/admin`):
+В форме «Добавить фильм» (`/admin/cinema`):
 
 1. Превью в браузере — сразу по CDN URL из id в ссылке КП (см. `cover_cdn_url`).
 2. При POST без `cover` — `download_cover()` в `potyk_io_back/cinema/covers.py` пишет файл в static и путь в `Movie.cover` (если cover ещё пустой).

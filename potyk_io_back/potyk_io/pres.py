@@ -23,8 +23,11 @@ from potyk_io_back.potyk_io.note_votes import (
     save_note_vote,
 )
 from potyk_io_back.potyk_io.note_votes.service import VALID_VOTES
-from potyk_io_back.potyk_io.restaurants.entities import Restaurant, seed_restaurants_if_empty
-from potyk_io_back.potyk_io.restaurants.forms import RestaurantForm
+from potyk_io_back.potyk_io.restaurants.entities import (
+    Restaurant,
+    restaurant_vocab,
+    seed_restaurants_if_empty,
+)
 from potyk_io_back.potyk_io.md_rendering import (
     FOOD_TEMPLATES_DIR,
     TEMPLATES_DIR,
@@ -347,34 +350,6 @@ def food_index():
     return render_food_markdown(FOOD_TEMPLATES_DIR / "index.md")
 
 
-def _restaurant_vocab() -> tuple[list[str], list[str]]:
-    restaurants = db.session.scalars(select(Restaurant)).all()
-    metros: set[str] = set()
-    tags: set[str] = set()
-    for r in restaurants:
-        if r.metro:
-            metros.add(r.metro)
-        for tag in r.tags or []:
-            if tag:
-                tags.add(tag)
-    return sorted(metros, key=str.casefold), sorted(tags, key=str.casefold)
-
-
-def _normalize_tags(raw: list[str] | None) -> list[str]:
-    seen: set[str] = set()
-    result: list[str] = []
-    for item in raw or []:
-        tag = (item or "").strip()
-        if not tag:
-            continue
-        key = tag.casefold()
-        if key in seen:
-            continue
-        seen.add(key)
-        result.append(tag)
-    return result
-
-
 @potyk_io_bp.get("/food/rest")
 @potyk_io_bp.get("/food/rest/")
 def restaurants():
@@ -382,7 +357,7 @@ def restaurants():
     items = db.session.scalars(
         select(Restaurant).order_by(Restaurant.name.asc(), Restaurant.id.asc())
     ).all()
-    _, all_tags = _restaurant_vocab()
+    _, all_tags = restaurant_vocab()
     return render_template(
         "potyk-food/rest.html",
         restaurants=items,
@@ -391,55 +366,10 @@ def restaurants():
 
 
 @potyk_io_bp.get("/food/rest/admin")
-@login_required
-def restaurants_admin():
-    seed_restaurants_if_empty()
-    metros, tags = _restaurant_vocab()
-    return render_template(
-        "potyk-food/rest_admin.html",
-        form=RestaurantForm(),
-        metros=metros,
-        tags=tags,
-    )
-
-
 @potyk_io_bp.post("/food/rest/admin")
 @login_required
-def restaurants_admin_add():
-    form = RestaurantForm()
-    metros, tags = _restaurant_vocab()
-    if not form.validate_on_submit():
-        _flash_form_errors(form)
-        return render_template(
-            "potyk-food/rest_admin.html",
-            form=form,
-            metros=metros,
-            tags=tags,
-        ), 400
-
-    name = (form.name.data or "").strip()
-    maps_url = (form.maps_url.data or "").strip()
-    metro = (form.metro.data or "").strip()
-    restaurant_tags = _normalize_tags(form.tags.data)
-
-    if not name:
-        flash("Укажи название", "error")
-        return redirect(url_for("potyk_io.restaurants_admin"))
-    if not maps_url:
-        flash("Нужна ссылка на карту", "error")
-        return redirect(url_for("potyk_io.restaurants_admin"))
-
-    db.session.add(
-        Restaurant(
-            name=name,
-            maps_url=maps_url,
-            metro=metro,
-            tags=restaurant_tags,
-        )
-    )
-    db.session.commit()
-    flash("Ресторан добавлен", "success")
-    return redirect(url_for("potyk_io.restaurants"))
+def restaurants_admin_redirect():
+    return redirect(url_for("admin.restaurants"), code=301)
 
 
 @potyk_io_bp.route("/food/<path:page_path>")
