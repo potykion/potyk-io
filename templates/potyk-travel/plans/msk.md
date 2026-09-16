@@ -65,6 +65,10 @@ toc: h2
 - [Парк Сокольники](https://yandex.ru/maps/org/park_sokolniki/1607357284/)
 - [Альпака Парк](https://yandex.ru/maps/org/alpaca_park/70394768508/)
 
+### Комсомольская
+
+- [Музей Транспорта Москвы](https://yandex.ru/maps/-/CTxf6K8I)
+
 ### Лубянка
 
 - [Underdog](https://yandex.ru/maps/-/CTG86S57)
