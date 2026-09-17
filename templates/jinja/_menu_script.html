@@ -76,8 +76,8 @@
             if (e.key === 'Escape') closeMenu();
         });
 
-        // Mobile: open from left-edge swipe right; close with swipe left when open.
-        var SWIPE_EDGE_PX = 32;
+        // Mobile: swipe right opens; left-from-right-edge also opens; swipe left closes when open.
+        var SWIPE_EDGE_PX = 48;
         var SWIPE_MIN_DX = 56;
         var SWIPE_MAX_SLOPE = 0.75;
         var swipeStart = null;
@@ -114,11 +114,18 @@
             if (Math.abs(dx) < SWIPE_MIN_DX) return;
             if (Math.abs(dy) > Math.abs(dx) * SWIPE_MAX_SLOPE) return;
 
-            if (dx > 0 && !isVisible()) {
-                if (startX <= SWIPE_EDGE_PX) setVisible(true);
+            if (!isVisible()) {
+                if (dx > 0) {
+                    setVisible(true);
+                    return;
+                }
+                // From the right edge, inward (left) swipe also opens.
+                if (dx < 0 && startX >= window.innerWidth - SWIPE_EDGE_PX) {
+                    setVisible(true);
+                }
                 return;
             }
-            if (dx < 0 && isVisible()) {
+            if (dx < 0) {
                 setVisible(false);
             }
         }
