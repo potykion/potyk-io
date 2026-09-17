@@ -39,7 +39,7 @@ from potyk_io_back.invest.forms import (
     TickerLevelForm,
     compute_pnl,
 )
-from potyk_io_back.potyk_io.menu import INVEST_MENU_GROUPS
+from potyk_io_back.potyk_io.menu import MONEY_MENU_GROUPS
 
 invest_bp = Blueprint("invest", __name__, url_prefix="/invest")
 
@@ -84,7 +84,7 @@ def invest_price_filter(value) -> str:
 
 @invest_bp.context_processor
 def inject_invest_menu():
-    return {"menu_groups": INVEST_MENU_GROUPS}
+    return {"menu_groups": MONEY_MENU_GROUPS}
 
 
 def news_filter_form_from_request() -> tuple[NewsFilterForm, NewsFilters]:

@@ -131,22 +131,6 @@ TECH_MENU_GROUPS: list[MenuGroup] = [
 ]
 
 
-_CULTURE_BACK_LINK: MenuItem = {
-    "icon": "←",
-    "title": "potyk-culture",
-    "url": "/culture/",
-    "description": "",
-}
-
-
-_MONEY_BACK_LINK: MenuItem = {
-    "icon": "←",
-    "title": "potyk-money",
-    "url": "/money/",
-    "description": "",
-}
-
-
 _FIN_SECTION_LINKS: list[MenuItem] = [
     {
         "icon": "📒",
@@ -181,30 +165,6 @@ _INVEST_SECTION_LINKS: list[MenuItem] = [
         "title": "Зависимости",
         "url": "/invest/dependencies",
         "description": "",
-    },
-]
-
-
-FIN_MENU_GROUPS: list[MenuGroup] = [
-    {
-        "title": "Учет",
-        "links": _FIN_SECTION_LINKS,
-    },
-    {
-        "title": "",
-        "links": [_MONEY_BACK_LINK],
-    },
-]
-
-
-INVEST_MENU_GROUPS: list[MenuGroup] = [
-    {
-        "title": "Инвест",
-        "links": _INVEST_SECTION_LINKS,
-    },
-    {
-        "title": "",
-        "links": [_MONEY_BACK_LINK],
     },
 ]
 
@@ -348,54 +308,6 @@ _PRIKOLS_SECTION_LINKS: list[MenuItem] = [
         "title": "Главная",
         "url": "/prikols/",
         "description": "Музей приколов",
-    },
-]
-
-
-ART_MENU_GROUPS: list[MenuGroup] = [
-    {
-        "title": "potyk-art",
-        "links": _ART_SECTION_LINKS,
-    },
-    {
-        "title": "",
-        "links": [_CULTURE_BACK_LINK],
-    },
-]
-
-
-PRIKOLS_MENU_GROUPS: list[MenuGroup] = [
-    {
-        "title": "potyk-prikols",
-        "links": _PRIKOLS_SECTION_LINKS,
-    },
-    {
-        "title": "",
-        "links": [_CULTURE_BACK_LINK],
-    },
-]
-
-
-CINEMA_MENU_GROUPS: list[MenuGroup] = [
-    {
-        "title": "potyk-cinema",
-        "links": _CINEMA_SECTION_LINKS,
-    },
-    {
-        "title": "",
-        "links": [_CULTURE_BACK_LINK],
-    },
-]
-
-
-READS_MENU_GROUPS: list[MenuGroup] = [
-    {
-        "title": "potyk-reads",
-        "links": _READS_SECTION_LINKS,
-    },
-    {
-        "title": "",
-        "links": [_CULTURE_BACK_LINK],
     },
 ]
 

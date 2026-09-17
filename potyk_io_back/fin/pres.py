@@ -14,8 +14,14 @@ from potyk_io_back.fin.entities import (
     normalize_expense_category,
 )
 from potyk_io_back.fin.forms import BudgetForm, CloseDayForm, DeleteForm, ExpenseForm, SavingForm
+from potyk_io_back.potyk_io.menu import MONEY_MENU_GROUPS
 
 fin_bp = Blueprint("fin", __name__, url_prefix="/fin")
+
+
+@fin_bp.context_processor
+def fin_nav_context():
+    return {"menu_groups": MONEY_MENU_GROUPS}
 
 
 def flash_form_errors(form) -> None:

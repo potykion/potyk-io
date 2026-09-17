@@ -2,7 +2,7 @@ from pathlib import Path
 
 from flask import Blueprint, abort, render_template, send_file
 
-from potyk_io_back.potyk_io.menu import ART_MENU_GROUPS
+from potyk_io_back.potyk_io.menu import CULTURE_MENU_GROUPS
 
 ART_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "potyk-art"
 
@@ -12,7 +12,7 @@ art_bp = Blueprint("art", __name__, url_prefix="/art")
 @art_bp.context_processor
 def art_nav_context():
     return {
-        "menu_groups": ART_MENU_GROUPS,
+        "menu_groups": CULTURE_MENU_GROUPS,
         "section_brand_title": "potyk-art",
         "section_brand_url": "/art",
     }

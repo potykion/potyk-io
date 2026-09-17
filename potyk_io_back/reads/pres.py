@@ -8,7 +8,7 @@ from potyk_io_back.potyk_io.md_rendering import (
     split_frontmatter,
 )
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
-from potyk_io_back.potyk_io.menu import READS_MENU_GROUPS
+from potyk_io_back.potyk_io.menu import CULTURE_MENU_GROUPS
 from potyk_io_back.reads.books import READS_TEMPLATES_DIR, load_books
 
 reads_bp = Blueprint("reads", __name__, url_prefix="/reads")
@@ -17,7 +17,7 @@ reads_bp = Blueprint("reads", __name__, url_prefix="/reads")
 @reads_bp.context_processor
 def reads_nav_context():
     return {
-        "menu_groups": READS_MENU_GROUPS,
+        "menu_groups": CULTURE_MENU_GROUPS,
         "section_brand_title": "potyk-reads",
         "section_brand_url": "/reads",
     }

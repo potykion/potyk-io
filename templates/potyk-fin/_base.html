@@ -13,14 +13,18 @@
 
 {% block head_stylesheets %}
     <link rel="stylesheet" href="/static/jinja/css/forms.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/sidebar.css">
 {% endblock %}
 
-{% block body_class %}site-fin{% if config.DEBUG %} debug-env{% endif %}{% endblock %}
+{% block body_class %}menu-collapsed site-fin{% if config.DEBUG %} debug-env{% endif %}{% endblock %}
 
 {% block header_leading %}
-    <a href="{{ url_for('money.index') }}"
-       class="menu-toggle header-back"
-       aria-label="Назад в potyk-money">←</a>
+    <button type="button"
+            class="menu-toggle"
+            id="menu-toggle"
+            aria-controls="sidebar"
+            aria-expanded="false"
+            aria-label="Меню">≡</button>
 {% endblock %}
 
 {% block header_brand %}
@@ -695,4 +699,21 @@
         }
     }
 </style>
+{% endblock %}
+
+{% block layout %}
+    <div class="layout layout-simple">
+        {% include "potyk-io/_sidebar.html" %}
+
+        <div class="layout-main">
+            <main class="{% block main_class %}{% endblock %}">
+                {% include "jinja/_flashes.html" %}
+                {% block main %}{% endblock %}
+            </main>
+        </div>
+    </div>
+{% endblock %}
+
+{% block layout_script %}
+    {% include "jinja/_menu_script.html" %}
 {% endblock %}

@@ -6,7 +6,7 @@ from flask_login import login_required
 
 from potyk_io_back.potyk_io.collections.movies import load_movies_data, movies_for_client
 from potyk_io_back.potyk_io.md_rendering import render_body_html, split_frontmatter
-from potyk_io_back.potyk_io.menu import CINEMA_MENU_GROUPS
+from potyk_io_back.potyk_io.menu import CULTURE_MENU_GROUPS
 
 cinema_bp = Blueprint("cinema", __name__, url_prefix="/cinema")
 
@@ -16,7 +16,7 @@ CINEMA_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "poty
 @cinema_bp.context_processor
 def cinema_nav_context():
     return {
-        "menu_groups": CINEMA_MENU_GROUPS,
+        "menu_groups": CULTURE_MENU_GROUPS,
         "section_brand_title": "potyk-cinema",
         "section_brand_url": "/cinema",
     }
