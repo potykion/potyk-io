@@ -76,6 +76,61 @@
             if (e.key === 'Escape') closeMenu();
         });
 
+        // Mobile: open from left-edge swipe right; close with swipe left when open.
+        var SWIPE_EDGE_PX = 32;
+        var SWIPE_MIN_DX = 56;
+        var SWIPE_MAX_SLOPE = 0.75;
+        var swipeStart = null;
+
+        function swipeIgnoreTarget(el) {
+            if (!el || !el.closest) return true;
+            return !!el.closest('input, textarea, select, [contenteditable="true"], [contenteditable=""]');
+        }
+
+        function onSwipeStart(e) {
+            if (!isMobile() || !e.touches || e.touches.length !== 1) {
+                swipeStart = null;
+                return;
+            }
+            if (swipeIgnoreTarget(e.target)) {
+                swipeStart = null;
+                return;
+            }
+            var t = e.touches[0];
+            swipeStart = { x: t.clientX, y: t.clientY };
+        }
+
+        function onSwipeEnd(e) {
+            if (!swipeStart || !isMobile() || !e.changedTouches || !e.changedTouches.length) {
+                swipeStart = null;
+                return;
+            }
+            var t = e.changedTouches[0];
+            var dx = t.clientX - swipeStart.x;
+            var dy = t.clientY - swipeStart.y;
+            var startX = swipeStart.x;
+            swipeStart = null;
+
+            if (Math.abs(dx) < SWIPE_MIN_DX) return;
+            if (Math.abs(dy) > Math.abs(dx) * SWIPE_MAX_SLOPE) return;
+
+            if (dx > 0 && !isVisible()) {
+                if (startX <= SWIPE_EDGE_PX) setVisible(true);
+                return;
+            }
+            if (dx < 0 && isVisible()) {
+                setVisible(false);
+            }
+        }
+
+        function onSwipeCancel() {
+            swipeStart = null;
+        }
+
+        document.addEventListener('touchstart', onSwipeStart, { passive: true });
+        document.addEventListener('touchend', onSwipeEnd, { passive: true });
+        document.addEventListener('touchcancel', onSwipeCancel, { passive: true });
+
         mq.addEventListener('change', applyStoredOrDefault);
 
         applyStoredOrDefault();
