@@ -1,4 +1,5 @@
 from decimal import Decimal
+from pathlib import Path
 
 from datetime import date, timedelta
 
@@ -39,7 +40,11 @@ from potyk_io_back.invest.forms import (
     TickerLevelForm,
     compute_pnl,
 )
+from potyk_io_back.potyk_io.md_rendering import render_body_html, split_frontmatter
+from potyk_io_back.potyk_io.md_rendering.created import resolve_created
 from potyk_io_back.potyk_io.menu import MONEY_MENU_GROUPS
+
+INVEST_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "potyk-invest"
 
 invest_bp = Blueprint("invest", __name__, url_prefix="/invest")
 
@@ -84,7 +89,11 @@ def invest_price_filter(value) -> str:
 
 @invest_bp.context_processor
 def inject_invest_menu():
-    return {"menu_groups": MONEY_MENU_GROUPS}
+    return {
+        "menu_groups": MONEY_MENU_GROUPS,
+        "section_brand_title": "potyk-invest",
+        "section_brand_url": "/invest",
+    }
 
 
 def news_filter_form_from_request() -> tuple[NewsFilterForm, NewsFilters]:
@@ -171,6 +180,22 @@ def render_news_index(
 @invest_bp.route("/")
 def index():
     return render_news_index()
+
+
+@invest_bp.get("/passive-income")
+@invest_bp.get("/passive-income/")
+def passive_income():
+    file = INVEST_TEMPLATES_DIR / "passive-income.md"
+    if not file.is_file():
+        abort(404)
+    meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
+    created = resolve_created(file, meta)
+    return render_body_html(
+        body,
+        meta,
+        title="Как сделать пассивный доход",
+        created=created,
+    )
 
 
 @invest_bp.post("/")

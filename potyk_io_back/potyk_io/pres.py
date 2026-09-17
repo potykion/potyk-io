@@ -199,6 +199,12 @@ def code_page_moved(page_path: str):
     return redirect(f"/tech/{page_path}", code=301)
 
 
+@potyk_io_bp.route("/guides/passive-income")
+@potyk_io_bp.route("/guides/passive-income/")
+def passive_income_moved():
+    return redirect("/invest/passive-income", code=301)
+
+
 @potyk_io_bp.route("/collections/movies")
 @potyk_io_bp.route("/collections/movies/<path:_rest>")
 def movies_collection_redirect(_rest=None):
