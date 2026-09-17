@@ -28,36 +28,42 @@ MENU_GROUPS: list[MenuGroup] = [
         "links": [
             {
                 "icon": "💰",
-                "title": "potyk-money",
+                "title": "Бабло",
                 "url": "/money/",
                 "description": "Учёт и инвестиции",
             },
             {
                 "icon": "🍕",
-                "title": "potyk-food",
+                "title": "Жрачка",
                 "url": "/food",
                 "description": "Ворую рецепты",
             },
             {
                 "icon": "✈️",
-                "title": "potyk-travel",
+                "title": "Тревел",
                 "url": "/travel/",
                 "description": "Гайд, планы и воспоминания",
             },
             {
                 "icon": "💻",
-                "title": "potyk-tech",
+                "title": "Тех",
                 "url": "/tech/",
                 "description": "Девайсы, резюме, кодинг",
             },
             {
                 "icon": "🎭",
-                "title": "potyk-culture",
+                "title": "Культур",
                 "url": "/culture/",
                 "description": "",
             },
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
+            {
+                "icon": "🐙",
+                "title": "Ишьюс",
+                "url": "https://github.com/potykion/potyk-io/issues",
+                "description": "",
+            },
             {
                 "icon": "🛠️",
                 "title": "Админка",
