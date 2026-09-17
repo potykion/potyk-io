@@ -14,7 +14,7 @@
     {% endcall %}
     {% call forms.field(expense_form.amount.label.text, "amount-field") %}
         <div class="amount-row">
-            {{ expense_form.amount(min=1, step=1, required=true, autofocus=true) }}
+            {{ expense_form.amount(min=1, step=1, required=true) }}
             <button type="button" class="calc-toggle" title="Калькулятор" aria-label="Калькулятор" aria-expanded="false">🧮</button>
         </div>
         <div class="calc-panel" hidden>
