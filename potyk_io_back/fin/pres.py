@@ -21,7 +21,11 @@ fin_bp = Blueprint("fin", __name__, url_prefix="/fin")
 
 @fin_bp.context_processor
 def fin_nav_context():
-    return {"menu_groups": MONEY_MENU_GROUPS}
+    return {
+        "menu_groups": MONEY_MENU_GROUPS,
+        "section_brand_title": "potyk-fin",
+        "section_brand_url": "/fin",
+    }
 
 
 def flash_form_errors(form) -> None:
