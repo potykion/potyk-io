@@ -1,0 +1,21 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}potyk-money{% endblock %}
+
+{% block style %}
+{{ super() }}
+<link rel="stylesheet" href="/static/potyk-io/css/index.css">
+{% endblock %}
+
+{% block main %}
+<h1>potyk-money</h1>
+
+<div class="card-grid">
+    <a class="card card-text" href="/fin/">
+        <h3>Учет</h3>
+    </a>
+    <a class="card card-text" href="/invest/">
+        <h3>Инвест</h3>
+    </a>
+</div>
+{% endblock %}

@@ -15,6 +15,7 @@ from potyk_io_back.fin.entities import get_settings
 from potyk_io_back.fin.pres import fin_bp
 from potyk_io_back.inbox import inbox_bp
 from potyk_io_back.invest import invest_bp
+from potyk_io_back.money import money_bp
 from potyk_io_back.mu import mu_bp
 from potyk_io_back.potyk_io.pres import potyk_io_bp
 from potyk_io_back.prikols import prikols_bp
@@ -55,6 +56,7 @@ def create_app():
     app.register_blueprint(cinema_bp)
     app.register_blueprint(reads_bp)
     app.register_blueprint(culture_bp)
+    app.register_blueprint(money_bp)
     app.register_blueprint(prikols_bp)
     app.register_blueprint(tech_bp)
     app.register_blueprint(inbox_bp)

@@ -28,15 +28,9 @@ MENU_GROUPS: list[MenuGroup] = [
         "links": [
             {
                 "icon": "💰",
-                "title": "potyk-fin",
-                "url": "/fin",
-                "description": "Простой учет расходов и сберижений",
-            },
-            {
-                "icon": "💰",
-                "title": "potyk-invest",
-                "url": "/invest",
-                "description": "Новостюшки про рашн фондю",
+                "title": "potyk-money",
+                "url": "/money/",
+                "description": "Учёт и инвестиции",
             },
             {
                 "icon": "🍕",
@@ -143,6 +137,99 @@ _CULTURE_BACK_LINK: MenuItem = {
     "url": "/culture/",
     "description": "",
 }
+
+
+_MONEY_BACK_LINK: MenuItem = {
+    "icon": "←",
+    "title": "potyk-money",
+    "url": "/money/",
+    "description": "",
+}
+
+
+_FIN_SECTION_LINKS: list[MenuItem] = [
+    {
+        "icon": "📒",
+        "title": "Учёт",
+        "url": "/fin/",
+        "description": "Простой учет расходов и сбережений",
+    },
+]
+
+
+_INVEST_SECTION_LINKS: list[MenuItem] = [
+    {
+        "icon": "📰",
+        "title": "Новости",
+        "url": "/invest/",
+        "description": "",
+    },
+    {
+        "icon": "🤝",
+        "title": "Сделки",
+        "url": "/invest/deals",
+        "description": "",
+    },
+    {
+        "icon": "📊",
+        "title": "Фонды",
+        "url": "/invest/funds",
+        "description": "",
+    },
+    {
+        "icon": "🔗",
+        "title": "Зависимости",
+        "url": "/invest/dependencies",
+        "description": "",
+    },
+]
+
+
+FIN_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "Учет",
+        "links": _FIN_SECTION_LINKS,
+    },
+    {
+        "title": "",
+        "links": [_MONEY_BACK_LINK],
+    },
+]
+
+
+INVEST_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "Инвест",
+        "links": _INVEST_SECTION_LINKS,
+    },
+    {
+        "title": "",
+        "links": [_MONEY_BACK_LINK],
+    },
+]
+
+
+MONEY_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "Учет",
+        "links": _FIN_SECTION_LINKS,
+    },
+    {
+        "title": "Инвест",
+        "links": _INVEST_SECTION_LINKS,
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
 
 
 _CULTURE_OWN_LINKS: list[MenuItem] = [
