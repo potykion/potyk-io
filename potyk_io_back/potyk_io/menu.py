@@ -172,6 +172,12 @@ _INVEST_SECTION_LINKS: list[MenuItem] = [
         "url": "/invest/dependencies",
         "description": "",
     },
+    {
+        "icon": "💸",
+        "title": "Пассивный доход",
+        "url": "/invest/passive-income",
+        "description": "",
+    },
 ]
 
 
