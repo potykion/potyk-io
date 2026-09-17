@@ -29,7 +29,7 @@
 
 {% if today not in closed_dates %}
 <div class="panel">
-    <details data-panel="expense" {% if open_panel is none or open_panel == 'expense' %}open{% endif %}>
+    <details data-panel="expense" {% if open_panel == 'expense' %}open{% endif %}>
         <summary>Добавить трату</summary>
         {% include "potyk-fin/partials/_expense_form.html" %}
     </details>
@@ -213,28 +213,14 @@
     });
   };
 
-  const focusExpenseAmount = () => {
-    const panel = document.querySelector('details[data-panel="expense"]');
-    if (!panel || !panel.open) return;
-    const amount = panel.querySelector('[name="amount"]');
-    if (amount) amount.focus();
-  };
-
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      initTomSelect();
-      focusExpenseAmount();
-    });
+    document.addEventListener("DOMContentLoaded", () => initTomSelect());
   } else {
     initTomSelect();
-    focusExpenseAmount();
   }
 
   document.body.addEventListener("htmx:load", (event) => {
     initTomSelect(event.target);
-    if (event.target.matches?.("#expense-form") || event.target.querySelector?.("#expense-form")) {
-      focusExpenseAmount();
-    }
   });
 })();
 </script>
