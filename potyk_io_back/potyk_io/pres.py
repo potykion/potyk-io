@@ -205,6 +205,12 @@ def passive_income_moved():
     return redirect("/invest/passive-income", code=301)
 
 
+@potyk_io_bp.route("/notes/tea")
+@potyk_io_bp.route("/notes/tea/")
+def notes_tea_moved():
+    return redirect("/food/thoughts/tea", code=301)
+
+
 @potyk_io_bp.route("/collections/movies")
 @potyk_io_bp.route("/collections/movies/<path:_rest>")
 def movies_collection_redirect(_rest=None):
