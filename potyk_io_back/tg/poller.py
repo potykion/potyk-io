@@ -1,7 +1,6 @@
 """Long-poll Telegram updates via TELEGRAM_API_BASE_URL (CF Worker).
 
 Supports multiple bots from instance/telegram_bots.json (enable/disable).
-Webhook inbound to Yandex often times out; polling only needs outbound via Worker.
 """
 
 from __future__ import annotations
@@ -35,8 +34,9 @@ RELOAD_EVERY_SEC = 5.0
 async def poll_one(cfg: BotConfig, stop: asyncio.Event) -> None:
     bot = create_bot(cfg.token)
     await bot.initialize()
+    # getUpdates conflicts if a remote delivery URL is still registered
     await bot.delete_webhook(drop_pending_updates=True)
-    logger.info("[%s] webhook deleted; long polling", cfg.name)
+    logger.info("[%s] long polling", cfg.name)
 
     offset: int | None = None
     while not stop.is_set():

@@ -5,6 +5,7 @@ gen
 .venv
 .env
 *.db
+# local runtime data (incl. telegram_bots.json with tokens)
 instance/
 __pycache__/
 *.pyc

@@ -92,14 +92,6 @@ def create_bot(token: str) -> Bot:
     )
 
 
-def create_bot_from_env() -> Bot | None:
-    """Single bot for Flask webhook fallback (first enabled, or legacy)."""
-    bots = enabled_bots()
-    if not bots:
-        return None
-    return create_bot(bots[0].token)
-
-
 async def echo_update(bot: Bot, update: Update) -> None:
     message = update.effective_message
     if message is None:

@@ -6,16 +6,9 @@
 
 ## Зачем
 
-Держать рабочий контур общения с Telegram с прода, когда прямой доступ сервера к Telegram ограничен (типично для РФ / Yandex Cloud).
+Держать рабочий контур общения с Telegram с прода, когда прямой доступ сервера к `api.telegram.org` ограничен (типично для РФ / Yandex Cloud).
 
 ## Как устроено (прод)
-
-### Почему не обычный webhook на potyk.io
-
-1. С ВМ **нет исходящего** доступа к `api.telegram.org` (таймаут) — бот не может сам отвечать через официальный API.
-2. Telegram **не достучаться входящим webhook’ом** до IP Yandex (`Connection timed out`) — апдейты до приложения не доходят.
-
-Поэтому схема такая:
 
 ### Cloudflare Worker (прокси Bot API)
 
@@ -26,25 +19,20 @@
   (задаётся `TELEGRAM_API_BASE_URL`, суффикс `/bot`).
 - Воркер с края CF проксирует запрос на официальный Telegram API.
 
-Опционально в воркере есть путь `/hook` (форвард апдейта на potyk.io) — **на проде не используется**, пока входящий путь Telegram → Yandex ломается.
-
 ### Long polling (`potyk-tg.service`)
 
 - Отдельный systemd-сервис: `potyk-tg.service`  
   (`python -m potyk_io_back.tg.poller`).
 - Сам забирает апдейты через Worker (`getUpdates`), эхо шлёт тем же путём.
-- Не зависит от того, может ли Telegram открыть `https://potyk.io/...`.
 - Логи: `logs/tg-poller.log`, `logs/tg-poller.error.log`.
 - Основной сайт: `potyk-io.service` (gunicorn) — к поллингу ботов не обязан.
 
 ### Конфиг
 
 - Общий прокси: `TELEGRAM_API_BASE_URL` в `.env`.
-- Список ботов: JSON-файл (секреты, не в git), по умолчанию `instance/telegram_bots.json`  
-  или путь из `TELEGRAM_BOTS_FILE`.
+- Список ботов: JSON с токенами — `instance/telegram_bots.json` (каталог `instance/` в `.gitignore`)  
+  или путь из `TELEGRAM_BOTS_FILE`. Пример без секретов: `potyk_io_back/tg/telegram_bots.example.json`.
 - Устаревший одиночный `TELEGRAM_BOT_TOKEN` в `.env` всё ещё поднимает одного бота `default`, если файла ботов нет.
-
-Flask-эндпоинт `POST /tg/webhook` остаётся запасным; боевой контур — poller.
 
 ## Сценарии
 
@@ -80,7 +68,7 @@ Flask-эндпоинт `POST /tg/webhook` остаётся запасным; б�
 
 1. После деплоя, настройки Worker URL и хотя бы одного включённого бота — ответы в Telegram без ручного запуска с локалки.
 2. Пока poller или Worker недоступны — бот молчит; пропущенные за это время сообщения **не обязаны** догоняться.
-3. Рестарт `potyk-tg.service` безопасен: снова deleteWebhook (если висел) и long polling.
+3. Рестарт `potyk-tg.service` безопасен: снова long polling.
 
 ### Локалка
 
