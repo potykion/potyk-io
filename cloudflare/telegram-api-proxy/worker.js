@@ -23,16 +23,47 @@ async function handleRequest(request, env) {
         status: "ok",
         service: "telegram-api-proxy",
         usage: "Set TELEGRAM_API_BASE_URL to https://<this-host>/bot",
+        webhook: "SetWebhook to https://<this-host>/hook (forwards to potyk.io)",
       },
       { headers: corsHeaders() },
     );
+  }
+
+  // Telegram → CF (reachable) → potyk.io (Yandex often times out from TG DCs)
+  if (url.pathname === "/hook") {
+    if (request.method !== "POST") {
+      return new Response("method not allowed", { status: 405 });
+    }
+    const forwardUrl =
+      (env.FORWARD_URL || "https://potyk.io/tg/webhook").trim();
+    try {
+      const upstream = await fetch(forwardUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: request.body,
+      });
+      // Always ack Telegram quickly if origin answered at all
+      const text = await upstream.text();
+      return new Response(text, {
+        status: upstream.status >= 500 ? 502 : 200,
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      });
+    } catch (error) {
+      return Response.json(
+        {
+          error: "Failed to forward webhook to origin",
+          message: String(error?.message || error),
+        },
+        { status: 502 },
+      );
+    }
   }
 
   const isBot = url.pathname.startsWith("/bot");
   const isFile = url.pathname.startsWith("/file/bot");
   if (!isBot && !isFile) {
     return Response.json(
-      { error: "Expected /bot<TOKEN>/<method> or /file/bot<TOKEN>/..." },
+      { error: "Expected /bot<TOKEN>/<method>, /file/bot…, or /hook" },
       { status: 400, headers: corsHeaders() },
     );
   }

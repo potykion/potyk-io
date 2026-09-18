@@ -1,0 +1,16 @@
+[Unit]
+Description=potyk.io telegram echo poller
+After=network.target
+
+[Service]
+User=leybovich-nikita
+WorkingDirectory=/home/leybovich-nikita/potyk-io
+EnvironmentFile=/home/leybovich-nikita/potyk-io/.env
+ExecStart=/home/leybovich-nikita/potyk-io/.venv/bin/python -m potyk_io_back.tg.poller
+Restart=always
+RestartSec=5
+StandardOutput=file:/home/leybovich-nikita/potyk-io/logs/tg-poller.log
+StandardError=file:/home/leybovich-nikita/potyk-io/logs/tg-poller.error.log
+
+[Install]
+WantedBy=multi-user.target
