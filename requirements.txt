@@ -8,3 +8,4 @@ flask-login
 flask-wtf
 pyyaml
 alembic
+python-telegram-bot
