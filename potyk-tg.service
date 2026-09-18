@@ -10,8 +10,8 @@ Environment=PYTHONUNBUFFERED=1
 ExecStart=/home/leybovich-nikita/potyk-io/.venv/bin/python -m potyk_io_back.tg.poller
 Restart=always
 RestartSec=5
-StandardOutput=file:/home/leybovich-nikita/potyk-io/logs/tg-poller.log
-StandardError=file:/home/leybovich-nikita/potyk-io/logs/tg-poller.error.log
+StandardOutput=append:/home/leybovich-nikita/potyk-io/logs/tg-poller.log
+StandardError=append:/home/leybovich-nikita/potyk-io/logs/tg-poller.error.log
 
 [Install]
 WantedBy=multi-user.target
