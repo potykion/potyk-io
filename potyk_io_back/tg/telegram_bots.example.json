@@ -1,0 +1,7 @@
+[
+  {
+    "name": "echo",
+    "token": "PUT_BOT_TOKEN_HERE",
+    "enabled": true
+  }
+]

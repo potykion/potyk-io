@@ -9,7 +9,7 @@ from flask import Blueprint, request
 from telegram import Update
 from telegram.error import TelegramError
 
-from potyk_io_back.tg.bot_util import create_bot, echo_update
+from potyk_io_back.tg.bot_util import create_bot_from_env, echo_update
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ def get_bot():
     global _bot, _bot_ready
     with _bot_lock:
         if _bot is None:
-            _bot = create_bot()
+            _bot = create_bot_from_env()
         if _bot is None:
             return None
         if not _bot_ready:
