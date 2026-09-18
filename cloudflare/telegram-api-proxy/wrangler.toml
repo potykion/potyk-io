@@ -1,0 +1,7 @@
+name = "telegram-api-proxy"
+main = "worker.js"
+compatibility_date = "2024-09-01"
+
+# Optional: restrict to your bot token(s), comma-separated
+# [vars]
+# ALLOWED_TOKENS = "123:ABC"

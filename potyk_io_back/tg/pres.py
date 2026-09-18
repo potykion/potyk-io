@@ -24,6 +24,24 @@ def _token() -> str | None:
     return value or None
 
 
+def _api_base_url() -> str:
+    # PTB appends TOKEN/method → …/bot<TOKEN>/getMe
+    value = (os.environ.get("TELEGRAM_API_BASE_URL") or "").strip().rstrip("/")
+    if value:
+        return value if value.endswith("/bot") else f"{value}/bot"
+    return "https://api.telegram.org/bot"
+
+
+def _api_file_base_url() -> str:
+    value = (os.environ.get("TELEGRAM_API_FILE_BASE_URL") or "").strip().rstrip("/")
+    if value:
+        return value if value.endswith("/file/bot") else f"{value}/file/bot"
+    base = _api_base_url()
+    if base.endswith("/bot"):
+        return base[: -len("/bot")] + "/file/bot"
+    return "https://api.telegram.org/file/bot"
+
+
 def _run(coro):
     return _loop.run_until_complete(coro)
 
@@ -35,16 +53,28 @@ def get_bot() -> Bot | None:
         return None
     with _bot_lock:
         if _bot is None:
-            _bot = Bot(token=token)
+            _bot = Bot(
+                token=token,
+                base_url=_api_base_url(),
+                base_file_url=_api_file_base_url(),
+            )
         if not _bot_ready:
-            _run(_bot.initialize())
+            try:
+                _run(_bot.initialize())
+            except TelegramError:
+                logger.exception("telegram bot initialize failed")
+                raise
             _bot_ready = True
         return _bot
 
 
 @tg_bp.post("/webhook")
 def webhook():
-    bot = get_bot()
+    try:
+        bot = get_bot()
+    except TelegramError:
+        return "telegram api unavailable", 502
+
     if bot is None:
         return "bot not configured", 503
 
