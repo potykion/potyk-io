@@ -109,6 +109,7 @@ def render_food_markdown(file: Path):
 
 
 @potyk_io_bp.route("/")
+@login_required
 def index():
     notes, has_more = random_note_batch(BATCH_SIZE)
     movies_page = load_movies_data()
