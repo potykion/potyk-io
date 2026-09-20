@@ -130,6 +130,7 @@ def index():
 
 
 @potyk_io_bp.route("/feed/more")
+@login_required
 def feed_more():
     exclude = {
         u for u in flask.request.args.get("exclude", "").split(",") if u
@@ -145,6 +146,7 @@ def feed_more():
 
 
 @potyk_io_bp.get("/activity/notes/random")
+@login_required
 def activity_notes_random():
     exclude = {
         u for u in flask.request.args.get("exclude", "").split(",") if u
@@ -156,6 +158,7 @@ def activity_notes_random():
 
 
 @potyk_io_bp.post("/activity/notes/vote")
+@login_required
 def activity_notes_vote():
     payload = flask.request.get_json(silent=True) or {}
     note_id = str(payload.get("id") or "").strip()
@@ -171,6 +174,7 @@ def activity_notes_vote():
 
 
 @potyk_io_bp.route("/search")
+@login_required
 def search():
     q = flask.request.args.get("q", "").strip()
     results = search_notes(q) if q else []
@@ -270,6 +274,7 @@ def _group_watched_by_week(items: list[Finding]) -> list[dict]:
 
 
 @potyk_io_bp.get("/findings")
+@login_required
 def findings():
     unwatched = db.session.scalars(
         select(Finding)
@@ -410,6 +415,7 @@ def food_page(page_path: str):
 
 
 @potyk_io_bp.route("/<path:page_path>")
+@login_required
 def page(page_path: str):
     file = resolve_page(page_path)
     if file is None:
