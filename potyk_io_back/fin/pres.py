@@ -1,6 +1,6 @@
 from datetime import date
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, make_response, redirect, render_template, request, url_for
 from flask_login import login_required
 from sqlalchemy import func, select
 
@@ -80,6 +80,7 @@ def index_context(
     expense_form: ExpenseForm | None = None,
     saving_form: SavingForm | None = None,
     budget_form: BudgetForm | None = None,
+    editing_expense: Expense | None = None,
 ) -> dict:
     settings = get_settings()
     expenses = db.session.scalars(
@@ -162,6 +163,7 @@ def index_context(
         "delete_form": DeleteForm(),
         "close_day_form": CloseDayForm(),
         "open_panel": open_panel,
+        "editing_expense": editing_expense,
     }
 
 
@@ -229,6 +231,59 @@ def add_expense():
         return render_template("potyk-fin/partials/_expense_added.html", **ctx)
 
     flash("Трата добавлена", "success")
+    return redirect(url_for("fin.index"))
+
+
+@fin_bp.get("/expenses/<int:expense_id>/edit")
+@login_required
+def edit_expense_form(expense_id: int):
+    expense = db.session.get(Expense, expense_id)
+    if expense is None:
+        flash("Трата не найдена", "error")
+        return redirect(url_for("fin.index"))
+
+    form = ExpenseForm(obj=expense)
+    form.submit.label.text = "Сохранить"
+    return render_index(open_panel="expense", expense_form=form, editing_expense=expense)
+
+
+@fin_bp.post("/expenses/<int:expense_id>/edit")
+@login_required
+def edit_expense(expense_id: int):
+    expense = db.session.get(Expense, expense_id)
+    if expense is None:
+        flash("Трата не найдена", "error")
+        return redirect(url_for("fin.index"))
+
+    form = ExpenseForm()
+    form.submit.label.text = "Сохранить"
+    if not form.validate_on_submit():
+        if is_htmx():
+            ctx = index_context(
+                open_panel="expense",
+                expense_form=form,
+                editing_expense=expense,
+            )
+            return render_template("potyk-fin/partials/_expense_form.html", **ctx)
+        flash_form_errors(form)
+        return render_index(
+            open_panel="expense",
+            expense_form=form,
+            editing_expense=expense,
+        ), 400
+
+    expense.date = form.date.data
+    expense.amount = form.amount.data
+    expense.category = normalize_expense_category(form.category.data)
+    expense.description = (form.description.data or "").strip()
+    expense.optional = form.optional.data
+    db.session.commit()
+
+    flash("Трата обновлена", "success")
+    if is_htmx():
+        resp = make_response("", 204)
+        resp.headers["HX-Redirect"] = url_for("fin.index")
+        return resp
     return redirect(url_for("fin.index"))
 
 

@@ -370,6 +370,31 @@
 
     body.site-fin main .inline-form { display: inline; }
 
+    body.site-fin main .row-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 2px;
+    }
+
+    body.site-fin main .row-edit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--fin-muted);
+        text-decoration: none;
+        padding: 8px 4px;
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 0.85rem;
+        line-height: 1;
+        touch-action: manipulation;
+    }
+
+    body.site-fin main .row-edit:hover {
+        color: var(--fin-ink);
+    }
+
     body.site-fin main td .inline-form {
         display: flex;
         align-items: center;

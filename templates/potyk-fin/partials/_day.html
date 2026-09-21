@@ -54,11 +54,15 @@
                 </td>
                 <td>
                     {% if day.date not in closed_dates %}
-                    <form class="inline-form" method="post" action="{{ url_for('fin.delete_expense', expense_id=e.id) }}"
-                          onsubmit="return confirm('Удалить трату?')">
-                        {{ delete_form.hidden_tag() }}
-                        {{ delete_form.submit(class_='danger') }}
-                    </form>
+                    <div class="row-actions">
+                        <a class="row-edit" href="{{ url_for('fin.edit_expense_form', expense_id=e.id) }}"
+                           title="Изменить трату">✎</a>
+                        <form class="inline-form" method="post" action="{{ url_for('fin.delete_expense', expense_id=e.id) }}"
+                              onsubmit="return confirm('Удалить трату?')">
+                            {{ delete_form.hidden_tag() }}
+                            {{ delete_form.submit(class_='danger') }}
+                        </form>
+                    </div>
                     {% endif %}
                 </td>
             </tr>

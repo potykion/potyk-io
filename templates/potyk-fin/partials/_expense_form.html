@@ -1,10 +1,11 @@
 {% import "jinja/forms.html" as forms %}
 
+{% set form_action = url_for('fin.edit_expense', expense_id=editing_expense.id) if editing_expense else url_for('fin.add_expense') %}
 <form id="expense-form"
       class="grid cols-2"
       method="post"
-      action="{{ url_for('fin.add_expense') }}"
-      hx-post="{{ url_for('fin.add_expense') }}"
+      action="{{ form_action }}"
+      hx-post="{{ form_action }}"
       hx-target="#expense-form"
       hx-swap="outerHTML">
     {{ expense_form.hidden_tag() }}
@@ -46,4 +47,7 @@
     {% endcall %}
     {{ forms.checkbox_field(expense_form.optional, "full") }}
     {{ forms.submit_row(expense_form.submit) }}
+    {% if editing_expense %}
+    <p class="full muted"><a href="{{ url_for('fin.index') }}">Отмена</a></p>
+    {% endif %}
 </form>

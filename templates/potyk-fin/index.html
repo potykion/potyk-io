@@ -27,14 +27,16 @@
     </details>
 </div>
 
-{% if today not in closed_dates %}
+{% if today not in closed_dates or editing_expense %}
 <div class="panel">
-    <details data-panel="expense" {% if open_panel == 'expense' %}open{% endif %}>
-        <summary>Добавить трату</summary>
+    <details data-panel="expense" {% if open_panel == 'expense' or editing_expense %}open{% endif %}>
+        <summary>{% if editing_expense %}Изменить трату{% else %}Добавить трату{% endif %}</summary>
         {% include "potyk-fin/partials/_expense_form.html" %}
     </details>
 </div>
+{% endif %}
 
+{% if today not in closed_dates %}
 <div class="panel">
     <details data-panel="saving" {% if open_panel == 'saving' %}open{% endif %}>
         <summary>Зафиксировать сейв</summary>
