@@ -21,11 +21,6 @@
                     Глянуть кинца
                 </button>
             </li>
-            <li>
-                <button type="button" class="what-to-do__btn" data-modal-open="activity-notes">
-                    Свайпать страницы
-                </button>
-            </li>
         </ul>
     </section>
 
@@ -46,26 +41,6 @@
     {% endset %}
     {% include "jinja/_modal.html" %}
 
-    {% set modal_id = "activity-notes" %}
-    {% set modal_title = "Свайпать страницы" %}
-    {% set modal_wide = true %}
-    {% set modal_body %}
-        <section class="note-swipe" id="home-note-swipe">
-            <p class="note-swipe__status" data-note-swipe-status></p>
-            <div class="note-swipe__content" data-note-swipe-content hidden></div>
-            <p class="note-swipe__empty" data-note-swipe-empty hidden>Заметок пока нет</p>
-            <div class="note-swipe__actions" data-note-swipe-actions hidden>
-                <button type="button" class="note-swipe__btn note-swipe__btn--dislike" data-note-swipe-vote="dislike">
-                    Дизлайк
-                </button>
-                <button type="button" class="note-swipe__btn note-swipe__btn--like" data-note-swipe-vote="like">
-                    Лайк
-                </button>
-            </div>
-        </section>
-    {% endset %}
-    {% include "jinja/_modal.html" %}
-
     <h2 class="feed-title">Лента</h2>
     <div class="card-grid card-grid--feed">
         {% include "potyk-io/_notes_batch.html" %}
@@ -77,7 +52,6 @@
     <script src="/static/potyk-io/js/modal.js"></script>
     <script src="/static/potyk-io/js/content-card-fit-title.js"></script>
     <script src="/static/potyk-io/js/movies.js"></script>
-    <script src="/static/potyk-io/js/note-swipe.js"></script>
     <script>
     (function () {
         var cinemaModal = document.getElementById("activity-cinema");
@@ -94,18 +68,6 @@
                 } else {
                     roulette.restartAndSpin();
                 }
-            });
-        }
-
-        var notesModal = document.getElementById("activity-notes");
-        var notesRoot = document.getElementById("home-note-swipe");
-        if (notesModal && notesRoot && typeof window.initNoteSwipe === "function") {
-            var swipe = null;
-            notesModal.addEventListener("modal:open", function () {
-                if (!swipe) {
-                    swipe = window.initNoteSwipe(notesRoot);
-                }
-                swipe.reset();
             });
         }
     })();
