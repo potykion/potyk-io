@@ -30,8 +30,9 @@
 - дневник и обзоры — `/self/diary/...`
 - кулстори — `/self/cool-stories/...`
 - статьи про отношения — как в меню выше
+- прочее личное — например `/self/thoughts/tattoo`, `/self/notes/oks-23-07`
 
-Старые URL (`/diary`, `/cool-stories`, `/thoughts/relationships`, `/n/relationships`, `/guides/find-gf`) ведут на новые страницы.
+Старые URL (`/diary`, `/cool-stories`, `/thoughts/relationships`, `/n/relationships`, `/guides/find-gf`, `/thoughts/tattoo`, `/notes/oks-23-07`) ведут на новые страницы.
 
 ### Главная potyk.io и дневник
 

@@ -237,6 +237,12 @@ _INVEST_SECTION_LINKS: list[MenuItem] = [
         "url": "/invest/passive-income",
         "description": "",
     },
+    {
+        "icon": "📈",
+        "title": "Трейдинг",
+        "url": "/invest/trading",
+        "description": "",
+    },
 ]
 
 

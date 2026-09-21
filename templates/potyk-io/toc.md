@@ -17,7 +17,6 @@ description: Все, что не попало в другие разделы
 - [Приятности](n/pleasures)
 - [Чем заняться когда нехуй делать](n/todo)
 - [Спорт](n/sport)
-- [Трени (лог)](n/treni)
 - [Еда и я](n/food)
 - [Аптека](n/apteka)
 - [Как делать свою писанину](n/blog)
@@ -34,7 +33,7 @@ description: Все, что не попало в другие разделы
 
 ## Мысли/взгляды/Гайды
 
-- [Мнение про тоту](/thoughts/tattoo)
+- [Мнение про тоту](/self/thoughts/tattoo)
 
 ## ссылочки
 
@@ -60,9 +59,7 @@ description: Все, что не попало в другие разделы
 - [Как сделать потик ио интересным](notes/make-potyk-interesting)
 - [Сценарий видика об игре](notes/game-video-script)
 - [Москва Фуд-гайд 2026](notes/msk-food-guide-2026)
-- [oks-23-07.md](notes/oks-23-07)
 - [Идеи что закодить](notes/soft-ideas)
-- [Трейдинг заметки](notes/trading)
 - [2026.md](years/2026)
 
 Едальни / дегустации — в [potyk-food](/food/): [Mimi](/food/rest/mimi), [Душа лаваша](/food/rest/dusha-lavasha), [Москва базовые](/food/rest/msk-basics), [Мукузани](/food/tasting/mukuzani-dugladze).

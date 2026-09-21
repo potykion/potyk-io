@@ -198,6 +198,22 @@ def passive_income():
     )
 
 
+@invest_bp.get("/trading")
+@invest_bp.get("/trading/")
+def trading():
+    file = INVEST_TEMPLATES_DIR / "trading.md"
+    if not file.is_file():
+        abort(404)
+    meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
+    created = resolve_created(file, meta)
+    return render_body_html(
+        body,
+        meta,
+        title=file.stem,
+        created=created,
+    )
+
+
 @invest_bp.post("/")
 @login_required
 def add_news():

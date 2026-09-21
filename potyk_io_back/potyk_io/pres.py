@@ -249,6 +249,24 @@ def find_gf_moved():
     return redirect("/self/guides/find-gf", code=301)
 
 
+@potyk_io_bp.route("/thoughts/tattoo")
+@potyk_io_bp.route("/thoughts/tattoo/")
+def thoughts_tattoo_moved():
+    return redirect("/self/thoughts/tattoo", code=301)
+
+
+@potyk_io_bp.route("/notes/oks-23-07")
+@potyk_io_bp.route("/notes/oks-23-07/")
+def notes_oks_moved():
+    return redirect("/self/notes/oks-23-07", code=301)
+
+
+@potyk_io_bp.route("/notes/trading")
+@potyk_io_bp.route("/notes/trading/")
+def notes_trading_moved():
+    return redirect("/invest/trading", code=301)
+
+
 @potyk_io_bp.route("/collections/movies")
 @potyk_io_bp.route("/collections/movies/<path:_rest>")
 def movies_collection_redirect(_rest=None):
