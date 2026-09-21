@@ -16,7 +16,7 @@
     flex-direction: column;
     min-width: 0;
     transition:
-        width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+        margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1),
         border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -213,7 +213,7 @@
 
 @media screen and (min-width: 768px) {
     body.menu-collapsed .sidebar-shell {
-        width: 0;
+        margin-left: calc(-1 * var(--sidebar-width));
         border-right-color: transparent;
         pointer-events: none;
     }

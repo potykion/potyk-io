@@ -75,6 +75,7 @@ body {
     align-items: stretch;
     padding-top: var(--top-bar-height);
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .layout-main {
