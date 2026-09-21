@@ -6,6 +6,16 @@
         var sidebar = document.getElementById('sidebar');
         var mq = window.matchMedia('(max-width: 767px)');
         var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var backdrop = document.getElementById('menu-backdrop');
+
+        if (!backdrop) {
+            backdrop = document.createElement('button');
+            backdrop.type = 'button';
+            backdrop.id = 'menu-backdrop';
+            backdrop.className = 'menu-backdrop';
+            backdrop.setAttribute('aria-label', 'Закрыть меню');
+            body.appendChild(backdrop);
+        }
 
         function isMobile() {
             return mq.matches;
@@ -40,8 +50,8 @@
         }
 
         function clearDrawerInline() {
-            if (!sidebar) return;
-            sidebar.style.transform = '';
+            if (sidebar) sidebar.style.transform = '';
+            if (backdrop) backdrop.style.opacity = '';
             body.classList.remove('menu-dragging');
         }
 
@@ -73,6 +83,7 @@
         }
 
         if (toggle) toggle.addEventListener('click', toggleMenu);
+        if (backdrop) backdrop.addEventListener('click', closeMenu);
 
         if (sidebar) {
             sidebar.addEventListener('click', function (e) {
@@ -102,6 +113,7 @@
             progress = Math.max(0, Math.min(1, progress));
             body.classList.add('menu-dragging');
             sidebar.style.transform = 'translate3d(' + ((progress - 1) * 100) + '%, 0, 0)';
+            if (backdrop) backdrop.style.opacity = String(progress);
         }
 
         function snapDrawer(open) {
@@ -120,6 +132,7 @@
 
             body.classList.remove('menu-dragging');
             sidebar.style.transform = open ? 'translate3d(0, 0, 0)' : 'translate3d(-100%, 0, 0)';
+            if (backdrop) backdrop.style.opacity = open ? '1' : '0';
 
             var finished = false;
             function done() {

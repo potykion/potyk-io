@@ -103,16 +103,52 @@
     min-width: 1.15rem;
 }
 
+.menu-backdrop {
+    display: none;
+}
+
 @media screen and (max-width: 767px) {
-    .sidebar-shell {
-        display: flex;
+    .menu-backdrop {
+        display: block;
         position: fixed;
         top: var(--top-bar-height);
         left: 0;
         right: 0;
         bottom: 0;
-        width: 100%;
-        width: 100dvw;
+        z-index: 49;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.28s;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body.menu-open .menu-backdrop,
+    body.menu-dragging .menu-backdrop {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
+    }
+
+    body.menu-dragging .menu-backdrop {
+        transition: none;
+    }
+
+    .sidebar-shell {
+        display: flex;
+        position: fixed;
+        top: var(--top-bar-height);
+        left: 0;
+        bottom: 0;
+        width: 80%;
+        width: 80dvw;
+        max-width: 80%;
         height: calc(100vh - var(--top-bar-height));
         height: calc(100dvh - var(--top-bar-height));
         max-height: none;
@@ -120,6 +156,7 @@
         z-index: 50;
         background: #fff;
         border: none;
+        border-right: 1px solid rgba(0, 0, 0, 0.08);
         overflow: hidden;
         border-radius: 0;
         align-self: stretch;
@@ -127,6 +164,7 @@
         transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         pointer-events: none;
         will-change: transform;
+        box-shadow: 2px 0 16px rgba(0, 0, 0, 0.12);
     }
 
     body.menu-open .sidebar-shell,
@@ -149,11 +187,6 @@
         height: 100dvh;
     }
 
-    body.menu-open .layout-main,
-    body.menu-dragging .layout-main {
-        pointer-events: none;
-    }
-
     body.menu-open .search-shell {
         display: none;
     }
@@ -169,7 +202,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sidebar-shell {
+    .sidebar-shell,
+    .menu-backdrop {
         transition: none;
     }
 }
