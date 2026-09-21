@@ -113,6 +113,10 @@
 	- [Roshi — Видео про Untrue и Burial](https://www.youtube.com/watch?v=i8x9xRzhZcs)
 
 
+Sludge
+
+- [YXRYK — Как мемы возродили Crowbar](https://www.youtube.com/watch?v=ullCa27k9o8)
+
 ## Муз-эссеисты
 
 - [ПОСТ-ЖАНР](https://www.youtube.com/@postgenre)
