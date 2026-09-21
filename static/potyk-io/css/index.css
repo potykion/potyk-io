@@ -36,13 +36,19 @@ main.home-hero {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 0;
+    min-height: calc(100vh - var(--top-bar-height));
+    min-height: calc(100dvh - var(--top-bar-height));
     width: 100%;
+    box-sizing: border-box;
 }
 
 main.home-hero .site-logo {
     margin-top: 0;
     margin-bottom: 12px;
+}
+
+main.home-hero .site-logo img {
+    max-width: min(400px, 100%);
 }
 
 .home-tagline {
@@ -135,10 +141,6 @@ main.home-hero .site-logo {
 }
 
 @media screen and (max-width: 480px) {
-    h1.site-logo img {
-        max-width: min(200px, 50%);
-    }
-
     .grid {
         grid-template-columns: repeat(4, 1fr);
     }
