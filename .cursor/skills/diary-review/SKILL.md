@@ -1,30 +1,30 @@
 ﻿---
 name: diary-review
 description: >-
-  Makes weekly and monthly reviews from templates/potyk-io/diary entries: summary,
+  Makes weekly and monthly reviews from templates/potyk-self/diary entries: summary,
   opinion, compare with previous period, write review pages. Use when the user
   asks for обзор недели, обзор месяца, diary review, week review, month review,
-  or points at templates/potyk-io/diary for a retrospective.
+  or points at templates/potyk-self/diary for a retrospective.
 ---
 
 # Diary review (неделя / месяц)
 
-Пишет обзоры по записям в `templates/potyk-io/diary`. Язык — русский. Тон — прямой, близкий к дневнику: без корпоративного HR-спича, можно честно и колко, но структурированно.
+Пишет обзоры по записям в `templates/potyk-self/diary`. Язык — русский. Тон — прямой, близкий к дневнику: без корпоративного HR-спича, можно честно и колко, но структурированно.
 
 ## When
 
 - «обзор недели» / «что думаешь» / «сравни с предыдущей»
 - «обзор месяца»
-- явный запрос по `templates/potyk-io/diary` на ретроспективу
+- явный запрос по `templates/potyk-self/diary` на ретроспективу
 
 ## Paths & naming
 
 | Тип | Файл | Заголовок |
 |-----|------|-----------|
-| Неделя | `templates/potyk-io/diary/YYYY-Www.md` (ISO week) | `# Обзор недели · ДД мон – ДД мон YYYY (Www)` |
-| Месяц | `templates/potyk-io/diary/YYYY-MM.md` | `# Обзор месяца · месяц YYYY` |
+| Неделя | `templates/potyk-self/diary/YYYY-Www.md` (ISO week) | `# Обзор недели · ДД мон – ДД мон YYYY (Www)` |
+| Месяц | `templates/potyk-self/diary/YYYY-MM.md` | `# Обзор месяца · месяц YYYY` |
 
-Ссылки на дни: `/diary/YYYY-MM-DD` (без `.md`). Ссылка на недельный обзор: `/diary/YYYY-Www`.
+Ссылки на дни: `/self/diary/YYYY-MM-DD` (без `.md`). Ссылка на недельный обзор: `/self/diary/YYYY-Www`.
 
 Не путать с ежедневными `YYYY-MM-DD.md` и с `Шаблоны/`.
 
@@ -33,11 +33,11 @@ description: >-
 1. **Период**
    - Неделя: пн–вс относительно «сегодня» из user_info (или даты, которую назвал пользователь).
    - Месяц: календарный месяц; если записей мало — явно написать, что срез неполный.
-2. **Собрать файлы** `templates/potyk-io/diary/YYYY-MM-DD.md` за период + за **предыдущий** такой же период (для сравнения).
+2. **Собрать файлы** `templates/potyk-self/diary/YYYY-MM-DD.md` за период + за **предыдущий** такой же период (для сравнения).
 3. **Прочитать все** дневники периода (и предыдущего). Учитывать YAML/фронтматтер (`Муд`, `Медитировал?`, `Секс`, `Интерес`, `Энергия` и англ. варианты вроде `mood`).
 4. **Не тащить** в обзор посторонние заметки (`notes/`, `n/treni`, invest-заметки, длинные эссе), кроме случая когда дневник на них ссылается или дата совпадает с поездкой в `templates/potyk-travel/memories/` (например `suzdal-cucumber-26` ↔ 2026-08-01).
 5. **Написать** файл обзора по шаблону ниже. Если файл уже есть — обновить, не плодить дубликаты.
-6. **Обновить** `templates/potyk-io/diary/index.md`: H1 сохранить; список ссылок — дни (новые сверху или хронологично desc) + обзоры недели/месяца. Не включать `Шаблоны/` и служебное, если в индексе их не было принято держать.
+6. **Обновить** `templates/potyk-self/diary/index.md`: H1 сохранить; список ссылок — дни (новые сверху или хронологично desc) + обзоры недели/месяца. Не включать `Шаблоны/` и служебное, если в индексе их не было принято держать.
 7. В ответе пользователю — короткий вердикт (5–10 предложений) + пути к созданным файлам. Полный текст — в файлах, не дублировать обзор целиком в чат.
 
 ## Шаблон недели

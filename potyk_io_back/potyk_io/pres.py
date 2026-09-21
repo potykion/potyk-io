@@ -109,7 +109,6 @@ def render_food_markdown(file: Path):
 
 
 @potyk_io_bp.route("/")
-@login_required
 def index():
     notes, has_more = random_note_batch(BATCH_SIZE)
     movies_page = load_movies_data()
@@ -130,7 +129,6 @@ def index():
 
 
 @potyk_io_bp.route("/feed/more")
-@login_required
 def feed_more():
     exclude = {
         u for u in flask.request.args.get("exclude", "").split(",") if u
@@ -174,7 +172,6 @@ def activity_notes_vote():
 
 
 @potyk_io_bp.route("/search")
-@login_required
 def search():
     q = flask.request.args.get("q", "").strip()
     results = search_notes(q) if q else []
@@ -214,6 +211,42 @@ def passive_income_moved():
 @potyk_io_bp.route("/notes/tea/")
 def notes_tea_moved():
     return redirect("/food/thoughts/tea", code=301)
+
+
+@potyk_io_bp.route("/diary")
+@potyk_io_bp.route("/diary/")
+@potyk_io_bp.route("/diary/<path:page_path>")
+def diary_moved(page_path: str | None = None):
+    if page_path:
+        return redirect(f"/self/diary/{page_path}", code=301)
+    return redirect("/self/diary", code=301)
+
+
+@potyk_io_bp.route("/cool-stories")
+@potyk_io_bp.route("/cool-stories/")
+@potyk_io_bp.route("/cool-stories/<path:page_path>")
+def cool_stories_moved(page_path: str | None = None):
+    if page_path:
+        return redirect(f"/self/cool-stories/{page_path}", code=301)
+    return redirect("/self/cool-stories", code=301)
+
+
+@potyk_io_bp.route("/thoughts/relationships")
+@potyk_io_bp.route("/thoughts/relationships/")
+def thoughts_relationships_moved():
+    return redirect("/self/thoughts/relationships", code=301)
+
+
+@potyk_io_bp.route("/n/relationships")
+@potyk_io_bp.route("/n/relationships/")
+def n_relationships_moved():
+    return redirect("/self/n/relationships", code=301)
+
+
+@potyk_io_bp.route("/guides/find-gf")
+@potyk_io_bp.route("/guides/find-gf/")
+def find_gf_moved():
+    return redirect("/self/guides/find-gf", code=301)
 
 
 @potyk_io_bp.route("/collections/movies")
@@ -274,7 +307,6 @@ def _group_watched_by_week(items: list[Finding]) -> list[dict]:
 
 
 @potyk_io_bp.get("/findings")
-@login_required
 def findings():
     unwatched = db.session.scalars(
         select(Finding)
@@ -415,7 +447,6 @@ def food_page(page_path: str):
 
 
 @potyk_io_bp.route("/<path:page_path>")
-@login_required
 def page(page_path: str):
     file = resolve_page(page_path)
     if file is None:

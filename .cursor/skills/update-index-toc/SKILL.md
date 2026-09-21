@@ -36,7 +36,7 @@ Include empty stub files (title from rule 4).
 
 - Link path = path from **repo root** to the page, **without** extension:
   - `travel/plans/cheby.md` → `/travel/plans/cheby`
-  - `cool-stories/floating.md` → `/cool-stories/floating`
+  - `cool-stories/floating.md` → `/self/cool-stories/floating`
   - `travel/memories/vrn-26.html` → `/travel/memories/vrn-26`
 - Prefer leading `/`. If the existing index already uses a consistent style without leading `/` (e.g. `cool-stories/floating`), match that style for the whole list.
 - Never leave `.md` / `.html` in TOC links.

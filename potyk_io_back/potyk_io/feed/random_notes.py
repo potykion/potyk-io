@@ -168,7 +168,7 @@ def potyk_io_feed_spec():
         url_prefix="",
         sort="random",
         mix_menu_links=True,
-        expand_diary=True,
+        expand_diary=False,
     )
 
 

@@ -11,8 +11,8 @@ description: Все, что не попало в другие разделы
 > что вдохновляет, что приносит удовольствие, как мне жить
 
 - [Кто я](/n)
-- [Днев](/diary)
-- [Кулстори](/cool-stories)
+- [Днев](/self/diary)
+- [Кулстори](/self/cool-stories)
 - [Вдохновение / генерация идей](n/inspiration)
 - [Приятности](n/pleasures)
 - [Чем заняться когда нехуй делать](n/todo)
@@ -28,9 +28,9 @@ description: Все, что не попало в другие разделы
 
 ## Отношач
 
-- [Размышления](/thoughts/relationships)
-- [State](/n/relationships)
-- [Как найти девушку](/guides/find-gf)
+- [Размышления](/self/thoughts/relationships)
+- [State](/self/n/relationships)
+- [Как найти девушку](/self/guides/find-gf)
 
 ## Мысли/взгляды/Гайды
 

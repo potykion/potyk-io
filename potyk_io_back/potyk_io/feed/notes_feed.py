@@ -14,13 +14,12 @@ from potyk_io_back.potyk_io.feed.random_notes import (
     HIDDEN_NOTE_STEMS,
     PREVIEW_LEN,
     card_id,
-    is_diary_note,
     menu_link_cards,
     note_card_html,
     apply_cover,
     split_diary_entries,
 )
-from potyk_io_back.potyk_io.md_rendering import TEMPLATES_DIR, split_frontmatter
+from potyk_io_back.potyk_io.md_rendering import split_frontmatter
 from potyk_io_back.potyk_io.md_rendering.created import (
     created_from_filename,
     created_from_meta,
@@ -83,21 +82,20 @@ def _sort_date(path: Path, meta: dict[str, str]) -> date | None:
     return created_from_meta(meta) or created_from_filename(path.stem)
 
 
+def _is_diary_under_root(path: Path, root: Path) -> bool:
+    try:
+        return path.relative_to(root).parts[:1] == ("diary",)
+    except ValueError:
+        return False
+
+
 def _expand_entries(
     path: Path, spec: FeedSpec
 ) -> list[tuple[str, str, dict[str, str], str]]:
     meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
     base_url = note_url(path, root=spec.root, url_prefix=spec.url_prefix)
 
-    if not spec.expand_diary:
-        return [(base_url, base_url, meta, body)]
-
-    try:
-        path.relative_to(TEMPLATES_DIR)
-    except ValueError:
-        return [(base_url, base_url, meta, body)]
-
-    if not is_diary_note(path):
+    if not spec.expand_diary or not _is_diary_under_root(path, spec.root):
         return [(base_url, base_url, meta, body)]
 
     entries = split_diary_entries(body)

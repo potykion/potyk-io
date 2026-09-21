@@ -59,15 +59,71 @@ MENU_GROUPS: list[MenuGroup] = [
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
             {
+                "icon": "🔒",
+                "title": "Личное",
+                "url": "/self/",
+                "description": "Дневник и отношения",
+            },
+            {
                 "icon": "🐙",
                 "title": "Ишьюс",
                 "url": "https://github.com/potykion/potyk-io/issues",
                 "description": "",
             },
             {
-                "icon": "🛠️",
+                "icon": "🔒",
                 "title": "Админка",
                 "url": "/admin",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+SELF_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "potyk-self",
+        "links": [
+            {
+                "icon": "📓",
+                "title": "Дневник",
+                "url": "/self/diary",
+                "description": "",
+            },
+            {
+                "icon": "📖",
+                "title": "Кулстори",
+                "url": "/self/cool-stories",
+                "description": "",
+            },
+            {
+                "icon": "💭",
+                "title": "Размышления",
+                "url": "/self/thoughts/relationships",
+                "description": "",
+            },
+            {
+                "icon": "💞",
+                "title": "State",
+                "url": "/self/n/relationships",
+                "description": "",
+            },
+            {
+                "icon": "🧭",
+                "title": "Как найти девушку",
+                "url": "/self/guides/find-gf",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
                 "description": "",
             },
         ],
