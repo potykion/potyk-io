@@ -5,6 +5,7 @@
         var toggle = document.getElementById('menu-toggle');
         var sidebar = document.getElementById('sidebar');
         var mq = window.matchMedia('(max-width: 767px)');
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
         function isMobile() {
             return mq.matches;
@@ -38,13 +39,21 @@
             if (toggle) toggle.setAttribute('aria-expanded', isVisible() ? 'true' : 'false');
         }
 
+        function clearDrawerInline() {
+            if (!sidebar) return;
+            sidebar.style.transform = '';
+            body.classList.remove('menu-dragging');
+        }
+
         function setVisible(open, persist) {
             if (isMobile()) {
                 body.classList.toggle('menu-open', open);
                 body.classList.remove('menu-collapsed');
+                clearDrawerInline();
             } else {
                 body.classList.toggle('menu-collapsed', !open);
                 body.classList.remove('menu-open');
+                clearDrawerInline();
             }
             if (persist !== false) writeStored(open);
             syncAria();
@@ -76,11 +85,62 @@
             if (e.key === 'Escape') closeMenu();
         });
 
-        // Mobile: swipe right opens; left-from-right-edge also opens; swipe left closes when open.
+        // Mobile drawer: follow finger while swiping, then snap open/closed.
         var SWIPE_EDGE_PX = 48;
-        var SWIPE_MIN_DX = 56;
+        var SWIPE_COMMIT_DX = 12;
         var SWIPE_MAX_SLOPE = 0.75;
-        var swipeStart = null;
+        var swipe = null;
+        var snapTimer = null;
+
+        function drawerWidth() {
+            if (!sidebar) return window.innerWidth;
+            return sidebar.offsetWidth || window.innerWidth;
+        }
+
+        function setDrawerProgress(progress) {
+            if (!sidebar) return;
+            progress = Math.max(0, Math.min(1, progress));
+            body.classList.add('menu-dragging');
+            sidebar.style.transform = 'translate3d(' + ((progress - 1) * 100) + '%, 0, 0)';
+        }
+
+        function snapDrawer(open) {
+            if (!sidebar) {
+                setVisible(open);
+                return;
+            }
+            if (snapTimer) {
+                clearTimeout(snapTimer);
+                snapTimer = null;
+            }
+            if (reduceMotion.matches) {
+                setVisible(open);
+                return;
+            }
+
+            body.classList.remove('menu-dragging');
+            sidebar.style.transform = open ? 'translate3d(0, 0, 0)' : 'translate3d(-100%, 0, 0)';
+
+            var finished = false;
+            function done() {
+                if (finished) return;
+                finished = true;
+                sidebar.removeEventListener('transitionend', onEnd);
+                if (snapTimer) {
+                    clearTimeout(snapTimer);
+                    snapTimer = null;
+                }
+                setVisible(open);
+            }
+
+            function onEnd(e) {
+                if (e.target !== sidebar || e.propertyName !== 'transform') return;
+                done();
+            }
+
+            sidebar.addEventListener('transitionend', onEnd);
+            snapTimer = setTimeout(done, 320);
+        }
 
         function swipeIgnoreTarget(el) {
             if (!el || !el.closest) return true;
@@ -88,53 +148,95 @@
         }
 
         function onSwipeStart(e) {
-            if (!isMobile() || !e.touches || e.touches.length !== 1) {
-                swipeStart = null;
+            if (!isMobile() || !sidebar || !e.touches || e.touches.length !== 1) {
+                swipe = null;
                 return;
             }
             if (swipeIgnoreTarget(e.target)) {
-                swipeStart = null;
+                swipe = null;
                 return;
             }
             var t = e.touches[0];
-            swipeStart = { x: t.clientX, y: t.clientY };
+            swipe = {
+                x: t.clientX,
+                y: t.clientY,
+                startOpen: isVisible(),
+                mode: null,
+                progress: isVisible() ? 1 : 0,
+                moved: false
+            };
         }
 
-        function onSwipeEnd(e) {
-            if (!swipeStart || !isMobile() || !e.changedTouches || !e.changedTouches.length) {
-                swipeStart = null;
-                return;
-            }
-            var t = e.changedTouches[0];
-            var dx = t.clientX - swipeStart.x;
-            var dy = t.clientY - swipeStart.y;
-            var startX = swipeStart.x;
-            swipeStart = null;
+        function onSwipeMove(e) {
+            if (!swipe || !isMobile() || !e.touches || e.touches.length !== 1) return;
+            var t = e.touches[0];
+            var dx = t.clientX - swipe.x;
+            var dy = t.clientY - swipe.y;
 
-            if (Math.abs(dx) < SWIPE_MIN_DX) return;
-            if (Math.abs(dy) > Math.abs(dx) * SWIPE_MAX_SLOPE) return;
-
-            if (!isVisible()) {
-                if (dx > 0) {
-                    setVisible(true);
+            if (!swipe.mode) {
+                if (Math.abs(dx) < SWIPE_COMMIT_DX && Math.abs(dy) < SWIPE_COMMIT_DX) return;
+                if (Math.abs(dy) > Math.abs(dx) * SWIPE_MAX_SLOPE) {
+                    swipe = null;
                     return;
                 }
-                // From the right edge, inward (left) swipe also opens.
-                if (dx < 0 && startX >= window.innerWidth - SWIPE_EDGE_PX) {
-                    setVisible(true);
+
+                if (swipe.startOpen) {
+                    if (dx >= 0) {
+                        swipe = null;
+                        return;
+                    }
+                    swipe.mode = 'close';
+                } else if (dx > 0) {
+                    swipe.mode = 'open';
+                } else if (dx < 0 && swipe.x >= window.innerWidth - SWIPE_EDGE_PX) {
+                    swipe.mode = 'open-edge';
+                } else {
+                    swipe = null;
+                    return;
                 }
+            }
+
+            swipe.moved = true;
+            var w = drawerWidth();
+            var progress;
+            if (swipe.mode === 'open') {
+                progress = dx / w;
+            } else if (swipe.mode === 'open-edge') {
+                progress = -dx / w;
+            } else {
+                progress = 1 + dx / w;
+            }
+            swipe.progress = Math.max(0, Math.min(1, progress));
+            setDrawerProgress(swipe.progress);
+
+            if (e.cancelable) e.preventDefault();
+        }
+
+        function onSwipeEnd() {
+            if (!swipe || !isMobile()) {
+                swipe = null;
                 return;
             }
-            if (dx < 0) {
-                setVisible(false);
+            var state = swipe;
+            swipe = null;
+
+            if (!state.moved || !state.mode) {
+                clearDrawerInline();
+                return;
             }
+
+            snapDrawer(state.progress >= 0.5);
         }
 
         function onSwipeCancel() {
-            swipeStart = null;
+            if (!swipe) return;
+            var reopen = swipe.startOpen;
+            swipe = null;
+            snapDrawer(reopen);
         }
 
         document.addEventListener('touchstart', onSwipeStart, { passive: true });
+        document.addEventListener('touchmove', onSwipeMove, { passive: false });
         document.addEventListener('touchend', onSwipeEnd, { passive: true });
         document.addEventListener('touchcancel', onSwipeCancel, { passive: true });
 
