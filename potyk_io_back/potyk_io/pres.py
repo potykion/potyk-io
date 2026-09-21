@@ -225,6 +225,54 @@ def ethereal_feed_tea_moved():
     return redirect("/food/ethereal-feed/tea", code=301)
 
 
+@potyk_io_bp.route("/notes/soft-ideas")
+@potyk_io_bp.route("/notes/soft-ideas/")
+def notes_soft_ideas_moved():
+    return redirect("/tech/soft-ideas", code=301)
+
+
+@potyk_io_bp.route("/notes/msk-food-guide-2026")
+@potyk_io_bp.route("/notes/msk-food-guide-2026/")
+def notes_msk_food_guide_moved():
+    return redirect("/food/notes/msk-food-guide-2026", code=301)
+
+
+@potyk_io_bp.route("/n/pleasures")
+@potyk_io_bp.route("/n/pleasures/")
+def n_pleasures_moved():
+    return redirect("/self/n/pleasures", code=301)
+
+
+@potyk_io_bp.route("/n/inspiration")
+@potyk_io_bp.route("/n/inspiration/")
+def n_inspiration_moved():
+    return redirect("/self/n/inspiration", code=301)
+
+
+@potyk_io_bp.route("/n/todo")
+@potyk_io_bp.route("/n/todo/")
+def n_todo_moved():
+    return redirect("/self/n/todo", code=301)
+
+
+@potyk_io_bp.route("/necrolog")
+@potyk_io_bp.route("/necrolog/")
+def necrolog_moved():
+    return redirect("/self/necrolog", code=301)
+
+
+@potyk_io_bp.route("/n/sport")
+@potyk_io_bp.route("/n/sport/")
+def n_sport_moved():
+    return redirect("/health/sport", code=301)
+
+
+@potyk_io_bp.route("/n/apteka")
+@potyk_io_bp.route("/n/apteka/")
+def n_apteka_moved():
+    return redirect("/health/apteka", code=301)
+
+
 @potyk_io_bp.route("/diary")
 @potyk_io_bp.route("/diary/")
 @potyk_io_bp.route("/diary/<path:page_path>")

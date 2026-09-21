@@ -11,24 +11,16 @@ description: Все, что не попало в другие разделы
 > что вдохновляет, что приносит удовольствие, как мне жить
 
 - [Кто я](/n)
-- [Вдохновение / генерация идей](n/inspiration)
-- [Приятности](n/pleasures)
-- [Чем заняться когда нехуй делать](n/todo)
-- [Спорт](n/sport)
 - [Еда и я](/food/thoughts/food)
-- [Аптека](n/apteka)
 - [Как делать свою писанину](n/blog)
 - [Цифровой след](n/digital-footprint)
 - [Цели 2026](n/2026-goals)
 - [Благотворительность](/charity)
-- [Некролог](/necrolog)
 
 ## Коллекции/Таблички/Всякое
 
-- [Мои девайсы](/tech/devices)
 - [📹 ЮТ-каналы](https://docs.google.com/spreadsheets/d/1BLWN5txwatQdyRSHt0Jl2IWUqIbm-dcAMkEMXIiyTqg/edit?usp=sharing)
 - [📣 Телеграм Каналы](https://docs.google.com/spreadsheets/d/1C0RXi9eChoP_AfyLda1jM_aC0aSuLr-fBaJLpaZ34Kw/edit?usp=sharing)
-- [🎭 Театры/Мюзиклы](https://docs.google.com/spreadsheets/d/1pT59i5SuDrjovAKZXybnOzNWIn1SSljU24STSjIs8tk/edit?usp=sharing)
 
 ### Стримы
 
@@ -40,6 +32,4 @@ description: Все, что не попало в другие разделы
 - [Как живётся в Москве](notes/msk-life)
 - [Как сделать потик ио интересным](notes/make-potyk-interesting)
 - [Сценарий видика об игре](notes/game-video-script)
-- [Москва Фуд-гайд 2026](notes/msk-food-guide-2026)
-- [Идеи что закодить](notes/soft-ideas)
 - [2026.md](years/2026)

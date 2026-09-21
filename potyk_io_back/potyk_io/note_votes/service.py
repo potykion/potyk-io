@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import random
 from datetime import datetime
+from pathlib import Path
 
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
-from potyk_io_back.potyk_io.feed.random_notes import iter_notes, note_url
+from potyk_io_back.potyk_io.feed.notes_feed import FeedSpec, iter_note_paths, note_url
 from potyk_io_back.potyk_io.md_rendering import (
     demote_headings,
     extract_h1,
@@ -21,16 +22,27 @@ VOTE_LIKE = "like"
 VOTE_DISLIKE = "dislike"
 VALID_VOTES = frozenset({VOTE_LIKE, VOTE_DISLIKE})
 
+SELF_TEMPLATES_DIR = Path(__file__).resolve().parents[3] / "templates" / "potyk-self"
+
+_SELF_SWIPE_SPEC = FeedSpec(
+    id="self-swipe",
+    root=SELF_TEMPLATES_DIR,
+    url_prefix="/self",
+    sort="random",
+    recursive=True,
+)
+
 
 def _swipe_candidates() -> list[dict]:
     """Лёгкий список кандидатов без рендера HTML.
 
-    Целый md-файл = одна заметка (дневник — весь день, без нарезки по ---).
+    Источник — заметки potyk-self (личные). Целый md-файл = одна заметка
+    (дневник — весь день, без нарезки по ---).
     """
     entries: list[dict] = []
-    for path in iter_notes():
+    for path in iter_note_paths(_SELF_SWIPE_SPEC):
         meta, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
-        url = note_url(path)
+        url = note_url(path, root=SELF_TEMPLATES_DIR, url_prefix="/self")
         title = extract_h1(body) or path.stem
         if not body.strip() and not title:
             continue

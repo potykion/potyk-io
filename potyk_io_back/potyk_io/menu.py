@@ -67,6 +67,13 @@ MENU_GROUPS: list[MenuGroup] = [
                 "lock": True,
             },
             {
+                "icon": "🫀",
+                "title": "Здоровье",
+                "url": "/health/",
+                "description": "Спорт и аптека",
+                "lock": True,
+            },
+            {
                 "icon": "🐙",
                 "title": "Ишьюс",
                 "url": "https://github.com/potykion/potyk-io/issues",
@@ -116,6 +123,62 @@ SELF_MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🧭",
                 "title": "Как найти девушку",
                 "url": "/self/guides/find-gf",
+                "description": "",
+            },
+            {
+                "icon": "✨",
+                "title": "Вдохновение",
+                "url": "/self/n/inspiration",
+                "description": "",
+            },
+            {
+                "icon": "😌",
+                "title": "Приятности",
+                "url": "/self/n/pleasures",
+                "description": "",
+            },
+            {
+                "icon": "🎲",
+                "title": "Чем заняться",
+                "url": "/self/n/todo",
+                "description": "",
+            },
+            {
+                "icon": "⚰️",
+                "title": "Некролог",
+                "url": "/self/necrolog",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+HEALTH_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "potyk-health",
+        "links": [
+            {
+                "icon": "🏃",
+                "title": "Спорт",
+                "url": "/health/sport",
+                "description": "",
+            },
+            {
+                "icon": "💊",
+                "title": "Аптека",
+                "url": "/health/apteka",
                 "description": "",
             },
         ],
@@ -178,6 +241,12 @@ TECH_MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🧠",
                 "title": "ИИ-кодинг",
                 "url": "/tech/ai-coding",
+                "description": "",
+            },
+            {
+                "icon": "💡",
+                "title": "Идеи что закодить",
+                "url": "/tech/soft-ideas",
                 "description": "",
             },
         ],
@@ -512,6 +581,12 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🍬",
                 "title": "Сладости",
                 "url": "/food/tasting/sweets",
+                "description": "",
+            },
+            {
+                "icon": "🗺️",
+                "title": "Москва фуд-гайд 2026",
+                "url": "/food/notes/msk-food-guide-2026",
                 "description": "",
             },
             {

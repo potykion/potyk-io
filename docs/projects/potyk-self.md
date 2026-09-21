@@ -23,6 +23,10 @@
 - **Размышления** — `/self/thoughts/relationships`
 - **State** — `/self/n/relationships`
 - **Как найти девушку** — `/self/guides/find-gf`
+- **Вдохновение** — `/self/n/inspiration`
+- **Приятности** — `/self/n/pleasures`
+- **Чем заняться** — `/self/n/todo`
+- **Некролог** — `/self/necrolog`
 - **potyk-io** — возврат на главную сайта
 
 ### Страницы раздела
@@ -30,9 +34,9 @@
 - дневник и обзоры — `/self/diary/...`
 - кулстори — `/self/cool-stories/...`
 - статьи про отношения — как в меню выше
-- прочее личное — например `/self/thoughts/tattoo`, `/self/notes/oks-23-07`
+- прочее личное — например `/self/thoughts/tattoo`, `/self/notes/oks-23-07`, вдохновение / приятности / todo / некролог
 
-Старые URL (`/diary`, `/cool-stories`, `/thoughts/relationships`, `/n/relationships`, `/guides/find-gf`, `/thoughts/tattoo`, `/notes/oks-23-07`) ведут на новые страницы.
+Старые URL (`/diary`, `/cool-stories`, `/thoughts/relationships`, `/n/relationships`, `/guides/find-gf`, `/thoughts/tattoo`, `/notes/oks-23-07`, `/n/inspiration`, `/n/pleasures`, `/n/todo`, `/necrolog`) ведут на новые страницы.
 
 ### Главная potyk.io и дневник
 
