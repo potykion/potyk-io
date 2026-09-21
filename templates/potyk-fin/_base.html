@@ -51,16 +51,21 @@
         --pad-r: max(12px, env(safe-area-inset-right));
     }
 
-    body.site-fin {
+    /* Только колонка контента — top-bar / сайдбар как у potyk-io */
+    body.site-fin .layout-main {
         color: var(--fin-ink);
         background:
             radial-gradient(ellipse at top right, #ebe6da 0%, transparent 55%),
             var(--fin-bg);
     }
 
-    body.site-fin.debug-env::before {
+    body.site-fin.debug-env .layout-main {
+        position: relative;
+    }
+
+    body.site-fin.debug-env .layout-main::before {
         content: "тестовая среда";
-        position: fixed;
+        position: absolute;
         inset: 0;
         z-index: 0;
         pointer-events: none;
@@ -77,8 +82,8 @@
         user-select: none;
     }
 
-    body.site-fin .layout,
-    body.site-fin .top-bar {
+    body.site-fin.debug-env .layout-main > * {
+        position: relative;
         z-index: 1;
     }
 
@@ -88,10 +93,6 @@
     }
 
     body.site-fin main a { color: var(--fin-accent); text-decoration: none; }
-
-    body.site-fin .top-bar-link {
-        color: var(--fin-accent);
-    }
 
     body.site-fin main .alert {
         padding: 10px 12px;
