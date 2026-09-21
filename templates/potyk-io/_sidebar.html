@@ -1,4 +1,4 @@
-{% macro nav_link(icon, title, link, badge=none) -%}
+{% macro nav_link(icon, title, link, badge=none, lock=false) -%}
 {%- set external = link.startswith('http://') or link.startswith('https://') -%}
 {%- set active_ns = namespace(active=false, longest_match='') -%}
 {%- if not external -%}
@@ -23,6 +23,8 @@
     <span class="sidebar-link-title">{{ title }}</span>
     {% if badge %}
     <span class="sidebar-link-badge">{{ badge }}</span>
+    {% elif lock %}
+    <span class="sidebar-link-badge sidebar-link-badge--lock" title="нужен логин" aria-label="нужен логин">🔒</span>
     {% endif %}
 </a>
 {%- endmacro %}
@@ -36,7 +38,7 @@
             {% endif %}
             <div class="sidebar-group-links">
                 {% for item in group.links %}
-                    {{ nav_link(item.icon, item.title, item.url, item.get('badge')) }}
+                    {{ nav_link(item.icon, item.title, item.url, item.get('badge'), item.get('lock')) }}
                 {% endfor %}
             </div>
         </section>

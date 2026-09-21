@@ -7,6 +7,7 @@ class MenuItem(TypedDict):
     url: str
     description: str
     badge: NotRequired[int]
+    lock: NotRequired[bool]
 
 
 class MenuGroup(TypedDict):
@@ -59,10 +60,11 @@ MENU_GROUPS: list[MenuGroup] = [
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
             {
-                "icon": "🔒",
+                "icon": "🪞",
                 "title": "Личное",
                 "url": "/self/",
                 "description": "Дневник и отношения",
+                "lock": True,
             },
             {
                 "icon": "🐙",
@@ -71,10 +73,11 @@ MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {
-                "icon": "🔒",
+                "icon": "🛠️",
                 "title": "Админка",
                 "url": "/admin",
                 "description": "",
+                "lock": True,
             },
         ],
     },

@@ -94,6 +94,15 @@
     flex-shrink: 0;
 }
 
+.sidebar-link-badge--lock {
+    background: transparent;
+    color: inherit;
+    font-size: 0.85rem;
+    font-weight: 400;
+    padding: 0;
+    min-width: 1.15rem;
+}
+
 @media screen and (max-width: 767px) {
     body:not(.menu-open) .sidebar-shell {
         display: none;
