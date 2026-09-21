@@ -213,6 +213,18 @@ def notes_tea_moved():
     return redirect("/food/thoughts/tea", code=301)
 
 
+@potyk_io_bp.route("/n/food")
+@potyk_io_bp.route("/n/food/")
+def n_food_moved():
+    return redirect("/food/thoughts/food", code=301)
+
+
+@potyk_io_bp.route("/ethereal-feed/tea")
+@potyk_io_bp.route("/ethereal-feed/tea/")
+def ethereal_feed_tea_moved():
+    return redirect("/food/ethereal-feed/tea", code=301)
+
+
 @potyk_io_bp.route("/diary")
 @potyk_io_bp.route("/diary/")
 @potyk_io_bp.route("/diary/<path:page_path>")

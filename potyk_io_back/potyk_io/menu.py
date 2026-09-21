@@ -485,9 +485,21 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {
+                "icon": "🍽️",
+                "title": "Еда и я",
+                "url": "/food/thoughts/food",
+                "description": "",
+            },
+            {
                 "icon": "🍵",
                 "title": "Размышления о чае",
                 "url": "/food/thoughts/tea",
+                "description": "",
+            },
+            {
+                "icon": "🧉",
+                "title": "Чайный пьяница",
+                "url": "/food/ethereal-feed/tea",
                 "description": "",
             },
             {
