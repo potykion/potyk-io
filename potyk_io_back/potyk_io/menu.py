@@ -58,7 +58,7 @@ MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
-            {"icon": "📦", "title": "Содержание", "url": "/toc", "description": ""},
+            {"icon": "📦", "title": "Свалка", "url": "/toc", "description": ""},
             {
                 "icon": "🪞",
                 "title": "Личное",

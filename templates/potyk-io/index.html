@@ -2,74 +2,10 @@
 
 {% block style %}
     <link rel="stylesheet" href="/static/potyk-io/css/index.css">
-    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
-    <link rel="stylesheet" href="/static/potyk-io/css/modal.css">
-    <link rel="stylesheet" href="/static/potyk-io/css/movies.css">
 {% endblock %}
 
 {% block main %}
-
     <h1 class="site-logo">
         <img src="/static/potyk-io/img/potyk-io-logo.png" alt="potyk.io">
     </h1>
-
-    <section class="what-to-do" aria-labelledby="what-to-do-title">
-        <h2 id="what-to-do-title" class="what-to-do__title">Чем заняться</h2>
-        <ul class="what-to-do__list">
-            <li>
-                <button type="button" class="what-to-do__btn" data-modal-open="activity-cinema">
-                    Глянуть кинца
-                </button>
-            </li>
-        </ul>
-    </section>
-
-    {% set modal_id = "activity-cinema" %}
-    {% set modal_title = "Глянуть кинца" %}
-    {% set modal_wide = true %}
-    {% set modal_body %}
-        <section class="movie-roulette movie-roulette--compact" id="home-movie-roulette">
-            <div class="roulette-stage">
-                <div class="roulette-pointer" aria-hidden="true"></div>
-                <canvas class="roulette-canvas" width="360" height="360" aria-label="Колесо рулетки"></canvas>
-            </div>
-            <button type="button" class="roulette-spin-btn">Крутить ещё</button>
-            <div class="roulette-result" hidden></div>
-            <p class="roulette-empty" hidden>В выбранной коллекции пока пусто</p>
-            <script type="application/json" data-movies-by-collection>{{ movies_by_collection_json | safe }}</script>
-        </section>
-    {% endset %}
-    {% include "jinja/_modal.html" %}
-
-    <h2 class="feed-title">Лента</h2>
-    <div class="card-grid card-grid--feed">
-        {% include "potyk-io/_notes_batch.html" %}
-    </div>
-{% endblock %}
-
-{% block script %}
-    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-    <script src="/static/potyk-io/js/modal.js"></script>
-    <script src="/static/potyk-io/js/content-card-fit-title.js"></script>
-    <script src="/static/potyk-io/js/movies.js"></script>
-    <script>
-    (function () {
-        var cinemaModal = document.getElementById("activity-cinema");
-        var cinemaRoot = document.getElementById("home-movie-roulette");
-        if (cinemaModal && cinemaRoot && typeof window.initMovieRoulette === "function") {
-            var roulette = null;
-            cinemaModal.addEventListener("modal:open", function () {
-                if (!roulette) {
-                    roulette = window.initMovieRoulette(cinemaRoot, {
-                        collectionId: "watch_later",
-                        hideCollectionSelect: true,
-                        autoSpin: true,
-                    });
-                } else {
-                    roulette.restartAndSpin();
-                }
-            });
-        }
-    })();
-    </script>
 {% endblock %}
