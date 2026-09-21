@@ -75,7 +75,9 @@ body {
     align-items: stretch;
     padding-top: var(--top-bar-height);
     box-sizing: border-box;
-    overflow-x: hidden;
+    /* clip, не hidden: иначе layout становится scrollport и sticky сайдбар
+       даёт двойной отступ от хедера (top + padding-top). */
+    overflow-x: clip;
 }
 
 .layout-main {
