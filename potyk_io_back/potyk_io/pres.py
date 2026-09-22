@@ -9,7 +9,14 @@ from flask_login import login_required
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
-from potyk_io_back.potyk_io.feed import BATCH_SIZE, random_note_batch, search_notes
+from potyk_io_back.potyk_io.feed import (
+    BATCH_SIZE,
+    FeedSpec,
+    feed_batch,
+    feed_more_url,
+    random_note_batch,
+    search_notes,
+)
 from potyk_io_back.potyk_io.findings import Finding
 from potyk_io_back.potyk_io.findings.forms import (
     AddFindingForm,
@@ -40,6 +47,16 @@ from potyk_io_back.potyk_io.md_rendering.render import MD_EXTENSIONS, MD_EXTENSI
 from potyk_io_back.potyk_io.menu import FOOD_MENU_GROUPS, MENU_GROUPS
 
 potyk_io_bp = Blueprint("potyk_io", __name__)
+
+FOOD_FEEDS: dict[str, FeedSpec] = {
+    "restaurants": FeedSpec(
+        id="restaurants",
+        root=FOOD_TEMPLATES_DIR / "restaurants",
+        url_prefix="/food/restaurants",
+        sort="name",
+        recursive=False,
+    ),
+}
 
 
 @potyk_io_bp.context_processor
@@ -481,6 +498,39 @@ def restaurants_admin_redirect():
     return redirect(url_for("admin.restaurants"), code=301)
 
 
+@potyk_io_bp.get("/food/feed/more")
+def food_feed_more():
+    feed_id = request.args.get("feed", "restaurants")
+    spec = FOOD_FEEDS.get(feed_id)
+    if spec is None:
+        abort(404)
+    exclude = {u for u in request.args.get("exclude", "").split(",") if u}
+    notes, has_more = feed_batch(spec, BATCH_SIZE, exclude=exclude)
+    return render_template(
+        "jinja/_notes_batch.html",
+        notes=notes,
+        has_more=has_more,
+        exclude=[*exclude, *(n.get("id", n["url"]) for n in notes)],
+        more_url=feed_more_url(spec.id, endpoint=url_for("potyk_io.food_feed_more")),
+    )
+
+
+def _food_feed_index_context(file: Path) -> dict:
+    folder = file.parent.relative_to(FOOD_TEMPLATES_DIR).as_posix()
+    spec = FOOD_FEEDS.get(folder)
+    if spec is None:
+        return {}
+    notes, has_more = feed_batch(spec, BATCH_SIZE)
+    return {
+        "notes": notes,
+        "has_more": has_more,
+        "exclude": [n.get("id", n["url"]) for n in notes],
+        "more_url": feed_more_url(
+            spec.id, endpoint=url_for("potyk_io.food_feed_more")
+        ),
+    }
+
+
 @potyk_io_bp.route("/food/<path:page_path>")
 def food_page(page_path: str):
     file = resolve_page(page_path, root=FOOD_TEMPLATES_DIR, allow_assets=True)
@@ -500,6 +550,7 @@ def food_page(page_path: str):
                     PurePosixPath(file.relative_to(FOOD_TEMPLATES_DIR).as_posix())
                 ),
             )
+            ctx.update(_food_feed_index_context(file))
         return render_template(template_name, **ctx)
 
     return send_file(file)

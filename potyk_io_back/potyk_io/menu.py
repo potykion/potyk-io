@@ -521,7 +521,7 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
             {
                 "icon": "🍽️",
                 "title": "Рестораны",
-                "url": "/food/rest",
+                "url": "/food/restaurants",
                 "description": "",
             },
             {
@@ -581,12 +581,6 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
                 "icon": "🍬",
                 "title": "Сладости",
                 "url": "/food/tasting/sweets",
-                "description": "",
-            },
-            {
-                "icon": "🗺️",
-                "title": "Москва фуд-гайд 2026",
-                "url": "/food/notes/msk-food-guide-2026",
                 "description": "",
             },
             {

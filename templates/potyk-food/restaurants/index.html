@@ -1,0 +1,22 @@
+{% extends "potyk-io/_base.html" %}
+{% from "jinja/_feed.html" import feed %}
+
+{% block title %}Рестораны — potyk-food{% endblock %}
+
+{% block head_stylesheets %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/potyk-io/css/index.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main_class %}main-m md-content{% endblock %}
+
+{% block main %}
+    <h1>Рестораны</h1>
+
+    {{ feed(notes, has_more=has_more, exclude=exclude, more_url=more_url) }}
+{% endblock %}
+
+{% block script %}
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+{% endblock %}
