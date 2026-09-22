@@ -1,6 +1,6 @@
 {# Несколько лент на странице: для каждой свой notes / has_more / exclude / more_url. #}
-{% macro feed(notes, has_more=false, exclude=[], more_url=none, card_ratio=none) -%}
-<div class="card-grid card-grid--feed">
+{% macro feed(notes, has_more=false, exclude=[], more_url=none, card_ratio=none, four_cols=false) -%}
+<div class="card-grid card-grid--feed{% if four_cols %} card-grid--4{% endif %}">
     {% with notes=notes, has_more=has_more, exclude=exclude, more_url=more_url, card_ratio=card_ratio %}
         {% include "jinja/_notes_batch.html" %}
     {% endwith %}

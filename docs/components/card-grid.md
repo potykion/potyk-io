@@ -15,7 +15,7 @@
 - potyk-travel (`/travel/`, `/travel/memories/`, `/travel/plans/`) — списки поездок и планов;
 - potyk-art (`/art/`) — проекты с обложками `.jpg`;
 - potyk-food (`/food/tasting/sweets`) — сладости по категориям;
-- potyk-food (`/food/restaurants`) — отзывы о ресторанах;
+- potyk-food (`/food/restaurants`) — отзывы о ресторанах (четыре колонки);
 - potyk-cinema (`/cinema/`) — фильмы в подборках (сетка с четырьмя колонками на широком);
 - potyk-reads (`/reads/`) — книги (четыре колонки на широком, на мобилке сразу две).
 
