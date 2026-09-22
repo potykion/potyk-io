@@ -1,10 +1,13 @@
 ---
-cover: /static/potyk-io/img/restaurants/dusha-lavasha.jpg
+cover: /static/potyk-io/img/restaurants/dusha-lavasha-interior.jpg
 preview: Шаурма и чайхана
 ---
 # Душа лаваша
 
-![Шаурма в оранжевом лаваше](/static/potyk-io/img/restaurants/dusha-lavasha.jpg)
+<div style="display: flex; gap: 8px; margin: 0 0 1rem;">
+<img src="/static/potyk-io/img/restaurants/dusha-lavasha-interior.jpg" alt="Интерьер" style="width: 50%; height: auto; object-fit: cover;">
+<img src="/static/potyk-io/img/restaurants/dusha-lavasha.jpg" alt="Шаурма в оранжевом лаваше" style="width: 50%; height: auto; object-fit: cover;">
+</div>
 
 Отличное новенькое местечко. 
 Пришёл прежде всего за шаурмой - неплохая: 
@@ -17,5 +20,3 @@ preview: Шаурма и чайхана
 В общем достойно, ещё и приносят на тарелочке 😄
 Вообще тут полноценная чайхана с большим выбором восточных блюд: супы, манты, плов, даже сырники есть, и выпечки много с разными пирожками, беляшами, десертами и лепёшками из тандыра. И, судя по плотной посадке и проходимости, кухня здесь тоже ничего
 Так держать 👍
-
-![Интерьер](/static/potyk-io/img/restaurants/dusha-lavasha-interior.jpg)
