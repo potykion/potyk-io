@@ -33,6 +33,11 @@ from potyk_io_back.potyk_io.restaurants.entities import (
     restaurant_vocab,
     seed_restaurants_if_empty,
 )
+from potyk_io_back.potyk_io.restaurants.reviews import (
+    enrich_restaurant_cards,
+    is_restaurant_review,
+    restaurant_props_html,
+)
 from potyk_io_back.potyk_io.md_rendering import (
     FOOD_TEMPLATES_DIR,
     TEMPLATES_DIR,
@@ -110,6 +115,10 @@ def render_food_markdown(file: Path):
     meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
     created = resolve_created(file, meta)
     base_href = request.path if request.path.endswith("/") else f"{request.path}/"
+    after_h1_html: str | None = None
+    restaurants_dir = FOOD_TEMPLATES_DIR / "restaurants"
+    if is_restaurant_review(file, restaurants_dir=restaurants_dir):
+        after_h1_html = restaurant_props_html(meta)
     return render_body_html(
         body,
         meta,
@@ -118,6 +127,7 @@ def render_food_markdown(file: Path):
         base_href=base_href,
         link_rewriter=make_food_link_rewriter(file),
         recipe_ui=True,
+        after_h1_html=after_h1_html,
     )
 
 
@@ -506,6 +516,10 @@ def food_feed_more():
         abort(404)
     exclude = {u for u in request.args.get("exclude", "").split(",") if u}
     notes, has_more = feed_batch(spec, BATCH_SIZE, exclude=exclude)
+    if feed_id == "restaurants":
+        enrich_restaurant_cards(
+            notes, root=spec.root, url_prefix=spec.url_prefix
+        )
     return render_template(
         "jinja/_notes_batch.html",
         notes=notes,
@@ -521,7 +535,7 @@ def _food_feed_index_context(file: Path) -> dict:
     if spec is None:
         return {}
     notes, has_more = feed_batch(spec, BATCH_SIZE)
-    return {
+    ctx = {
         "notes": notes,
         "has_more": has_more,
         "exclude": [n.get("id", n["url"]) for n in notes],
@@ -529,6 +543,11 @@ def _food_feed_index_context(file: Path) -> dict:
             spec.id, endpoint=url_for("potyk_io.food_feed_more")
         ),
     }
+    if folder == "restaurants":
+        ctx["all_tags"] = enrich_restaurant_cards(
+            notes, root=spec.root, url_prefix=spec.url_prefix
+        )
+    return ctx
 
 
 @potyk_io_bp.route("/food/<path:page_path>")

@@ -1,6 +1,10 @@
 ---
 cover: /static/potyk-io/img/restaurants/dusha-lavasha-interior.jpg
 preview: Шаурма и чайхана
+tags: чайхона
+maps: https://yandex.ru/maps/-/CXEBIQ60
+prices: низкие
+visited: 2026-08-23
 ---
 # Душа лаваша
 

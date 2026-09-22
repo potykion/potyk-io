@@ -7,16 +7,66 @@
     {{ super() }}
     <link rel="stylesheet" href="/static/potyk-io/css/index.css">
     <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/restaurants.css">
 {% endblock %}
 
-{% block main_class %}main-m md-content{% endblock %}
+{% block main_class %}main-m md-content restaurants-page{% endblock %}
 
 {% block main %}
     <h1>Рестораны</h1>
 
+    {% if all_tags %}
+    <div class="rest-chips" id="rest-chips" role="group" aria-label="Фильтр по тегам">
+        {% for tag in all_tags %}
+        <button type="button" class="rest-chip" data-tag="{{ tag }}" aria-pressed="false">{{ tag }}</button>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     {{ feed(notes, has_more=has_more, exclude=exclude, more_url=more_url, four_cols=true) }}
+    <p class="rest-empty" id="rest-filter-empty" hidden>Нет ресторанов с такими тегами</p>
 {% endblock %}
 
 {% block script %}
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script>
+    (() => {
+      const chips = document.getElementById("rest-chips");
+      const empty = document.getElementById("rest-filter-empty");
+      if (!chips) return;
+
+      const selected = new Set();
+
+      const cards = () => document.querySelectorAll(".card-grid--feed > a.card");
+
+      const apply = () => {
+        let visible = 0;
+        cards().forEach((el) => {
+          const tags = (el.dataset.tags || "").split(",").map((t) => t.trim()).filter(Boolean);
+          const ok = selected.size === 0 || [...selected].some((t) => tags.includes(t));
+          el.hidden = !ok;
+          if (ok) visible += 1;
+        });
+        if (empty) empty.hidden = visible > 0 || selected.size === 0;
+      };
+
+      chips.addEventListener("click", (e) => {
+        const chip = e.target.closest(".rest-chip");
+        if (!chip) return;
+        const tag = chip.dataset.tag;
+        if (selected.has(tag)) {
+          selected.delete(tag);
+          chip.classList.remove("is-active");
+          chip.setAttribute("aria-pressed", "false");
+        } else {
+          selected.add(tag);
+          chip.classList.add("is-active");
+          chip.setAttribute("aria-pressed", "true");
+        }
+        apply();
+      });
+
+      document.body.addEventListener("htmx:afterSwap", apply);
+    })();
+    </script>
 {% endblock %}
