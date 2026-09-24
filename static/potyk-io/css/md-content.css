@@ -276,6 +276,13 @@
     color: #fff;
 }
 
+.md-content table.menu-table .menu-variation {
+    display: block;
+    margin-top: 0.35rem;
+    color: #666;
+    font-size: 0.9em;
+}
+
 .md-content table.menu-table .menu-review {
     display: block;
     margin-top: 0.45rem;
@@ -346,6 +353,29 @@
 }
 
 .md-content table.tier-list .tier-item:hover img {
+    outline: 2px solid #fff;
+    outline-offset: 1px;
+}
+
+.md-content table.tier-list .tier-item-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    padding: 0.25rem;
+    box-sizing: border-box;
+    border-radius: 2px;
+    background: #3a3a3a;
+    color: #eee;
+    font-size: 0.55rem;
+    font-weight: 600;
+    line-height: 1.15;
+    text-align: center;
+    white-space: normal;
+}
+
+.md-content table.tier-list .tier-item:hover .tier-item-text {
     outline: 2px solid #fff;
     outline-offset: 1px;
 }

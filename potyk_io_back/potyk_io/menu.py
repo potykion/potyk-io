@@ -74,6 +74,13 @@ MENU_GROUPS: list[MenuGroup] = [
                 "lock": True,
             },
             {
+                "icon": "👥",
+                "title": "Люди",
+                "url": "/people/",
+                "description": "Заметки о людях",
+                "lock": True,
+            },
+            {
                 "icon": "🐙",
                 "title": "Ишьюс",
                 "url": "https://github.com/potykion/potyk-io/issues",
@@ -179,6 +186,32 @@ HEALTH_MENU_GROUPS: list[MenuGroup] = [
                 "icon": "💊",
                 "title": "Аптека",
                 "url": "/health/apteka",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+PEOPLE_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "potyk-people",
+        "links": [
+            {
+                "icon": "👤",
+                "title": "м2",
+                "url": "/people/m2",
                 "description": "",
             },
         ],

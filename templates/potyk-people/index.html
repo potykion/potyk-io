@@ -1,0 +1,26 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}potyk-people{% endblock %}
+
+{% block style %}
+{{ super() }}
+<link rel="stylesheet" href="/static/potyk-io/css/index.css">
+<link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main %}
+<h1>potyk-people</h1>
+<div class="flex-center" style="color: #9f9f9f; margin-bottom: 24px;">
+    <span>люди</span>
+</div>
+
+<div class="card-grid">
+    {% for page in pages %}
+        <a class="card card-text" href="{{ page.url }}">
+            <h3>{{ page.title }}</h3>
+        </a>
+    {% else %}
+        <p class="card-grid-empty">Пока пусто</p>
+    {% endfor %}
+</div>
+{% endblock %}
