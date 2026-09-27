@@ -72,6 +72,8 @@
     flex-shrink: 0;
     width: 1.4em;
     text-align: center;
+    /* OpenMoji первым: иначе Win10 Segoe может отдать .notdef (тофу) и не дать fallback */
+    font-family: "OpenMoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
 }
 
 .sidebar-link-title {
@@ -100,6 +102,7 @@
 .sidebar-link-badge--lock {
     background: transparent;
     color: inherit;
+    font-family: "OpenMoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
     font-size: 0.85rem;
     font-weight: 400;
     padding: 0;
