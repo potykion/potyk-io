@@ -1,3 +1,4 @@
+from calendar import monthrange
 from datetime import date
 
 from flask import Blueprint, flash, make_response, redirect, render_template, request, url_for
@@ -36,6 +37,17 @@ def flash_form_errors(form) -> None:
 
 def is_htmx() -> bool:
     return request.headers.get("HX-Request") == "true"
+
+
+def prev_calendar_month(anchor: date) -> tuple[date, date]:
+    """Полный календарный месяц сразу перед месяцем anchor."""
+    if anchor.month == 1:
+        year, month = anchor.year - 1, 12
+    else:
+        year, month = anchor.year, anchor.month - 1
+    start = date(year, month, 1)
+    end = date(year, month, monthrange(year, month)[1])
+    return start, end
 
 
 def category_stats_for_period(
@@ -134,6 +146,7 @@ def index_context(
         s.amount for s in savings if stats_from <= s.date <= stats_to
     )
     stats_expenses_plus_saves = stats_total + stats_saved_total
+    prev_stats_from, prev_stats_to = prev_calendar_month(stats_from)
     today_state = next((d for d in days if d.date == today), None)
     total_saved = db.session.scalar(select(func.coalesce(func.sum(Saving.amount), 0))) or 0
     auto_remainder_total = sum(d.eod_remainder for d in days if d.date < today)
@@ -151,6 +164,8 @@ def index_context(
         "auto_remainder_total": auto_remainder_total,
         "stats_from": stats_from,
         "stats_to": stats_to,
+        "prev_stats_from": prev_stats_from,
+        "prev_stats_to": prev_stats_to,
         "category_stats": category_stats,
         "stats_total": stats_total,
         "stats_saved_total": stats_saved_total,

@@ -2,15 +2,19 @@
     <details data-panel="stats">
         <summary>Статистика</summary>
         <form class="stats-period" method="get" action="{{ url_for('fin.index') }}">
-            <label>
+            <label class="stats-period-from">
                 <span class="label">С</span>
                 <input type="date" name="stats_from" value="{{ stats_from.isoformat() }}" required>
             </label>
-            <label>
+            <label class="stats-period-to">
                 <span class="label">По</span>
                 <input type="date" name="stats_to" value="{{ stats_to.isoformat() }}" required>
             </label>
-            <button type="submit" class="secondary">Показать</button>
+            <div class="stats-period-actions">
+                <a class="btn secondary"
+                   href="{{ url_for('fin.index', stats_from=prev_stats_from.isoformat(), stats_to=prev_stats_to.isoformat()) }}">← месяц</a>
+                <button type="submit" class="secondary">Показать</button>
+            </div>
         </form>
 
         {% if category_stats %}
