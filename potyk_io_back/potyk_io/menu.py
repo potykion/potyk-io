@@ -60,14 +60,14 @@ MENU_GROUPS: list[MenuGroup] = [
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Свалка", "url": "/toc", "description": ""},
             {
-                "icon": "🪞",
+                "icon": "📔",
                 "title": "Личное",
                 "url": "/self/",
                 "description": "Дневник и отношения",
                 "lock": True,
             },
             {
-                "icon": "🫀",
+                "icon": "💊",
                 "title": "Здоровье",
                 "url": "/health/",
                 "description": "Спорт и аптека",

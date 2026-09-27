@@ -1,13 +1,11 @@
 :root {
     --sidebar-width: 260px;
     --top-bar-height: 3rem;
-    /* OpenMoji после текстовых шрифтов: буквы/цифры из Typewriter, эмодзи из пака */
-    --font-body: "American Typewriter", "Special Elite", "Courier New", Courier, "OpenMoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
 }
 
 body {
     margin: 0;
-    font-family: var(--font-body);
+    font-family: "American Typewriter", "Special Elite", "Courier New", Courier, monospace;
 }
 
 .top-bar {
@@ -62,7 +60,6 @@ body {
     background: none;
     border: none;
     font: inherit;
-    font-family: "OpenMoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
     font-size: 1.05rem;
     line-height: 1;
     cursor: pointer;
