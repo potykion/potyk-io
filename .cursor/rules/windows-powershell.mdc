@@ -1,0 +1,34 @@
+---
+description: Windows + PowerShell — оболочка, кодировка, BOM
+alwaysApply: true
+---
+
+# Windows и PowerShell
+
+Окружение агента — **Windows**, shell — **PowerShell** (часто Windows PowerShell 5.x, не bash и не всегда pwsh 7+).
+
+Все скриптовые вызовы, one-liners и временные `_tmp_….py` писать **под PowerShell**. Не предполагать bash/Unix.
+
+## Кодировка и BOM (часто ломает CSS/скрипты)
+
+- `Set-Content -Encoding UTF8` / `Out-File -Encoding utf8` в Windows PowerShell **добавляют UTF-8 BOM** (`EF BB BF`). BOM в начале `.css`, `.js`, `.py`, shebang-скриптов — типичный источник «хуёвой» поломки парсеров.
+- Для правок файлов предпочитать инструменты редактирования (Write / StrReplace), а не перезапись через PowerShell.
+- Если всё же пишешь файл из PowerShell — **без BOM**:
+
+```powershell
+$utf8 = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText((Resolve-Path 'path\to\file'), $content, $utf8)
+```
+
+- После массовой замены через `Get-Content`/`Set-Content` — проверить `git diff`: в начале файла не должно появляться «невидимых» изменений / `ï»¿`.
+
+## Оболочка
+
+- Не использовать bash-heredoc, `&&` цепочки как в bash (в PS 5 `;` или отдельные вызовы), `export`, `/dev/null`.
+- Кавычки в `python -c "..."` через PowerShell легко ломаются — короткий `_tmp_….py` в корень, запуск, удалить (см. также alembic).
+- Пути: нормальны и `\` и `/`; для git/python обычно ок. Абсолютные пути Windows — норма.
+
+## Чего не делать
+
+- Не чинить «как в Linux» команды, которые падают из‑за bash-синтаксиса — сразу переписать под PowerShell.
+- Не объяснять пользователю на каждом шаге, что «это Windows» — просто учитывать.

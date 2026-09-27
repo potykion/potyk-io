@@ -1,5 +1,9 @@
 # AGENTS.md
 
+## Окружение
+
+Агент работает на **Windows**, shell — **PowerShell**. Скрипты, one-liners и запись файлов — с учётом этого (без bash-heredoc; без UTF-8 BOM от `Set-Content -Encoding UTF8` — он ломает CSS/скрипты). Подробности — правило `windows-powershell.mdc`.
+
 ## Спеки и код
 
 Функциональные спеки лежат в `docs/`.
