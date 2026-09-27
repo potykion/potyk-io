@@ -13,10 +13,10 @@
             <button type="submit" class="secondary stats-period-show">Показать</button>
             <div class="stats-period-months">
                 <a class="btn secondary"
-                   href="{{ url_for('fin.index', stats_from=prev_stats_from.isoformat(), stats_to=prev_stats_to.isoformat()) }}">{{ prev_month_label }}</a>
+                   href="{{ url_for('fin.index', stats_from=prev_stats_from.isoformat(), stats_to=prev_stats_to.isoformat()) }}">← {{ prev_month_label }}</a>
                 {% if next_stats_from and next_stats_to and next_month_label %}
                 <a class="btn secondary"
-                   href="{{ url_for('fin.index', stats_from=next_stats_from.isoformat(), stats_to=next_stats_to.isoformat()) }}">{{ next_month_label }}</a>
+                   href="{{ url_for('fin.index', stats_from=next_stats_from.isoformat(), stats_to=next_stats_to.isoformat()) }}">{{ next_month_label }} →</a>
                 {% endif %}
             </div>
         </form>
