@@ -4,9 +4,11 @@
 
   const NUM = String.raw`\d+(?:[.,]\d+)?`;
   const SCALE_OPTIONS = [
-    { divisor: 1, label: "1" },
-    { divisor: 2, label: "1/2" },
-    { divisor: 4, label: "1/4" },
+    { factor: 2, label: "2" },
+    { factor: 1.5, label: "1.5" },
+    { factor: 1, label: "1", isDefault: true },
+    { factor: 0.5, label: "1/2" },
+    { factor: 0.25, label: "1/4" },
   ];
 
   function headingKind(el) {
@@ -49,8 +51,8 @@
     return out;
   }
 
-  function scaleText(text, divisor) {
-    if (!text || divisor === 1) return text;
+  function scaleText(text, factor) {
+    if (!text || factor === 1) return text;
     const re = new RegExp(
       String.raw`(${NUM})(\s*[–—−-]\s*(${NUM}))?`,
       "g"
@@ -59,12 +61,12 @@
       if (rangeTail && b != null) {
         const sep = rangeTail.replace(new RegExp(NUM + ".*"), "");
         return (
-          formatNum(parseNum(a) / divisor, a) +
+          formatNum(parseNum(a) * factor, a) +
           sep +
-          formatNum(parseNum(b) / divisor, b)
+          formatNum(parseNum(b) * factor, b)
         );
       }
-      return formatNum(parseNum(a) / divisor, a);
+      return formatNum(parseNum(a) * factor, a);
     });
   }
 
@@ -86,24 +88,56 @@
     return nodes;
   }
 
-  function applyScaleToElement(el, divisor) {
+  function ingredientRows(block) {
+    if (block.tagName === "TABLE") {
+      return [...block.querySelectorAll("tr")].slice(1).filter((row) => {
+        return row.querySelectorAll("td").length > 0;
+      });
+    }
+    if (block.tagName === "UL") {
+      return [...block.querySelectorAll(":scope > li")];
+    }
+    return [];
+  }
+
+  function applyScaleToElement(el, factor) {
     if (!el.dataset.recipeQtyOriginal) {
       el.dataset.recipeQtyOriginal = el.innerHTML;
     }
     el.innerHTML = el.dataset.recipeQtyOriginal;
-    if (divisor === 1) return;
+    if (factor === 1) return;
 
     const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
     const texts = [];
     while (walker.nextNode()) texts.push(walker.currentNode);
     texts.forEach((node) => {
-      node.nodeValue = scaleText(node.nodeValue, divisor);
+      node.nodeValue = scaleText(node.nodeValue, factor);
     });
   }
 
-  function applyScale(blocks, divisor) {
+  function applyScale(blocks, factor) {
     blocks.forEach((block) => {
-      quantityTargets(block).forEach((el) => applyScaleToElement(el, divisor));
+      quantityTargets(block).forEach((el) => applyScaleToElement(el, factor));
+    });
+  }
+
+  function bindToggle(el) {
+    el.tabIndex = 0;
+    el.setAttribute("role", "button");
+    el.setAttribute("aria-pressed", "false");
+    const toggle = () => {
+      const done = el.classList.toggle("is-done");
+      el.setAttribute("aria-pressed", done ? "true" : "false");
+    };
+    el.addEventListener("click", (event) => {
+      if (event.target.closest("a")) return;
+      toggle();
+    });
+    el.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggle();
+      }
     });
   }
 
@@ -127,23 +161,38 @@
       bar.setAttribute("role", "group");
       bar.setAttribute("aria-label", "Масштаб порции");
 
-      SCALE_OPTIONS.forEach((opt, i) => {
+      SCALE_OPTIONS.forEach((opt) => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "recipe-scale-btn";
         btn.textContent = opt.label;
-        btn.dataset.divisor = String(opt.divisor);
-        if (i === 0) btn.classList.add("is-active");
+        btn.dataset.factor = String(opt.factor);
+        if (opt.isDefault) btn.classList.add("is-active");
         btn.addEventListener("click", () => {
           bar.querySelectorAll(".recipe-scale-btn").forEach((b) => {
             b.classList.toggle("is-active", b === btn);
           });
-          applyScale(blocks, opt.divisor);
+          applyScale(blocks, opt.factor);
         });
         bar.appendChild(btn);
       });
 
       heading.insertAdjacentElement("afterend", bar);
+    });
+  }
+
+  function initIngredients() {
+    const headings = [...root.querySelectorAll("h2, h3, h4")].filter(
+      (h) => headingKind(h) === "ingredients"
+    );
+    headings.forEach((heading) => {
+      collectSectionBlocks(heading).forEach((block) => {
+        block.classList.add("recipe-ingredients");
+        ingredientRows(block).forEach((row) => {
+          row.classList.add("recipe-ingredient");
+          bindToggle(row);
+        });
+      });
     });
   }
 
@@ -157,28 +206,13 @@
         block.classList.add("recipe-steps");
         block.querySelectorAll(":scope > li").forEach((li) => {
           li.classList.add("recipe-step");
-          li.tabIndex = 0;
-          li.setAttribute("role", "button");
-          li.setAttribute("aria-pressed", "false");
-          const toggle = () => {
-            const done = li.classList.toggle("is-done");
-            li.setAttribute("aria-pressed", done ? "true" : "false");
-          };
-          li.addEventListener("click", (event) => {
-            if (event.target.closest("a")) return;
-            toggle();
-          });
-          li.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              toggle();
-            }
-          });
+          bindToggle(li);
         });
       });
     });
   }
 
   initScale();
+  initIngredients();
   initSteps();
 })();

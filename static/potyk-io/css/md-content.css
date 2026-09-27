@@ -198,11 +198,18 @@
     background: #f0f0f0;
 }
 
+.md-content .recipe-ingredient,
 .md-content .recipe-step {
     cursor: pointer;
 }
 
+.md-content .recipe-ingredient.is-done,
 .md-content .recipe-step.is-done {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.md-content table.recipe-ingredients tr.recipe-ingredient.is-done td {
     text-decoration: line-through;
     color: #888;
 }
