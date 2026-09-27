@@ -169,16 +169,18 @@
         box-sizing: border-box;
     }
 
-    body.site-fin main .stats-period-actions {
+    body.site-fin main .stats-period-show {
+        grid-column: 1 / -1;
+    }
+
+    body.site-fin main .stats-period-months {
         grid-column: 1 / -1;
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        align-items: stretch;
     }
 
-    body.site-fin main .stats-period-actions .btn,
-    body.site-fin main .stats-period-actions button {
+    body.site-fin main .stats-period-months .btn {
         flex: 1 1 auto;
         text-align: center;
         text-decoration: none;
@@ -189,14 +191,13 @@
             grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr) auto;
         }
 
-        body.site-fin main .stats-period-actions {
+        body.site-fin main .stats-period-show {
             grid-column: auto;
-            flex-wrap: nowrap;
         }
 
-        body.site-fin main .stats-period-actions .btn,
-        body.site-fin main .stats-period-actions button {
+        body.site-fin main .stats-period-months .btn {
             flex: 0 0 auto;
+            min-width: 7.5rem;
         }
     }
 

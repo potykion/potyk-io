@@ -19,6 +19,22 @@ from potyk_io_back.potyk_io.menu import MONEY_MENU_GROUPS
 
 fin_bp = Blueprint("fin", __name__, url_prefix="/fin")
 
+MONTH_NAMES_RU = (
+    "",
+    "Январь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Сентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь",
+)
+
 
 @fin_bp.context_processor
 def fin_nav_context():
@@ -45,9 +61,30 @@ def prev_calendar_month(anchor: date) -> tuple[date, date]:
         year, month = anchor.year - 1, 12
     else:
         year, month = anchor.year, anchor.month - 1
+    return month_bounds(year, month)
+
+
+def next_calendar_month(anchor: date, today: date) -> tuple[date, date] | None:
+    """Следующий месяц после anchor, если он не позже текущего. Текущий — по сегодня."""
+    if (anchor.year, anchor.month) >= (today.year, today.month):
+        return None
+    if anchor.month == 12:
+        year, month = anchor.year + 1, 1
+    else:
+        year, month = anchor.year, anchor.month + 1
+    return month_bounds(year, month, today=today)
+
+
+def month_bounds(year: int, month: int, *, today: date | None = None) -> tuple[date, date]:
     start = date(year, month, 1)
     end = date(year, month, monthrange(year, month)[1])
+    if today is not None and year == today.year and month == today.month:
+        end = today
     return start, end
+
+
+def month_label_ru(d: date) -> str:
+    return MONTH_NAMES_RU[d.month]
 
 
 def category_stats_for_period(
@@ -147,6 +184,13 @@ def index_context(
     )
     stats_expenses_plus_saves = stats_total + stats_saved_total
     prev_stats_from, prev_stats_to = prev_calendar_month(stats_from)
+    next_month = next_calendar_month(stats_from, today)
+    if next_month is None:
+        next_stats_from = next_stats_to = None
+        next_month_label = None
+    else:
+        next_stats_from, next_stats_to = next_month
+        next_month_label = month_label_ru(next_stats_from)
     today_state = next((d for d in days if d.date == today), None)
     total_saved = db.session.scalar(select(func.coalesce(func.sum(Saving.amount), 0))) or 0
     auto_remainder_total = sum(d.eod_remainder for d in days if d.date < today)
@@ -166,6 +210,10 @@ def index_context(
         "stats_to": stats_to,
         "prev_stats_from": prev_stats_from,
         "prev_stats_to": prev_stats_to,
+        "prev_month_label": month_label_ru(prev_stats_from),
+        "next_stats_from": next_stats_from,
+        "next_stats_to": next_stats_to,
+        "next_month_label": next_month_label,
         "category_stats": category_stats,
         "stats_total": stats_total,
         "stats_saved_total": stats_saved_total,
