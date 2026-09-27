@@ -86,6 +86,7 @@
 
 ### 🌏 Азия
 
+- [Яки удон с говядиной](recipes/05-asia/beef-yaki-udon.md)
 - [Соба с утиной грудкой и соусом терияки](recipes/05-asia/duck-soba.md)
 - [Стеклянная лапша с креветками](recipes/05-asia/glass-noodles-shrimp.md)
 
@@ -105,6 +106,7 @@
 - [Брауни с вишней](recipes/06-dessert/brownie.md)
 - [Шарлотка с яблоками](recipes/06-dessert/charlotte-w-apples.md)
 - [Гренки с сахаром](recipes/06-dessert/french-toast.md)
+- [Пряная тыквенная запеканка с манкой](recipes/06-dessert/pumpkin-cottage-zapekanka.md)
 
 ### 🪓 Крафт
 
