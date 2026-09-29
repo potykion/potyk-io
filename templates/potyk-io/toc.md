@@ -7,7 +7,7 @@
 - [Кто я](/n)
 - [Благотворительность](/charity)
 - [Как делать свою писанину](/n/blog)
-- [Цели 2026](/n/2026-goals)
+- [Смыслы](/self/n/smysly)
 - [Гора трупов](/posts/gora-trupov)
 - [Цифровой след](/n/digital-footprint)
 - [Сценарий видика об игре](/notes/game-video-script)

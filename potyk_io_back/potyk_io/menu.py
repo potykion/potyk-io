@@ -151,6 +151,12 @@ SELF_MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {
+                "icon": "🎯",
+                "title": "Смыслы",
+                "url": "/self/n/smysly",
+                "description": "",
+            },
+            {
                 "icon": "⚰️",
                 "title": "Некролог",
                 "url": "/self/necrolog",

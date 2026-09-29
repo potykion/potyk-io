@@ -26,6 +26,7 @@
 - **Вдохновение** — `/self/n/inspiration`
 - **Приятности** — `/self/n/pleasures`
 - **Чем заняться** — `/self/n/todo`
+- **Смыслы** — `/self/n/smysly`
 - **Некролог** — `/self/necrolog`
 - **potyk-io** — возврат на главную сайта
 
@@ -34,9 +35,15 @@
 - дневник и обзоры — `/self/diary/...`
 - кулстори — `/self/cool-stories/...`
 - статьи про отношения — как в меню выше
-- прочее личное — например `/self/thoughts/tattoo`, `/self/notes/oks-23-07`, вдохновение / приятности / todo / некролог
+- прочее личное — например `/self/thoughts/tattoo`, `/self/notes/oks-23-07`, вдохновение / приятности / todo / смыслы / некролог
 
-Старые URL (`/diary`, `/cool-stories`, `/thoughts/relationships`, `/n/relationships`, `/guides/find-gf`, `/thoughts/tattoo`, `/notes/oks-23-07`, `/n/inspiration`, `/n/pleasures`, `/n/todo`, `/necrolog`) ведут на новые страницы.
+Старые URL (`/diary`, `/cool-stories`, `/thoughts/relationships`, `/n/relationships`, `/guides/find-gf`, `/thoughts/tattoo`, `/notes/oks-23-07`, `/n/inspiration`, `/n/pleasures`, `/n/todo`, `/n/2026-goals`, `/necrolog`) ведут на новые страницы.
+
+### Смыслы
+
+Пользователь открывает **Смыслы**.
+
+**Ожидаемый результат:** страница с ценностями, целями, занятиями (как бьются с ценностями) и списком бессмысленного — зачем чем-то заниматься и на что не тратить время.
 
 ### Главная potyk.io и дневник
 

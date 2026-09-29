@@ -275,6 +275,12 @@ def n_todo_moved():
     return redirect("/self/n/todo", code=301)
 
 
+@potyk_io_bp.route("/n/2026-goals")
+@potyk_io_bp.route("/n/2026-goals/")
+def n_2026_goals_moved():
+    return redirect("/self/n/smysly", code=301)
+
+
 @potyk_io_bp.route("/necrolog")
 @potyk_io_bp.route("/necrolog/")
 def necrolog_moved():
