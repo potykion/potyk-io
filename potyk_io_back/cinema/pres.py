@@ -37,11 +37,16 @@ def where_to_watch():
     return render_template("potyk-cinema/where-to-watch.html")
 
 
-@cinema_bp.get("/vietnamese-cinema")
-def vietnamese_cinema():
-    file = CINEMA_TEMPLATES_DIR / "vietnamese-cinema.md"
+@cinema_bp.get("/foreign-cinema")
+def foreign_cinema():
+    file = CINEMA_TEMPLATES_DIR / "foreign-cinema.md"
     meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
-    return render_body_html(body, meta, title="Вьетнамское кино")
+    return render_body_html(body, meta, title="Иностранное кино")
+
+
+@cinema_bp.get("/vietnamese-cinema")
+def vietnamese_cinema_redirect():
+    return redirect(url_for("cinema.foreign_cinema"), code=301)
 
 
 @cinema_bp.get("/admin")

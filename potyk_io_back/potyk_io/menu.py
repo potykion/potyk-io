@@ -447,9 +447,9 @@ _CINEMA_SECTION_LINKS: list[MenuItem] = [
         "description": "",
     },
     {
-        "icon": "🇻🇳",
-        "title": "Вьетнамское кино",
-        "url": "/cinema/vietnamese-cinema",
+        "icon": "🌏",
+        "title": "Иностранное кино",
+        "url": "/cinema/foreign-cinema",
         "description": "",
     },
 ]
