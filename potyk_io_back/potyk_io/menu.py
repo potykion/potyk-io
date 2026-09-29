@@ -294,6 +294,12 @@ TECH_MENU_GROUPS: list[MenuGroup] = [
                 "url": "/tech/soft-ideas",
                 "description": "",
             },
+            {
+                "icon": "📜",
+                "title": "Лор",
+                "url": "/tech/lore",
+                "description": "",
+            },
         ],
     },
     {
@@ -355,6 +361,12 @@ _INVEST_SECTION_LINKS: list[MenuItem] = [
         "icon": "📈",
         "title": "Трейдинг",
         "url": "/invest/trading",
+        "description": "",
+    },
+    {
+        "icon": "📜",
+        "title": "Лор",
+        "url": "/invest/lore",
         "description": "",
     },
 ]
@@ -464,6 +476,22 @@ _CINEMA_SECTION_LINKS: list[MenuItem] = [
         "url": "/cinema/foreign-cinema",
         "description": "",
     },
+    {
+        "icon": "📜",
+        "title": "Лор",
+        "url": "/cinema/lore",
+        "description": "",
+    },
+]
+
+
+_GAMES_SECTION_LINKS: list[MenuItem] = [
+    {
+        "icon": "📜",
+        "title": "Лор",
+        "url": "/culture/games/lore",
+        "description": "",
+    },
 ]
 
 
@@ -515,6 +543,10 @@ CULTURE_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "Кино",
         "links": _CINEMA_SECTION_LINKS,
+    },
+    {
+        "title": "Игры",
+        "links": _GAMES_SECTION_LINKS,
     },
     {
         "title": "Чтение",

@@ -214,6 +214,22 @@ def trading():
     )
 
 
+@invest_bp.get("/lore")
+@invest_bp.get("/lore/")
+def lore():
+    file = INVEST_TEMPLATES_DIR / "lore.md"
+    if not file.is_file():
+        abort(404)
+    meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
+    created = resolve_created(file, meta)
+    return render_body_html(
+        body,
+        meta,
+        title="Лор",
+        created=created,
+    )
+
+
 @invest_bp.post("/")
 @login_required
 def add_news():

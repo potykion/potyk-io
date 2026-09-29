@@ -44,6 +44,14 @@ def foreign_cinema():
     return render_body_html(body, meta, title="Иностранное кино")
 
 
+@cinema_bp.get("/lore")
+@cinema_bp.get("/lore/")
+def lore():
+    file = CINEMA_TEMPLATES_DIR / "lore.md"
+    meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
+    return render_body_html(body, meta, title="Лор")
+
+
 @cinema_bp.get("/vietnamese-cinema")
 def vietnamese_cinema_redirect():
     return redirect(url_for("cinema.foreign_cinema"), code=301)
