@@ -218,7 +218,7 @@ def passive_income_moved():
 @potyk_io_bp.route("/notes/tea")
 @potyk_io_bp.route("/notes/tea/")
 def notes_tea_moved():
-    return redirect("/food/thoughts/tea", code=301)
+    return redirect("/food/tea", code=301)
 
 
 @potyk_io_bp.route("/n/food")
@@ -230,7 +230,19 @@ def n_food_moved():
 @potyk_io_bp.route("/ethereal-feed/tea")
 @potyk_io_bp.route("/ethereal-feed/tea/")
 def ethereal_feed_tea_moved():
-    return redirect("/food/ethereal-feed/tea", code=301)
+    return redirect("/food/tea", code=301)
+
+
+@potyk_io_bp.route("/food/thoughts/tea")
+@potyk_io_bp.route("/food/thoughts/tea/")
+def food_thoughts_tea_moved():
+    return redirect("/food/tea", code=301)
+
+
+@potyk_io_bp.route("/food/ethereal-feed/tea")
+@potyk_io_bp.route("/food/ethereal-feed/tea/")
+def food_ethereal_feed_tea_moved():
+    return redirect("/food/tea", code=301)
 
 
 @potyk_io_bp.route("/notes/soft-ideas")
