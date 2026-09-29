@@ -91,7 +91,8 @@
     border-bottom: 1px solid #eee;
 }
 
-.rest-item[hidden] {
+.rest-item[hidden],
+.restaurants-page .card-grid .card[hidden] {
     display: none !important;
 }
 
