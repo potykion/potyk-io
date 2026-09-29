@@ -1,0 +1,22 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}Красота — potyk-health{% endblock %}
+
+{% block head_stylesheets %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main_class %}main-m md-content{% endblock %}
+
+{% block main %}
+    <h1>Красота</h1>
+    <p>Проекты про внешность и эстетику тела.</p>
+    <ul>
+        {% for page in pages %}
+        <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+        {% else %}
+        <li>Пока пусто</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

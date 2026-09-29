@@ -188,6 +188,12 @@ HEALTH_MENU_GROUPS: list[MenuGroup] = [
                 "url": "/health/apteka",
                 "description": "",
             },
+            {
+                "icon": "✨",
+                "title": "Красота",
+                "url": "/health/красота",
+                "description": "",
+            },
         ],
     },
     {
