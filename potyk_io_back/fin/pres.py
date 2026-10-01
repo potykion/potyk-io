@@ -123,6 +123,22 @@ def category_stats_for_period(
     return rows, sum(r["total"] for r in rows)
 
 
+def categories_by_frequency(expenses: list[Expense]) -> list[str]:
+    counts: dict[str, int] = {}
+    display: dict[str, str] = {}
+    for expense in expenses:
+        if not expense.category:
+            continue
+        normalized = normalize_expense_category(expense.category)
+        key = normalized.casefold()
+        counts[key] = counts.get(key, 0) + 1
+        display.setdefault(key, normalized)
+    return sorted(
+        display.values(),
+        key=lambda c: (-counts[c.casefold()], c.casefold()),
+    )
+
+
 def index_context(
     *,
     open_panel: str | None = None,
@@ -138,13 +154,7 @@ def index_context(
     savings = db.session.scalars(
         select(Saving).order_by(Saving.date.desc(), Saving.id.desc())
     ).all()
-    raw_categories = db.session.scalars(select(Expense.category).distinct()).all()
-    categories_by_key = {
-        normalize_expense_category(c).casefold(): normalize_expense_category(c)
-        for c in raw_categories
-        if c
-    }
-    categories = sorted(categories_by_key.values(), key=str.casefold)
+    categories = categories_by_frequency(expenses)
     closed_dates = set(
         db.session.scalars(select(ClosedDay.date).order_by(ClosedDay.date)).all()
     )

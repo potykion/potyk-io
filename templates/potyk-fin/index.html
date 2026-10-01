@@ -43,8 +43,15 @@
         <p class="muted">Когда реально перевёл на накопительный в банке</p>
         <form class="grid cols-2" method="post" action="{{ url_for('fin.add_saving') }}">
             {{ saving_form.hidden_tag() }}
-            {% call forms.field(saving_form.amount.label.text) %}
-                {{ saving_form.amount(min=1, step=1, required=true) }}
+            {% call forms.field(saving_form.amount.label.text, "amount-field") %}
+                <div class="amount-row">
+                    {{ saving_form.amount(min=1, step=1, required=true) }}
+                    <button type="button" class="calc-toggle" title="Калькулятор" aria-label="Калькулятор" aria-expanded="false">🧮</button>
+                </div>
+                <div class="calc-panel" hidden>
+                    <input type="text" class="calc-formula" placeholder="123+456" autocomplete="off" aria-label="Формула">
+                    <button type="button" class="calc-eq" title="Посчитать">=</button>
+                </div>
                 {{ forms.field_errors(saving_form.amount) }}
             {% endcall %}
             {% call forms.field(saving_form.date.label.text) %}
@@ -201,6 +208,7 @@
     if (typeof TomSelect !== "function") return;
     root.querySelectorAll("select[data-tom-select]").forEach((el) => {
       if (el.tomselect) return;
+      const preserveOrder = el.dataset.preserveOptionOrder === "true";
       new TomSelect(el, {
         create: el.dataset.create === "true",
         createOnBlur: true,
@@ -208,9 +216,9 @@
         maxOptions: 200,
         closeAfterSelect: true,
         placeholder: el.dataset.placeholder || "",
-        sortField: [
-          { field: "text", direction: "asc" },
-        ],
+        sortField: preserveOrder
+          ? []
+          : [{ field: "text", direction: "asc" }],
       });
     });
   };
