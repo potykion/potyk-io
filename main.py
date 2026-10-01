@@ -17,6 +17,7 @@ from potyk_io_back.inbox import inbox_bp
 from potyk_io_back.invest import invest_bp
 from potyk_io_back.money import money_bp
 from potyk_io_back.mu import mu_bp
+from potyk_io_back.potyk_io.menu import active_menu_url, normalize_menu_path
 from potyk_io_back.potyk_io.pres import potyk_io_bp
 from potyk_io_back.prikols import prikols_bp
 from potyk_io_back.reads import reads_bp
@@ -51,6 +52,9 @@ def create_app():
     @app.template_filter("rub")
     def rub_filter(value: int) -> str:
         return f"{value:,}".replace(",", " ")
+
+    app.jinja_env.globals["resolve_active_menu_url"] = active_menu_url
+    app.jinja_env.globals["normalize_menu_path"] = normalize_menu_path
 
     app.register_blueprint(invest_bp)
     app.register_blueprint(mu_bp)

@@ -8,6 +8,8 @@ class MenuItem(TypedDict):
     description: str
     badge: NotRequired[int]
     lock: NotRequired[bool]
+    # доп. префиксы, при которых пункт тоже активен (для longest-match)
+    active_urls: NotRequired[list[str]]
 
 
 class MenuGroup(TypedDict):
@@ -600,8 +602,9 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
             {
                 "icon": "🍽️",
                 "title": "Рестораны",
-                "url": "/food/restaurants",
+                "url": "/food/rest",
                 "description": "",
+                "active_urls": ["/food/restaurants"],
             },
             {
                 "icon": "📝",
@@ -783,6 +786,43 @@ def admin_menu_groups(*, local: bool, inbox_badge: int | None = None) -> list[Me
 
 def is_external_url(url: str) -> bool:
     return url.startswith("http://") or url.startswith("https://")
+
+
+def normalize_menu_path(path: str) -> str:
+    if not path or is_external_url(path):
+        return path
+    return path.rstrip("/") or "/"
+
+
+def _menu_path_matches(path: str, candidate: str) -> bool:
+    """path и candidate уже нормализованы (без хвостового /)."""
+    if path == candidate:
+        return True
+    # корни вроде / и /n не должны забирать все дочерние пути
+    if candidate in ("/", "/n"):
+        return False
+    return path.startswith(candidate + "/")
+
+
+def active_menu_url(path: str, menu_groups: list[MenuGroup]) -> str | None:
+    """URL пункта меню, который должен быть активен на path (longest prefix)."""
+    path_n = normalize_menu_path(path)
+    best_candidate = ""
+    best_item_url: str | None = None
+    for group in menu_groups:
+        for item in group["links"]:
+            item_url = item["url"]
+            if is_external_url(item_url):
+                continue
+            item_url_n = normalize_menu_path(item_url)
+            candidates = [item_url_n, *(normalize_menu_path(u) for u in item.get("active_urls", []))]
+            for candidate in candidates:
+                if not candidate or is_external_url(candidate):
+                    continue
+                if _menu_path_matches(path_n, candidate) and len(candidate) > len(best_candidate):
+                    best_candidate = candidate
+                    best_item_url = item_url_n
+    return best_item_url
 
 
 def iter_menu_items() -> list[MenuFeedItem]:
