@@ -1,0 +1,25 @@
+{% import "jinja/forms.html" as forms %}
+
+{% set form_action = url_for('fin.edit_saving', saving_id=editing_saving.id) if editing_saving else url_for('fin.add_saving') %}
+<form class="grid cols-2" method="post" action="{{ form_action }}">
+    {{ saving_form.hidden_tag() }}
+    {% call forms.field(saving_form.amount.label.text, "amount-field") %}
+        <div class="amount-row">
+            {{ saving_form.amount(min=1, step=1, required=true) }}
+            <button type="button" class="calc-toggle" title="Калькулятор" aria-label="Калькулятор" aria-expanded="false">🧮</button>
+        </div>
+        <div class="calc-panel" hidden>
+            <input type="text" class="calc-formula" placeholder="123+456" autocomplete="off" aria-label="Формула">
+            <button type="button" class="calc-eq" title="Посчитать">=</button>
+        </div>
+        {{ forms.field_errors(saving_form.amount) }}
+    {% endcall %}
+    {% call forms.field(saving_form.date.label.text) %}
+        {{ saving_form.date(required=true) }}
+        {{ forms.field_errors(saving_form.date) }}
+    {% endcall %}
+    {{ forms.submit_row(saving_form.submit) }}
+    {% if editing_saving %}
+    <p class="full muted"><a href="{{ url_for('fin.index') }}">Отмена</a></p>
+    {% endif %}
+</form>

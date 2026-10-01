@@ -146,6 +146,7 @@ def index_context(
     saving_form: SavingForm | None = None,
     budget_form: BudgetForm | None = None,
     editing_expense: Expense | None = None,
+    editing_saving: Saving | None = None,
 ) -> dict:
     settings = get_settings()
     expenses = db.session.scalars(
@@ -165,10 +166,17 @@ def index_context(
         extra_dates=[s.date for s in savings],
     )
     saved_by_date: dict[date, int] = {}
+    savings_by_date: dict[date, list[Saving]] = {}
     for s in savings:
         saved_by_date[s.date] = saved_by_date.get(s.date, 0) + s.amount
+        savings_by_date.setdefault(s.date, []).append(s)
     for d in days:
         d.saved = saved_by_date.get(d.date, 0)
+        d.savings = sorted(
+            savings_by_date.get(d.date, []),
+            key=lambda s: s.id,
+            reverse=True,
+        )
 
     days_desc = list(reversed(days))
     today = date.today()
@@ -237,6 +245,7 @@ def index_context(
         "close_day_form": CloseDayForm(),
         "open_panel": open_panel,
         "editing_expense": editing_expense,
+        "editing_saving": editing_saving,
     }
 
 
@@ -395,6 +404,45 @@ def add_saving():
     )
     db.session.commit()
     flash("Сейв зафиксирован", "success")
+    return redirect(url_for("fin.index"))
+
+
+@fin_bp.get("/savings/<int:saving_id>/edit")
+@login_required
+def edit_saving_form(saving_id: int):
+    saving = db.session.get(Saving, saving_id)
+    if saving is None:
+        flash("Сейв не найден", "error")
+        return redirect(url_for("fin.index"))
+
+    form = SavingForm(obj=saving)
+    form.submit.label.text = "Сохранить"
+    return render_index(open_panel="saving", saving_form=form, editing_saving=saving)
+
+
+@fin_bp.post("/savings/<int:saving_id>/edit")
+@login_required
+def edit_saving(saving_id: int):
+    saving = db.session.get(Saving, saving_id)
+    if saving is None:
+        flash("Сейв не найден", "error")
+        return redirect(url_for("fin.index"))
+
+    form = SavingForm()
+    form.submit.label.text = "Сохранить"
+    if not form.validate_on_submit():
+        flash_form_errors(form)
+        return render_index(
+            open_panel="saving",
+            saving_form=form,
+            editing_saving=saving,
+        ), 400
+
+    saving.date = form.date.data
+    saving.amount = form.amount.data
+    saving.note = (form.note.data or "").strip()
+    db.session.commit()
+    flash("Сейв обновлён", "success")
     return redirect(url_for("fin.index"))
 
 

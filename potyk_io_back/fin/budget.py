@@ -28,6 +28,7 @@ class DayState:
     eod_remainder: int = 0
     carry_out: int = 0
     saved: int = 0
+    savings: list = field(default_factory=list)
 
 
 def compute_days(

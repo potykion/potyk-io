@@ -73,6 +73,40 @@
         {% else %}
         <p class="empty">Трат нет</p>
         {% endif %}
+
+        {% if day.savings %}
+        <div class="table-wrap">
+        <table class="savings-table">
+            <thead>
+            <tr>
+                <th>Сейв</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for s in day.savings %}
+            <tr>
+                <td data-label="Сейв">{{ s.amount | rub }}</td>
+                <td>
+                    {% if day.date not in closed_dates %}
+                    <div class="row-actions">
+                        <a class="row-edit" href="{{ url_for('fin.edit_saving_form', saving_id=s.id) }}"
+                           title="Изменить сейв">✎</a>
+                        <form class="inline-form" method="post"
+                              action="{{ url_for('fin.delete_saving', saving_id=s.id) }}"
+                              onsubmit="return confirm('Удалить сейв?')">
+                            {{ delete_form.hidden_tag() }}
+                            {{ delete_form.submit(class_='danger') }}
+                        </form>
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% endif %}
     </details>
 
     <form class="close-day-form" method="post"
