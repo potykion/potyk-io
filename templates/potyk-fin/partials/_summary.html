@@ -47,19 +47,18 @@
             </thead>
             <tbody>
             {% for row in category_stats %}
+            {% set pct = ((row.total / stats_total * 100)|round|int) if stats_total else 0 %}
             <tr class="stats-cat-row">
                 <td colspan="2">
                     <details class="stats-cat">
                         <summary>
+                            <span class="stats-cat-bar" aria-hidden="true" style="width: {{ pct }}%"></span>
                             <span class="stats-cat-head">
                                 <span class="stats-cat-lead">
                                     <span class="stats-cat-name">{{ row.category }}</span>
                                     <span class="stats-cat-meta muted">{{ row.count }} оп. · ср. {{ row.avg | rub }}</span>
                                 </span>
-                                <span class="stats-cat-total">{{ row.total | rub }}{% if stats_total %} ({{ ((row.total / stats_total * 100)|round|int) }}%){% endif %}</span>
-                            </span>
-                            <span class="stats-bar" style="--p: {{ '%.4f'|format(row.share) }}" aria-hidden="true">
-                                <span class="stats-bar-fill"></span>
+                                <span class="stats-cat-total">{{ row.total | rub }}{% if stats_total %} ({{ pct }}%){% endif %}</span>
                             </span>
                         </summary>
                         {% if row.expenses %}
