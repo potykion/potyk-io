@@ -8,8 +8,6 @@ class MenuItem(TypedDict):
     description: str
     badge: NotRequired[int]
     lock: NotRequired[bool]
-    # доп. префиксы, при которых пункт тоже активен (для longest-match)
-    active_urls: NotRequired[list[str]]
 
 
 class MenuGroup(TypedDict):
@@ -602,9 +600,8 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
             {
                 "icon": "🍽️",
                 "title": "Рестораны",
-                "url": "/food/rest",
+                "url": "/food/restaurants",
                 "description": "",
-                "active_urls": ["/food/restaurants"],
             },
             {
                 "icon": "📝",
@@ -814,14 +811,10 @@ def active_menu_url(path: str, menu_groups: list[MenuGroup]) -> str | None:
             item_url = item["url"]
             if is_external_url(item_url):
                 continue
-            item_url_n = normalize_menu_path(item_url)
-            candidates = [item_url_n, *(normalize_menu_path(u) for u in item.get("active_urls", []))]
-            for candidate in candidates:
-                if not candidate or is_external_url(candidate):
-                    continue
-                if _menu_path_matches(path_n, candidate) and len(candidate) > len(best_candidate):
-                    best_candidate = candidate
-                    best_item_url = item_url_n
+            candidate = normalize_menu_path(item_url)
+            if _menu_path_matches(path_n, candidate) and len(candidate) > len(best_candidate):
+                best_candidate = candidate
+                best_item_url = candidate
     return best_item_url
 
 
