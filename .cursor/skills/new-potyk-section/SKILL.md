@@ -39,6 +39,7 @@ Slug = короткое латинское имя (`cinema`, `reads`). URL = `/<
 4. **`potyk_io_back/potyk_io/menu.py`**
    - `*_MENU_GROUPS` для сайдбара раздела (как `ART_MENU_GROUPS`): пункты раздела + «← potyk-io» → `/`
    - пункт в `MENU_GROUPS` → группа «Проекты» (`title: potyk-<slug>`, `url: /<slug>/`)
+   - если раздел закрытый (нужен логин) — у пункта меню `"lock": True` (замочек в сайдбаре)
 5. **`main.py`** — import + `app.register_blueprint(*_bp)` **до** `potyk_io_bp` (у него catch-all)
 6. Опционально: `docs/projects/potyk-<slug>.md` (поведение) — аппрув не нужен
 
@@ -83,6 +84,7 @@ def index():
 - Не регистрировать blueprint **после** `potyk_io_bp` — чужие URL перехватит catch-all
 - Не класть skill в `~/.cursor/skills-cursor/`
 - Не оставлять устаревшие ссылки в `MENU_GROUPS` после переноса страниц в новый раздел
+- Не добавлять в меню закрытый раздел без `"lock": True` (см. правило `menu-lock.mdc`)
 - Не писать в спеку детали реализации (эндпоинты, имена модулей) — skill «оформление спеки»
 
 ## После создания
