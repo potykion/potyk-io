@@ -22,6 +22,22 @@
         </form>
 
         {% if category_stats %}
+        <table class="stats-table stats-table-totals">
+            <tbody>
+            <tr>
+                <th>Итого</th>
+                <td class="num">{{ stats_total | rub }}{% if stats_expenses_plus_saves %} ({{ ((stats_total / stats_expenses_plus_saves * 100)|round|int) }}%){% endif %}</td>
+            </tr>
+            <tr>
+                <th>Сейвы</th>
+                <td class="num">{{ stats_saved_total | rub }}{% if stats_expenses_plus_saves %} ({{ ((stats_saved_total / stats_expenses_plus_saves * 100)|round|int) }}%){% endif %}</td>
+            </tr>
+            <tr>
+                <th>Расход и сейвы</th>
+                <td class="num">{{ stats_expenses_plus_saves | rub }}</td>
+            </tr>
+            </tbody>
+        </table>
         <table class="stats-table">
             <thead>
             <tr>
@@ -31,7 +47,7 @@
             </thead>
             <tbody>
             {% for row in category_stats %}
-            <tr class="stats-cat-row" style="--p: {{ '%.4f'|format(row.share) }}">
+            <tr class="stats-cat-row">
                 <td colspan="2">
                     <details class="stats-cat">
                         <summary>
@@ -42,7 +58,7 @@
                                 </span>
                                 <span class="stats-cat-total">{{ row.total | rub }}{% if stats_total %} ({{ ((row.total / stats_total * 100)|round|int) }}%){% endif %}</span>
                             </span>
-                            <span class="stats-bar" aria-hidden="true">
+                            <span class="stats-bar" style="--p: {{ '%.4f'|format(row.share) }}" aria-hidden="true">
                                 <span class="stats-bar-fill"></span>
                             </span>
                         </summary>
@@ -71,20 +87,6 @@
             </tr>
             {% endfor %}
             </tbody>
-            <tfoot>
-            <tr>
-                <th>Итого</th>
-                <td class="num">{{ stats_total | rub }}{% if stats_expenses_plus_saves %} ({{ ((stats_total / stats_expenses_plus_saves * 100)|round|int) }}%){% endif %}</td>
-            </tr>
-            <tr>
-                <th>Сейвы</th>
-                <td class="num">{{ stats_saved_total | rub }}{% if stats_expenses_plus_saves %} ({{ ((stats_saved_total / stats_expenses_plus_saves * 100)|round|int) }}%){% endif %}</td>
-            </tr>
-            <tr>
-                <th>Расход и сейвы</th>
-                <td class="num">{{ stats_expenses_plus_saves | rub }}</td>
-            </tr>
-            </tfoot>
         </table>
         {% else %}
         <p class="empty">За выбранный период трат нет</p>

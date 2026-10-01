@@ -287,10 +287,28 @@
     body.site-fin main .stats-bar-fill {
         display: block;
         height: 100%;
-        width: calc(var(--p) * 100%);
+        min-width: 2px;
+        width: calc(var(--p, 0) * 100%);
         border-radius: inherit;
-        background: color-mix(in srgb, var(--fin-accent) calc(35% + 65% * var(--p)), #c9b8a0);
-        opacity: calc(0.45 + 0.55 * var(--p));
+        background: var(--fin-accent);
+        background: color-mix(in srgb, var(--fin-accent) calc(35% + 65% * var(--p, 0)), #c9b8a0);
+        opacity: calc(0.45 + 0.55 * var(--p, 0));
+    }
+
+    body.site-fin main .stats-table-totals {
+        margin-bottom: 12px;
+    }
+
+    body.site-fin main .stats-table-totals th,
+    body.site-fin main .stats-table-totals td {
+        font-weight: 600;
+        border-bottom: 1px solid var(--fin-line);
+    }
+
+    body.site-fin main .stats-table-totals tr:last-child th,
+    body.site-fin main .stats-table-totals tr:last-child td {
+        border-bottom: none;
+        padding-bottom: 4px;
     }
 
     body.site-fin main .stats-ops {
