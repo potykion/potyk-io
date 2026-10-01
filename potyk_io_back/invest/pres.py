@@ -91,8 +91,8 @@ def invest_price_filter(value) -> str:
 def inject_invest_menu():
     return {
         "menu_groups": MONEY_MENU_GROUPS,
-        "section_brand_title": "potyk-invest",
-        "section_brand_url": "/invest",
+        "section_brand_title": "potyk-money",
+        "section_brand_url": "/money",
     }
 
 

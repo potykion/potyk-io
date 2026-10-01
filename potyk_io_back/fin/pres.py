@@ -40,8 +40,8 @@ MONTH_NAMES_RU = (
 def fin_nav_context():
     return {
         "menu_groups": MONEY_MENU_GROUPS,
-        "section_brand_title": "potyk-fin",
-        "section_brand_url": "/fin",
+        "section_brand_title": "potyk-money",
+        "section_brand_url": "/money",
     }
 
 
