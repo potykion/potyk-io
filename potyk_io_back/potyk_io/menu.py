@@ -322,6 +322,7 @@ _FIN_SECTION_LINKS: list[MenuItem] = [
         "title": "Учёт",
         "url": "/fin/",
         "description": "Простой учет расходов и сбережений",
+        "lock": True,
     },
 ]
 
@@ -338,6 +339,7 @@ _INVEST_SECTION_LINKS: list[MenuItem] = [
         "title": "Сделки",
         "url": "/invest/deals",
         "description": "",
+        "lock": True,
     },
     {
         "icon": "📊",
@@ -374,7 +376,7 @@ _INVEST_SECTION_LINKS: list[MenuItem] = [
 
 MONEY_MENU_GROUPS: list[MenuGroup] = [
     {
-        "title": "Учет",
+        "title": "potyk-money",
         "links": _FIN_SECTION_LINKS,
     },
     {

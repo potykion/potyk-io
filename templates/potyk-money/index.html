@@ -10,9 +10,16 @@
 {% block main %}
 <h1>potyk-money</h1>
 
-<div class="card-grid">
-    <a class="card card-text" href="/fin/">
-        <h3>Учет</h3>
+<div class="card-grid card-grid--feed">
+    <a class="card content-card" href="/fin/">
+        <img class="note-cover"
+             src="/static/potyk-io/img/money/fin-cover-placeholder.svg"
+             alt="potyk-fin"
+             loading="lazy">
+        <div class="note-preview md-content">
+            <h3>potyk-fin</h3>
+            <p class="card-subtitle">Учёт трат и сбережений</p>
+        </div>
     </a>
     <a class="card card-text" href="/invest/">
         <h3>Инвест</h3>
