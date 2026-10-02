@@ -7,6 +7,8 @@
     { factor: 2, label: "2" },
     { factor: 1.5, label: "1.5" },
     { factor: 1, label: "1", isDefault: true },
+    { factor: 0.75, label: "3/4" },
+    { factor: 2 / 3, label: "2/3" },
     { factor: 0.5, label: "1/2" },
     { factor: 0.25, label: "1/4" },
   ];
