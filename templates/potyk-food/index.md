@@ -29,6 +29,10 @@
 - [Оладьи](recipes/01-breakfast/pancakes/pancakes.md)
 - [Запеканка](recipes/01-breakfast/pancakes/zapekanka.md)
 
+#### 🥣 Каши
+
+- [Рисовая каша с тыквой](recipes/01-breakfast/rice-porridge-pumpkin.md)
+
 ### 🥗 Салаты
 
 - [Салат с сельдереем с яблоками](recipes/02-salad/celery-apples.md)
