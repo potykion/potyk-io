@@ -119,6 +119,70 @@
     amount.focus();
   };
 
+  const remainderPickControls = () => {
+    const form = document.getElementById("saving-form");
+    if (!form) return null;
+    return {
+      form,
+      start: form.querySelector(".remainder-pick-start"),
+      confirm: form.querySelector(".remainder-pick-confirm"),
+      cancel: form.querySelector(".remainder-pick-cancel"),
+      amount: form.querySelector('[name="amount"]'),
+    };
+  };
+
+  const setRemainderPickUi = (active) => {
+    const ctrls = remainderPickControls();
+    if (!ctrls) return;
+    if (ctrls.start) ctrls.start.hidden = active;
+    if (ctrls.confirm) ctrls.confirm.hidden = !active;
+    if (ctrls.cancel) ctrls.cancel.hidden = !active;
+  };
+
+  const clearRemainderSelection = () => {
+    document.querySelectorAll(".remainder-pick.is-selected").forEach((el) => {
+      el.classList.remove("is-selected");
+    });
+  };
+
+  const exitRemainderPick = () => {
+    document.body.classList.remove("selecting-remainders");
+    clearRemainderSelection();
+    setRemainderPickUi(false);
+  };
+
+  const enterRemainderPick = () => {
+    const panel = document.querySelector('details[data-panel="saving"]');
+    if (panel) panel.open = true;
+    document.body.classList.add("selecting-remainders");
+    clearRemainderSelection();
+    setRemainderPickUi(true);
+    document.getElementById("feed")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const confirmRemainderPick = () => {
+    const ctrls = remainderPickControls();
+    if (!ctrls?.amount) {
+      exitRemainderPick();
+      return;
+    }
+    let total = 0;
+    document.querySelectorAll(".remainder-pick.is-selected").forEach((el) => {
+      total += Number(el.dataset.amount) || 0;
+    });
+    if (total > 0) ctrls.amount.value = total;
+    exitRemainderPick();
+    ctrls.amount.focus();
+  };
+
+  document.addEventListener("click", (e) => {
+    const remainder = e.target.closest(".remainder-pick");
+    if (!remainder || !document.body.classList.contains("selecting-remainders")) return;
+    e.preventDefault();
+    e.stopPropagation();
+    remainder.classList.toggle("is-selected");
+  }, true);
+
   document.addEventListener("click", (e) => {
     const calcToggle = e.target.closest(".calc-toggle");
     if (calcToggle) {
@@ -147,6 +211,7 @@
 
     const saveBtn = e.target.closest(".add-saving-day");
     if (saveBtn) {
+      exitRemainderPick();
       const panel = document.querySelector('details[data-panel="saving"]');
       if (!panel) return;
       panel.open = true;
@@ -161,6 +226,24 @@
       if (date) date.value = saveBtn.dataset.date;
       panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
       if (amount) amount.focus();
+      return;
+    }
+
+    const pickStart = e.target.closest(".remainder-pick-start");
+    if (pickStart) {
+      enterRemainderPick();
+      return;
+    }
+
+    const pickConfirm = e.target.closest(".remainder-pick-confirm");
+    if (pickConfirm) {
+      confirmRemainderPick();
+      return;
+    }
+
+    const pickCancel = e.target.closest(".remainder-pick-cancel");
+    if (pickCancel) {
+      exitRemainderPick();
       return;
     }
 

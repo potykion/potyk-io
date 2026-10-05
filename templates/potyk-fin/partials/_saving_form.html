@@ -1,7 +1,7 @@
 {% import "jinja/forms.html" as forms %}
 
 {% set form_action = url_for('fin.edit_saving', saving_id=editing_saving.id) if editing_saving else url_for('fin.add_saving') %}
-<form class="grid cols-2" method="post" action="{{ form_action }}">
+<form id="saving-form" class="grid cols-2" method="post" action="{{ form_action }}">
     {{ saving_form.hidden_tag() }}
     {% call forms.field(saving_form.amount.label.text, "amount-field") %}
         <div class="amount-row">
@@ -18,6 +18,11 @@
         {{ saving_form.date(required=true) }}
         {{ forms.field_errors(saving_form.date) }}
     {% endcall %}
+    <div class="full remainder-pick-controls">
+        <button type="button" class="secondary remainder-pick-start">Выбор остатков</button>
+        <button type="button" class="remainder-pick-confirm" hidden>Подтвердить</button>
+        <button type="button" class="secondary remainder-pick-cancel" hidden>Отмена</button>
+    </div>
     {{ forms.submit_row(saving_form.submit) }}
     {% if editing_saving %}
     <p class="full muted"><a href="{{ url_for('fin.index') }}">Отмена</a></p>

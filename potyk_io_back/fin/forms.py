@@ -29,7 +29,7 @@ class SavingForm(FlaskForm):
         "Сумма",
         validators=[InputRequired(), NumberRange(min=1, message="Укажи положительную сумму")],
     )
-    date = DateField("Дата", validators=[DataRequired()], default=date.today)
+    date = DateField("Дата", validators=[DataRequired()], default=_yesterday)
     note = StringField("Заметка", validators=[Optional(), Length(max=255)], default="")
     submit = SubmitField("Зафиксировать")
 

@@ -16,7 +16,10 @@
                 {% if day.end_balance < 0 %}
                 <span class="badge bad">долг {{ day.carry_out | rub }}</span>
                 {% else %}
-                <span class="badge ok">остаток {{ day.eod_remainder | rub }}</span>
+                <span class="badge ok{% if day.date < today %} remainder-pick{% endif %}"
+                      {% if day.date < today %}data-amount="{{ day.eod_remainder }}"{% endif %}>
+                    остаток {{ day.eod_remainder | rub }}
+                </span>
                 {% if day.date not in closed_dates %}
                 <button type="button" class="add-saving-day"
                         data-amount="{{ day.eod_remainder }}"
