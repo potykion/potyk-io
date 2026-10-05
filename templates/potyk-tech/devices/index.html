@@ -6,14 +6,37 @@
 {{ super() }}
 <link rel="stylesheet" href="/static/potyk-io/css/index.css">
 <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+<style>
+    .devices-index .card-grid--feed .card.content-card .note-cover {
+        width: auto;
+        padding: 15px;
+        box-sizing: border-box;
+        object-fit: contain;
+    }
+</style>
 {% endblock %}
 
-{% block main_class %}main-l md-content{% endblock %}
+{% block main_class %}main-l md-content devices-index{% endblock %}
 
 {% block main %}
 <h1>Мои девайсы</h1>
 
-<h2>Электронные книги</h2>
+<div class="toc md-toc">
+<ul>
+<li><a href="#электронные-книги">Электронные книги</a></li>
+<li><a href="#телефоны">Телефоны</a></li>
+<li><a href="#часики">Часики</a></li>
+<li><a href="#наушники">Наушники</a></li>
+<li><a href="#мыши">Мыши</a></li>
+<li><a href="#принципы">Принципы</a>
+<ul>
+<li><a href="#как-выбрать-ноут">Как выбрать ноут</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h2 id="электронные-книги">Электронные книги</h2>
 <div class="card-grid card-grid--feed card-grid--fit-title">
     <a class="card content-card" href="/tech/devices/digma-f4">
         <img class="note-cover" src="/static/potyk-io/img/digma-f4.jpg" alt="Digma F4" loading="lazy">
@@ -23,7 +46,7 @@
     </a>
 </div>
 
-<h2>Телефоны</h2>
+<h2 id="телефоны">Телефоны</h2>
 <div class="card-grid card-grid--feed card-grid--fit-title">
     <a class="card content-card" href="/tech/devices/iphone-17">
         <img class="note-cover" src="/static/potyk-io/img/iphone-17.jpg" alt="iPhone 17" loading="lazy">
@@ -33,7 +56,7 @@
     </a>
 </div>
 
-<h2>Часики</h2>
+<h2 id="часики">Часики</h2>
 <div class="card-grid card-grid--feed card-grid--fit-title">
     <a class="card content-card" href="/tech/devices/garmin-vivoactive-5">
         <img class="note-cover" src="/static/potyk-io/img/garmin-vivoactive-5.jpg" alt="Garmin Vivoactive 5" loading="lazy">
@@ -43,7 +66,7 @@
     </a>
 </div>
 
-<h2>Наушники</h2>
+<h2 id="наушники">Наушники</h2>
 <div class="card-grid card-grid--feed card-grid--fit-title">
     <a class="card content-card" href="/tech/devices/galaxy-buds-core">
         <img class="note-cover" src="/static/potyk-io/img/galaxy-buds-core.webp" alt="Galaxy Buds Core" loading="lazy">
@@ -53,7 +76,7 @@
     </a>
 </div>
 
-<h2>Мыши</h2>
+<h2 id="мыши">Мыши</h2>
 <div class="card-grid card-grid--feed card-grid--fit-title">
     <a class="card content-card" href="/tech/devices/defender-accura-mm-365">
         <img class="note-cover" src="/static/potyk-io/img/defender-accura-mm-365.jpg" alt="Defender Accura MM-365" loading="lazy">
@@ -69,8 +92,8 @@
     </a>
 </div>
 
-<h2>Принципы</h2>
-<h3>Как выбрать ноут</h3>
+<h2 id="принципы">Принципы</h2>
+<h3 id="как-выбрать-ноут">Как выбрать ноут</h3>
 <ul>
     <li>Просто береш ноут с 32 гб озу, напр. ThinkPad или MacBook</li>
 </ul>
