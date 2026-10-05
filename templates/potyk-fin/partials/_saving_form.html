@@ -20,8 +20,8 @@
     {% endcall %}
     <div class="full remainder-pick-controls">
         <button type="button" class="secondary remainder-pick-start">Выбор остатков</button>
-        <button type="button" class="remainder-pick-confirm" hidden>Подтвердить</button>
-        <button type="button" class="secondary remainder-pick-cancel" hidden>Отмена</button>
+        <button type="button" class="remainder-pick-confirm" hidden title="Подставить сумму" aria-label="Подставить сумму">✔️</button>
+        <button type="button" class="secondary remainder-pick-cancel" hidden title="Сбросить выбор" aria-label="Сбросить выбор">❌</button>
     </div>
     {{ forms.submit_row(saving_form.submit) }}
     {% if editing_saving %}

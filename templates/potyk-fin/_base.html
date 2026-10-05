@@ -534,11 +534,19 @@
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
+        align-items: stretch;
     }
 
-    body.site-fin main .remainder-pick-controls button {
+    body.site-fin main .remainder-pick-controls .remainder-pick-start {
         flex: 1 1 auto;
-        min-width: 7rem;
+    }
+
+    body.site-fin main .remainder-pick-controls .remainder-pick-confirm,
+    body.site-fin main .remainder-pick-controls .remainder-pick-cancel {
+        flex: 0 0 auto;
+        min-width: 44px;
+        padding-left: 12px;
+        padding-right: 12px;
     }
 
     body.site-fin main .day-head .badge.bad {
