@@ -1,0 +1,81 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}Мои девайсы — potyk-tech{% endblock %}
+
+{% block style %}
+{{ super() }}
+<link rel="stylesheet" href="/static/potyk-io/css/index.css">
+<link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block main_class %}main-l md-content{% endblock %}
+
+{% block main %}
+<h1>Мои девайсы</h1>
+
+<h2>Электронные книги</h2>
+<div class="card-grid card-grid--feed card-grid--fit-title">
+    <a class="card content-card" href="/tech/devices/digma-f4">
+        <img class="note-cover" src="/static/potyk-io/img/digma-f4.jpg" alt="Digma F4" loading="lazy">
+        <div class="note-preview md-content">
+            <h3>Digma F4</h3>
+        </div>
+    </a>
+</div>
+
+<h2>Телефоны</h2>
+<div class="card-grid card-grid--feed card-grid--fit-title">
+    <a class="card content-card" href="/tech/devices/iphone-17">
+        <img class="note-cover" src="/static/potyk-io/img/iphone-17.jpg" alt="iPhone 17" loading="lazy">
+        <div class="note-preview md-content">
+            <h3>iPhone 17</h3>
+        </div>
+    </a>
+</div>
+
+<h2>Часики</h2>
+<div class="card-grid card-grid--feed card-grid--fit-title">
+    <a class="card content-card" href="/tech/devices/garmin-vivoactive-5">
+        <img class="note-cover" src="/static/potyk-io/img/garmin-vivoactive-5.jpg" alt="Garmin Vivoactive 5" loading="lazy">
+        <div class="note-preview md-content">
+            <h3>Garmin Vivoactive 5</h3>
+        </div>
+    </a>
+</div>
+
+<h2>Наушники</h2>
+<div class="card-grid card-grid--feed card-grid--fit-title">
+    <a class="card content-card" href="/tech/devices/galaxy-buds-core">
+        <img class="note-cover" src="/static/potyk-io/img/galaxy-buds-core.webp" alt="Galaxy Buds Core" loading="lazy">
+        <div class="note-preview md-content">
+            <h3>Galaxy Buds Core</h3>
+        </div>
+    </a>
+</div>
+
+<h2>Мыши</h2>
+<div class="card-grid card-grid--feed card-grid--fit-title">
+    <a class="card content-card" href="/tech/devices/defender-accura-mm-365">
+        <img class="note-cover" src="/static/potyk-io/img/defender-accura-mm-365.jpg" alt="Defender Accura MM-365" loading="lazy">
+        <div class="note-preview md-content">
+            <h3>Defender Accura MM-365</h3>
+        </div>
+    </a>
+    <a class="card content-card" href="/tech/devices/logitech-m100">
+        <img class="note-cover" src="/static/potyk-io/img/logitech-m100.jpg" alt="Logitech M100" loading="lazy">
+        <div class="note-preview md-content">
+            <h3>Logitech M100</h3>
+        </div>
+    </a>
+</div>
+
+<h2>Принципы</h2>
+<h3>Как выбрать ноут</h3>
+<ul>
+    <li>Просто береш ноут с 32 гб озу, напр. ThinkPad или MacBook</li>
+</ul>
+{% endblock %}
+
+{% block script %}
+<script src="/static/potyk-io/js/content-card-fit-title.js"></script>
+{% endblock %}
