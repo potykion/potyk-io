@@ -83,6 +83,9 @@
   bindPanels();
   document.body.addEventListener("htmx:load", (event) => {
     bindPanels(event.target);
+    if (event.target.id !== "expense-form") return;
+    const amount = event.target.querySelector('[name="amount"]');
+    if (amount) amount.focus();
   });
 
   const evalFormula = (raw) => {
