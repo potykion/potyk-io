@@ -543,10 +543,22 @@
 
     body.site-fin main .remainder-pick-controls .remainder-pick-confirm,
     body.site-fin main .remainder-pick-controls .remainder-pick-cancel {
+        display: none;
         flex: 0 0 auto;
         min-width: 44px;
         padding-left: 12px;
         padding-right: 12px;
+        background: transparent;
+        color: var(--fin-ink);
+    }
+
+    body.site-fin.selecting-remainders .remainder-pick-controls .remainder-pick-start {
+        display: none;
+    }
+
+    body.site-fin.selecting-remainders .remainder-pick-controls .remainder-pick-confirm,
+    body.site-fin.selecting-remainders .remainder-pick-controls .remainder-pick-cancel {
+        display: inline-flex;
     }
 
     body.site-fin main .day-head .badge.bad {

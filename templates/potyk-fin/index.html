@@ -124,19 +124,8 @@
     if (!form) return null;
     return {
       form,
-      start: form.querySelector(".remainder-pick-start"),
-      confirm: form.querySelector(".remainder-pick-confirm"),
-      cancel: form.querySelector(".remainder-pick-cancel"),
       amount: form.querySelector('[name="amount"]'),
     };
-  };
-
-  const setRemainderPickUi = (active) => {
-    const ctrls = remainderPickControls();
-    if (!ctrls) return;
-    if (ctrls.start) ctrls.start.hidden = active;
-    if (ctrls.confirm) ctrls.confirm.hidden = !active;
-    if (ctrls.cancel) ctrls.cancel.hidden = !active;
   };
 
   const clearRemainderSelection = () => {
@@ -148,7 +137,6 @@
   const exitRemainderPick = () => {
     document.body.classList.remove("selecting-remainders");
     clearRemainderSelection();
-    setRemainderPickUi(false);
   };
 
   const enterRemainderPick = () => {
@@ -156,7 +144,6 @@
     if (panel) panel.open = true;
     document.body.classList.add("selecting-remainders");
     clearRemainderSelection();
-    setRemainderPickUi(true);
     document.getElementById("feed")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
