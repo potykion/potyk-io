@@ -9,6 +9,16 @@ from flask_login import login_required
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
+from potyk_io_back.game import (
+    MAX_HP,
+    MEAL_TYPES,
+    GameFood,
+    GameMeal,
+    current_game_day,
+    emoji_for_hp,
+    ensure_game_state,
+    get_or_create_foods,
+)
 from potyk_io_back.potyk_io.feed import (
     BATCH_SIZE,
     FeedSpec,
@@ -134,6 +144,57 @@ def render_food_markdown(file: Path):
 @potyk_io_bp.route("/")
 def index():
     return flask.render_template("potyk-io/index.html")
+
+
+@potyk_io_bp.get("/game")
+def game():
+    state = ensure_game_state()
+    foods = db.session.scalars(select(GameFood).order_by(GameFood.name)).all()
+    return flask.render_template(
+        "potyk-io/game.html",
+        hp=state.hp,
+        max_hp=MAX_HP,
+        emoji=emoji_for_hp(state.hp),
+        meal_types=MEAL_TYPES,
+        foods=foods,
+    )
+
+
+@potyk_io_bp.post("/game/eat")
+@login_required
+def game_eat():
+    payload = flask.request.get_json(silent=True) or {}
+    meal_type = str(payload.get("meal_type") or "").strip()
+    raw_foods = payload.get("foods") or []
+    if not isinstance(raw_foods, list):
+        raw_foods = [raw_foods]
+    food_names = [str(x) for x in raw_foods]
+
+    if meal_type not in MEAL_TYPES:
+        return jsonify({"ok": False, "error": "bad meal_type"}), 400
+    if not any((n or "").strip() for n in food_names):
+        return jsonify({"ok": False, "error": "foods required"}), 400
+
+    state = ensure_game_state()
+    foods = get_or_create_foods(food_names)
+    meal = GameMeal(
+        eaten_at=datetime.now(),
+        meal_type=meal_type,
+        game_day=current_game_day(),
+        foods=foods,
+    )
+    db.session.add(meal)
+    state.hp = min(MAX_HP, state.hp + 1)
+    db.session.commit()
+
+    return jsonify(
+        {
+            "ok": True,
+            "hp": state.hp,
+            "max_hp": MAX_HP,
+            "emoji": emoji_for_hp(state.hp),
+        }
+    )
 
 
 @potyk_io_bp.route("/feed/more")

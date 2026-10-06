@@ -1,0 +1,96 @@
+main.game-page {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - var(--top-bar-height));
+    min-height: calc(100dvh - var(--top-bar-height));
+    box-sizing: border-box;
+}
+
+.game-hud {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 2;
+}
+
+.game-hp {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.game-eat-btn {
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.25rem 0.65rem;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+}
+
+.game-eat-btn:hover {
+    border-color: #888;
+}
+
+.game-face {
+    font-size: 64px;
+    line-height: 1;
+    user-select: none;
+}
+
+.game-eat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.game-eat-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+}
+
+.game-eat-form select {
+    font: inherit;
+    padding: 0.35rem 0.5rem;
+}
+
+.game-eat-form .ts-wrapper {
+    width: 100%;
+}
+
+.game-eat-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.game-eat-form__submit {
+    font: inherit;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+}
+
+.game-eat-form__submit:hover {
+    background: #000;
+}
+
+.game-eat-form__error {
+    color: #b00020;
+    font-size: 0.9rem;
+    margin: 0;
+}

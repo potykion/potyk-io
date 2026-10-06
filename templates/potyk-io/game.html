@@ -1,0 +1,142 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}game — potyk.io{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="/static/potyk-io/css/game.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/modal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css">
+{% endblock %}
+
+{% block main_class %}game-page{% endblock %}
+
+{% block main %}
+    <div class="game-hud">
+        <span class="game-hp" data-game-hp>ХП: {{ hp }}/{{ max_hp }}</span>
+        {% if current_user.is_authenticated %}
+        <button type="button" class="game-eat-btn" data-modal-open="game-eat">Поесть</button>
+        {% endif %}
+    </div>
+
+    <div class="game-face" data-game-face aria-hidden="true">{{ emoji }}</div>
+
+    {% if current_user.is_authenticated %}
+    {% set modal_id = "game-eat" %}
+    {% set modal_title = "Поесть" %}
+    {% set modal_wide = false %}
+    {% set modal_body %}
+        <form class="game-eat-form" id="game-eat-form">
+            <label>
+                Приём пищи
+                <select name="meal_type" required>
+                    {% for value, label in meal_types.items() %}
+                    <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                Пища
+                <select name="foods"
+                        multiple
+                        data-tom-select
+                        data-create="true"
+                        data-placeholder="выбери или добавь">
+                    {% for food in foods %}
+                    <option value="{{ food.name }}">{{ food.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <p class="game-eat-form__error" data-game-eat-error hidden></p>
+            <div class="game-eat-form__actions">
+                <button type="submit" class="game-eat-form__submit">Съесть</button>
+            </div>
+        </form>
+    {% endset %}
+    {% include "jinja/_modal.html" %}
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+    {{ super() }}
+    {% if current_user.is_authenticated %}
+    <script src="/static/potyk-io/js/modal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+    <script>
+    (() => {
+      const initTomSelect = (root = document) => {
+        if (typeof TomSelect !== "function") return;
+        root.querySelectorAll("select[data-tom-select]").forEach((el) => {
+          if (el.tomselect) return;
+          new TomSelect(el, {
+            create: el.dataset.create === "true",
+            createOnBlur: true,
+            persist: true,
+            maxOptions: 200,
+            closeAfterSelect: false,
+            plugins: ["remove_button"],
+            placeholder: el.dataset.placeholder || "",
+            searchField: ["text", "value"],
+            sortField: [{ field: "text", direction: "asc" }],
+          });
+        });
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => initTomSelect());
+      } else {
+        initTomSelect();
+      }
+
+      const form = document.getElementById("game-eat-form");
+      if (!form) return;
+
+      const hpEl = document.querySelector("[data-game-hp]");
+      const faceEl = document.querySelector("[data-game-face]");
+      const errEl = form.querySelector("[data-game-eat-error]");
+      const foodsSelect = form.querySelector('select[name="foods"]');
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (errEl) {
+          errEl.hidden = true;
+          errEl.textContent = "";
+        }
+
+        const mealType = form.querySelector('[name="meal_type"]').value;
+        const foods = foodsSelect.tomselect
+          ? foodsSelect.tomselect.getValue()
+          : Array.from(foodsSelect.selectedOptions).map((o) => o.value);
+
+        if (!foods.length) {
+          if (errEl) {
+            errEl.textContent = "выбери хотя бы одну пищу";
+            errEl.hidden = false;
+          }
+          return;
+        }
+
+        const res = await fetch("/game/eat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ meal_type: mealType, foods }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) {
+          if (errEl) {
+            errEl.textContent = data.error || "не вышло поесть";
+            errEl.hidden = false;
+          }
+          return;
+        }
+
+        if (hpEl) hpEl.textContent = `ХП: ${data.hp}/${data.max_hp}`;
+        if (faceEl) faceEl.textContent = data.emoji;
+        if (foodsSelect.tomselect) foodsSelect.tomselect.clear();
+        if (window.PotykModal) {
+          window.PotykModal.close("game-eat");
+        }
+      });
+    })();
+    </script>
+    {% endif %}
+{% endblock %}
