@@ -34,6 +34,7 @@ CREATED_RE = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 MARKDOWN_LINK_RE = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)")
+LIST_ITEM_START_RE = re.compile(r"^( *)([*+-]|\d+\.) (.*)$")
 TOC_CONFIG = {"toc_depth": "2-4", "slugify": slugify_unicode}
 TOC_CONFIG_H2 = {"toc_depth": "2-2", "slugify": slugify_unicode}
 
@@ -78,6 +79,34 @@ def ensure_h1(body: str, title: str) -> str:
     if extract_h1(body):
         return body
     return f"# {title}\n\n{body}"
+
+
+def normalize_md_list_indents(body: str) -> str:
+    """Obsidian/2-space nested lists → 4-space for Python-Markdown."""
+    ends_with_nl = body.endswith("\n")
+    raw_lines = body.splitlines()
+    indents: list[int] = []
+    for line in raw_lines:
+        expanded = line.replace("\t", "  ")
+        match = LIST_ITEM_START_RE.match(expanded)
+        if match and match.group(1):
+            indents.append(len(match.group(1)))
+    if not indents or all(indent % 4 == 0 for indent in indents):
+        return body
+
+    out: list[str] = []
+    for line in raw_lines:
+        expanded = line.replace("\t", "  ")
+        match = LIST_ITEM_START_RE.match(expanded)
+        if match:
+            level = len(match.group(1)) // 2
+            out.append(f"{'    ' * level}{match.group(2)} {match.group(3)}")
+        else:
+            out.append(line)
+    result = "\n".join(out)
+    if ends_with_nl:
+        result += "\n"
+    return result
 
 
 def inject_created(html: str, created: date, title: str | None) -> str:
@@ -163,6 +192,7 @@ def render_body_html(
     page_title = plain_h1(extract_h1(body) or title or "")
     if link_rewriter is not None:
         body = rewrite_markdown_links(body, link_rewriter)
+    body = normalize_md_list_indents(body)
 
     toc_config = resolve_toc_config(meta)
     extensions = list(MD_EXTENSIONS)
