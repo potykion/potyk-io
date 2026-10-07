@@ -1,0 +1,27 @@
+.docs-tree-lead {
+    color: #9f9f9f;
+    margin: 0 0 24px;
+}
+
+.docs-tree {
+    list-style: disc;
+    margin: 0;
+    padding-left: 1.25em;
+}
+
+.docs-tree .docs-tree {
+    margin-top: 0.15em;
+    margin-bottom: 0.15em;
+}
+
+.docs-tree li {
+    margin: 0.2em 0;
+}
+
+.docs-tree a {
+    text-decoration: none;
+}
+
+.docs-tree a:hover {
+    text-decoration: underline;
+}

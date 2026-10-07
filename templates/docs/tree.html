@@ -1,0 +1,34 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}{% if page_title %}{{ page_title }} — {% endif %}docs{% endblock %}
+
+{% block style %}
+{{ super() }}
+<link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+<link rel="stylesheet" href="/static/potyk-io/css/docs-tree.css">
+{% endblock %}
+
+{% block main_class %}main-m md-content{% endblock %}
+
+{% macro render_tree(nodes) -%}
+<ul class="docs-tree">
+{%- for node in nodes %}
+    <li>
+        <a href="{{ node.url }}">{{ node.title }}</a>
+        {%- if node.children %}
+        {{ render_tree(node.children) }}
+        {%- endif %}
+    </li>
+{%- endfor %}
+</ul>
+{%- endmacro %}
+
+{% block main %}
+<h1>{{ page_title }}</h1>
+{% if lead %}<p class="docs-tree-lead">{{ lead }}</p>{% endif %}
+{% if tree %}
+{{ render_tree(tree) }}
+{% else %}
+<p>Пока пусто.</p>
+{% endif %}
+{% endblock %}

@@ -1,6 +1,6 @@
 from pathlib import Path, PurePosixPath
 
-from flask import Blueprint, abort, request, send_file
+from flask import Blueprint, abort, render_template, request, send_file
 
 from potyk_io_back.potyk_io.md_rendering import (
     render_body_html,
@@ -9,61 +9,19 @@ from potyk_io_back.potyk_io.md_rendering import (
 )
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
 from potyk_io_back.potyk_io.md_rendering.render import extract_h1
-from potyk_io_back.potyk_io.menu import MenuGroup, MenuItem
+from potyk_io_back.potyk_io.menu import MENU_GROUPS
 
 DOCS_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "docs"
 
 docs_bp = Blueprint("docs", __name__, url_prefix="/docs")
 
 
-def _top_level_folders() -> list[MenuItem]:
-    items: list[MenuItem] = [
-        {
-            "icon": "📑",
-            "title": "Все статьи",
-            "url": "/docs/",
-            "description": "",
-        }
-    ]
-    if not DOCS_TEMPLATES_DIR.is_dir():
-        return items
-    for path in sorted(DOCS_TEMPLATES_DIR.iterdir(), key=lambda p: p.name.casefold()):
-        if not path.is_dir() or path.name.startswith(("_", ".")):
-            continue
-        items.append(
-            {
-                "icon": "📁",
-                "title": path.name,
-                "url": f"/docs/{path.name}",
-                "description": "",
-            }
-        )
-    return items
-
-
-def docs_menu_groups() -> list[MenuGroup]:
-    return [
-        {"title": "docs", "links": _top_level_folders()},
-        {
-            "title": "",
-            "links": [
-                {
-                    "icon": "←",
-                    "title": "potyk-io",
-                    "url": "/",
-                    "description": "",
-                }
-            ],
-        },
-    ]
-
-
 @docs_bp.context_processor
 def docs_nav_context():
     return {
-        "menu_groups": docs_menu_groups(),
-        "section_brand_title": "docs",
-        "section_brand_url": "/docs",
+        "menu_groups": MENU_GROUPS,
+        "section_brand_title": "potyk.io",
+        "section_brand_url": "/",
     }
 
 
@@ -140,52 +98,65 @@ def _safe_docs_subdir(rel: str) -> Path | None:
     return folder
 
 
-def build_docs_tree_markdown(
+def build_docs_tree(
     folder: Path,
     *,
     url_prefix: str = "/docs",
-    heading_level: int = 2,
-) -> str:
-    """Markdown-оглавление из папок и .md на диске (на каждый запрос)."""
-    lines: list[str] = []
-    entries = sorted(
-        folder.iterdir(),
-        key=lambda p: (not p.is_dir(), p.name.casefold()),
-    )
+) -> list[dict]:
+    """Вложенное дерево папок и статей из templates/docs."""
+    nodes: list[dict] = []
+    entries = sorted(folder.iterdir(), key=lambda p: p.name.casefold())
     for path in entries:
         if path.name.startswith(("_", ".")):
             continue
+
         if path.is_dir():
             child_prefix = f"{url_prefix.rstrip('/')}/{path.name}"
-            nested = build_docs_tree_markdown(
-                path,
-                url_prefix=child_prefix,
-                heading_level=min(heading_level + 1, 6),
-            )
-            if not nested.strip():
-                continue
-            level = min(max(heading_level, 2), 6)
-            lines.append(f'{"#" * level} [{path.name}]({child_prefix})')
-            lines.append("")
-            lines.append(nested.rstrip())
-            lines.append("")
+            children = build_docs_tree(path, url_prefix=child_prefix)
+            index = path / "index.md"
+            if index.is_file():
+                nodes.append(
+                    {
+                        "title": _doc_title(index),
+                        "url": child_prefix,
+                        "children": children,
+                    }
+                )
+            elif children:
+                nodes.append(
+                    {
+                        "title": path.name,
+                        "url": child_prefix,
+                        "children": children,
+                    }
+                )
             continue
-        if path.suffix.lower() != ".md" or path.name in {"index.md"}:
+
+        if path.suffix.lower() != ".md" or path.name == "index.md":
             continue
-        title = _doc_title(path)
-        url = f"{url_prefix.rstrip('/')}/{path.stem}"
-        lines.append(f"- [{title}]({url})")
-    return "\n".join(lines).rstrip() + ("\n" if lines else "")
+        nodes.append(
+            {
+                "title": _doc_title(path),
+                "url": f"{url_prefix.rstrip('/')}/{path.stem}",
+                "children": [],
+            }
+        )
+    return nodes
 
 
 def render_docs_tree(*, folder: Path, title: str, url_prefix: str) -> str:
-    tree_md = build_docs_tree_markdown(folder, url_prefix=url_prefix)
-    if not tree_md.strip():
-        body = f"# {title}\n\nПока пусто.\n"
-    else:
-        lead = "Спеки и описание поведения.\n\n" if url_prefix.rstrip("/") == "/docs" else ""
-        body = f"# {title}\n\n{lead}{tree_md}"
-    return render_body_html(body, {}, title=title)
+    tree = build_docs_tree(folder, url_prefix=url_prefix)
+    lead = (
+        "Спеки и описание поведения."
+        if url_prefix.rstrip("/") == "/docs"
+        else None
+    )
+    return render_template(
+        "docs/tree.html",
+        tree=tree,
+        page_title=title,
+        lead=lead,
+    )
 
 
 @docs_bp.get("/")
@@ -199,6 +170,12 @@ def index():
 
 @docs_bp.route("/<path:page_path>")
 def page(page_path: str):
+    file = resolve_page(page_path, root=DOCS_TEMPLATES_DIR, allow_assets=True)
+    if file is not None:
+        if file.suffix == ".md":
+            return render_docs_markdown(file)
+        return send_file(file)
+
     folder = _safe_docs_subdir(page_path)
     if folder is not None:
         return render_docs_tree(
@@ -207,11 +184,4 @@ def page(page_path: str):
             url_prefix=f"/docs/{page_path.strip('/')}",
         )
 
-    file = resolve_page(page_path, root=DOCS_TEMPLATES_DIR, allow_assets=True)
-    if file is None:
-        abort(404)
-
-    if file.suffix == ".md":
-        return render_docs_markdown(file)
-
-    return send_file(file)
+    abort(404)
