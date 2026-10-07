@@ -31,6 +31,10 @@
     width: 100%;
 }
 
+.md-content img[src*="/img/books/"] {
+    width: min(100%, 200px);
+}
+
 .md-content a.hashtag {
     color: #5b6abf;
     text-decoration: none;
