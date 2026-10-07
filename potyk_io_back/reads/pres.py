@@ -9,7 +9,7 @@ from potyk_io_back.potyk_io.md_rendering import (
 )
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
 from potyk_io_back.potyk_io.menu import CULTURE_MENU_GROUPS
-from potyk_io_back.reads.books import READS_TEMPLATES_DIR, load_books
+from potyk_io_back.reads.books import READS_TEMPLATES_DIR, book_props_html, load_books
 
 reads_bp = Blueprint("reads", __name__, url_prefix="/reads")
 
@@ -70,6 +70,7 @@ def render_reads_markdown(file: Path):
         created=created,
         base_href=base_href,
         link_rewriter=make_reads_link_rewriter(file),
+        after_h1_html=book_props_html(meta),
     )
 
 

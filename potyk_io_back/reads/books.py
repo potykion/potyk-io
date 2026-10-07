@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html as html_module
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -9,6 +10,13 @@ from potyk_io_back.potyk_io.md_rendering import extract_h1, split_frontmatter, u
 
 READS_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "potyk-reads"
 BOOK_COVER_PLACEHOLDER = "/static/potyk-io/img/books/cover-placeholder.svg"
+
+_BOOK_PROP_FIELDS: tuple[tuple[str, str], ...] = (
+    ("author", "Автор"),
+    ("subtitle", "Подзаголовок"),
+    ("pages", "Всего страниц"),
+    ("pages_read", "Прочитано страниц"),
+)
 
 
 @dataclass(frozen=True)
@@ -31,6 +39,24 @@ def _book_paths(root: Path) -> list[Path]:
         ),
         key=lambda path: path.stem.casefold(),
     )
+
+
+def book_props_html(meta: dict[str, str]) -> str | None:
+    """Блок свойств книги под заголовком страницы ревью."""
+    rows: list[str] = []
+    for key, label in _BOOK_PROP_FIELDS:
+        raw = unquote_meta(meta.get(key, ""))
+        if not raw:
+            continue
+        rows.append(
+            f'<div class="album-props-row">'
+            f"<dt>{html_module.escape(label)}</dt>"
+            f"<dd>{html_module.escape(raw)}</dd>"
+            f"</div>"
+        )
+    if not rows:
+        return None
+    return f'<dl class="album-props">{"".join(rows)}</dl>'
 
 
 def load_books(*, root: Path | None = None) -> list[BookCard]:
