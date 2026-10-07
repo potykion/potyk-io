@@ -60,6 +60,12 @@ MENU_GROUPS: list[MenuGroup] = [
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Свалка", "url": "/toc", "description": ""},
             {
+                "icon": "📑",
+                "title": "Docs",
+                "url": "/docs/",
+                "description": "Спеки и поведение",
+            },
+            {
                 "icon": "📔",
                 "title": "Личное",
                 "url": "/self/",
@@ -198,6 +204,32 @@ HEALTH_MENU_GROUPS: list[MenuGroup] = [
                 "icon": "✨",
                 "title": "Красота",
                 "url": "/health/красота",
+                "description": "",
+            },
+        ],
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
+DOCS_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "docs",
+        "links": [
+            {
+                "icon": "📑",
+                "title": "Все статьи",
+                "url": "/docs/",
                 "description": "",
             },
         ],
