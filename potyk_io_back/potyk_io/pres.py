@@ -184,7 +184,7 @@ def game_eat():
         foods=foods,
     )
     db.session.add(meal)
-    state.hp = min(MAX_HP, state.hp + 1)
+    state.hp = state.hp + 1
     db.session.commit()
 
     return jsonify(

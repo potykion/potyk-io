@@ -1,0 +1,18 @@
+{#
+  Usage:
+  {% set side_panel_id = "game-inventory" %}
+  {% set side_panel_side = "right" %}
+  {% set side_panel_label = "Инвентарь" %}
+  {% set side_panel_class = "game-inventory" %}
+  {% set side_panel_body %}
+    <p>Содержимое</p>
+  {% endset %}
+  {% include "jinja/_side_panel.html" %}
+#}
+<aside class="side-panel side-panel--{{ side_panel_side|default('left') }}{% if side_panel_class %} {{ side_panel_class }}{% endif %}"
+       id="{{ side_panel_id }}"
+       data-side-panel
+       aria-label="{{ side_panel_label|default('Панель') }}"
+       aria-hidden="true">
+    {{ side_panel_body }}
+</aside>

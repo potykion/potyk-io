@@ -125,51 +125,11 @@ body > .ts-dropdown {
     border-color: #222;
 }
 
-.game-inventory-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 40;
-    background: rgba(0, 0, 0, 0.28);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0.28s;
-}
-
-body.game-inventory-open .game-inventory-backdrop {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
-}
-
 .game-inventory {
-    position: fixed;
-    top: var(--top-bar-height);
-    right: 0;
-    bottom: 0;
-    z-index: 50;
-    width: min(360px, 90vw);
-    background: #fff;
-    border-left: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: -2px 0 16px rgba(0, 0, 0, 0.12);
+    --side-panel-width: min(360px, 90vw);
     padding: 0.75rem;
-    box-sizing: border-box;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    transform: translate3d(100%, 0, 0);
-    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-    will-change: transform;
-}
-
-body.game-inventory-open .game-inventory {
-    transform: translate3d(0, 0, 0);
-    pointer-events: auto;
-}
-
-body.game-inventory-open {
-    overflow: hidden;
 }
 
 .game-inventory__grid {
@@ -184,11 +144,4 @@ body.game-inventory-open {
     border-radius: 4px;
     background: #fafafa;
     min-width: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .game-inventory,
-    .game-inventory-backdrop {
-        transition: none;
-    }
 }

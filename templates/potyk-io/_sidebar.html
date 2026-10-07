@@ -15,7 +15,11 @@
 {%- endmacro %}
 
 {%- set active_url = resolve_active_menu_url(request.path, menu_groups) -%}
-<div class="sidebar-shell" id="sidebar" aria-label="Меню">
+<div class="side-panel side-panel--left sidebar-shell"
+     id="sidebar"
+     data-side-panel
+     aria-label="Меню"
+     aria-hidden="true">
     <nav class="sidebar-nav" id="sidebar-nav">
         {% for group in menu_groups %}
         <section class="sidebar-group">

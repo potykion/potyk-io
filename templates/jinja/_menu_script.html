@@ -1,3 +1,4 @@
+<script src="/static/jinja/js/side-panel.js"></script>
 <script>
     (function () {
         var STORAGE_KEY = 'menu-open';
@@ -5,16 +6,7 @@
         var toggle = document.getElementById('menu-toggle');
         var sidebar = document.getElementById('sidebar');
         var mq = window.matchMedia('(max-width: 767px)');
-        var backdrop = document.getElementById('menu-backdrop');
-
-        if (!backdrop) {
-            backdrop = document.createElement('button');
-            backdrop.type = 'button';
-            backdrop.id = 'menu-backdrop';
-            backdrop.className = 'menu-backdrop';
-            backdrop.setAttribute('aria-label', 'Закрыть меню');
-            body.appendChild(backdrop);
-        }
+        var SidePanel = window.PotykSidePanel;
 
         function isMobile() {
             return mq.matches;
@@ -40,21 +32,30 @@
         }
 
         function isVisible() {
-            if (isMobile()) return body.classList.contains('menu-open');
+            if (isMobile()) {
+                return SidePanel ? SidePanel.isOpen('sidebar') : false;
+            }
             return !body.classList.contains('menu-collapsed');
         }
 
         function syncAria() {
-            if (toggle) toggle.setAttribute('aria-expanded', isVisible() ? 'true' : 'false');
+            var visible = isVisible();
+            if (toggle) toggle.setAttribute('aria-expanded', visible ? 'true' : 'false');
+            if (sidebar && !isMobile()) {
+                sidebar.setAttribute('aria-hidden', visible ? 'false' : 'true');
+            }
         }
 
         function setVisible(open, persist) {
             if (isMobile()) {
-                body.classList.toggle('menu-open', open);
                 body.classList.remove('menu-collapsed');
+                if (SidePanel) {
+                    if (open) SidePanel.open('sidebar');
+                    else SidePanel.close('sidebar');
+                }
             } else {
+                if (SidePanel) SidePanel.close('sidebar');
                 body.classList.toggle('menu-collapsed', !open);
-                body.classList.remove('menu-open');
             }
             if (persist !== false) writeStored(open);
             syncAria();
@@ -74,17 +75,21 @@
         }
 
         if (toggle) toggle.addEventListener('click', toggleMenu);
-        if (backdrop) backdrop.addEventListener('click', closeMenu);
 
         if (sidebar) {
             sidebar.addEventListener('click', function (e) {
                 if (!isMobile()) return;
                 if (e.target.closest('a.sidebar-link')) closeMenu();
             });
+            sidebar.addEventListener('sidepanel:close', syncAria);
+            sidebar.addEventListener('sidepanel:open', syncAria);
         }
 
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeMenu();
+            if (e.key !== 'Escape') return;
+            if (isMobile()) return;
+            if (SidePanel && SidePanel.anyOpen()) return;
+            closeMenu();
         });
 
         mq.addEventListener('change', applyStoredOrDefault);

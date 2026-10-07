@@ -22,22 +22,23 @@
 
     <button type="button"
             class="game-inventory-btn"
-            data-game-inventory-toggle
+            data-side-panel-toggle="game-inventory"
             aria-controls="game-inventory"
             aria-expanded="false"
             aria-label="Инвентарь">🎒</button>
 
-    <div class="game-inventory-backdrop" data-game-inventory-backdrop></div>
-    <aside class="game-inventory"
-           id="game-inventory"
-           aria-label="Инвентарь"
-           data-game-inventory>
+    {% set side_panel_id = "game-inventory" %}
+    {% set side_panel_side = "right" %}
+    {% set side_panel_label = "Инвентарь" %}
+    {% set side_panel_class = "game-inventory" %}
+    {% set side_panel_body %}
         <div class="game-inventory__grid" role="grid" aria-label="Ячейки инвентаря">
             {% for _ in range(60) %}
             <div class="game-inventory__cell" role="gridcell"></div>
             {% endfor %}
         </div>
-    </aside>
+    {% endset %}
+    {% include "jinja/_side_panel.html" %}
 
     {% if current_user.is_authenticated %}
     {% set modal_id = "game-eat" %}
@@ -77,30 +78,6 @@
 
 {% block script %}
     {{ super() }}
-    <script>
-    (() => {
-      const toggle = document.querySelector("[data-game-inventory-toggle]");
-      const panel = document.querySelector("[data-game-inventory]");
-      const backdrop = document.querySelector("[data-game-inventory-backdrop]");
-      if (!toggle || !panel || !backdrop) return;
-
-      const isOpen = () => document.body.classList.contains("game-inventory-open");
-
-      const setOpen = (open) => {
-        document.body.classList.toggle("game-inventory-open", open);
-        toggle.setAttribute("aria-expanded", open ? "true" : "false");
-        panel.setAttribute("aria-hidden", open ? "false" : "true");
-      };
-
-      panel.setAttribute("aria-hidden", "true");
-
-      toggle.addEventListener("click", () => setOpen(!isOpen()));
-      backdrop.addEventListener("click", () => setOpen(false));
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && isOpen()) setOpen(false);
-      });
-    })();
-    </script>
     {% if current_user.is_authenticated %}
     <script src="/static/potyk-io/js/modal.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>

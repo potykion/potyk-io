@@ -106,44 +106,10 @@
     min-width: 1.15rem;
 }
 
-.menu-backdrop {
-    display: none;
-}
-
+/* Узкий экран: меню — боковая панель слева на всю доступную ширину */
 @media screen and (max-width: 767px) {
-    .menu-backdrop {
-        display: block;
-        position: fixed;
-        top: var(--top-bar-height);
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 49;
-        margin: 0;
-        padding: 0;
-        border: none;
-        background: rgba(0, 0, 0, 0.45);
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.28s;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    body.menu-open .menu-backdrop {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-        transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
-    }
-
-    .sidebar-shell {
-        display: flex;
-        position: fixed;
-        top: var(--top-bar-height);
-        left: 0;
-        bottom: 0;
+    .sidebar-shell.side-panel {
+        --side-panel-width: 80dvw;
         width: 80%;
         width: 80dvw;
         max-width: 80%;
@@ -151,33 +117,9 @@
         height: calc(100dvh - var(--top-bar-height));
         max-height: none;
         min-height: calc(100svh - var(--top-bar-height));
-        z-index: 50;
         background: #fff;
-        border: none;
-        border-right: 1px solid rgba(0, 0, 0, 0.08);
-        overflow: hidden;
         border-radius: 0;
         align-self: stretch;
-        transform: translate3d(-100%, 0, 0);
-        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-        pointer-events: none;
-        will-change: transform;
-        box-shadow: 2px 0 16px rgba(0, 0, 0, 0.12);
-    }
-
-    body.menu-open .sidebar-shell {
-        pointer-events: auto;
-        transform: translate3d(0, 0, 0);
-    }
-
-    body.menu-open {
-        overflow: hidden;
-        height: 100%;
-        height: 100dvh;
-    }
-
-    body.menu-open .search-shell {
-        display: none;
     }
 
     .sidebar-nav {
@@ -190,17 +132,43 @@
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .sidebar-shell,
-    .menu-backdrop {
-        transition: none;
-    }
-}
-
+/* Широкий экран: меню в потоке layout, не overlay-панель */
 @media screen and (min-width: 768px) {
+    .sidebar-shell.side-panel {
+        position: sticky;
+        top: var(--top-bar-height);
+        left: auto;
+        right: auto;
+        bottom: auto;
+        z-index: auto;
+        width: var(--sidebar-width);
+        max-width: none;
+        transform: none;
+        pointer-events: auto;
+        box-shadow: none;
+        background: #fafafa;
+        border-right: 1px solid #e8e8e8;
+        border-left: none;
+        will-change: auto;
+        transition:
+            margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+            border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-shell.side-panel.is-open {
+        transform: none;
+        pointer-events: auto;
+    }
+
     body.menu-collapsed .sidebar-shell {
         margin-left: calc(-1 * var(--sidebar-width));
         border-right-color: transparent;
         pointer-events: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar-shell {
+        transition: none;
     }
 }
