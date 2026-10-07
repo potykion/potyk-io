@@ -120,6 +120,8 @@
             placeholder: el.dataset.placeholder || "",
             searchField: ["text", "value"],
             sortField: [{ field: "text", direction: "asc" }],
+            // иначе overflow модалки обрезает список
+            dropdownParent: "body",
           });
         });
       };
