@@ -55,6 +55,9 @@
     "Format-List",
     "Invoke-WebRequest",
     "iwr",
+    "if",
+    "else",
+    "elseif",
     "[System.IO.File]::WriteAllText",
     "[System.IO.File]::WriteAllBytes",
     "[System.IO.File]::ReadAllText",
@@ -72,7 +75,7 @@
       "Always auto-approve Weeek fetch/move via .venv/Scripts/python .cursor/scripts/weeek_*.py.",
       "Always auto-approve mypy, ruff, black, pytest without asking.",
       "Always auto-approve git add/commit/status/log/diff and PowerShell UTF-8 commit helper (New-Object, [System.IO.File]::WriteAllText, Remove-Item).",
-      "Always auto-approve Get-ChildItem/Get-Item/Test-Path/Format-Table/Format-List and Invoke-WebRequest for local file checks and image downloads."
+      "Always auto-approve Get-ChildItem/Get-Item/Test-Path/Format-Table/Format-List, Invoke-WebRequest, and PowerShell if/else chains for local file checks and image downloads."
     ]
   }
 }
