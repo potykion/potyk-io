@@ -222,32 +222,6 @@ HEALTH_MENU_GROUPS: list[MenuGroup] = [
 ]
 
 
-DOCS_MENU_GROUPS: list[MenuGroup] = [
-    {
-        "title": "docs",
-        "links": [
-            {
-                "icon": "📑",
-                "title": "Все статьи",
-                "url": "/docs/",
-                "description": "",
-            },
-        ],
-    },
-    {
-        "title": "",
-        "links": [
-            {
-                "icon": "←",
-                "title": "potyk-io",
-                "url": "/",
-                "description": "",
-            },
-        ],
-    },
-]
-
-
 PEOPLE_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "potyk-people",
