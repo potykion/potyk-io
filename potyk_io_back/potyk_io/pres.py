@@ -19,6 +19,11 @@ from potyk_io_back.game import (
     ensure_game_state,
     get_or_create_foods,
 )
+from potyk_io_back.reads.books import (
+    load_book_by_slug,
+    load_inventory_books,
+    set_book_pages_read,
+)
 from potyk_io_back.potyk_io.feed import (
     BATCH_SIZE,
     FeedSpec,
@@ -157,6 +162,7 @@ def game():
         emoji=emoji_for_hp(state.hp),
         meal_types=MEAL_TYPES,
         foods=foods,
+        inventory_books=load_inventory_books(),
     )
 
 
@@ -193,6 +199,44 @@ def game_eat():
             "hp": state.hp,
             "max_hp": MAX_HP,
             "emoji": emoji_for_hp(state.hp),
+        }
+    )
+
+
+@potyk_io_bp.post("/game/book-progress")
+@login_required
+def game_book_progress():
+    payload = flask.request.get_json(silent=True) or {}
+    slug = str(payload.get("slug") or "").strip()
+    raw_pages = payload.get("pages_read")
+    if not slug:
+        return jsonify({"ok": False, "error": "slug required"}), 400
+    try:
+        pages_read = int(str(raw_pages).strip())
+    except (TypeError, ValueError):
+        return jsonify({"ok": False, "error": "pages_read must be an integer"}), 400
+    if pages_read < 0:
+        return jsonify({"ok": False, "error": "pages_read must be >= 0"}), 400
+
+    book = load_book_by_slug(slug)
+    if book is None:
+        return jsonify({"ok": False, "error": "book not found"}), 404
+
+    row = set_book_pages_read(slug, pages_read)
+    progress_pct = int(round(100 * row.pages_read / book.pages)) if book.pages else 0
+    in_inventory = row.pages_read < book.pages
+
+    return jsonify(
+        {
+            "ok": True,
+            "slug": slug,
+            "title": book.title,
+            "author": book.author,
+            "cover": book.cover,
+            "pages": book.pages,
+            "pages_read": row.pages_read,
+            "progress_pct": progress_pct,
+            "in_inventory": in_inventory,
         }
     )
 

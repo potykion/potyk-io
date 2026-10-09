@@ -32,13 +32,64 @@
     {% set side_panel_label = "Инвентарь" %}
     {% set side_panel_class = "game-inventory" %}
     {% set side_panel_body %}
-        <div class="game-inventory__grid" role="grid" aria-label="Ячейки инвентаря">
-            {% for _ in range(60) %}
+        <div class="game-inventory__grid" role="grid" aria-label="Ячейки инвентаря" data-inventory-grid>
+            {% for book in inventory_books %}
+            <button type="button"
+                    class="game-inventory__cell game-inventory__cell--book"
+                    role="gridcell"
+                    data-inventory-book
+                    data-slug="{{ book.slug }}"
+                    data-title="{{ book.title }}"
+                    data-author="{{ book.author }}"
+                    data-cover="{{ book.cover }}"
+                    data-pages="{{ book.pages }}"
+                    data-pages-read="{{ book.pages_read }}"
+                    data-progress-pct="{{ book.progress_pct }}"
+                    aria-label="{{ book.title }}">
+                <img src="{{ book.cover }}" alt="" class="game-inventory__cover" loading="lazy">
+            </button>
+            {% endfor %}
+            {% set empty_cells = 60 - (inventory_books|length) %}
+            {% if empty_cells > 0 %}
+            {% for _ in range(empty_cells) %}
             <div class="game-inventory__cell" role="gridcell"></div>
             {% endfor %}
+            {% endif %}
         </div>
     {% endset %}
     {% include "jinja/_side_panel.html" %}
+
+    {% set modal_id = "game-book" %}
+    {% set modal_title = "" %}
+    {% set modal_wide = false %}
+    {% set modal_body %}
+        <div class="game-book-modal" data-book-modal>
+            <img class="game-book-modal__cover" data-book-cover src="" alt="">
+            <h3 class="game-book-modal__title" data-book-title></h3>
+            <p class="game-book-modal__author" data-book-author></p>
+            <p class="game-book-modal__progress" data-book-progress></p>
+            {% if current_user.is_authenticated %}
+            <button type="button" class="game-book-modal__edit-btn" data-book-edit-toggle>Изменить прогресс</button>
+            <form class="game-book-modal__form" data-book-progress-form hidden>
+                <label>
+                    Прочитано страниц
+                    <input type="text"
+                           name="pages_read"
+                           inputmode="numeric"
+                           pattern="[0-9]+"
+                           placeholder="200"
+                           required
+                           data-book-pages-input>
+                </label>
+                <p class="game-book-modal__error" data-book-progress-error hidden></p>
+                <div class="game-book-modal__form-actions">
+                    <button type="submit" class="game-book-modal__submit">Сохранить</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    {% endset %}
+    {% include "jinja/_modal.html" %}
 
     {% if current_user.is_authenticated %}
     {% set modal_id = "game-eat" %}
@@ -78,8 +129,120 @@
 
 {% block script %}
     {{ super() }}
-    {% if current_user.is_authenticated %}
     <script src="/static/potyk-io/js/modal.js"></script>
+    <script>
+    (() => {
+      const bookModal = document.querySelector("[data-book-modal]");
+      if (!bookModal || !window.PotykModal) return;
+
+      const coverEl = bookModal.querySelector("[data-book-cover]");
+      const titleEl = bookModal.querySelector("[data-book-title]");
+      const authorEl = bookModal.querySelector("[data-book-author]");
+      const progressEl = bookModal.querySelector("[data-book-progress]");
+      const editToggle = bookModal.querySelector("[data-book-edit-toggle]");
+      const form = bookModal.querySelector("[data-book-progress-form]");
+      const input = bookModal.querySelector("[data-book-pages-input]");
+      const errEl = bookModal.querySelector("[data-book-progress-error]");
+      const grid = document.querySelector("[data-inventory-grid]");
+      let currentSlug = "";
+
+      const hideForm = () => {
+        if (form) form.hidden = true;
+        if (errEl) {
+          errEl.hidden = true;
+          errEl.textContent = "";
+        }
+      };
+
+      const openBook = (btn) => {
+        currentSlug = btn.dataset.slug || "";
+        const title = btn.dataset.title || "";
+        const author = btn.dataset.author || "";
+        const cover = btn.dataset.cover || "";
+        const pct = btn.dataset.progressPct || "0";
+        const pagesRead = btn.dataset.pagesRead || "0";
+
+        if (coverEl) {
+          coverEl.src = cover;
+          coverEl.alt = title;
+        }
+        if (titleEl) titleEl.textContent = title;
+        if (authorEl) authorEl.textContent = author;
+        if (progressEl) progressEl.textContent = `Прогресс: ${pct}%`;
+        if (input) input.value = pagesRead;
+        hideForm();
+        window.PotykModal.open("game-book");
+      };
+
+      document.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-inventory-book]");
+        if (!btn) return;
+        e.preventDefault();
+        openBook(btn);
+      });
+
+      if (editToggle && form) {
+        editToggle.addEventListener("click", () => {
+          form.hidden = !form.hidden;
+          if (!form.hidden && input) input.focus();
+        });
+      }
+
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (errEl) {
+            errEl.hidden = true;
+            errEl.textContent = "";
+          }
+          const raw = (input && input.value || "").trim();
+          if (!/^\d+$/.test(raw)) {
+            if (errEl) {
+              errEl.textContent = "введи число страниц, например 200";
+              errEl.hidden = false;
+            }
+            return;
+          }
+
+          const res = await fetch("/game/book-progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ slug: currentSlug, pages_read: Number(raw) }),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || !data.ok) {
+            if (errEl) {
+              errEl.textContent = data.error || "не вышло сохранить";
+              errEl.hidden = false;
+            }
+            return;
+          }
+
+          if (progressEl) progressEl.textContent = `Прогресс: ${data.progress_pct}%`;
+          if (input) input.value = String(data.pages_read);
+          hideForm();
+
+          const cell = grid && grid.querySelector(`[data-inventory-book][data-slug="${currentSlug}"]`);
+          if (!data.in_inventory) {
+            if (cell) cell.remove();
+            while (grid && grid.querySelectorAll(".game-inventory__cell").length < 60) {
+              const empty = document.createElement("div");
+              empty.className = "game-inventory__cell";
+              empty.setAttribute("role", "gridcell");
+              grid.appendChild(empty);
+            }
+            window.PotykModal.close("game-book");
+            return;
+          }
+          if (cell) {
+            cell.dataset.pagesRead = String(data.pages_read);
+            cell.dataset.progressPct = String(data.progress_pct);
+          }
+        });
+      }
+    })();
+    </script>
+    {% if current_user.is_authenticated %}
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
     <script>
     (() => {

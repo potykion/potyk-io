@@ -145,3 +145,115 @@ body > .ts-dropdown {
     background: #fafafa;
     min-width: 0;
 }
+
+.game-inventory__cell--book {
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    overflow: hidden;
+    display: block;
+}
+
+.game-inventory__cell--book:hover {
+    border-color: #888;
+}
+
+.game-inventory__cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.game-book-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.game-book-modal__cover {
+    width: min(140px, 50%);
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.game-book-modal__title {
+    margin: 0.35rem 0 0;
+    font-size: 1.15rem;
+}
+
+.game-book-modal__author {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.game-book-modal__progress {
+    margin: 0.25rem 0 0;
+    font-weight: 600;
+}
+
+.game-book-modal__edit-btn {
+    font: inherit;
+    margin-top: 0.5rem;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+}
+
+.game-book-modal__edit-btn:hover {
+    border-color: #888;
+}
+
+.game-book-modal__form {
+    width: 100%;
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    text-align: left;
+}
+
+.game-book-modal__form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+}
+
+.game-book-modal__form input {
+    font: inherit;
+    padding: 0.35rem 0.5rem;
+}
+
+.game-book-modal__form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.game-book-modal__submit {
+    font: inherit;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+}
+
+.game-book-modal__submit:hover {
+    background: #000;
+}
+
+.game-book-modal__error {
+    color: #b00020;
+    font-size: 0.9rem;
+    margin: 0;
+}
