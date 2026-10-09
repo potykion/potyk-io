@@ -1,6 +1,5 @@
 ---
 title: Кафе на краю земли
-subtitle: Как перестать плыть по течению и вспомнить, зачем ты живешь
 author: Джон Стрелеки
 cover: /static/potyk-io/img/books/kafe-na-krayu-zemli.jpg
 ---

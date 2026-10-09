@@ -1,10 +1,13 @@
 /**
- * Однострочный заголовок контент-карточки: уменьшает font-size, пока h3
- * не влезет в ширину. Включается классом .card-grid--fit-title на сетке.
+ * Однострочный заголовок и подзаголовок контент-карточки: уменьшает font-size,
+ * пока текст не влезет в ширину. Включается классом .card-grid--fit-title на сетке.
+ * Подзаголовок (.card-subtitle) дополнительно масштабируется пропорционально
+ * подогнанному заголовку, чтобы не выглядеть крупнее сжатого title.
  */
 (function () {
   const MIN_PX = 10;
-  const SELECTOR = ".card-grid--fit-title .content-card .note-preview > h3";
+  const PREVIEW_SELECTOR =
+    ".card-grid--fit-title .content-card .note-preview";
 
   function availableWidth(el) {
     const parent = el.parentElement;
@@ -15,20 +18,26 @@
     return Math.max(0, parent.clientWidth - pad);
   }
 
-  function fitOne(el) {
-    const maxW = availableWidth(el);
-    if (maxW < 8) return;
-
+  function prepareLine(el) {
     el.style.fontSize = "";
     el.style.whiteSpace = "nowrap";
     el.style.display = "block";
     el.style.width = "100%";
     el.style.maxWidth = "100%";
     el.style.boxSizing = "border-box";
+  }
 
+  function fitOne(el, maxPx) {
+    const maxW = availableWidth(el);
+    if (maxW < 8) return 0;
+
+    prepareLine(el);
     const base = parseFloat(getComputedStyle(el).fontSize) || 16;
+    let hi = typeof maxPx === "number" ? Math.min(base, maxPx) : base;
+    if (hi < MIN_PX) hi = MIN_PX;
+    el.style.fontSize = hi + "px";
+
     let lo = MIN_PX;
-    let hi = base;
     let best = MIN_PX;
 
     while (hi - lo > 0.25) {
@@ -42,10 +51,28 @@
       }
     }
     el.style.fontSize = best + "px";
+    return best / base;
+  }
+
+  function fitPreview(preview) {
+    const h3 = preview.querySelector(":scope > h3");
+    const subs = preview.querySelectorAll(":scope > .card-subtitle");
+    let titleScale = 1;
+
+    if (h3) {
+      titleScale = fitOne(h3) || 1;
+    }
+
+    subs.forEach(function (el) {
+      prepareLine(el);
+      const base = parseFloat(getComputedStyle(el).fontSize) || 14;
+      const scaledMax = Math.max(MIN_PX, base * titleScale);
+      fitOne(el, scaledMax);
+    });
   }
 
   function fitAll() {
-    document.querySelectorAll(SELECTOR).forEach(fitOne);
+    document.querySelectorAll(PREVIEW_SELECTOR).forEach(fitPreview);
   }
 
   function scheduleFit() {
