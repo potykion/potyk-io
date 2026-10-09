@@ -113,7 +113,8 @@ main.home-hero .site-logo img {
     min-width: 0;
 }
 
-.card-grid--fit-title .content-card .note-preview > h3 {
+.card-grid--fit-title .content-card .note-preview > h3,
+.card-grid--fit-title .content-card .note-preview > .card-subtitle {
     display: block;
     width: 100%;
     max-width: 100%;
