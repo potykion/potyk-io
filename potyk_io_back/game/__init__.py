@@ -1,6 +1,7 @@
 from potyk_io_back.game.entities import (
     MAX_HP,
     MEAL_TYPES,
+    BookReadingProgress,
     GameFood,
     GameMeal,
     GameState,
@@ -13,6 +14,7 @@ from potyk_io_back.game.entities import (
 __all__ = [
     "MAX_HP",
     "MEAL_TYPES",
+    "BookReadingProgress",
     "GameFood",
     "GameMeal",
     "GameState",

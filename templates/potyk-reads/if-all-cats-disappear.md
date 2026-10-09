@@ -3,7 +3,6 @@ title: Если все кошки в мире исчезнут
 author: Гэнки Кавамура
 cover: /static/potyk-io/img/books/if-all-cats-disappear.jpg
 pages: 320
-pages_read: 200
 ---
 # Если все кошки в мире исчезнут
 

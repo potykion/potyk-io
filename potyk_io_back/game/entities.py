@@ -55,6 +55,16 @@ class GameMeal(db.Model):
     )
 
 
+class BookReadingProgress(db.Model):
+    """Прогресс чтения книги: слаг md + число прочитанных страниц."""
+
+    __tablename__ = "book_reading_progress"
+
+    id = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.String(255), nullable=False, unique=True, index=True)
+    pages_read = db.Column(db.Integer, nullable=False, default=0)
+
+
 def current_game_day(now: datetime | None = None) -> date:
     now_msk = (now or datetime.now(tz=MSK)).astimezone(MSK)
     return (now_msk - timedelta(hours=6)).date()
