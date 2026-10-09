@@ -109,6 +109,8 @@
 /* Узкий экран: меню — боковая панель слева на всю доступную ширину */
 @media screen and (max-width: 767px) {
     .sidebar-shell.side-panel {
+        /* sticky из .sidebar-shell не должен перебивать fixed на мобилке */
+        position: fixed;
         --side-panel-width: 80dvw;
         width: 80%;
         width: 80dvw;
