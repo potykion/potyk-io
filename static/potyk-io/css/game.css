@@ -61,6 +61,7 @@ main.game-page {
 
 .game-eat-form select {
     font: inherit;
+    font-size: 16px;
     padding: 0.35rem 0.5rem;
 }
 
@@ -68,9 +69,28 @@ main.game-page {
     width: 100%;
 }
 
+/* iOS: <16px на фокусе → зум, который после сабмита не сбрасывается */
+.game-eat-form .ts-control,
+.game-eat-form .ts-control input {
+    font-size: 16px;
+}
+
 /* dropdownParent: body — поверх модалки (z-index 1000) */
 body > .ts-dropdown {
     z-index: 1100;
+}
+
+@media screen and (max-width: 600px) {
+    #game-eat.modal {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    #game-eat .modal__panel {
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+    }
 }
 
 .game-eat-form__actions {
