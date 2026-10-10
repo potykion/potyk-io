@@ -169,25 +169,39 @@ body > .ts-dropdown {
     min-width: 0;
 }
 
-/* Обложка = background на кнопке: img внутри button не растягивается
-   в квадрат (intrinsic portrait → поля по бокам), object-fit бесполезен. */
+/* contain: на всю высоту ячейки, по ширине уже (поля по бокам ок) */
 .game-inventory__cell--book {
+    position: relative;
     display: block;
+    appearance: none;
+    -webkit-appearance: none;
     padding: 0;
     margin: 0;
     font: inherit;
     line-height: 0;
     cursor: pointer;
     overflow: hidden;
-    background-color: #fafafa;
-    background-image: var(--book-cover);
-    background-size: cover;
-    background-position: center top;
-    background-repeat: no-repeat;
+    box-sizing: border-box;
+    width: 100%;
+    background: #fafafa;
 }
 
 .game-inventory__cell--book:hover {
     border-color: #888;
+}
+
+.game-inventory__cover {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    width: auto;
+    max-width: none;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
 }
 
 .game-book-modal {

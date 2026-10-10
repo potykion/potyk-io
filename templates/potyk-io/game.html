@@ -45,8 +45,9 @@
                     data-pages="{{ book.pages }}"
                     data-pages-read="{{ book.pages_read }}"
                     data-progress-pct="{{ book.progress_pct }}"
-                    style="--book-cover: url('{{ book.cover }}')"
-                    aria-label="{{ book.title }}"></button>
+                    aria-label="{{ book.title }}">
+                <img src="{{ book.cover }}" alt="" class="game-inventory__cover" loading="lazy">
+            </button>
             {% endfor %}
             {% set empty_cells = 60 - (inventory_books|length) %}
             {% if empty_cells > 0 %}
