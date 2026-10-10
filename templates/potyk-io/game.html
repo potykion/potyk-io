@@ -67,22 +67,32 @@
             <img class="game-book-modal__cover" data-book-cover src="" alt="">
             <h3 class="game-book-modal__title" data-book-title></h3>
             <p class="game-book-modal__author" data-book-author></p>
-            <p class="game-book-modal__progress" data-book-progress></p>
+            <p class="game-book-modal__progress">
+                <span data-book-progress></span>
+                {% if current_user.is_authenticated %}
+                <button type="button"
+                        class="game-book-modal__edit-btn"
+                        data-book-edit-toggle
+                        aria-label="Изменить прогресс">✏️</button>
+                {% endif %}
+            </p>
             {% if current_user.is_authenticated %}
-            <button type="button" class="game-book-modal__edit-btn" data-book-edit-toggle>Изменить прогресс</button>
             <form class="game-book-modal__form" data-book-progress-form hidden>
-                <label>
-                    Прочитано страниц
+                <div class="game-book-modal__pages-row">
                     <input type="text"
                            name="pages_read"
                            inputmode="numeric"
                            pattern="[0-9]+"
-                           placeholder="200"
+                           placeholder="220"
                            required
+                           aria-label="Прочитано страниц"
                            data-book-pages-input>
-                </label>
+                    <span aria-hidden="true">/</span>
+                    <span class="game-book-modal__pages-total" data-book-pages-total></span>
+                </div>
                 <p class="game-book-modal__error" data-book-progress-error hidden></p>
                 <div class="game-book-modal__form-actions">
+                    <button type="button" class="game-book-modal__cancel" data-book-edit-cancel>Отмена</button>
                     <button type="submit" class="game-book-modal__submit">Сохранить</button>
                 </div>
             </form>
@@ -140,8 +150,10 @@
       const authorEl = bookModal.querySelector("[data-book-author]");
       const progressEl = bookModal.querySelector("[data-book-progress]");
       const editToggle = bookModal.querySelector("[data-book-edit-toggle]");
+      const editCancel = bookModal.querySelector("[data-book-edit-cancel]");
       const form = bookModal.querySelector("[data-book-progress-form]");
       const input = bookModal.querySelector("[data-book-pages-input]");
+      const pagesTotalEl = bookModal.querySelector("[data-book-pages-total]");
       const errEl = bookModal.querySelector("[data-book-progress-error]");
       const grid = document.querySelector("[data-inventory-grid]");
       let currentSlug = "";
@@ -154,6 +166,12 @@
         }
       };
 
+      const showForm = () => {
+        if (!form) return;
+        form.hidden = false;
+        if (input) input.focus();
+      };
+
       const openBook = (btn) => {
         currentSlug = btn.dataset.slug || "";
         const title = btn.dataset.title || "";
@@ -161,6 +179,7 @@
         const cover = btn.dataset.cover || "";
         const pct = btn.dataset.progressPct || "0";
         const pagesRead = btn.dataset.pagesRead || "0";
+        const pages = btn.dataset.pages || "0";
 
         if (coverEl) {
           coverEl.src = cover;
@@ -168,8 +187,9 @@
         }
         if (titleEl) titleEl.textContent = title;
         if (authorEl) authorEl.textContent = author;
-        if (progressEl) progressEl.textContent = `Прогресс: ${pct}%`;
+        if (progressEl) progressEl.textContent = `${pct}%`;
         if (input) input.value = pagesRead;
+        if (pagesTotalEl) pagesTotalEl.textContent = pages;
         hideForm();
         window.PotykModal.open("game-book");
       };
@@ -183,8 +203,13 @@
 
       if (editToggle && form) {
         editToggle.addEventListener("click", () => {
-          form.hidden = !form.hidden;
-          if (!form.hidden && input) input.focus();
+          showForm();
+        });
+      }
+
+      if (editCancel) {
+        editCancel.addEventListener("click", () => {
+          hideForm();
         });
       }
 
@@ -218,7 +243,7 @@
             return;
           }
 
-          if (progressEl) progressEl.textContent = `Прогресс: ${data.progress_pct}%`;
+          if (progressEl) progressEl.textContent = `${data.progress_pct}%`;
           if (input) input.value = String(data.pages_read);
           hideForm();
 
