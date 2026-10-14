@@ -1,3 +1,8 @@
+---
+type: mouse
+cover: /static/potyk-io/img/logitech-m100.jpg
+---
+
 # Logitech M100
 
 [Logitech](https://www.logitech.com/en-us/shop/p/m100-usb-mouse)

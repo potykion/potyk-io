@@ -1,3 +1,8 @@
+---
+type: ebook
+cover: /static/potyk-io/img/digma-f4.jpg
+---
+
 # Digma F4
 
 [Ozon](https://ozon.ru/t/aHVJ4Y5)

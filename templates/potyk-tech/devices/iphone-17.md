@@ -1,5 +1,7 @@
 ---
 toc: true
+type: phone
+cover: /static/potyk-io/img/iphone-17.jpg
 ---
 
 # iPhone 17

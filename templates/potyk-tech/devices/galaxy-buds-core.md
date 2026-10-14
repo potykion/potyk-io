@@ -1,3 +1,8 @@
+---
+type: headphones
+cover: /static/potyk-io/img/galaxy-buds-core.webp
+---
+
 # Galaxy Buds Core
 
 [Ozon](https://ozon.ru/t/rlPyrHD)

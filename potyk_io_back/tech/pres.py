@@ -10,6 +10,7 @@ from potyk_io_back.potyk_io.md_rendering import (
 )
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
 from potyk_io_back.potyk_io.menu import TECH_MENU_GROUPS
+from potyk_io_back.tech.devices import load_device_sections
 
 TECH_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "potyk-tech"
 
@@ -111,6 +112,8 @@ def page(page_path: str):
                     PurePosixPath(file.relative_to(TECH_TEMPLATES_DIR).as_posix())
                 ),
             )
+            if file.parent.name == "devices":
+                ctx["device_sections"] = load_device_sections()
         return render_template(template_name, **ctx)
 
     return send_file(file)

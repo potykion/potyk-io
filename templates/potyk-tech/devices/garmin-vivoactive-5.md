@@ -1,3 +1,8 @@
+---
+type: watch
+cover: /static/potyk-io/img/garmin-vivoactive-5.jpg
+---
+
 # Garmin Vivoactive 5
 
 [Ozon](https://ozon.ru/t/91qSg2G)

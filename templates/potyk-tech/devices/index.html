@@ -23,11 +23,9 @@
 
 <div class="toc md-toc">
 <ul>
-<li><a href="#электронные-книги">Электронные книги</a></li>
-<li><a href="#телефоны">Телефоны</a></li>
-<li><a href="#часики">Часики</a></li>
-<li><a href="#наушники">Наушники</a></li>
-<li><a href="#мыши">Мыши</a></li>
+{% for section in device_sections %}
+<li><a href="#{{ section.anchor }}">{{ section.title }}</a></li>
+{% endfor %}
 <li><a href="#принципы">Принципы</a>
 <ul>
 <li><a href="#как-выбрать-ноут">Как выбрать ноут</a></li>
@@ -36,61 +34,19 @@
 </ul>
 </div>
 
-<h2 id="электронные-книги">Электронные книги</h2>
+{% for section in device_sections %}
+<h2 id="{{ section.anchor }}">{{ section.title }}</h2>
 <div class="card-grid card-grid--feed card-grid--fit-title">
-    <a class="card content-card" href="/tech/devices/digma-f4">
-        <img class="note-cover" src="/static/potyk-io/img/digma-f4.jpg" alt="Digma F4" loading="lazy">
+    {% for device in section.devices %}
+    <a class="card content-card" href="{{ device.url }}">
+        <img class="note-cover" src="{{ device.cover }}" alt="{{ device.title }}" loading="lazy">
         <div class="note-preview md-content">
-            <h3>Digma F4</h3>
+            <h3>{{ device.title }}</h3>
         </div>
     </a>
+    {% endfor %}
 </div>
-
-<h2 id="телефоны">Телефоны</h2>
-<div class="card-grid card-grid--feed card-grid--fit-title">
-    <a class="card content-card" href="/tech/devices/iphone-17">
-        <img class="note-cover" src="/static/potyk-io/img/iphone-17.jpg" alt="iPhone 17" loading="lazy">
-        <div class="note-preview md-content">
-            <h3>iPhone 17</h3>
-        </div>
-    </a>
-</div>
-
-<h2 id="часики">Часики</h2>
-<div class="card-grid card-grid--feed card-grid--fit-title">
-    <a class="card content-card" href="/tech/devices/garmin-vivoactive-5">
-        <img class="note-cover" src="/static/potyk-io/img/garmin-vivoactive-5.jpg" alt="Garmin Vivoactive 5" loading="lazy">
-        <div class="note-preview md-content">
-            <h3>Garmin Vivoactive 5</h3>
-        </div>
-    </a>
-</div>
-
-<h2 id="наушники">Наушники</h2>
-<div class="card-grid card-grid--feed card-grid--fit-title">
-    <a class="card content-card" href="/tech/devices/galaxy-buds-core">
-        <img class="note-cover" src="/static/potyk-io/img/galaxy-buds-core.webp" alt="Galaxy Buds Core" loading="lazy">
-        <div class="note-preview md-content">
-            <h3>Galaxy Buds Core</h3>
-        </div>
-    </a>
-</div>
-
-<h2 id="мыши">Мыши</h2>
-<div class="card-grid card-grid--feed card-grid--fit-title">
-    <a class="card content-card" href="/tech/devices/defender-accura-mm-365">
-        <img class="note-cover" src="/static/potyk-io/img/defender-accura-mm-365.jpg" alt="Defender Accura MM-365" loading="lazy">
-        <div class="note-preview md-content">
-            <h3>Defender Accura MM-365</h3>
-        </div>
-    </a>
-    <a class="card content-card" href="/tech/devices/logitech-m100">
-        <img class="note-cover" src="/static/potyk-io/img/logitech-m100.jpg" alt="Logitech M100" loading="lazy">
-        <div class="note-preview md-content">
-            <h3>Logitech M100</h3>
-        </div>
-    </a>
-</div>
+{% endfor %}
 
 <h2 id="принципы">Принципы</h2>
 <h3 id="как-выбрать-ноут">Как выбрать ноут</h3>
