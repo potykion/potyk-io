@@ -6,6 +6,12 @@
 
 - [Github](https://github.com/potykion/potyk-io.git)
 
+## Запуск на локалке
+
+```sh
+python -m flask run --debug 
+```
+
 ## Prod 
 
 - ВМ (Yandex Cloud): 2 vCPU (100%), 2 ГБ RAM, 20 ГБ диск, Intel Ice Lake.  
