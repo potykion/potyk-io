@@ -39,3 +39,7 @@ class NewPostForm(FlaskForm):
 
 class CommitPushForm(FlaskForm):
     submit = SubmitField("Закоммитить и запушить")
+
+
+class BackupForm(FlaskForm):
+    submit = SubmitField("Бекап")

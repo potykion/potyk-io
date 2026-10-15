@@ -10,3 +10,4 @@ pyyaml
 alembic
 python-telegram-bot
 tzdata
+boto3

@@ -10,7 +10,8 @@ from flask import (
 )
 from flask_login import login_required
 
-from potyk_io_back.admin.forms import CommitPushForm, NewPostForm
+from potyk_io_back.admin.backup import upload_main_db
+from potyk_io_back.admin.forms import BackupForm, CommitPushForm, NewPostForm
 from potyk_io_back.admin.git_ops import commit_and_push, list_uncommitted
 from potyk_io_back.admin.posts import create_post
 from potyk_io_back.potyk_io.menu import admin_menu_groups
@@ -49,10 +50,15 @@ def flash_form_errors(form) -> None:
             flash(message, "error")
 
 
-@admin_bp.get("/")
+@admin_bp.route("/", methods=["GET", "POST"])
 @login_required
 def index():
-    return redirect(url_for("admin.new_post"))
+    form = BackupForm()
+    if form.validate_on_submit():
+        result = upload_main_db()
+        flash(result.message, "success" if result.ok else "error")
+        return redirect(url_for("admin.index"))
+    return render_template("admin/index.html", form=form)
 
 
 @admin_bp.route("/posts/new", methods=["GET", "POST"])

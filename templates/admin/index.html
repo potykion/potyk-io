@@ -1,0 +1,12 @@
+{% extends "admin/_base.html" %}
+{% import "jinja/forms.html" as forms %}
+
+{% block title %}Админка{% endblock %}
+
+{% block admin_main %}
+<h1>Админка</h1>
+<form method="post" action="{{ url_for('admin.index') }}">
+    {{ form.hidden_tag() }}
+    {{ forms.submit_row(form.submit) }}
+</form>
+{% endblock %}
