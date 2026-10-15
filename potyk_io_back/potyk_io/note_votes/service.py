@@ -4,8 +4,6 @@ import random
 from datetime import datetime
 from pathlib import Path
 
-from sqlalchemy import select
-
 from potyk_io_back.core.db import db
 from potyk_io_back.potyk_io.feed.notes_feed import FeedSpec, iter_note_paths, note_url
 from potyk_io_back.potyk_io.md_rendering import (
@@ -106,11 +104,3 @@ def save_note_vote(
     db.session.add(row)
     db.session.commit()
     return row
-
-
-def list_note_votes() -> list[NoteVote]:
-    return list(
-        db.session.scalars(
-            select(NoteVote).order_by(NoteVote.created_at.desc(), NoteVote.id.desc())
-        ).all()
-    )

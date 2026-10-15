@@ -17,7 +17,7 @@ description: >-
 
 ## Куда класть
 
-- Путь по смыслу: `templates/docs/projects/` (раздел/проект, в т.ч. `templates/docs/projects/potyk-invest/`), `templates/docs/features/` (сквозная фича), `templates/docs/components/` (UI-компонент). Пример: `templates/docs/projects/inbox.md` → `/docs/projects/inbox`.
+- Путь по смыслу: `templates/docs/projects/` (раздел/проект, в т.ч. `templates/docs/projects/potyk-invest/`), `templates/docs/features/` (сквозная фича), `templates/docs/components/` (UI-компонент). Пример: `templates/docs/projects/admin.md` → `/docs/projects/admin`.
 - Имя файла — короткое, по фиче (kebab/латиница или одно слово), как договорились с пользователем; если не сказал — предложи по смыслу фичи.
 - Не плодить вложенность без нужды.
 
@@ -30,7 +30,7 @@ description: >-
 3. **Сценарии** — что делает пользователь / система; окружения (прод vs локалка), если влияют на поведение.
 4. Для нетривиальных сценариев: **зачем**, **что делает пользователь**, **ожидаемый результат** (список исходов, в т.ч. ошибки и повторы, если это часть контракта).
 
-Ориентир по тону и объёму: `templates/docs/projects/inbox.md`.
+Ориентир по тону и объёму: `templates/docs/projects/admin.md`.
 
 ## Что не писать
 

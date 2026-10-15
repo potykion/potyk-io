@@ -701,24 +701,12 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
 ]
 
 
-def admin_menu_groups(*, local: bool, inbox_badge: int | None = None) -> list[MenuGroup]:
+def admin_menu_groups(*, local: bool) -> list[MenuGroup]:
     links: list[MenuItem] = [
-        {
-            "icon": "📥",
-            "title": "Инбокс",
-            "url": "/inbox",
-            "description": "",
-        },
         {
             "icon": "✍️",
             "title": "Создание поста",
             "url": "/admin/posts/new",
-            "description": "",
-        },
-        {
-            "icon": "📝",
-            "title": "Разбор заметок",
-            "url": "/admin/notes-review",
             "description": "",
         },
         {
@@ -734,8 +722,6 @@ def admin_menu_groups(*, local: bool, inbox_badge: int | None = None) -> list[Me
             "description": "",
         },
     ]
-    if inbox_badge:
-        links[0]["badge"] = inbox_badge
     if local:
         links.append(
             {

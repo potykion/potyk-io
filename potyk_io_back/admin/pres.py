@@ -13,11 +13,7 @@ from flask_login import login_required
 from potyk_io_back.admin.forms import CommitPushForm, NewPostForm
 from potyk_io_back.admin.git_ops import commit_and_push, list_uncommitted
 from potyk_io_back.admin.posts import create_post
-from potyk_io_back.inbox.pres import entries_from_db
-from potyk_io_back.inbox.tasks import load_local_tasks
 from potyk_io_back.potyk_io.menu import admin_menu_groups
-from potyk_io_back.potyk_io.note_votes import list_note_votes
-from potyk_io_back.potyk_io.note_votes.service import VOTE_DISLIKE, VOTE_LIKE
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -33,20 +29,10 @@ def is_local() -> bool:
     )
 
 
-def inbox_count() -> int:
-    if is_local():
-        return len(load_local_tasks())
-    return len(entries_from_db())
-
-
 def admin_nav_context() -> dict:
-    count = inbox_count()
     return {
         "is_local": is_local(),
-        "menu_groups": admin_menu_groups(
-            local=is_local(),
-            inbox_badge=count if count else None,
-        ),
+        "menu_groups": admin_menu_groups(local=is_local()),
         "section_brand_title": "админка",
         "section_brand_url": "/admin",
     }
@@ -66,7 +52,7 @@ def flash_form_errors(form) -> None:
 @admin_bp.get("/")
 @login_required
 def index():
-    return redirect(url_for("inbox.index"))
+    return redirect(url_for("admin.new_post"))
 
 
 @admin_bp.route("/posts/new", methods=["GET", "POST"])
@@ -108,18 +94,3 @@ def commit():
         return redirect(url_for("admin.commit"))
 
     return render_template("admin/commit.html", form=form, files=files)
-
-
-@admin_bp.get("/notes-review")
-@login_required
-def notes_review():
-    votes = list_note_votes()
-    likes = sum(1 for v in votes if v.vote == VOTE_LIKE)
-    dislikes = sum(1 for v in votes if v.vote == VOTE_DISLIKE)
-    return render_template(
-        "admin/notes_review.html",
-        votes=votes,
-        likes=likes,
-        dislikes=dislikes,
-    )
-
