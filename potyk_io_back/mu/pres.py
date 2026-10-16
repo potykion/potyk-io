@@ -1,12 +1,31 @@
 from pathlib import Path, PurePosixPath
 
-from flask import Blueprint, abort, request, render_template, send_file, url_for
+from flask import (
+    Blueprint,
+    abort,
+    after_this_request,
+    jsonify,
+    request,
+    render_template,
+    send_file,
+    url_for,
+)
 
 from potyk_io_back.mu.albums import album_props_html, is_album_page
 from potyk_io_back.mu.artists import (
     albums_for_artist,
     extract_artist_videos,
     is_artist_page,
+)
+from potyk_io_back.mu.download_album import (
+    DownloadError,
+    PlaylistTrack,
+    fetch_playlist_meta,
+)
+from potyk_io_back.mu.download_jobs import (
+    cleanup_job,
+    read_job,
+    start_download_job,
 )
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, FeedSpec, feed_batch, feed_more_url
 from potyk_io_back.potyk_io.md_rendering import render_body_html, resolve_page, split_frontmatter
@@ -167,6 +186,103 @@ def feed_more():
     exclude = {u for u in request.args.get("exclude", "").split(",") if u}
     card_ratio = request.args.get("card_ratio") or None
     return _render_feed_batch(spec, exclude=exclude, card_ratio=card_ratio)
+
+
+@mu_bp.get("/download")
+def download_page():
+    return render_template("potyk-mu/download.html")
+
+
+@mu_bp.get("/download/meta")
+def download_meta():
+    url = (request.args.get("url") or request.args.get("playlist_url") or "").strip()
+    if not url:
+        return "", 204
+    try:
+        meta = fetch_playlist_meta(url)
+    except DownloadError as exc:
+        return render_template(
+            "potyk-mu/partials/_playlist_meta.html",
+            error=str(exc),
+        )
+    return render_template(
+        "potyk-mu/partials/_playlist_meta.html",
+        meta=meta,
+        error=None,
+    )
+
+
+def _tracks_from_form() -> list[PlaylistTrack]:
+    indexes = request.form.getlist("track_index")
+    titles = request.form.getlist("track_title")
+    ids = request.form.getlist("track_id")
+    tracks: list[PlaylistTrack] = []
+    for i, (idx_s, title, vid) in enumerate(zip(indexes, titles, ids), start=1):
+        vid = (vid or "").strip()
+        title = (title or "").strip() or f"Track {i}"
+        if not vid:
+            continue
+        try:
+            idx = int(idx_s)
+        except (TypeError, ValueError):
+            idx = i
+        tracks.append(PlaylistTrack(index=idx, title=title, video_id=vid))
+    tracks.sort(key=lambda t: t.index)
+    return tracks
+
+
+@mu_bp.post("/download/start")
+def download_start():
+    url = (request.form.get("playlist_url") or "").strip()
+    album = (request.form.get("album") or "").strip()
+    artist = (request.form.get("artist") or "").strip()
+    year = (request.form.get("year") or "").strip()
+    cover_url = (request.form.get("cover_url") or "").strip()
+    tracks = _tracks_from_form()
+    if not url or not album or not artist:
+        return jsonify({"error": "Нужны URL, альбом и исполнитель"}), 400
+    if not tracks:
+        return jsonify({"error": "Нет треков"}), 400
+    job_id = start_download_job(
+        url=url,
+        artist=artist,
+        album=album,
+        year=year,
+        cover_url=cover_url,
+        tracks=tracks,
+    )
+    return jsonify({"job_id": job_id})
+
+
+@mu_bp.get("/download/status/<job_id>")
+def download_status(job_id: str):
+    record = read_job(job_id)
+    if record is None:
+        return jsonify({"error": "job not found"}), 404
+    return jsonify(record.to_dict())
+
+
+@mu_bp.get("/download/file/<job_id>")
+def download_file(job_id: str):
+    record = read_job(job_id)
+    if record is None or not record.zip_path:
+        abort(404)
+    zip_path = Path(record.zip_path)
+    if not zip_path.is_file():
+        abort(404)
+    name = record.progress.download_name or zip_path.name
+
+    @after_this_request
+    def _cleanup(response):
+        cleanup_job(job_id)
+        return response
+
+    return send_file(
+        zip_path,
+        as_attachment=True,
+        download_name=name,
+        mimetype="application/zip",
+    )
 
 
 def _feed_index_context(file: Path) -> dict:

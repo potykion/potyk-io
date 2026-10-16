@@ -1,0 +1,332 @@
+{% extends "potyk-mu/_base.html" %}
+
+{% block title %}Скачать музыку — potyk-mu{% endblock %}
+
+{% block head_fonts %}
+{{ super() }}
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+{% endblock %}
+
+{% block head_stylesheets %}
+{{ super() }}
+    <link rel="stylesheet" href="/static/jinja/css/forms.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    #mu-download-form {
+        --ink: #1c1b19;
+        --muted: #6b6860;
+        --line: #c8c4bc;
+        --form-line: #c8c4bc;
+    }
+
+    #mu-download-form input[type="url"],
+    #mu-download-form input[type="text"] {
+        border: 1px solid #c8c4bc;
+        border-radius: 6px;
+        background: #fff;
+        color: #1c1b19;
+    }
+
+    #mu-download-form input:focus {
+        outline: none;
+        border-color: #888;
+    }
+
+    #mu-download-form button[type="submit"] {
+        border: 1px solid #1c1b19;
+        background: #1c1b19;
+        color: #fff;
+    }
+
+    #mu-download-form button[type="submit"]:disabled {
+        opacity: 0.55;
+        cursor: wait;
+    }
+
+    #playlist-meta {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 4px;
+    }
+
+    .mu-download-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .mu-download-cover {
+        max-width: 240px;
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        border: 1px solid #c8c4bc;
+        border-radius: 6px;
+        background: #eee;
+    }
+
+    .mu-download-cover[hidden] {
+        display: none;
+    }
+
+    .mu-download-status {
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: #6b6860;
+    }
+
+    .mu-download-error {
+        color: #9b2c2c;
+        margin: 8px 0 0;
+    }
+
+    .mu-download-spinner {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        margin: 8px 0;
+        color: #6b6860;
+        font-size: 0.9rem;
+    }
+
+    .mu-download-spinner.is-active,
+    .mu-download-spinner.htmx-request,
+    .htmx-request.mu-download-spinner {
+        display: inline-flex;
+    }
+
+    .mu-download-spinner::before {
+        content: "";
+        width: 1.1em;
+        height: 1.1em;
+        border: 2px solid #c8c4bc;
+        border-top-color: #1c1b19;
+        border-radius: 50%;
+        animation: mu-dl-spin 0.7s linear infinite;
+    }
+
+    @keyframes mu-dl-spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .mu-download-progress {
+        margin-top: 4px;
+        padding: 12px;
+        border: 1px solid #c8c4bc;
+        border-radius: 8px;
+        background: #faf9f7;
+    }
+
+    .mu-download-progress[hidden] {
+        display: none;
+    }
+
+    .mu-download-progress-stage {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .mu-download-progress-bar {
+        height: 10px;
+        border-radius: 999px;
+        background: #e6e2da;
+        overflow: hidden;
+    }
+
+    .mu-download-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: #1c1b19;
+        transition: width 0.2s ease;
+    }
+
+    .mu-download-progress-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: #6b6860;
+    }
+
+    #mu-download-progress-pct {
+        font-variant-numeric: tabular-nums;
+        color: #1c1b19;
+        font-weight: 600;
+        min-width: 3.2em;
+    }
+
+    .mu-download-tracks h3 {
+        margin: 8px 0 6px;
+    }
+
+    .mu-download-track-row {
+        display: grid;
+        grid-template-columns: 2.2em 1fr;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 6px;
+    }
+
+    .mu-download-track-num {
+        font-variant-numeric: tabular-nums;
+        color: #6b6860;
+        font-size: 0.9rem;
+        text-align: right;
+    }
+</style>
+{% endblock %}
+
+{% block main_class %}main-m md-content{% endblock %}
+
+{% block main %}
+    <h1>Скачать музыку</h1>
+
+    <h2><a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer">yt-dlp</a></h2>
+
+    <form id="mu-download-form"
+          class="grid"
+          method="post"
+          action="{{ url_for('mu.download_start') }}"
+          data-status-url="{{ url_for('mu.download_status', job_id='__ID__') }}"
+          data-file-url="{{ url_for('mu.download_file', job_id='__ID__') }}">
+        <div class="full">
+            <h3>Плейлист</h3>
+        </div>
+
+        <label class="full">
+            URL
+            <input type="url"
+                   name="playlist_url"
+                   id="playlist_url"
+                   required
+                   placeholder="https://www.youtube.com/playlist?list=PLdSAw7dY_mu7bH6kHlg6O6vYePqdcBC32"
+                   hx-get="{{ url_for('mu.download_meta') }}"
+                   hx-trigger="change delay:400ms, paste delay:400ms"
+                   hx-target="#playlist-meta"
+                   hx-indicator="#playlist-meta-spinner"
+                   autocomplete="off">
+        </label>
+
+        <div id="playlist-meta-spinner" class="mu-download-spinner htmx-indicator full">
+            Загружаю плейлист…
+        </div>
+
+        <div id="playlist-meta" class="full">
+            {% if download_error %}
+            <p class="mu-download-error">{{ download_error }}</p>
+            {% endif %}
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+(function () {
+  const form = document.getElementById("mu-download-form");
+  if (!form) return;
+
+  const STAGE_LABELS = {
+    queued: "В очереди",
+    download: "Скачивание",
+    tag: "Теггирование",
+    zip: "Архив",
+    done: "Готово",
+    error: "Ошибка",
+  };
+
+  function progressEls() {
+    return {
+      box: document.getElementById("mu-download-progress"),
+      stage: document.getElementById("mu-download-progress-stage"),
+      fill: document.getElementById("mu-download-progress-fill"),
+      pct: document.getElementById("mu-download-progress-pct"),
+      msg: document.getElementById("mu-download-progress-msg"),
+    };
+  }
+
+  function renderProgress(data) {
+    const els = progressEls();
+    if (!els.box) return;
+    els.box.hidden = false;
+    const pct = Math.max(0, Math.min(100, Number(data.overall_percent) || 0));
+    els.stage.textContent = STAGE_LABELS[data.stage] || data.stage || "…";
+    els.fill.style.width = pct + "%";
+    els.pct.textContent = Math.round(pct) + "%";
+    els.msg.textContent = data.error || data.message || "";
+  }
+
+  function sleep(ms) {
+    return new Promise((r) => setTimeout(r, ms));
+  }
+
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) btn.disabled = true;
+
+    renderProgress({
+      stage: "queued",
+      overall_percent: 0,
+      message: "Стартую…",
+    });
+
+    try {
+      const startRes = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        credentials: "same-origin",
+      });
+      const startData = await startRes.json().catch(() => ({}));
+      if (!startRes.ok || !startData.job_id) {
+        throw new Error(startData.error || "Не удалось запустить скачивание");
+      }
+
+      const jobId = startData.job_id;
+      const statusTpl = form.dataset.statusUrl;
+      const fileTpl = form.dataset.fileUrl;
+      const statusUrl = statusTpl.replace("__ID__", jobId);
+      const fileUrl = fileTpl.replace("__ID__", jobId);
+
+      while (true) {
+        const stRes = await fetch(statusUrl, { credentials: "same-origin" });
+        if (!stRes.ok) throw new Error("Статус джобы недоступен");
+        const st = await stRes.json();
+        renderProgress(st);
+
+        if (st.stage === "error") {
+          throw new Error(st.error || "Ошибка скачивания");
+        }
+        if (st.stage === "done" && st.zip_ready) {
+          const a = document.createElement("a");
+          a.href = fileUrl;
+          a.download = st.download_name || "album.zip";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          break;
+        }
+        await sleep(500);
+      }
+    } catch (e) {
+      renderProgress({
+        stage: "error",
+        overall_percent: progressEls().fill
+          ? parseFloat(progressEls().fill.style.width) || 0
+          : 0,
+        error: e.message || "Ошибка скачивания",
+      });
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  });
+})();
+</script>
+{% endblock %}

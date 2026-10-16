@@ -445,6 +445,12 @@ _MU_SECTION_LINKS: list[MenuItem] = [
         "description": "",
     },
     {
+        "icon": "⬇️",
+        "title": "Скачать музыку",
+        "url": "/mu/download",
+        "description": "",
+    },
+    {
         "icon": "📊",
         "title": "Альбомы: стата",
         "url": "https://docs.google.com/spreadsheets/d/1Dy9fxDgLzxy84PsIAoyappVB9xfTYHls1rn9KNe4gDs/edit?usp=sharing",

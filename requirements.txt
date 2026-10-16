@@ -11,3 +11,4 @@ alembic
 python-telegram-bot
 tzdata
 boto3
+mutagen

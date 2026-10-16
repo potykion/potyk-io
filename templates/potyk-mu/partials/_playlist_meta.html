@@ -1,0 +1,63 @@
+{% if error %}
+<p class="mu-download-error full">{{ error }}</p>
+{% else %}
+<label class="full">
+    Исполнитель
+    <input type="text" name="artist" value="{{ meta.artist }}" required autocomplete="off">
+</label>
+<label class="full">
+    Альбом
+    <input type="text" name="album" value="{{ meta.album }}" required autocomplete="off">
+</label>
+<label class="full">
+    Год
+    <input type="text" name="year" value="{{ meta.year }}" inputmode="numeric" pattern="[0-9]{4}" placeholder="YYYY" autocomplete="off">
+</label>
+<label class="full">
+    Обложка (URL)
+    <input type="url"
+           name="cover_url"
+           id="cover_url"
+           value="{{ meta.cover_url }}"
+           autocomplete="off"
+           oninput="var img=document.getElementById('cover-preview'); if(img){ img.src=this.value; img.hidden=!this.value; }">
+</label>
+<div class="full">
+    <img id="cover-preview"
+         class="mu-download-cover"
+         src="{{ meta.cover_url }}"
+         alt="Обложка"
+         {% if not meta.cover_url %}hidden{% endif %}>
+</div>
+
+<div class="full mu-download-tracks">
+    <h3>Треки ({{ meta.track_count }})</h3>
+    {% for t in meta.tracks %}
+    <label class="mu-download-track-row">
+        <span class="mu-download-track-num">{{ '%02d'|format(t.index) }}</span>
+        <input type="hidden" name="track_index" value="{{ t.index }}">
+        <input type="hidden" name="track_id" value="{{ t.video_id }}">
+        <input type="text"
+               name="track_title"
+               value="{{ t.title }}"
+               required
+               autocomplete="off"
+               aria-label="Трек {{ t.index }}">
+    </label>
+    {% endfor %}
+</div>
+
+<div class="full mu-download-actions">
+    <button type="submit">Скачать</button>
+</div>
+<div id="mu-download-progress" class="full mu-download-progress" hidden>
+    <div class="mu-download-progress-stage" id="mu-download-progress-stage">Скачивание</div>
+    <div class="mu-download-progress-bar" aria-hidden="true">
+        <div class="mu-download-progress-fill" id="mu-download-progress-fill"></div>
+    </div>
+    <div class="mu-download-progress-meta">
+        <span id="mu-download-progress-pct">0%</span>
+        <span id="mu-download-progress-msg">…</span>
+    </div>
+</div>
+{% endif %}
