@@ -6,9 +6,10 @@ import flask
 import markdown
 from flask import Blueprint, abort, flash, jsonify, redirect, request, render_template, send_file, url_for
 from flask_login import login_required
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from potyk_io_back.core.db import db
+from potyk_io_back.fin.entities import Expense, Saving
 from potyk_io_back.game import (
     MAX_HP,
     MEAL_TYPES,
@@ -149,6 +150,54 @@ def render_food_markdown(file: Path):
 @potyk_io_bp.route("/")
 def index():
     return flask.render_template("potyk-io/index.html")
+
+
+_MONTH_NAMES_RU = (
+    "",
+    "Январь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Сентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь",
+)
+
+
+@potyk_io_bp.get("/index_v2")
+@login_required
+def index_v2():
+    today = date.today()
+    month_from = today.replace(day=1)
+    spent = (
+        db.session.scalar(
+            select(func.coalesce(func.sum(Expense.amount), 0)).where(
+                Expense.date >= month_from,
+                Expense.date <= today,
+            )
+        )
+        or 0
+    )
+    saved = (
+        db.session.scalar(
+            select(func.coalesce(func.sum(Saving.amount), 0)).where(
+                Saving.date >= month_from,
+                Saving.date <= today,
+            )
+        )
+        or 0
+    )
+    return flask.render_template(
+        "potyk-io/index_v2.html",
+        fin_spent=spent,
+        fin_saved=saved,
+        fin_period_label=_MONTH_NAMES_RU[today.month],
+    )
 
 
 @potyk_io_bp.get("/game")

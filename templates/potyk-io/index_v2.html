@@ -1,0 +1,27 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}potyk.io{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/static/potyk-io/css/index.css">
+<link rel="stylesheet" href="/static/potyk-io/css/index_v2.css">
+{% endblock %}
+
+{% block main %}
+<div class="card-grid index-v2-grid">
+    <a class="card index-v2-widget" href="/fin/">
+        <h3 class="index-v2-widget__title">Финансы</h3>
+        <p class="index-v2-widget__period muted">{{ fin_period_label }}</p>
+        <dl class="index-v2-widget__stats">
+            <div>
+                <dt>Потрачено</dt>
+                <dd>{{ fin_spent | rub }}</dd>
+            </div>
+            <div>
+                <dt>Сохранено</dt>
+                <dd>{{ fin_saved | rub }}</dd>
+            </div>
+        </dl>
+    </a>
+</div>
+{% endblock %}
