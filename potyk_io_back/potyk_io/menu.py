@@ -57,6 +57,12 @@ MENU_GROUPS: list[MenuGroup] = [
                 "url": "/culture/",
                 "description": "",
             },
+            {
+                "icon": "🎵",
+                "title": "Музык",
+                "url": "/mu/",
+                "description": "",
+            },
             {"icon": "📜", "title": "Находки", "url": "/findings", "description": ""},
             {"icon": "📦", "title": "Свалка", "url": "/toc", "description": ""},
             {
@@ -533,14 +539,29 @@ _PRIKOLS_SECTION_LINKS: list[MenuItem] = [
 ]
 
 
+MU_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "potyk-mu",
+        "links": _MU_SECTION_LINKS,
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
 CULTURE_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "potyk-culture",
         "links": _CULTURE_OWN_LINKS,
-    },
-    {
-        "title": "Музыка",
-        "links": _MU_SECTION_LINKS,
     },
     {
         "title": "Кино",

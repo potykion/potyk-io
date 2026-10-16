@@ -11,7 +11,7 @@ from potyk_io_back.mu.artists import (
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, FeedSpec, feed_batch, feed_more_url
 from potyk_io_back.potyk_io.md_rendering import render_body_html, resolve_page, split_frontmatter
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
-from potyk_io_back.potyk_io.menu import CULTURE_MENU_GROUPS
+from potyk_io_back.potyk_io.menu import MU_MENU_GROUPS
 
 MU_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "potyk-mu"
 
@@ -44,7 +44,11 @@ MU_FEEDS: dict[str, FeedSpec] = {
 
 @mu_bp.context_processor
 def inject_mu_menu():
-    return {"menu_groups": CULTURE_MENU_GROUPS}
+    return {
+        "menu_groups": MU_MENU_GROUPS,
+        "section_brand_title": "potyk-mu",
+        "section_brand_url": "/mu",
+    }
 
 
 def mu_page_url(path: PurePosixPath) -> str:
