@@ -1,3 +1,15 @@
+:root {
+    --ink: #1c1b19;
+    --muted: #6b6860;
+    --line: #ddd8ce;
+    --form-line: var(--line);
+    --form-error: #9b2c2c;
+    --ok: #1f6b4a;
+    --bad: #9b2c2c;
+    --surface: #fffdf8;
+    --accent: #2a5a8c;
+}
+
 form.grid {
     display: grid;
     gap: 10px;
@@ -53,9 +65,16 @@ input, textarea, select {
     max-width: 100%;
     padding: 10px 12px;
     border: 1px solid var(--form-line, var(--line));
-    border-radius: 6px;
+    border-radius: 8px;
     background: #fff;
     font-size: 16px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #888;
 }
 
 textarea {
@@ -69,24 +88,137 @@ input[type="datetime-local"] {
     padding-right: 10px;
 }
 
-button, .btn {
+button,
+.btn,
+input[type="submit"] {
+    touch-action: manipulation;
+    appearance: none;
+    -webkit-appearance: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.35em;
     box-sizing: border-box;
+    width: auto;
+    min-height: 44px;
     padding: 10px 14px;
     border: 1px solid var(--ink);
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--ink);
-    color: #fff;
+    color: #fffdf8;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
     font-size: inherit;
     line-height: 1.3;
-    min-height: 44px;
     text-decoration: none;
+    box-shadow:
+        0 1px 0 rgba(28, 27, 25, 0.12),
+        0 2px 6px rgba(28, 27, 25, 0.08);
+    transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease,
+        border-color 0.12s ease,
+        color 0.12s ease;
+}
+
+button:hover,
+.btn:hover,
+input[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 2px 0 rgba(28, 27, 25, 0.14),
+        0 8px 18px rgba(28, 27, 25, 0.16);
+}
+
+button:active,
+.btn:active,
+input[type="submit"]:active {
+    transform: translateY(1px);
+    box-shadow:
+        0 0 0 rgba(28, 27, 25, 0),
+        0 1px 3px rgba(28, 27, 25, 0.12);
+}
+
+button:focus-visible,
+.btn:focus-visible,
+input[type="submit"]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+button:disabled,
+.btn:disabled,
+input[type="submit"]:disabled {
+    opacity: 0.55;
+    cursor: wait;
+    transform: none;
+    box-shadow:
+        0 1px 0 rgba(28, 27, 25, 0.08),
+        0 2px 4px rgba(28, 27, 25, 0.06);
+}
+
+button.secondary,
+.btn.secondary {
+    background: var(--surface);
+    color: var(--ink);
+    border-color: var(--ink);
+    box-shadow:
+        0 1px 0 rgba(28, 27, 25, 0.08),
+        0 2px 5px rgba(28, 27, 25, 0.06);
+}
+
+button.secondary:hover,
+.btn.secondary:hover {
+    background: #fff;
+    transform: translateY(-1px);
+    box-shadow:
+        0 2px 0 rgba(28, 27, 25, 0.1),
+        0 8px 18px rgba(28, 27, 25, 0.12);
+}
+
+button.danger,
+.btn.danger {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-flex;
     width: auto;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--muted);
+    padding: 8px 4px;
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1;
+    min-width: 44px;
+    min-height: 44px;
+    height: auto;
+    cursor: pointer;
+    touch-action: manipulation;
+    transform: none;
+    transition: color 0.12s ease;
+}
+
+button.danger:hover,
+.btn.danger:hover {
+    color: var(--bad);
+    transform: none;
+    box-shadow: none;
+}
+
+button.danger:active,
+.btn.danger:active {
+    transform: none;
+    box-shadow: none;
+}
+
+button.danger:focus-visible,
+.btn.danger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 /* Размеры: m — default, s — компактный */
@@ -97,14 +229,68 @@ button, .btn {
 }
 
 .btn-s {
+    width: auto;
+    min-height: 0;
     padding: 4px 10px;
     font-size: 0.85rem;
     font-weight: 500;
     line-height: 1.3;
+}
+
+/* В сетке форм только submit тянется на ширину ряда (не icon/utility-кнопки) */
+form.grid button[type="submit"]:not(.danger):not(.btn-s),
+form.grid input[type="submit"]:not(.danger):not(.btn-s),
+form.grid .full > button[type="submit"]:not(.danger),
+form.grid .full > input[type="submit"]:not(.danger) {
+    width: 100%;
+}
+
+.tabs,
+.expense-mode-tabs {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 12px 0 4px;
+    align-items: center;
+}
+
+.tab,
+.expense-mode-tab {
+    appearance: none;
+    -webkit-appearance: none;
+    flex: 0 0 auto;
+    width: auto;
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 12px;
     min-height: 0;
+    min-width: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: none;
+    transform: none;
+}
+
+.tab:hover,
+.expense-mode-tab:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+    transform: none;
+    box-shadow: none;
+}
+
+.tab[aria-selected="true"],
+.expense-mode-tab[aria-selected="true"] {
+    color: var(--ink);
+    border-color: var(--ink);
+    background: #eceae4;
+    box-shadow: inset 0 1px 2px rgba(28, 27, 25, 0.08);
 }
 
 .field-error {
-    color: var(--form-error, #9b2c2c);
+    color: var(--form-error, var(--bad));
     font-size: 0.8rem;
 }

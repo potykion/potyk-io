@@ -17,31 +17,6 @@
     margin: 0;
 }
 
-.restaurants-page .rest-admin-btn {
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    min-height: 36px;
-    padding: 6px 12px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border: 1px solid #111;
-    border-radius: 6px;
-    background: #111;
-    color: #fff;
-}
-
-.restaurants-page .rest-admin-btn:hover {
-    opacity: 0.85;
-}
-
-.restaurants-page a.btn.secondary,
-.restaurants-page .btn.secondary {
-    background: transparent;
-    color: inherit;
-    border-color: #ccc;
-}
-
 .rest-chips {
     display: flex;
     flex-wrap: wrap;

@@ -748,6 +748,12 @@ def admin_menu_groups(*, local: bool) -> list[MenuGroup]:
             "url": "/admin/restaurants",
             "description": "",
         },
+        {
+            "icon": "🎨",
+            "title": "Дизайн-система",
+            "url": "/admin/design-system",
+            "description": "",
+        },
     ]
     if local:
         links.append(

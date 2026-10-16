@@ -1,0 +1,100 @@
+{% extends "admin/_base.html" %}
+
+{% block title %}Дизайн-система{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    .ds-section {
+        margin: 0 0 2rem;
+    }
+
+    .ds-section h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    .ds-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .ds-note {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin: 0 0 0.75rem;
+    }
+
+    .ds-form {
+        max-width: 24rem;
+    }
+</style>
+{% endblock %}
+
+{% block admin_main %}
+<h1>Дизайн-система</h1>
+<p class="ds-note">Общие UI-элементы из <code>forms.css</code>. Эталон — potyk-fin.</p>
+
+<section class="ds-section">
+    <h2>Кнопки</h2>
+    <div class="ds-row">
+        <button type="button">Primary</button>
+        <button type="button" class="secondary">Secondary</button>
+        <button type="button" class="danger">Danger</button>
+    </div>
+    <div class="ds-row">
+        <a href="#" class="btn">Primary link</a>
+        <a href="#" class="btn secondary">Secondary link</a>
+        <a href="#" class="btn danger">Danger link</a>
+    </div>
+    <div class="ds-row">
+        <button type="button" class="btn-s">Primary s</button>
+        <button type="button" class="secondary btn-s">Secondary s</button>
+        <button type="button" disabled>Disabled</button>
+    </div>
+</section>
+
+<section class="ds-section">
+    <h2>Табы</h2>
+    <div class="tabs" role="tablist" aria-label="Пример табов">
+        <button type="button" class="tab" role="tab" aria-selected="true">Одна</button>
+        <button type="button" class="tab" role="tab" aria-selected="false">Мульти</button>
+        <button type="button" class="tab" role="tab" aria-selected="false">Ещё</button>
+    </div>
+</section>
+
+<section class="ds-section">
+    <h2>Инпуты</h2>
+    <form class="grid ds-form" onsubmit="return false;">
+        <label>
+            Text
+            <input type="text" name="demo_text" placeholder="Текст" value="Пример">
+        </label>
+        <label>
+            Textarea
+            <textarea name="demo_textarea" placeholder="Многострочный текст">Строка</textarea>
+        </label>
+        <label>
+            Select
+            <select name="demo_select">
+                <option>Один</option>
+                <option>Два</option>
+                <option>Три</option>
+            </select>
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" name="demo_check" checked>
+            Checkbox
+        </label>
+        <div class="full">
+            <button type="submit">Submit</button>
+        </div>
+        <div class="full">
+            <button type="submit" disabled>Disabled submit</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

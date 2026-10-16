@@ -78,6 +78,12 @@ def new_post():
     return render_template("admin/new_post.html", form=form)
 
 
+@admin_bp.route("/design-system")
+@login_required
+def design_system():
+    return render_template("admin/design_system.html")
+
+
 @admin_bp.route("/commit", methods=["GET", "POST"])
 @login_required
 def commit():

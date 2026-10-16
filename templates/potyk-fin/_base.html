@@ -46,6 +46,10 @@
         --muted: var(--fin-muted);
         --line: var(--fin-line);
         --form-line: var(--fin-line);
+        --surface: var(--fin-card);
+        --accent: var(--fin-accent);
+        --bad: var(--fin-bad);
+        --ok: var(--fin-ok);
         --pad-x: max(12px, env(safe-area-inset-left));
         --pad-r: max(12px, env(safe-area-inset-right));
     }
@@ -361,128 +365,11 @@
         color: #8a6d3b;
     }
 
-    body.site-fin main button,
-    body.site-fin main .btn,
-    body.site-fin main input[type="submit"] {
-        touch-action: manipulation;
-        appearance: none;
-        -webkit-appearance: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.35em;
-        box-sizing: border-box;
+    /* Layout: full-width только у submit; icon/utility (calc, round, remove) — width:auto из своих правил */
+    body.site-fin main form button[type="submit"]:not(.danger):not(.btn-s):not(.expense-multi-submit),
+    body.site-fin main form input[type="submit"]:not(.danger):not(.btn-s):not(.expense-multi-submit),
+    body.site-fin main .stats-period-show {
         width: 100%;
-        min-height: 44px;
-        padding: 10px 14px;
-        border: 1px solid var(--fin-ink);
-        border-radius: 8px;
-        background: var(--fin-ink);
-        color: #fffdf8;
-        font: inherit;
-        font-weight: 600;
-        line-height: 1.3;
-        cursor: pointer;
-        text-decoration: none;
-        box-shadow:
-            0 1px 0 rgba(28, 27, 25, 0.12),
-            0 2px 6px rgba(28, 27, 25, 0.08);
-        transition:
-            transform 0.12s ease,
-            box-shadow 0.12s ease,
-            background 0.12s ease,
-            border-color 0.12s ease,
-            color 0.12s ease;
-    }
-
-    body.site-fin main button:hover,
-    body.site-fin main .btn:hover,
-    body.site-fin main input[type="submit"]:hover {
-        transform: translateY(-1px);
-        box-shadow:
-            0 2px 0 rgba(28, 27, 25, 0.14),
-            0 8px 18px rgba(28, 27, 25, 0.16);
-    }
-
-    body.site-fin main button:active,
-    body.site-fin main .btn:active,
-    body.site-fin main input[type="submit"]:active {
-        transform: translateY(1px);
-        box-shadow:
-            0 0 0 rgba(28, 27, 25, 0),
-            0 1px 3px rgba(28, 27, 25, 0.12);
-    }
-
-    body.site-fin main button:focus-visible,
-    body.site-fin main .btn:focus-visible,
-    body.site-fin main input[type="submit"]:focus-visible {
-        outline: 2px solid var(--fin-accent);
-        outline-offset: 2px;
-    }
-
-    body.site-fin main button.secondary,
-    body.site-fin main .btn.secondary {
-        background: var(--fin-card);
-        color: var(--fin-ink);
-        border-color: var(--fin-ink);
-        box-shadow:
-            0 1px 0 rgba(28, 27, 25, 0.08),
-            0 2px 5px rgba(28, 27, 25, 0.06);
-    }
-
-    body.site-fin main button.secondary:hover,
-    body.site-fin main .btn.secondary:hover {
-        background: #fff;
-        transform: translateY(-1px);
-        box-shadow:
-            0 2px 0 rgba(28, 27, 25, 0.1),
-            0 8px 18px rgba(28, 27, 25, 0.12);
-    }
-
-    body.site-fin main .btn.btn-s {
-        width: auto;
-        min-height: 0;
-        padding: 4px 10px;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-
-    body.site-fin main button.danger,
-    body.site-fin main .inline-form input[type="submit"] {
-        appearance: none;
-        -webkit-appearance: none;
-        display: inline-flex;
-        width: auto;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
-        color: var(--fin-muted);
-        padding: 8px 4px;
-        margin: 0;
-        font-size: 0.75rem;
-        font-weight: 400;
-        line-height: 1;
-        min-width: 44px;
-        min-height: 44px;
-        height: auto;
-        cursor: pointer;
-        touch-action: manipulation;
-        transform: none;
-        transition: color 0.12s ease;
-    }
-
-    body.site-fin main button.danger:hover,
-    body.site-fin main .inline-form input[type="submit"]:hover {
-        color: var(--fin-bad);
-        transform: none;
-        box-shadow: none;
-    }
-
-    body.site-fin main button.danger:active,
-    body.site-fin main .inline-form input[type="submit"]:active {
-        transform: none;
-        box-shadow: none;
     }
 
     body.site-fin main .inline-form { display: inline; }
@@ -799,47 +686,6 @@
 
     body.site-fin main .calc-panel.is-invalid .calc-formula {
         border-color: var(--fin-bad);
-    }
-
-    body.site-fin main .expense-mode-tabs {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        gap: 6px;
-        margin: 12px 0 4px;
-        align-items: center;
-    }
-
-    body.site-fin main .expense-mode-tab {
-        appearance: none;
-        -webkit-appearance: none;
-        flex: 0 0 auto;
-        width: auto;
-        background: var(--fin-card);
-        color: var(--fin-muted);
-        border: 1px solid var(--fin-line);
-        border-radius: 6px;
-        padding: 6px 12px;
-        min-height: 0;
-        min-width: 0;
-        font-size: 0.9rem;
-        font-weight: 500;
-        box-shadow: none;
-        transform: none;
-    }
-
-    body.site-fin main .expense-mode-tab:hover {
-        color: var(--fin-ink);
-        border-color: var(--fin-ink);
-        transform: none;
-        box-shadow: none;
-    }
-
-    body.site-fin main .expense-mode-tab[aria-selected="true"] {
-        color: var(--fin-ink);
-        border-color: var(--fin-ink);
-        background: #eceae4;
-        box-shadow: inset 0 1px 2px rgba(28, 27, 25, 0.08);
     }
 
     body.site-fin main #expense-multi-form {
