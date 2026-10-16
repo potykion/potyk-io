@@ -208,7 +208,8 @@
                    required
                    placeholder="https://www.youtube.com/playlist?list=PLdSAw7dY_mu7bH6kHlg6O6vYePqdcBC32"
                    hx-get="{{ url_for('mu.download_meta') }}"
-                   hx-trigger="change delay:400ms, paste delay:400ms"
+                   hx-trigger="input changed delay:400ms"
+                   hx-sync="this:replace"
                    hx-target="#playlist-meta"
                    hx-indicator="#playlist-meta-spinner"
                    autocomplete="off">

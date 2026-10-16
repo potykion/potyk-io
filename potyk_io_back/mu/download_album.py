@@ -43,6 +43,40 @@ class PlaylistTrack:
     video_id: str
 
 
+def parse_track_title(raw: str) -> str:
+    """`GODFLESH - Wake` → `Wake`; без разделителя — как есть."""
+    title = (raw or "").strip()
+    if not title:
+        return title
+    for sep in (" - ", " – ", " — "):
+        if sep in title:
+            tail = title.rsplit(sep, 1)[-1].strip()
+            if tail:
+                return tail
+    return title
+
+
+_YEAR_IN_PARENS_RE = re.compile(r"^(?P<body>.*)\((?P<year>(?:19|20)\d{2})\)\s*$")
+
+
+def parse_album_title_and_year(raw: str) -> tuple[str, str | None]:
+    """`Album (1996)` → (`Album`, `1996`); иначе год None, название как есть."""
+    title = (raw or "").strip() or "Album"
+    m = _YEAR_IN_PARENS_RE.match(title)
+    if not m:
+        return title, None
+    body = m.group("body").rstrip(" :–—-").strip()
+    year = m.group("year")
+    return (body or title), year
+
+
+def _year_from_yyyymmdd(value: str | None) -> str:
+    if not value:
+        return ""
+    m = re.match(r"((?:19|20)\d{2})", str(value).strip())
+    return m.group(1) if m else ""
+
+
 @dataclass
 class PlaylistMeta:
     url: str
@@ -158,7 +192,8 @@ def fetch_playlist_meta(url: str) -> PlaylistMeta:
         raise DownloadError("Не удалось разобрать ответ yt-dlp") from exc
 
     entries = [e for e in (data.get("entries") or []) if e]
-    album = (data.get("title") or "").strip() or "Album"
+    raw_album = (data.get("title") or "").strip() or "Album"
+    album, year_from_title = parse_album_title_and_year(raw_album)
     artist = (
         (data.get("uploader") or data.get("channel") or "").strip() or "Unknown"
     )
@@ -168,31 +203,26 @@ def fetch_playlist_meta(url: str) -> PlaylistMeta:
     tracks: list[PlaylistTrack] = []
     for i, entry in enumerate(entries, start=1):
         vid = (entry.get("id") or "").strip()
-        title = (entry.get("title") or "").strip() or f"Track {i}"
+        raw_title = (entry.get("title") or "").strip() or f"Track {i}"
+        title = parse_track_title(raw_title)
         if not vid:
             continue
         tracks.append(PlaylistTrack(index=i, title=title, video_id=vid))
 
-    year = ""
-    try:
-        date_out = _run(
-            [
-                *_ytdlp_base(),
-                "--print",
-                "%(upload_date)s",
-                "--playlist-items",
-                "1",
-                "--skip-download",
-                url,
-            ],
-            timeout=120,
-        ).strip()
-        # upload_date = YYYYMMDD
-        m = re.search(r"(20\d{2}|19\d{2})", date_out)
-        if m:
-            year = m.group(1)
-    except DownloadError:
-        year = ""
+    if year_from_title:
+        year = year_from_title
+    else:
+        # yt-dlp отдаёт modified_date плейлиста (YYYYMMDD); отдельного created нет
+        year = _year_from_yyyymmdd(data.get("modified_date"))
+        if not year and data.get("epoch"):
+            try:
+                from datetime import datetime, timezone
+
+                year = str(
+                    datetime.fromtimestamp(int(data["epoch"]), tz=timezone.utc).year
+                )
+            except (TypeError, ValueError, OSError):
+                year = ""
 
     return PlaylistMeta(
         url=url,
