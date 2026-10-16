@@ -3,7 +3,9 @@ name: format-album-review
 description: >-
   Formats album review markdown files in potyk-mu style with YAML frontmatter,
   title, and Ревью section. Use when the user asks to format an album note,
-  оформить альбом, or structure a draft in albums/*.md like an existing review.
+  оформить альбом as markdown, or structure a draft in albums/*.md like an
+  existing review. For raw MP3 rename/ID3 tagging from a YouTube playlist, use
+  tag-album-mp3 instead.
 ---
 
 # Format Album Review
@@ -11,6 +13,8 @@ description: >-
 ## When to use
 
 User drops a raw draft (link + freeform notes) into `albums/` and asks to оформить it like an existing review (e.g. `albums/nia-archives-emotional-junglst-2026.md`).
+
+**Not this skill:** folder of raw `.mp3` + playlist → `tag-album-mp3`.
 
 ## File naming
 
