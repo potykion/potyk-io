@@ -14,7 +14,14 @@ from potyk_io_back.fin.entities import (
     get_settings,
     normalize_expense_category,
 )
-from potyk_io_back.fin.forms import BudgetForm, CloseDayForm, DeleteForm, ExpenseForm, SavingForm
+from potyk_io_back.fin.forms import (
+    BudgetForm,
+    CloseDayForm,
+    DeleteForm,
+    ExpenseForm,
+    MultiExpenseForm,
+    SavingForm,
+)
 from potyk_io_back.potyk_io.menu import MONEY_MENU_GROUPS
 
 fin_bp = Blueprint("fin", __name__, url_prefix="/fin")
@@ -46,9 +53,20 @@ def fin_nav_context():
 
 
 def flash_form_errors(form) -> None:
-    for messages in form.errors.values():
-        for message in messages:
-            flash(message, "error")
+    def walk(errors) -> None:
+        if isinstance(errors, dict):
+            for value in errors.values():
+                walk(value)
+        elif isinstance(errors, list):
+            for item in errors:
+                if isinstance(item, (dict, list)):
+                    walk(item)
+                else:
+                    flash(item, "error")
+        elif errors:
+            flash(str(errors), "error")
+
+    walk(form.errors)
 
 
 def is_htmx() -> bool:
@@ -143,6 +161,8 @@ def index_context(
     *,
     open_panel: str | None = None,
     expense_form: ExpenseForm | None = None,
+    multi_expense_form: MultiExpenseForm | None = None,
+    expense_mode: str | None = None,
     saving_form: SavingForm | None = None,
     budget_form: BudgetForm | None = None,
     editing_expense: Expense | None = None,
@@ -239,6 +259,8 @@ def index_context(
         "closed_dates": closed_dates,
         "categories": categories,
         "expense_form": expense_form or ExpenseForm(),
+        "multi_expense_form": multi_expense_form or MultiExpenseForm(),
+        "expense_mode": expense_mode or "single",
         "saving_form": saving_form or SavingForm(),
         "budget_form": budget_form,
         "delete_form": DeleteForm(),
@@ -313,6 +335,55 @@ def add_expense():
         return render_template("potyk-fin/partials/_expense_added.html", **ctx)
 
     flash("Трата добавлена", "success")
+    return redirect(url_for("fin.index"))
+
+
+@fin_bp.post("/expenses/bulk")
+@login_required
+def add_expenses_bulk():
+    form = MultiExpenseForm()
+    if not form.validate_on_submit():
+        if is_htmx():
+            ctx = index_context(
+                open_panel="expense",
+                multi_expense_form=form,
+                expense_mode="multi",
+            )
+            return render_template("potyk-fin/partials/_expense_multi_form.html", **ctx)
+        flash_form_errors(form)
+        return render_index(
+            open_panel="expense",
+            multi_expense_form=form,
+            expense_mode="multi",
+        ), 400
+
+    rows = form.expenses.data or []
+    if not rows:
+        flash("Добавь хотя бы одну трату", "error")
+        return render_index(
+            open_panel="expense",
+            multi_expense_form=form,
+            expense_mode="multi",
+        ), 400
+
+    for row in rows:
+        db.session.add(
+            Expense(
+                date=row["date"],
+                amount=row["amount"],
+                category=normalize_expense_category(row["category"]),
+                description=(row.get("description") or "").strip(),
+                optional=bool(row.get("optional")),
+            )
+        )
+    db.session.commit()
+
+    if is_htmx():
+        fresh = MultiExpenseForm(formdata=None)
+        ctx = index_context(expense_mode="multi", multi_expense_form=fresh)
+        return render_template("potyk-fin/partials/_expenses_bulk_added.html", **ctx)
+
+    flash(f"Добавлено трат: {len(rows)}", "success")
     return redirect(url_for("fin.index"))
 
 

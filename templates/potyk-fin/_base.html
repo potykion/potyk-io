@@ -738,7 +738,8 @@
     body.site-fin main .amount-row input { flex: 1 1 auto; min-width: 0; }
 
     body.site-fin main .calc-toggle,
-    body.site-fin main .calc-eq {
+    body.site-fin main .calc-eq,
+    body.site-fin main .amount-round {
         flex: 0 0 auto;
         width: auto;
         min-width: 44px;
@@ -752,15 +753,23 @@
         box-shadow: 0 1px 2px rgba(28, 27, 25, 0.06);
     }
 
+    body.site-fin main .amount-round {
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+
     body.site-fin main .calc-toggle:hover,
-    body.site-fin main .calc-eq:hover {
+    body.site-fin main .calc-eq:hover,
+    body.site-fin main .amount-round:hover {
         border-color: var(--fin-ink);
         transform: translateY(-1px);
         box-shadow: 0 3px 8px rgba(28, 27, 25, 0.12);
     }
 
     body.site-fin main .calc-toggle:active,
-    body.site-fin main .calc-eq:active {
+    body.site-fin main .calc-eq:active,
+    body.site-fin main .amount-round:active {
         transform: translateY(0);
         box-shadow: 0 1px 2px rgba(28, 27, 25, 0.08);
     }
@@ -792,7 +801,298 @@
         border-color: var(--fin-bad);
     }
 
+    body.site-fin main .expense-mode-tabs {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 6px;
+        margin: 12px 0 4px;
+        align-items: center;
+    }
+
+    body.site-fin main .expense-mode-tab {
+        appearance: none;
+        -webkit-appearance: none;
+        flex: 0 0 auto;
+        width: auto;
+        background: var(--fin-card);
+        color: var(--fin-muted);
+        border: 1px solid var(--fin-line);
+        border-radius: 6px;
+        padding: 6px 12px;
+        min-height: 0;
+        min-width: 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        box-shadow: none;
+        transform: none;
+    }
+
+    body.site-fin main .expense-mode-tab:hover {
+        color: var(--fin-ink);
+        border-color: var(--fin-ink);
+        transform: none;
+        box-shadow: none;
+    }
+
+    body.site-fin main .expense-mode-tab[aria-selected="true"] {
+        color: var(--fin-ink);
+        border-color: var(--fin-ink);
+        background: #eceae4;
+        box-shadow: inset 0 1px 2px rgba(28, 27, 25, 0.08);
+    }
+
+    body.site-fin main #expense-multi-form {
+        margin-top: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    body.site-fin main #expense-multi-form *,
+    body.site-fin main #expense-multi-form *::before,
+    body.site-fin main #expense-multi-form *::after {
+        box-sizing: border-box;
+    }
+
+    body.site-fin main .expense-multi-table {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+        width: 100%;
+    }
+
+    body.site-fin main .expense-multi-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+    }
+
+    body.site-fin main .expense-multi-head,
+    body.site-fin main .expense-multi-row {
+        --em-date: 8.75rem;
+        --em-amount: 6.5rem;
+        --em-opt: 2.5rem;
+        --em-act: 2.25rem;
+        display: grid;
+        grid-template-columns:
+            var(--em-date)
+            var(--em-amount)
+            minmax(0, 1.1fr)
+            minmax(0, 1.2fr)
+            var(--em-opt)
+            var(--em-act);
+        gap: 8px;
+        align-items: center;
+        width: 100%;
+        min-width: 0;
+    }
+
+    body.site-fin main .expense-multi-head {
+        padding: 0 8px;
+        font-size: 0.75rem;
+        color: var(--fin-muted);
+        font-weight: 500;
+    }
+
+    body.site-fin main .expense-multi-head > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    body.site-fin main .expense-multi-row {
+        padding: 8px;
+        background: var(--fin-card);
+        border: 1px solid var(--fin-line);
+        border-radius: 8px;
+    }
+
+    body.site-fin main .expense-multi-cell {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    body.site-fin main .expense-multi-cell.expense-multi-category {
+        overflow: visible;
+    }
+
+    body.site-fin main .expense-multi-cell > input,
+    body.site-fin main .expense-multi-cell > select,
+    body.site-fin main .expense-multi-cell .ts-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    body.site-fin main .expense-multi-cell input[type="date"],
+    body.site-fin main .expense-multi-cell input[type="text"],
+    body.site-fin main .expense-multi-cell input[type="number"] {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    body.site-fin main .expense-multi-amount .amount-input {
+        padding-left: 8px;
+        padding-right: 8px;
+        font-variant-numeric: tabular-nums;
+    }
+
+    body.site-fin main .expense-multi-amount .amount-input.is-invalid {
+        border-color: var(--fin-bad);
+    }
+
+    body.site-fin main .expense-multi-cell .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    body.site-fin main .expense-multi-optional {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+    }
+
+    body.site-fin main .expense-multi-optional input[type="checkbox"] {
+        width: auto;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        flex: 0 0 auto;
+    }
+
+    body.site-fin main .expense-multi-remove-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+    }
+
+    body.site-fin main .expense-row-remove {
+        appearance: none;
+        -webkit-appearance: none;
+        width: auto;
+        min-width: 36px;
+        min-height: 36px;
+        padding: 4px;
+        background: transparent;
+        color: var(--fin-muted);
+        border: none;
+        border-radius: 6px;
+        box-shadow: none;
+        font-size: 1.1rem;
+        font-weight: 500;
+        line-height: 1;
+        transform: none;
+    }
+
+    body.site-fin main .expense-row-remove:hover:not(:disabled) {
+        color: var(--fin-bad);
+        transform: none;
+        box-shadow: none;
+        background: #eceae4;
+    }
+
+    body.site-fin main .expense-row-remove:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+    }
+
+    body.site-fin main .expense-multi-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    body.site-fin main .expense-multi-actions .expense-row-add {
+        width: auto;
+        min-width: 44px;
+    }
+
+    body.site-fin main .expense-multi-actions .expense-multi-submit {
+        width: auto;
+    }
+
+    body.site-fin main .expense-multi-row .ts-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    body.site-fin main .expense-multi-row .ts-wrapper .ts-control {
+        min-height: 40px;
+        padding: 6px 8px;
+    }
+
+    @media (max-width: 760px) {
+        body.site-fin main .expense-multi-head {
+            display: none;
+        }
+
+        body.site-fin main .expense-multi-row {
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 10px;
+        }
+
+        body.site-fin main .expense-multi-date { grid-column: 1; }
+        body.site-fin main .expense-multi-amount { grid-column: 2; }
+        body.site-fin main .expense-multi-category { grid-column: 1 / -1; }
+        body.site-fin main .expense-multi-desc { grid-column: 1 / -1; }
+        body.site-fin main .expense-multi-optional { grid-column: 1; justify-content: flex-start; }
+        body.site-fin main .expense-multi-remove-wrap { grid-column: 2; justify-content: flex-end; }
+
+        body.site-fin main .expense-multi-cell .visually-hidden {
+            position: static;
+            width: auto;
+            height: auto;
+            margin: 0 0 2px;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
+            font-size: 0.75rem;
+            color: var(--fin-muted);
+        }
+
+        body.site-fin main .expense-multi-optional .visually-hidden {
+            position: static;
+            width: auto;
+            height: auto;
+            margin: 0;
+            clip: auto;
+            overflow: visible;
+            white-space: nowrap;
+        }
+
+        body.site-fin main .expense-multi-rows {
+            gap: 12px;
+        }
+    }
+
     @media (max-width: 559px) {
+        body.site-fin main .expense-multi-actions .expense-multi-submit {
+            width: 100%;
+        }
         :root {
             --pad-x: max(10px, env(safe-area-inset-left));
             --pad-r: max(10px, env(safe-area-inset-right));

@@ -31,7 +31,28 @@
 <div class="panel">
     <details data-panel="expense" {% if open_panel == 'expense' or editing_expense %}open{% endif %}>
         <summary>{% if editing_expense %}Изменить трату{% else %}Добавить трату{% endif %}</summary>
-        {% include "potyk-fin/partials/_expense_form.html" %}
+        {% if not editing_expense %}
+        <div class="expense-mode-tabs" role="tablist" aria-label="Режим добавления трат">
+            <button type="button"
+                    class="expense-mode-tab"
+                    role="tab"
+                    data-expense-mode="single"
+                    aria-selected="{{ 'true' if expense_mode != 'multi' else 'false' }}">Одна</button>
+            <button type="button"
+                    class="expense-mode-tab"
+                    role="tab"
+                    data-expense-mode="multi"
+                    aria-selected="{{ 'true' if expense_mode == 'multi' else 'false' }}">Мульти</button>
+        </div>
+        {% endif %}
+        <div data-expense-mode-panel="single"{% if expense_mode == 'multi' and not editing_expense %} hidden{% endif %}>
+            {% include "potyk-fin/partials/_expense_form.html" %}
+        </div>
+        {% if not editing_expense %}
+        <div data-expense-mode-panel="multi"{% if expense_mode != 'multi' %} hidden{% endif %}>
+            {% include "potyk-fin/partials/_expense_multi_form.html" %}
+        </div>
+        {% endif %}
     </details>
 </div>
 {% endif %}
@@ -54,6 +75,7 @@
 <script>
 (() => {
   const key = "potyk-fin:panels";
+  const modeKey = "potyk-fin:expense-mode";
   const load = () => {
     try { return JSON.parse(localStorage.getItem(key) || "{}"); }
     catch { return {}; }
@@ -80,12 +102,94 @@
     });
   };
 
+  const setExpenseMode = (mode) => {
+    const panel = document.querySelector('details[data-panel="expense"]');
+    if (!panel) return;
+    panel.querySelectorAll(".expense-mode-tab").forEach((btn) => {
+      btn.setAttribute("aria-selected", btn.dataset.expenseMode === mode ? "true" : "false");
+    });
+    panel.querySelectorAll("[data-expense-mode-panel]").forEach((el) => {
+      el.hidden = el.dataset.expenseModePanel !== mode;
+    });
+    try { localStorage.setItem(modeKey, mode); } catch {}
+  };
+
+  const restoreExpenseMode = () => {
+    const panel = document.querySelector('details[data-panel="expense"]');
+    if (!panel || !panel.querySelector(".expense-mode-tabs")) return;
+    const serverMulti = panel.querySelector('[data-expense-mode-panel="multi"]:not([hidden])');
+    if (serverMulti) {
+      try { localStorage.setItem(modeKey, "multi"); } catch {}
+      return;
+    }
+    let saved = "single";
+    try { saved = localStorage.getItem(modeKey) || "single"; } catch {}
+    if (saved === "multi" || saved === "single") setExpenseMode(saved);
+  };
+
+  const amountInput = (root) =>
+    root.querySelector(".amount-input") || root.querySelector('[name="amount"], [name$="-amount"]');
+
+  const syncMultiRemoveButtons = (form) => {
+    if (!form) return;
+    const rows = form.querySelectorAll(".expense-multi-row");
+    rows.forEach((row) => {
+      const btn = row.querySelector(".expense-row-remove");
+      if (!btn) return;
+      btn.disabled = rows.length <= 1;
+    });
+  };
+
+  const renumberMultiRows = (form) => {
+    const rows = form.querySelectorAll(".expense-multi-row");
+    rows.forEach((row, index) => {
+      row.querySelectorAll("[name]").forEach((el) => {
+        el.name = el.name.replace(/expenses-\d+-|expenses-__INDEX__-/, `expenses-${index}-`);
+      });
+    });
+    syncMultiRemoveButtons(form);
+  };
+
+  const addMultiRow = (form) => {
+    const tpl = form.querySelector("#expense-multi-row-template")
+      || document.getElementById("expense-multi-row-template");
+    const host = form.querySelector("[data-expense-multi-rows]");
+    if (!tpl || !host) return;
+    const last = host.querySelector(".expense-multi-row:last-of-type");
+    const lastDate = last?.querySelector('input[type="date"]')?.value || "";
+    const node = tpl.content.cloneNode(true);
+    const row = node.querySelector(".expense-multi-row");
+    if (!row) return;
+    if (lastDate) {
+      const dateInput = row.querySelector('input[type="date"]');
+      if (dateInput) dateInput.value = lastDate;
+    }
+    host.appendChild(node);
+    renumberMultiRows(form);
+    const added = host.querySelector(".expense-multi-row:last-of-type");
+    if (typeof window.initTomSelect === "function") window.initTomSelect(added);
+    const amount = amountInput(added);
+    if (amount) amount.focus();
+  };
+
   bindPanels();
+  restoreExpenseMode();
+  syncMultiRemoveButtons(document.getElementById("expense-multi-form"));
+
   document.body.addEventListener("htmx:load", (event) => {
     bindPanels(event.target);
-    if (event.target.id !== "expense-form") return;
-    const amount = event.target.querySelector('[name="amount"]');
-    if (amount) amount.focus();
+    const target = event.target;
+    if (target.id === "expense-form") {
+      const amount = amountInput(target);
+      if (amount) amount.focus();
+      return;
+    }
+    if (target.id === "expense-multi-form") {
+      setExpenseMode("multi");
+      syncMultiRemoveButtons(target);
+      const amount = amountInput(target);
+      if (amount) amount.focus();
+    }
   });
 
   const evalFormula = (raw) => {
@@ -100,10 +204,85 @@
     }
   };
 
+  const resolveAmountCalc = (input, { markInvalid = false } = {}) => {
+    if (!input || !input.hasAttribute("data-amount-calc")) return true;
+    const raw = String(input.value || "").trim();
+    if (!raw) {
+      input.classList.remove("is-invalid");
+      return true;
+    }
+    if (/^\d+$/.test(raw)) {
+      const n = Number(raw);
+      if (n >= 1) {
+        input.value = String(n);
+        input.classList.remove("is-invalid");
+        return true;
+      }
+      if (markInvalid) input.classList.add("is-invalid");
+      return false;
+    }
+    const value = evalFormula(raw);
+    if (value === null || value < 1) {
+      if (markInvalid) input.classList.add("is-invalid");
+      return false;
+    }
+    input.value = String(value);
+    input.classList.remove("is-invalid");
+    return true;
+  };
+
+  const amountCalcTimers = new WeakMap();
+  const scheduleAmountCalc = (input) => {
+    if (!input || !input.hasAttribute("data-amount-calc")) return;
+    const prev = amountCalcTimers.get(input);
+    if (prev) clearTimeout(prev);
+    amountCalcTimers.set(
+      input,
+      setTimeout(() => {
+        amountCalcTimers.delete(input);
+        resolveAmountCalc(input);
+      }, 1000)
+    );
+  };
+
+  const flushAmountCalc = (input) => {
+    if (!input || !input.hasAttribute("data-amount-calc")) return true;
+    const prev = amountCalcTimers.get(input);
+    if (prev) {
+      clearTimeout(prev);
+      amountCalcTimers.delete(input);
+    }
+    return resolveAmountCalc(input, { markInvalid: true });
+  };
+
+  document.addEventListener("input", (e) => {
+    const input = e.target.closest("[data-amount-calc]");
+    if (!input) return;
+    input.classList.remove("is-invalid");
+    scheduleAmountCalc(input);
+  });
+
+  document.addEventListener("blur", (e) => {
+    const input = e.target.closest?.("[data-amount-calc]");
+    if (!input) return;
+    flushAmountCalc(input);
+  }, true);
+
+  document.addEventListener("submit", (e) => {
+    const form = e.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    if (form.id !== "expense-multi-form") return;
+    let ok = true;
+    form.querySelectorAll("[data-amount-calc]").forEach((input) => {
+      if (!flushAmountCalc(input)) ok = false;
+    });
+    if (!ok) e.preventDefault();
+  });
+
   const applyCalc = (field) => {
     const panel = field.querySelector(".calc-panel");
     const formula = field.querySelector(".calc-formula");
-    const amount = field.querySelector('[name="amount"]');
+    const amount = amountInput(field);
     if (!panel || !formula || !amount) return;
     const value = evalFormula(formula.value);
     if (value === null || value < 1) {
@@ -124,7 +303,7 @@
     if (!form) return null;
     return {
       form,
-      amount: form.querySelector('[name="amount"]'),
+      amount: amountInput(form) || form.querySelector('[name="amount"]'),
     };
   };
 
@@ -170,6 +349,33 @@
   }, true);
 
   document.addEventListener("click", (e) => {
+    const modeTab = e.target.closest(".expense-mode-tab");
+    if (modeTab) {
+      setExpenseMode(modeTab.dataset.expenseMode || "single");
+      return;
+    }
+
+    const addRow = e.target.closest(".expense-row-add");
+    if (addRow) {
+      const form = addRow.closest("#expense-multi-form") || document.getElementById("expense-multi-form");
+      if (form) addMultiRow(form);
+      return;
+    }
+
+    const removeRow = e.target.closest(".expense-row-remove");
+    if (removeRow) {
+      const form = removeRow.closest("#expense-multi-form");
+      const row = removeRow.closest(".expense-multi-row");
+      if (!form || !row) return;
+      const rows = form.querySelectorAll(".expense-multi-row");
+      if (rows.length <= 1) return;
+      const select = row.querySelector("select[data-tom-select]");
+      if (select?.tomselect) select.tomselect.destroy();
+      row.remove();
+      renumberMultiRows(form);
+      return;
+    }
+
     const calcToggle = e.target.closest(".calc-toggle");
     if (calcToggle) {
       const field = calcToggle.closest(".amount-field");
@@ -195,6 +401,20 @@
       return;
     }
 
+    const roundBtn = e.target.closest(".amount-round");
+    if (roundBtn) {
+      const field = roundBtn.closest(".amount-field");
+      const amount = field ? amountInput(field) : null;
+      if (!amount) return;
+      const raw = Number(String(amount.value || "").replace(/\s+/g, ""));
+      if (!Number.isFinite(raw) || raw < 1) return;
+      const rounded = Math.round(raw / 1000) * 1000;
+      if (rounded < 1) return;
+      amount.value = rounded;
+      amount.focus();
+      return;
+    }
+
     const saveBtn = e.target.closest(".add-saving-day");
     if (saveBtn) {
       exitRemainderPick();
@@ -203,7 +423,7 @@
       panel.open = true;
       const form = panel.querySelector("form");
       if (!form) return;
-      const amount = form.querySelector('[name="amount"]');
+      const amount = amountInput(form) || form.querySelector('[name="amount"]');
       const date = form.querySelector('[name="date"]');
       if (amount) {
         const raw = Number(saveBtn.dataset.amount) || 0;
@@ -238,12 +458,13 @@
     const panel = document.querySelector('details[data-panel="expense"]');
     if (!panel) return;
     panel.open = true;
-    const form = panel.querySelector("form");
+    setExpenseMode("single");
+    const form = panel.querySelector("#expense-form");
     if (!form) return;
     const date = form.querySelector('[name="date"]');
     if (date) date.value = addBtn.dataset.date;
     panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    const amount = form.querySelector('[name="amount"]');
+    const amount = amountInput(form);
     if (amount) amount.focus();
   });
 
@@ -278,6 +499,8 @@
       });
     });
   };
+
+  window.initTomSelect = initTomSelect;
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => initTomSelect());

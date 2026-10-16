@@ -1,8 +1,19 @@
 from datetime import date, timedelta
 
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, DateField, IntegerField, StringField, SubmitField
+from wtforms import (
+    BooleanField,
+    DateField,
+    FieldList,
+    Form,
+    FormField,
+    IntegerField,
+    StringField,
+    SubmitField,
+)
 from wtforms.validators import DataRequired, InputRequired, Length, NumberRange, Optional
+
+from potyk_io_back.fin.entities import next_unfilled_expense_date
 
 
 def _yesterday() -> date:
@@ -10,7 +21,7 @@ def _yesterday() -> date:
 
 
 class ExpenseForm(FlaskForm):
-    date = DateField("Дата", validators=[DataRequired()], default=_yesterday)
+    date = DateField("Дата", validators=[DataRequired()], default=next_unfilled_expense_date)
     amount = IntegerField(
         "Сумма",
         validators=[InputRequired(), NumberRange(min=1, message="Укажи положительную сумму")],
@@ -22,6 +33,25 @@ class ExpenseForm(FlaskForm):
     description = StringField("Описание", validators=[Optional(), Length(max=255)], default="")
     optional = BooleanField("Необязательный расход")
     submit = SubmitField("Добавить трату")
+
+
+class ExpenseRowForm(Form):
+    date = DateField("Дата", validators=[DataRequired()], default=next_unfilled_expense_date)
+    amount = IntegerField(
+        "Сумма",
+        validators=[InputRequired(), NumberRange(min=1, message="Укажи положительную сумму")],
+    )
+    category = StringField(
+        "Категория",
+        validators=[DataRequired(message="Укажи категорию"), Length(max=64)],
+    )
+    description = StringField("Описание", validators=[Optional(), Length(max=255)], default="")
+    optional = BooleanField("Необяз.")
+
+
+class MultiExpenseForm(FlaskForm):
+    expenses = FieldList(FormField(ExpenseRowForm), min_entries=1, max_entries=50)
+    submit = SubmitField("Добавить траты")
 
 
 class SavingForm(FlaskForm):

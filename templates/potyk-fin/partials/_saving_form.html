@@ -5,8 +5,9 @@
     {{ saving_form.hidden_tag() }}
     {% call forms.field(saving_form.amount.label.text, "amount-field") %}
         <div class="amount-row">
-            {{ saving_form.amount(min=1, step=1, required=true) }}
+            {{ saving_form.amount(class_="amount-input", min=1, step=1, required=true) }}
             <button type="button" class="calc-toggle" title="Калькулятор" aria-label="Калькулятор" aria-expanded="false">🧮</button>
+            <button type="button" class="amount-round" title="Округлить до тысячи" aria-label="Округлить до тысячи">1к</button>
         </div>
         <div class="calc-panel" hidden>
             <input type="text" class="calc-formula" placeholder="123+456" autocomplete="off" aria-label="Формула">

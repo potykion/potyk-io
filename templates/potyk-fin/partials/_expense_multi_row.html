@@ -1,0 +1,76 @@
+{% if row %}
+{% set prefix = row.id %}
+{% set row_date = row.date.data %}
+{% set row_amount = row.amount.data %}
+{% set row_category = row.category.data %}
+{% set row_description = row.description.data or '' %}
+{% set row_optional = row.optional.data %}
+{% else %}
+{% set prefix = 'expenses-__INDEX__' %}
+{% set row_date = default_date if default_date is defined else none %}
+{% set row_amount = none %}
+{% set row_category = none %}
+{% set row_description = '' %}
+{% set row_optional = false %}
+{% endif %}
+<div class="expense-multi-row">
+    <label class="expense-multi-cell expense-multi-date">
+        <span class="visually-hidden">Дата</span>
+        <input type="date"
+               name="{{ prefix }}-date"
+               value="{{ row_date.isoformat() if row_date else '' }}"
+               required>
+        {% if row %}{{ forms.field_errors(row.date) }}{% endif %}
+    </label>
+    <label class="expense-multi-cell expense-multi-amount">
+        <span class="visually-hidden">Сумма</span>
+        <input type="text"
+               class="amount-input"
+               name="{{ prefix }}-amount"
+               value="{{ row_amount if row_amount is not none else '' }}"
+               inputmode="decimal"
+               autocomplete="off"
+               placeholder="123+456"
+               required
+               data-amount-calc>
+        {% if row %}{{ forms.field_errors(row.amount) }}{% endif %}
+    </label>
+    <label class="expense-multi-cell expense-multi-category">
+        <span class="visually-hidden">Категория</span>
+        <select name="{{ prefix }}-category"
+                required
+                data-tom-select
+                data-create="true"
+                data-preserve-option-order="true"
+                data-placeholder="еда, быт...">
+            <option value=""></option>
+            {% for cat in categories %}
+            <option value="{{ cat }}"{% if row_category == cat %} selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+            {% if row_category and row_category not in categories %}
+            <option value="{{ row_category }}" selected>{{ row_category }}</option>
+            {% endif %}
+        </select>
+        {% if row %}{{ forms.field_errors(row.category) }}{% endif %}
+    </label>
+    <label class="expense-multi-cell expense-multi-desc">
+        <span class="visually-hidden">Описание</span>
+        <input type="text"
+               name="{{ prefix }}-description"
+               value="{{ row_description }}"
+               placeholder="необязательно"
+               maxlength="255">
+        {% if row %}{{ forms.field_errors(row.description) }}{% endif %}
+    </label>
+    <label class="expense-multi-cell expense-multi-optional checkbox-label"
+           title="Необязательный расход">
+        <span class="visually-hidden">Необязательный расход</span>
+        <input type="checkbox"
+               name="{{ prefix }}-optional"
+               value="y"
+               {% if row_optional %}checked{% endif %}>
+    </label>
+    <div class="expense-multi-cell expense-multi-remove-wrap">
+        <button type="button" class="expense-row-remove" title="Удалить строку" aria-label="Удалить строку">✕</button>
+    </div>
+</div>

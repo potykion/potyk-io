@@ -1,0 +1,35 @@
+{% import "jinja/forms.html" as forms %}
+
+<form id="expense-multi-form"
+      method="post"
+      action="{{ url_for('fin.add_expenses_bulk') }}"
+      hx-post="{{ url_for('fin.add_expenses_bulk') }}"
+      hx-target="#expense-multi-form"
+      hx-swap="outerHTML">
+    {{ multi_expense_form.hidden_tag() }}
+    <div class="expense-multi-table">
+        <div class="expense-multi-head">
+            <span aria-hidden="true">Дата</span>
+            <span aria-hidden="true">Сумма</span>
+            <span aria-hidden="true">Категория</span>
+            <span aria-hidden="true">Описание</span>
+            <span aria-hidden="true">Необяз.</span>
+            <span aria-hidden="true"></span>
+        </div>
+        <div class="expense-multi-rows" data-expense-multi-rows>
+            {% for row in multi_expense_form.expenses %}
+            {% include "potyk-fin/partials/_expense_multi_row.html" %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="expense-multi-actions">
+        <button type="button" class="secondary btn-s expense-row-add" title="Добавить строку" aria-label="Добавить строку">+</button>
+        {{ multi_expense_form.submit(class_="expense-multi-submit") }}
+    </div>
+</form>
+
+<template id="expense-multi-row-template">
+{% with row=none, default_date=none %}
+{% include "potyk-fin/partials/_expense_multi_row.html" %}
+{% endwith %}
+</template>
