@@ -60,6 +60,7 @@
 - [Бешбармак](recipes/04-main-course/beshbarmak.md)
 - [Плов, который всегда получается](recipes/04-main-course/plov.md)
 - [Гречка с куриным филе](recipes/04-main-course/buckwheat-w-chicken.md)
+- [Запечённая курица с гречкой и грибами](recipes/04-main-course/baked-chicken-w-buckwheat-mushrooms.md)
 - [Рыба, запеченная с помидорами и оливками по-средиземноморски](recipes/04-main-course/fish-w-tomatoes-olives.md)
 - [Ленивые голубцы в духовке](recipes/04-main-course/lazy-golubtsy.md)
 - [Рататуй (овощное рагу)](recipes/04-main-course/ratatouille.md)
