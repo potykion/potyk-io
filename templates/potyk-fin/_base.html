@@ -420,6 +420,25 @@
         display: none;
     }
 
+    /* Анимацию сворачивания/разворота делает JS по height; transition на grid
+       даёт вспышку таблиц при HTMX-swap свёрнутого дня (1fr → 0fr). */
+    body.site-fin main .day-fold {
+        display: grid;
+        grid-template-rows: 1fr;
+    }
+
+    body.site-fin main .day.is-folded .day-fold {
+        grid-template-rows: 0fr;
+    }
+
+    body.site-fin main .day-fold-inner {
+        overflow: hidden;
+        min-height: 0;
+        /* gap после шапки — внутри fold, чтобы уезжал с анимацией и не
+           схлопывался с margin формы при снятии details[open] */
+        padding-top: 8px;
+    }
+
     body.site-fin main .close-day-form {
         margin-top: 8px;
     }
@@ -428,12 +447,17 @@
         opacity: 0.85;
     }
 
+    body.site-fin main .day.is-closed .add-expense-day,
+    body.site-fin main .day.is-closed .add-saving-day,
+    body.site-fin main .day.is-closed .row-actions {
+        display: none;
+    }
+
     body.site-fin main .day-head {
         display: flex;
         flex-wrap: wrap;
         gap: 8px 12px;
         align-items: baseline;
-        margin-bottom: 8px;
     }
 
     body.site-fin main .day-head .date {

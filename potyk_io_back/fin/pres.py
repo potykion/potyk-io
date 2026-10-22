@@ -308,17 +308,14 @@ def toggle_day_close(date_str: str):
     db.session.commit()
 
     if is_htmx():
+        # UI дня уже на клиенте; OOB панелей только если трогали «сегодня».
         ctx = index_context()
-        day_view = next((d for d in ctx["days"] if d.date == day), None)
-        if day_view is None:
-            resp = make_response("", 204)
-            resp.headers["HX-Refresh"] = "true"
-            return resp
-        return render_template(
-            "potyk-fin/partials/_day_toggled.html",
-            day=day_view,
-            **ctx,
-        )
+        if day == ctx["today"]:
+            return render_template(
+                "potyk-fin/partials/_day_toggled.html",
+                **ctx,
+            )
+        return "", 204
 
     return redirect(request.referrer or url_for("fin.index"))
 

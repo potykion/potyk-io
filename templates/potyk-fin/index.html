@@ -138,6 +138,210 @@
   restoreExpenseMode();
   syncMultiRemoveButtons(document.getElementById("expense-multi-form"));
 
+  const reduceMotion = () =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const FOLD_MS = 280;
+
+  const clearFoldInline = (fold) => {
+    if (!fold) return;
+    fold.style.height = "";
+    fold.style.overflow = "";
+    fold.style.transition = "";
+    fold.style.gridTemplateRows = "";
+  };
+
+  /** Держим свёртку зажатой: сброс height:0 даёт кадр с таблицами. */
+  const lockFoldShut = (fold) => {
+    if (!fold) return;
+    fold.style.transition = "none";
+    fold.style.overflow = "hidden";
+    fold.style.height = "0px";
+    fold.style.gridTemplateRows = "0fr";
+  };
+
+  /** Свернуть/развернуть .day-fold по height — без замены DOM. */
+  const animateDayFold = (day, expand) => new Promise((resolve) => {
+    const fold = day?.querySelector(".day-fold");
+    const inner = fold?.querySelector(".day-fold-inner");
+    if (!fold || !inner) {
+      day?.classList.toggle("is-folded", !expand);
+      resolve();
+      return;
+    }
+
+    if (reduceMotion()) {
+      if (expand) clearFoldInline(fold);
+      else lockFoldShut(fold);
+      day.classList.toggle("is-folded", !expand);
+      resolve();
+      return;
+    }
+
+    fold.style.overflow = "hidden";
+    fold.style.transition = "none";
+    fold.style.gridTemplateRows = "1fr";
+
+    let to;
+    if (expand) {
+      day.classList.remove("is-folded");
+      // если были зажаты height:0 — мерим контент
+      fold.style.height = "auto";
+      to = inner.scrollHeight;
+      fold.style.height = "0px";
+    } else {
+      const from = fold.getBoundingClientRect().height;
+      to = 0;
+      fold.style.height = `${Math.max(from, 0)}px`;
+      day.classList.add("is-folded");
+    }
+    void fold.offsetHeight;
+
+    fold.style.transition = `height ${FOLD_MS}ms ease`;
+    fold.style.height = `${Math.max(to, 0)}px`;
+
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      if (expand) clearFoldInline(fold);
+      else lockFoldShut(fold);
+      resolve();
+    };
+    fold.addEventListener("transitionend", (ev) => {
+      if (ev.target === fold && ev.propertyName === "height") finish();
+    }, { once: true });
+    setTimeout(finish, FOLD_MS + 80);
+  });
+
+  const clearPanelsInline = (panels) => {
+    if (!panels) return;
+    panels.style.height = "";
+    panels.style.overflow = "";
+    panels.style.transition = "";
+  };
+
+  const isTodayDay = (day) =>
+    !!day.querySelector(".day-head .date")?.textContent?.includes("сегодня");
+
+  /** Схлопнуть панели трат/сейва перед OOB, иначе лента прыгает. */
+  const animatePanelsShut = () => new Promise((resolve) => {
+    const panels = document.getElementById("fin-action-panels");
+    if (!panels?.children.length) {
+      resolve();
+      return;
+    }
+    if (reduceMotion()) {
+      panels.style.overflow = "hidden";
+      panels.style.height = "0px";
+      resolve();
+      return;
+    }
+    panels.style.overflow = "hidden";
+    panels.style.transition = "none";
+    panels.style.height = `${panels.getBoundingClientRect().height}px`;
+    void panels.offsetHeight;
+    panels.style.transition = `height ${FOLD_MS}ms ease`;
+    panels.style.height = "0px";
+    setTimeout(resolve, FOLD_MS + 40);
+  });
+
+  /** Плавно показать панели после OOB при открытии «сегодня». */
+  const animatePanelsOpen = (panels) => {
+    if (!panels?.children.length) {
+      clearPanelsInline(panels);
+      return;
+    }
+    if (reduceMotion()) {
+      clearPanelsInline(panels);
+      return;
+    }
+    panels.style.overflow = "hidden";
+    panels.style.transition = "none";
+    panels.style.height = "auto";
+    const to = panels.scrollHeight;
+    panels.style.height = "0px";
+    void panels.offsetHeight;
+    panels.style.transition = `height ${FOLD_MS}ms ease`;
+    panels.style.height = `${Math.max(to, 0)}px`;
+    setTimeout(() => clearPanelsInline(panels), FOLD_MS + 40);
+  };
+
+  // Клик по шапке — свернуть/развернуть таблицы (в т.ч. у закрытого дня — только посмотреть)
+  document.body.addEventListener("click", (event) => {
+    const summary = event.target.closest(".day > details > summary.day-head");
+    if (!summary) return;
+    if (event.target.closest("button, a, input, label")) return;
+    event.preventDefault();
+    const day = summary.closest(".day");
+    if (!day) return;
+
+    const details = day.querySelector(":scope > details");
+    const fold = day.querySelector(".day-fold");
+
+    // Закрытый день: details без open — открываем/прячем с fold-анимацией
+    if (day.classList.contains("is-closed")) {
+      if (!details?.open) {
+        details?.setAttribute("open", "");
+        day.classList.add("is-folded");
+        lockFoldShut(fold);
+        animateDayFold(day, true);
+      } else {
+        animateDayFold(day, false).then(() => {
+          details?.removeAttribute("open");
+          day.classList.remove("is-folded");
+          clearFoldInline(fold);
+        });
+      }
+      return;
+    }
+
+    animateDayFold(day, day.classList.contains("is-folded"));
+  });
+
+  // Закрытие дня: fold-анимация → details hide; день не свапаем.
+  document.body.addEventListener("change", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || input.name !== "closed") return;
+    const form = input.closest("form.close-day-form");
+    if (!form) return;
+    const day = form.closest(".day");
+    if (!day) {
+      htmx.trigger(form, "confirmed");
+      return;
+    }
+    const details = day.querySelector(":scope > details");
+    const fold = day.querySelector(".day-fold");
+    const today = isTodayDay(day);
+
+    if (input.checked) {
+      day.classList.add("is-closed");
+      details?.setAttribute("open", "");
+      const tasks = [animateDayFold(day, false)];
+      if (today) tasks.push(animatePanelsShut());
+      Promise.all(tasks).then(() => {
+        details?.removeAttribute("open");
+        day.classList.remove("is-folded");
+        clearFoldInline(fold);
+        htmx.trigger(form, "confirmed");
+      });
+      return;
+    }
+
+    day.classList.remove("is-closed");
+    details?.setAttribute("open", "");
+    day.classList.add("is-folded");
+    lockFoldShut(fold);
+    animateDayFold(day, true).then(() => htmx.trigger(form, "confirmed"));
+  });
+
+  document.body.addEventListener("htmx:afterSwap", (event) => {
+    const target = event.detail.target;
+    if (target?.id !== "fin-action-panels") return;
+    if (target.children.length) animatePanelsOpen(target);
+    else clearPanelsInline(target);
+  });
+
   document.body.addEventListener("htmx:load", (event) => {
     bindPanels(event.target);
     const target = event.target;

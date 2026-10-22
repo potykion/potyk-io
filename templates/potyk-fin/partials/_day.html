@@ -8,11 +8,9 @@
             </span>
             <span class="badges">
                 <span class="badge spent">потрачено {{ day.spent | rub }}</span>
-                {% if day.date not in closed_dates %}
                 <button type="button" class="add-expense-day"
                         data-date="{{ day.date.isoformat() }}"
                         title="Добавить трату на этот день">+</button>
-                {% endif %}
                 {% if day.end_balance < 0 %}
                 <span class="badge bad">долг {{ day.carry_out | rub }}</span>
                 {% else %}
@@ -20,12 +18,10 @@
                       {% if day.date < today %}data-amount="{{ day.eod_remainder }}"{% endif %}>
                     остаток {{ day.eod_remainder | rub }}
                 </span>
-                {% if day.date not in closed_dates %}
                 <button type="button" class="add-saving-day"
                         data-amount="{{ day.eod_remainder }}"
                         data-date="{{ day.date.isoformat() }}"
                         title="Зафиксировать сейв на этот день">+</button>
-                {% endif %}
                 {% endif %}
                 {% if day.saved %}
                 <span class="badge saved">сейв {{ day.saved | rub }}</span>
@@ -33,91 +29,90 @@
             </span>
         </summary>
 
-        {% if day.expenses %}
-        <div class="table-wrap">
-        <table>
-            <thead>
-            <tr>
-                <th>Сумма</th>
-                <th>Категория</th>
-                <th>Описание</th>
-                <th class="num">Баланс</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for e in day.expenses %}
-            <tr{% if e.optional %} class="optional-expense"{% endif %}>
-                <td data-label="Сумма">{{ e.amount | rub }}</td>
-                <td data-label="Категория">{{ e.category }}</td>
-                <td class="muted" data-label="Описание">{{ e.description or '—' }}</td>
-                <td class="num balance {% if e.running_balance < 0 %}bad{% elif e.running_balance > 0 %}ok{% endif %}"
-                    data-label="Баланс">
-                    {{ e.running_balance | rub }}
-                </td>
-                <td>
-                    {% if day.date not in closed_dates %}
-                    <div class="row-actions">
-                        <a class="row-edit" href="{{ url_for('fin.edit_expense_form', expense_id=e.id) }}"
-                           title="Изменить трату">✎</a>
-                        <form class="inline-form" method="post" action="{{ url_for('fin.delete_expense', expense_id=e.id) }}"
-                              onsubmit="return confirm('Удалить трату?')">
-                            {{ delete_form.hidden_tag() }}
-                            {{ delete_form.submit(class_='danger') }}
-                        </form>
-                    </div>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        </div>
-        {% else %}
-        <p class="empty">Трат нет</p>
-        {% endif %}
+        <div class="day-fold">
+            <div class="day-fold-inner">
+                {% if day.expenses %}
+                <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Сумма</th>
+                        <th>Категория</th>
+                        <th>Описание</th>
+                        <th class="num">Баланс</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for e in day.expenses %}
+                    <tr{% if e.optional %} class="optional-expense"{% endif %}>
+                        <td data-label="Сумма">{{ e.amount | rub }}</td>
+                        <td data-label="Категория">{{ e.category }}</td>
+                        <td class="muted" data-label="Описание">{{ e.description or '—' }}</td>
+                        <td class="num balance {% if e.running_balance < 0 %}bad{% elif e.running_balance > 0 %}ok{% endif %}"
+                            data-label="Баланс">
+                            {{ e.running_balance | rub }}
+                        </td>
+                        <td>
+                            <div class="row-actions">
+                                <a class="row-edit" href="{{ url_for('fin.edit_expense_form', expense_id=e.id) }}"
+                                   title="Изменить трату">✎</a>
+                                <form class="inline-form" method="post" action="{{ url_for('fin.delete_expense', expense_id=e.id) }}"
+                                      onsubmit="return confirm('Удалить трату?')">
+                                    {{ delete_form.hidden_tag() }}
+                                    {{ delete_form.submit(class_='danger') }}
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                {% else %}
+                <p class="empty">Трат нет</p>
+                {% endif %}
 
-        {% if day.savings %}
-        <div class="table-wrap">
-        <table class="savings-table">
-            <thead>
-            <tr>
-                <th>Сейв</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for s in day.savings %}
-            <tr>
-                <td data-label="Сейв">{{ s.amount | rub }}</td>
-                <td>
-                    {% if day.date not in closed_dates %}
-                    <div class="row-actions">
-                        <a class="row-edit" href="{{ url_for('fin.edit_saving_form', saving_id=s.id) }}"
-                           title="Изменить сейв">✎</a>
-                        <form class="inline-form" method="post"
-                              action="{{ url_for('fin.delete_saving', saving_id=s.id) }}"
-                              onsubmit="return confirm('Удалить сейв?')">
-                            {{ delete_form.hidden_tag() }}
-                            {{ delete_form.submit(class_='danger') }}
-                        </form>
-                    </div>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                {% if day.savings %}
+                <div class="table-wrap">
+                <table class="savings-table">
+                    <thead>
+                    <tr>
+                        <th>Сейв</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for s in day.savings %}
+                    <tr>
+                        <td data-label="Сейв">{{ s.amount | rub }}</td>
+                        <td>
+                            <div class="row-actions">
+                                <a class="row-edit" href="{{ url_for('fin.edit_saving_form', saving_id=s.id) }}"
+                                   title="Изменить сейв">✎</a>
+                                <form class="inline-form" method="post"
+                                      action="{{ url_for('fin.delete_saving', saving_id=s.id) }}"
+                                      onsubmit="return confirm('Удалить сейв?')">
+                                    {{ delete_form.hidden_tag() }}
+                                    {{ delete_form.submit(class_='danger') }}
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                {% endif %}
+            </div>
         </div>
-        {% endif %}
     </details>
 
     <form class="close-day-form" method="post"
           action="{{ url_for('fin.toggle_day_close', date_str=day.date.isoformat()) }}"
           hx-post="{{ url_for('fin.toggle_day_close', date_str=day.date.isoformat()) }}"
-          hx-target="#day-{{ day.date.isoformat() }}"
-          hx-swap="outerHTML"
-          hx-trigger="change">
+          hx-swap="none"
+          hx-trigger="confirmed">
         {{ close_day_form.hidden_tag() }}
         <label class="checkbox-label">
             <input type="checkbox" name="closed" value="on"
