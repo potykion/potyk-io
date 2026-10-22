@@ -287,12 +287,16 @@ def toggle_day_close(date_str: str):
     form = CloseDayForm()
     if not form.validate_on_submit():
         flash_form_errors(form)
+        if is_htmx():
+            return "", 400
         return redirect(request.referrer or url_for("fin.index"))
 
     try:
         day = date.fromisoformat(date_str)
     except ValueError:
         flash("Некорректная дата", "error")
+        if is_htmx():
+            return "", 400
         return redirect(request.referrer or url_for("fin.index"))
 
     closed = request.form.get("closed") == "on"
@@ -302,6 +306,20 @@ def toggle_day_close(date_str: str):
     elif not closed and row is not None:
         db.session.delete(row)
     db.session.commit()
+
+    if is_htmx():
+        ctx = index_context()
+        day_view = next((d for d in ctx["days"] if d.date == day), None)
+        if day_view is None:
+            resp = make_response("", 204)
+            resp.headers["HX-Refresh"] = "true"
+            return resp
+        return render_template(
+            "potyk-fin/partials/_day_toggled.html",
+            day=day_view,
+            **ctx,
+        )
+
     return redirect(request.referrer or url_for("fin.index"))
 
 

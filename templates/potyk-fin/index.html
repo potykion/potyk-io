@@ -27,47 +27,9 @@
     </details>
 </div>
 
-{% if today not in closed_dates or editing_expense %}
-<div class="panel">
-    <details data-panel="expense" {% if open_panel == 'expense' or editing_expense %}open{% endif %}>
-        <summary>{% if editing_expense %}Изменить трату{% else %}Добавить трату{% endif %}</summary>
-        {% if not editing_expense %}
-        <div class="expense-mode-tabs" role="tablist" aria-label="Режим добавления трат">
-            <button type="button"
-                    class="expense-mode-tab"
-                    role="tab"
-                    data-expense-mode="single"
-                    aria-selected="{{ 'true' if expense_mode != 'multi' else 'false' }}">Одна</button>
-            <button type="button"
-                    class="expense-mode-tab"
-                    role="tab"
-                    data-expense-mode="multi"
-                    aria-selected="{{ 'true' if expense_mode == 'multi' else 'false' }}">Мульти</button>
-        </div>
-        {% endif %}
-        <div data-expense-mode-panel="single"{% if expense_mode == 'multi' and not editing_expense %} hidden{% endif %}>
-            {% include "potyk-fin/partials/_expense_form.html" %}
-        </div>
-        {% if not editing_expense %}
-        <div data-expense-mode-panel="multi"{% if expense_mode != 'multi' %} hidden{% endif %}>
-            {% include "potyk-fin/partials/_expense_multi_form.html" %}
-        </div>
-        {% endif %}
-    </details>
+<div id="fin-action-panels">
+{% include "potyk-fin/partials/_action_panels.html" %}
 </div>
-{% endif %}
-
-{% if today not in closed_dates or editing_saving %}
-<div class="panel">
-    <details data-panel="saving" {% if open_panel == 'saving' or editing_saving %}open{% endif %}>
-        <summary>{% if editing_saving %}Изменить сейв{% else %}Зафиксировать сейв{% endif %}</summary>
-        {% if not editing_saving %}
-        <p class="muted">Когда реально перевёл на накопительный в банке</p>
-        {% endif %}
-        {% include "potyk-fin/partials/_saving_form.html" %}
-    </details>
-</div>
-{% endif %}
 
 <h2>Лента</h2>
 {% include "potyk-fin/partials/_feed.html" %}
@@ -179,6 +141,11 @@
   document.body.addEventListener("htmx:load", (event) => {
     bindPanels(event.target);
     const target = event.target;
+    if (target.id === "fin-action-panels") {
+      restoreExpenseMode();
+      syncMultiRemoveButtons(document.getElementById("expense-multi-form"));
+      return;
+    }
     if (target.id === "expense-form") {
       const amount = amountInput(target);
       if (amount) amount.focus();

@@ -113,12 +113,15 @@
     </details>
 
     <form class="close-day-form" method="post"
-          action="{{ url_for('fin.toggle_day_close', date_str=day.date.isoformat()) }}">
+          action="{{ url_for('fin.toggle_day_close', date_str=day.date.isoformat()) }}"
+          hx-post="{{ url_for('fin.toggle_day_close', date_str=day.date.isoformat()) }}"
+          hx-target="#day-{{ day.date.isoformat() }}"
+          hx-swap="outerHTML"
+          hx-trigger="change">
         {{ close_day_form.hidden_tag() }}
         <label class="checkbox-label">
             <input type="checkbox" name="closed" value="on"
-                   {% if day.date in closed_dates %}checked{% endif %}
-                   onchange="this.form.submit()">
+                   {% if day.date in closed_dates %}checked{% endif %}>
             День закрыт
         </label>
     </form>
