@@ -6,6 +6,7 @@ from flask import Flask
 load_dotenv()
 
 from potyk_io_back.admin import admin_bp
+from potyk_io_back.admin.backup import startup_backup_if_local
 from potyk_io_back.art import art_bp
 from potyk_io_back.auth import auth_bp, setup_login
 from potyk_io_back.cinema import cinema_bp
@@ -48,6 +49,8 @@ def create_app():
     with app.app_context():
         db.create_all()
         get_settings()
+
+    startup_backup_if_local()
 
     @app.template_filter("rub")
     def rub_filter(value: int) -> str:
