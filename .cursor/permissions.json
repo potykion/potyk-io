@@ -8,6 +8,7 @@
     "git.exe",
     "python",
     "python.exe",
+    "$env:Path",
     "mypy",
     "mypy.exe",
     "ruff",
