@@ -2,6 +2,7 @@
     <a class="card{% if note.kind == 'link' %} card-link{% endif %}{% if note.cover %} content-card{% else %} card-text{% endif %}{% if note.cover and (card_ratio == '4/3' or note.ratio == '4/3') %} card-ratio-4-3{% elif note.cover and (card_ratio == '9/16' or note.ratio == '9/16') %} card-ratio-9-16{% endif %}"
        href="{{ note.url }}"
        {% if note.tags is defined and note.tags %}data-tags="{{ note.tags | join(',') }}"{% endif %}
+       {% if note.tier is defined and note.tier %}data-tier="{{ note.tier }}"{% endif %}
        {% if note.external %}target="_blank" rel="noopener"{% endif %}>
         {% if note.cover %}
             {% if note.cover_video %}

@@ -2,6 +2,7 @@
 cover: /static/potyk-io/img/restaurants/mimi.jpg
 preview: Грузинская кухня
 tags: Грузия
+tier: B
 maps: https://yandex.ru/maps/org/mimi/110948331824
 prices: Средние
 visited: 2026-09-02

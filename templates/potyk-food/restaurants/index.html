@@ -7,6 +7,7 @@
     {{ super() }}
     <link rel="stylesheet" href="/static/potyk-io/css/index.css">
     <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/tier-list.css">
     <link rel="stylesheet" href="/static/potyk-io/css/restaurants.css">
 {% endblock %}
 
@@ -23,31 +24,59 @@
     </div>
     {% endif %}
 
+    <div id="rest-tierlist" class="rest-tierlist" hidden></div>
+
     {{ feed(notes, has_more=has_more, exclude=exclude, more_url=more_url, four_cols=true) }}
     <p class="rest-empty" id="rest-filter-empty" hidden>Нет ресторанов с такими тегами</p>
 {% endblock %}
 
 {% block script %}
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="/static/potyk-io/js/tier-list.js"></script>
     <script>
     (() => {
       const chips = document.getElementById("rest-chips");
       const empty = document.getElementById("rest-filter-empty");
+      const tierHost = document.getElementById("rest-tierlist");
       if (!chips) return;
 
       const selected = new Set();
+      const { normalizeTier, mount } = window.PotykTierList;
 
       const cards = () => document.querySelectorAll(".card-grid--feed > a.card");
 
+      const cardTitle = (el) => {
+        const h = el.querySelector(".note-preview h1, .note-preview h2, .note-preview h3");
+        return (h && h.textContent.trim()) || el.getAttribute("title") || el.href;
+      };
+
+      const cardCover = (el) => {
+        const img = el.querySelector("img.note-cover");
+        return img ? img.getAttribute("src") : "";
+      };
+
       const apply = () => {
         let visible = 0;
+        const tierItems = [];
         cards().forEach((el) => {
           const tags = (el.dataset.tags || "").split(",").map((t) => t.trim()).filter(Boolean);
           const ok = selected.size === 0 || [...selected].some((t) => tags.includes(t));
           el.hidden = !ok;
-          if (ok) visible += 1;
+          if (ok) {
+            visible += 1;
+            const tier = normalizeTier(el.dataset.tier);
+            if (selected.size > 0 && tier) {
+              tierItems.push({
+                tier,
+                href: el.getAttribute("href"),
+                title: cardTitle(el),
+                cover: cardCover(el),
+              });
+            }
+          }
         });
         if (empty) empty.hidden = visible > 0 || selected.size === 0;
+        mount(tierHost, tierItems);
       };
 
       chips.addEventListener("click", (e) => {

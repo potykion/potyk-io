@@ -1,0 +1,28 @@
+{#
+  Тирлист S–D.
+
+  items: список словарей {tier, href, title, cover?}
+  cover — URL картинки; без cover — текстовая плитка с title.
+  label — aria-label таблицы (по умолчанию «Тирлист»).
+
+  {% from "jinja/_tier_list.html" import tier_list %}
+  {{ tier_list([
+    {"tier": "A", "href": "#x", "title": "Название", "cover": "/img.jpg"},
+    {"tier": "B", "href": "#y", "title": "Без фото"},
+  ]) }}
+#}
+{% macro tier_list(items=[], label="Тирлист") -%}
+{%- set ranks = ["S", "A", "B", "C", "D"] -%}
+<table class="tier-list" aria-label="{{ label }}">
+{%- for rank in ranks %}
+<tr>
+<th class="tier-rank tier-{{ rank|lower }}" scope="row">{{ rank }}</th>
+<td class="tier-items"><div class="tier-flex">
+{%- for it in items if (it.tier|string|upper) == rank %}
+<a class="tier-item" href="{{ it.href }}" title="{{ it.title }}">{%- if it.cover -%}<img src="{{ it.cover }}" alt="{{ it.title }}" loading="lazy">{%- else -%}<span class="tier-item-text">{{ it.title }}</span>{%- endif -%}</a>
+{%- endfor %}
+</div></td>
+</tr>
+{%- endfor %}
+</table>
+{%- endmacro %}

@@ -1,10 +1,12 @@
 {% extends "potyk-io/_base.html" %}
+{% from "jinja/_tier_list.html" import tier_list %}
 
 {% block title %}Бабл-ти — potyk-food{% endblock %}
 
 {% block head_stylesheets %}
     {{ super() }}
     <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/tier-list.css">
 {% endblock %}
 
 {% block main_class %}main-m md-content{% endblock %}
@@ -27,32 +29,10 @@
 
 <h3>Тир-лист</h3>
 
-<table class="tier-list">
-<tr>
-<th class="tier-rank tier-s" scope="row">S</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-a" scope="row">A</th>
-<td class="tier-items"><div class="tier-flex">
-<a class="tier-item" href="#met-cheese-grape" title="Чиз · Виноград"><img src="/food/thoughts/_img/menus/mettea/02-чиз-виноград-l.jpg" alt="Чиз · Виноград" loading="lazy"></a>
-</div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-b" scope="row">B</th>
-<td class="tier-items"><div class="tier-flex">
-<a class="tier-item" href="#met-passion-fruit" title="Полный стакан · Маракуйя"><img src="/food/thoughts/_img/menus/mettea/12-полный-стакан-маракуйя-l.jpg" alt="Полный стакан · Маракуйя" loading="lazy"></a>
-</div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-c" scope="row">C</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-d" scope="row">D</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-</table>
+{{ tier_list([
+  {"tier": "A", "href": "#met-cheese-grape", "title": "Чиз · Виноград", "cover": "/food/thoughts/_img/menus/mettea/02-чиз-виноград-l.jpg"},
+  {"tier": "B", "href": "#met-passion-fruit", "title": "Полный стакан · Маракуйя", "cover": "/food/thoughts/_img/menus/mettea/12-полный-стакан-маракуйя-l.jpg"},
+]) }}
 
 <h3>Кофе</h3>
 
@@ -133,30 +113,9 @@
 
 <h3>Тир-лист</h3>
 
-<table class="tier-list">
-<tr>
-<th class="tier-rank tier-s" scope="row">S</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-a" scope="row">A</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-b" scope="row">B</th>
-<td class="tier-items"><div class="tier-flex">
-<a class="tier-item" href="#teacha-peach-grapefruit" title="Персиковый грейпфрут"><span class="tier-item-text">Персиковый грейпфрут</span></a>
-</div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-c" scope="row">C</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-d" scope="row">D</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-</table>
+{{ tier_list([
+  {"tier": "B", "href": "#teacha-peach-grapefruit", "title": "Персиковый грейпфрут"},
+]) }}
 
 <h3>Чай латте</h3>
 
@@ -178,32 +137,10 @@
 
 <h3>Тир-лист</h3>
 
-<table class="tier-list">
-<tr>
-<th class="tier-rank tier-s" scope="row">S</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-a" scope="row">A</th>
-<td class="tier-items"><div class="tier-flex">
-<a class="tier-item" href="#pims-beris" title="Берис х Берис"><img src="/food/thoughts/_img/menus/pims/19-берис-х-берис.jpg" alt="Берис х Берис" loading="lazy"></a>
-</div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-b" scope="row">B</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-c" scope="row">C</th>
-<td class="tier-items"><div class="tier-flex">
-<a class="tier-item" href="#pims-jasmine-tapioca" title="Жасмин Тапиока"><img src="/food/thoughts/_img/menus/pims/17-жасмин-тапиока.jpg" alt="Жасмин Тапиока" loading="lazy"></a>
-</div></td>
-</tr>
-<tr>
-<th class="tier-rank tier-d" scope="row">D</th>
-<td class="tier-items"><div class="tier-flex"></div></td>
-</tr>
-</table>
+{{ tier_list([
+  {"tier": "A", "href": "#pims-beris", "title": "Берис х Берис", "cover": "/food/thoughts/_img/menus/pims/19-берис-х-берис.jpg"},
+  {"tier": "C", "href": "#pims-jasmine-tapioca", "title": "Жасмин Тапиока", "cover": "/food/thoughts/_img/menus/pims/17-жасмин-тапиока.jpg"},
+]) }}
 
 <h3>Ла-ти</h3>
 

@@ -24,11 +24,19 @@ def is_restaurant_review(file: Path, *, restaurants_dir: Path) -> bool:
     return file.suffix == ".md" and rel.stem != "index"
 
 
+_TIERS = frozenset({"S", "A", "B", "C", "D"})
+
+
 def parse_restaurant_tags(meta: dict[str, str]) -> list[str]:
     raw = unquote_meta(meta.get("tags", ""))
     if not raw:
         return []
     return [part.strip() for part in raw.split(",") if part.strip()]
+
+
+def parse_restaurant_tier(meta: dict[str, str]) -> str | None:
+    raw = unquote_meta(meta.get("tier", "")).strip().upper()
+    return raw if raw in _TIERS else None
 
 
 def _meta_value(meta: dict[str, str], keys: tuple[str, ...]) -> str:
@@ -94,5 +102,8 @@ def enrich_restaurant_cards(
         meta, _ = split_frontmatter(path.read_text(encoding="utf-8-sig"))
         tags = parse_restaurant_tags(meta)
         note["tags"] = tags
+        tier = parse_restaurant_tier(meta)
+        if tier:
+            note["tier"] = tier
         all_tags.update(tags)
     return sorted(all_tags, key=str.casefold)
