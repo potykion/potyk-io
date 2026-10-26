@@ -1,6 +1,15 @@
-.index-v2-grid .card.index-v2-widget {
+.index-v2-grid {
+    margin-top: 0.5rem;
+    grid-auto-rows: 150px;
+}
+
+.index-v2-grid .card {
     aspect-ratio: auto;
+    height: 150px;
     min-height: 0;
+}
+
+.index-v2-grid .card.index-v2-widget {
     padding: 20px;
     justify-content: flex-start;
     align-items: stretch;

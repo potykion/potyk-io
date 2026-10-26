@@ -5,7 +5,7 @@ from pathlib import Path, PurePosixPath
 import flask
 import markdown
 from flask import Blueprint, abort, flash, jsonify, redirect, request, render_template, send_file, url_for
-from flask_login import login_required
+from flask_login import current_user, login_required
 from sqlalchemy import func, select
 
 from potyk_io_back.core.db import db
@@ -147,11 +147,6 @@ def render_food_markdown(file: Path):
     )
 
 
-@potyk_io_bp.route("/")
-def index():
-    return flask.render_template("potyk-io/index.html")
-
-
 _MONTH_NAMES_RU = (
     "",
     "Январь",
@@ -169,9 +164,7 @@ _MONTH_NAMES_RU = (
 )
 
 
-@potyk_io_bp.get("/index_v2")
-@login_required
-def index_v2():
+def _index_fin_context() -> dict:
     today = date.today()
     month_from = today.replace(day=1)
     spent = (
@@ -192,12 +185,23 @@ def index_v2():
         )
         or 0
     )
-    return flask.render_template(
-        "potyk-io/index_v2.html",
-        fin_spent=spent,
-        fin_saved=saved,
-        fin_period_label=_MONTH_NAMES_RU[today.month],
-    )
+    return {
+        "fin_spent": spent,
+        "fin_saved": saved,
+        "fin_period_label": _MONTH_NAMES_RU[today.month],
+    }
+
+
+@potyk_io_bp.route("/")
+def index():
+    ctx = _index_fin_context() if current_user.is_authenticated else {}
+    return flask.render_template("potyk-io/index.html", **ctx)
+
+
+@potyk_io_bp.get("/index_v2")
+@login_required
+def index_v2():
+    return redirect(url_for("potyk_io.index"))
 
 
 @potyk_io_bp.get("/game")

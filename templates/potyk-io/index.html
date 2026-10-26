@@ -2,9 +2,8 @@
 
 {% block style %}
     <link rel="stylesheet" href="/static/potyk-io/css/index.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/index_v2.css">
 {% endblock %}
-
-{% block main_class %}home-hero{% endblock %}
 
 {% block main %}
     <h1 class="site-logo">
@@ -13,5 +12,31 @@
     <div class="flex-center home-tagline">
         <span title="Занимаюсь хуйнёй">Делаю свой интернет</span>
         <img src="/static/potyk-io/img/globe.gif" id="globe" alt="">
+    </div>
+    <div class="home-intro">
+        <p>Чем заняться: рисовать, медитировать, готовить, работать</p>
+        <p>Моя жизнь: работа, рисование, кулинария, медитации и самопознание</p>
+    </div>
+
+    <div class="card-grid index-v2-grid">
+        {% if fin_period_label is defined %}
+        <a class="card index-v2-widget" href="/fin/">
+            <h3 class="index-v2-widget__title">Финансы</h3>
+            <p class="index-v2-widget__period muted">{{ fin_period_label }}</p>
+            <dl class="index-v2-widget__stats">
+                <div>
+                    <dt>Потрачено</dt>
+                    <dd>{{ fin_spent | rub }}</dd>
+                </div>
+                <div>
+                    <dt>Сохранено</dt>
+                    <dd>{{ fin_saved | rub }}</dd>
+                </div>
+            </dl>
+        </a>
+        {% endif %}
+        <a class="card card-text" href="/mu/blog/2026">
+            <h3>Музыка в 2026: что в тренде, что слушать</h3>
+        </a>
     </div>
 {% endblock %}
