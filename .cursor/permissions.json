@@ -47,6 +47,7 @@
     "Sort-Object",
     "Where-Object",
     "ForEach-Object",
+    "Group-Object",
     "Write-Output",
     "Write-Host",
     "Get-ChildItem",
