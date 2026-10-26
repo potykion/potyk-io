@@ -433,6 +433,12 @@ _MU_SECTION_LINKS: list[MenuItem] = [
         "description": "",
     },
     {
+        "icon": "🎧",
+        "title": "Что послушать",
+        "url": "https://github.com/potykion/potyk-io/issues/81",
+        "description": "",
+    },
+    {
         "icon": "🎤",
         "title": "Исполнители",
         "url": "/mu/artists/",
