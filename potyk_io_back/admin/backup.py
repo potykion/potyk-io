@@ -47,7 +47,7 @@ def _required_env(name: str) -> str:
 def _s3_client_and_bucket():
     access_key = _required_env("YC_S3_ACCESS_KEY")
     secret_key = _required_env("YC_S3_SECRET_KEY")
-    bucket = _required_env("YC_S3_BUCKET")
+    bucket = os.environ.get("YC_S3_BUCKET") or "potyk-io-backups"
     endpoint = (
         os.environ.get("YC_S3_ENDPOINT") or "https://storage.yandexcloud.net"
     ).strip()
