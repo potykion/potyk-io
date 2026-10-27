@@ -1,0 +1,2 @@
+# systemd / Caddy / shell на Linux ломаются от CRLF
+ops/** text eol=lf

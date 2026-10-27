@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily potyk.io SQLite backup timer
+
+[Timer]
+# После бута (полезно после падения зоны) + раз в сутки 00:00 UTC (= 03:00 MSK)
+OnBootSec=10min
+OnCalendar=*-*-* 00:00:00
+Persistent=true
+Unit=potyk-io-backup.service
+
+[Install]
+WantedBy=timers.target

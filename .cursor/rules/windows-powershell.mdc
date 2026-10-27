@@ -48,8 +48,23 @@ PowerShell **ломает** вложенные кавычки в `python -c`, he
 
 **Допустимо без файла:** только совсем тупой `-c` без внутренних кавычек, напр. `python -c "print(1)"` или один импорт без строк. Сомневаешься → файл.
 
+## SSH / remote bash на Linux — только LF (ЖЁСТКО)
+
+На Windows `subprocess.run(..., text=True, input="...\n")` и многие editors **подмешивают `\r\n`**. Bash на проде тогда видит `$'\r'`, ломает `set -e`, `cd path\r`, `systemctl …\x0d`.
+
+**Сразу правильно, не после фейла:**
+
+1. Remote-скрипт для `ssh … bash -s` — собирать как ` "\n".join([...]) `, в stdin отдавать **bytes** UTF-8 без `\r`:
+   ```python
+   raw = script.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+   subprocess.run(cmd, input=raw, capture_output=True)  # text=False
+   ```
+2. Unit'ы / Caddyfile / shell в репо — писать и проверять **LF** (`\n`), не CRLF.
+3. Не гонять многострочный bash через PowerShell here-string в stdin SSH — только `_tmp_….py` + bytes как выше.
+
 ## Чего не делать
 
 - Не чинить «как в Linux» команды, которые падают из‑за bash-синтаксиса — сразу переписать под PowerShell.
 - Не объяснять пользователю на каждом шаге, что «это Windows» — просто учитывать.
 - Не чинить кавычки в `python -c` перебором экранирования — сразу `_tmp_….py`.
+- Не «отлаживать CRLF» повторными SSH после первого `\r` — сразу bytes/LF.

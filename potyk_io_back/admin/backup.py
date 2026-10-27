@@ -3,12 +3,16 @@ from __future__ import annotations
 import os
 import re
 import socket
+import sqlite3
+import sys
+import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
+from dotenv import load_dotenv
 from flask.helpers import get_debug_flag
 from werkzeug.serving import is_running_from_reloader
 
@@ -60,6 +64,19 @@ def _s3_client_and_bucket():
         aws_secret_access_key=secret_key,
     )
     return client, bucket
+
+
+def _consistent_db_copy(src: Path, dest: Path) -> None:
+    """Консистентная копия через SQLite Backup API (безопаснее голого cp)."""
+    src_conn = sqlite3.connect(f"file:{src.as_posix()}?mode=ro", uri=True)
+    try:
+        dest_conn = sqlite3.connect(dest)
+        try:
+            src_conn.backup(dest_conn)
+        finally:
+            dest_conn.close()
+    finally:
+        src_conn.close()
 
 
 def rotate_backups(
@@ -120,8 +137,11 @@ def upload_main_db(*, rotate: bool = True) -> BackupResult:
     object_key = f"main-{pc_name()}-{stamp}.db"
 
     try:
-        client.upload_file(str(DB_PATH), bucket, object_key)
-    except (BotoCoreError, ClientError, OSError) as exc:
+        with tempfile.TemporaryDirectory(prefix="potyk-io-backup-") as tmp:
+            snapshot = Path(tmp) / "main.db"
+            _consistent_db_copy(DB_PATH, snapshot)
+            client.upload_file(str(snapshot), bucket, object_key)
+    except (BotoCoreError, ClientError, OSError, sqlite3.Error) as exc:
         return BackupResult(
             ok=False,
             message=f"Бекап не удался: {exc}",
@@ -147,3 +167,15 @@ def startup_backup_if_local(*, debug: bool | None = None) -> None:
         return
     result = upload_main_db()
     print(f"[backup] {result.message}", flush=True)
+
+
+def main() -> int:
+    """CLI: python -m potyk_io_back.backup_job (или этот модуль напрямую)."""
+    load_dotenv(REPO_ROOT / ".env")
+    result = upload_main_db()
+    print(result.message, flush=True)
+    return 0 if result.ok else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

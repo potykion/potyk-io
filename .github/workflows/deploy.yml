@@ -22,7 +22,13 @@ jobs:
             source ./.venv/bin/activate
             pip install -r requirements.txt
             python -m alembic upgrade head
-            sudo cp ./potyk-io.service /etc/systemd/system/potyk-io.service
+            sudo cp ./ops/potyk-io.service /etc/systemd/system/potyk-io.service
+            sudo cp ./ops/potyk-io-backup.service /etc/systemd/system/potyk-io-backup.service
+            sudo cp ./ops/potyk-io-backup.timer /etc/systemd/system/potyk-io-backup.timer
+            sudo cp ./ops/potyk-tg.service /etc/systemd/system/potyk-tg.service
+            sudo ln -sf /home/leybovich-nikita/potyk-io/ops/Caddyfile /etc/caddy/Caddyfile
             sudo systemctl daemon-reload
             sudo systemctl restart potyk-io.service
+            sudo systemctl enable --now potyk-io-backup.timer
+            sudo systemctl restart potyk-tg.service
             sudo systemctl reload caddy
