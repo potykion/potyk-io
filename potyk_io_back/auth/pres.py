@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 
 from potyk_io_back.auth.forms import LoginForm
@@ -41,6 +41,7 @@ def login():
     if form.is_submitted():
         if form.validate():
             login_user(SecretUser(form.secret.data))
+            session.permanent = True
             return redirect(_safe_next(request.args.get("next")))
         flash("неверный секрет", "error")
     return render_template("auth/login.html", form=form)

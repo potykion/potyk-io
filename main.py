@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 from dotenv import load_dotenv
 from flask import Flask
@@ -38,6 +39,7 @@ def create_app():
         "true",
         "yes",
     }
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///main.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024
