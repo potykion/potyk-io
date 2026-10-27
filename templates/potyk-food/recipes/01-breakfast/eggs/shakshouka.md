@@ -1,7 +1,5 @@
 # Шакшука
 
-- https://www.youtube.com/watch?v=sB5p4sdJhnQ
-
 ## Ингредиенты
 
 ![shakshouka.jpg](../../_img/shakshouka.jpg)
@@ -30,3 +28,6 @@
 - Обжариваем питу
 - Подаем с кинзой, йогуртом и паприкой и питой
 
+## Ссылки
+
+- https://www.youtube.com/watch?v=sB5p4sdJhnQ

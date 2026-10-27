@@ -1,8 +1,5 @@
 # Печень с яблоками по-берлински
 
-- https://www.youtube.com/watch?v=X37D6_k_cFE
-- https://ctc.ru/zakadrom/novosti/prosto_kuhnya/retsept-pecheni-po-berlinski-s-yablokami-i-lukom/
-
 ## Ингредиенты:
 
 - Печень говяжья 300 г
@@ -32,3 +29,8 @@
 ## Сервировка:
 
 - Переложить обжаренные слайсы печени на сервировочную тарелку и подавать с гарниром.
+
+## Ссылки
+
+- https://www.youtube.com/watch?v=X37D6_k_cFE
+- https://ctc.ru/zakadrom/novosti/prosto_kuhnya/retsept-pecheni-po-berlinski-s-yablokami-i-lukom/

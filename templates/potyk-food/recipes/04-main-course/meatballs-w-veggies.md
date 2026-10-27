@@ -1,8 +1,5 @@
 # Тефтели с овощами в одной сковороде
 
-- https://www.youtube.com/watch?v=9njsFWXTkqQ
-- https://vk.com/sashabelkovich?w=wall-39128795_61226
-
 ![meatballs-w-veggies.png](../_img/meatballs-w-veggies.png)
 
 ## Ингредиенты:
@@ -53,3 +50,8 @@
   хлебом.
 
 Приятного аппетита
+
+## Ссылки
+
+- https://www.youtube.com/watch?v=9njsFWXTkqQ
+- https://vk.com/sashabelkovich?w=wall-39128795_61226

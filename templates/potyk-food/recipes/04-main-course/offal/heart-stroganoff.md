@@ -1,7 +1,5 @@
 # Сердечки по-строгоновски
 
-https://www.youtube.com/watch?v=f4EUKmSXyRI&feature=youtu.be
-
 - подсолнечное масло - 30 мл
 - ШАМПИНЬОНЫ мини - 170 г
 - СОЛёНЫЕ ОГУРЦЫ - 150 г
@@ -12,3 +10,7 @@ https://www.youtube.com/watch?v=f4EUKmSXyRI&feature=youtu.be
 - ЛУК ЗЕЛЕНЫЙ - 10 г
 - ЧЕСНОК - 2 зубчика
 - СЛИВКИ 20% - 300 мл
+
+## Ссылки
+
+- https://www.youtube.com/watch?v=f4EUKmSXyRI&feature=youtu.be

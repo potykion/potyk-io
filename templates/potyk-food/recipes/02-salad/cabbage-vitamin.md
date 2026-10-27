@@ -1,7 +1,5 @@
 # Салат из капусты «Витаминный»
 
-- https://www.russianfood.com/recipes/recipe.php?rid=133759
-
 ![Салат из капусты «Витаминный»](https://www.russianfood.com/dycontent/images_upl/117/big_116679.jpg)
 
 ## Ингредиенты:
@@ -28,3 +26,7 @@
 - Очень аккуратно перемешать.
 - Разложить в банки, утрамбовать плотно.
 - Хранить в холодном месте.
+
+## Ссылки
+
+- https://www.russianfood.com/recipes/recipe.php?rid=133759

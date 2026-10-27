@@ -1,8 +1,5 @@
 # Паста с мясным рагу и шпинатом
 
-- https://vk.com/wall-39128795_104933
-- https://www.youtube.com/watch?v=FHi2u7mdInY
-
 ## Ингредиенты:
 
 ![pasta-ground-beef-spinach.png](../../_img/pasta-ground-beef-spinach.png)
@@ -40,3 +37,8 @@
 * Переложить порцию пасты на сервировочную тарелку и посыпать тёртым твёрдым сыром.
 
 Приятного аппетита!
+
+## Ссылки
+
+- https://vk.com/wall-39128795_104933
+- https://www.youtube.com/watch?v=FHi2u7mdInY

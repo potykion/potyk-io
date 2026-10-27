@@ -1,8 +1,5 @@
 # Яйца Бенедикт
 
-- https://www.youtube.com/watch?v=BQu_Om8bN5M
-- https://dzen.ru/a/XhQ9P41bXwCxnELR
-
 ## Ингр
 
 - Хлеб Бриошь: 2 куска
@@ -25,3 +22,7 @@
     - желтки+сливыч+уксус+соль/перец венчиком мешаем до эмульсии
 - Собираем: бриошь + топинг + яйцо + соус
 
+## Ссылки
+
+- https://www.youtube.com/watch?v=BQu_Om8bN5M
+- https://dzen.ru/a/XhQ9P41bXwCxnELR

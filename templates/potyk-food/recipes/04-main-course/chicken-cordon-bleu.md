@@ -1,9 +1,5 @@
 # Кордон блю
 
-- https://www.russianfood.com/recipes/recipe.php?rid=142468
-- https://www.russianfood.com/recipes/recipe.php?rid=120939
-- https://www.russianfood.com/recipes/recipe.php?rid=52103
-
 ![Кордон блю](https://www.russianfood.com/dycontent/images_upl/213/big_212589.jpg)
 
 ## Ингредиенты:
@@ -32,3 +28,9 @@
 - Выложить в форму, сверху на каждый рулетик положить слайс сливочного масла.
 - Запекать в духовке при 190 °C 10–15 минут, до готовности курицы (сок должен быть прозрачным).
 - Перед подачей вынуть зубочистки.
+
+## Ссылки
+
+- https://www.russianfood.com/recipes/recipe.php?rid=142468
+- https://www.russianfood.com/recipes/recipe.php?rid=120939
+- https://www.russianfood.com/recipes/recipe.php?rid=52103

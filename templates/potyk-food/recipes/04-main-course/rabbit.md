@@ -1,9 +1,5 @@
 # Кролик с розмарином и розовым перцем
 
-https://www.youtube.com/watch?v=BFRCrIkJHxo&feature=youtu.be
-
-https://ctc.ru/zakadrom/novosti/prosto_kuhnya/retsept-krolika-rozmarina-i-rozovym-pertsem/
-
 ## Ингредиенты:
 
 - Кролик тушка 1,2 кг
@@ -37,3 +33,8 @@ https://ctc.ru/zakadrom/novosti/prosto_kuhnya/retsept-krolika-rozmarina-i-rozovy
 ### Сервировка:
 
 - В глубокую тарелку переложить порцию кролика с овощами в соусе и подавать с кусочками багета.
+
+## Ссылки
+
+- https://www.youtube.com/watch?v=BFRCrIkJHxo&feature=youtu.be
+- https://ctc.ru/zakadrom/novosti/prosto_kuhnya/retsept-krolika-rozmarina-i-rozovym-pertsem/

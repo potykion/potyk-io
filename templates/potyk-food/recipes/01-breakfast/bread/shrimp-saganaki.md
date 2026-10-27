@@ -1,10 +1,5 @@
 # Тост Креветки Саганаки
 
-https://www.youtube.com/watch?v=KQBPccqrTiY
-
-https://vk.com/sashabelkovich?w=wall-39128795_53084
-
-
 ## Ингредиенты
 - Креветки ваннамей замороженные (16 на 20 см) 130 г
 - Чеснок 3 зубчика
@@ -33,3 +28,8 @@ https://vk.com/sashabelkovich?w=wall-39128795_53084
 * На каждый тост переложить креветки в соусе и взбрызнуть каждый оливковым маслом по 10 мл.
 
 Приятного аппетита!
+
+## Ссылки
+
+- https://www.youtube.com/watch?v=KQBPccqrTiY
+- https://vk.com/sashabelkovich?w=wall-39128795_53084

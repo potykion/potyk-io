@@ -1,8 +1,5 @@
 # Глазунья/Омлет запеченая с колбасками/овощами/сыром / Фриратта
 
-- https://www.youtube.com/watch?v=g47CHEP_etE
-- https://www.youtube.com/watch?v=UzkgzRJQkG0
-
 ## Запеченная глазунья
 
 ### Ингредиенты
@@ -47,4 +44,7 @@
 - и в духовку / можно вообще без духовки, просто под крышкой
 - свежие томаты, зелень на подачу 
 
+## Ссылки
 
+- https://www.youtube.com/watch?v=g47CHEP_etE
+- https://www.youtube.com/watch?v=UzkgzRJQkG0

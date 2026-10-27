@@ -1,7 +1,5 @@
 # Круассан с индейкой, камамбером и брусничным вареньем
 
-https://www.youtube.com/watch?v=Mo41tlTKOw0
-
 ## Ингредиенты
 
 ![croissant-camembert-turkey.png](../../_img/croissant-camembert-turkey.png)
@@ -13,3 +11,7 @@ https://www.youtube.com/watch?v=Mo41tlTKOw0
 - Камамбер слайсами, индейку слайсами 
 - Возвращаем индейку, сверху камамбер, и пару минут под крышкой на слабом огне 
 - Круассан разрезаем, выкладываем руколу, индейку, варенье
+
+## Ссылки
+
+- https://www.youtube.com/watch?v=Mo41tlTKOw0

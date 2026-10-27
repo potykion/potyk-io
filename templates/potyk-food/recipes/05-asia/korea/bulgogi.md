@@ -1,7 +1,5 @@
 # Пульгоги
 
-https://www.youtube.com/watch?v=YWzAEKK5QPI
-
 ## Ингредиенты
 
 - Мякоть говядины - 600 г
@@ -41,3 +39,7 @@ https://www.youtube.com/watch?v=YWzAEKK5QPI
 - Масло в сковороду, начичнаем жарить мясо в течение 10 минут 
 - Добавляем грибы + перец, жарим еще 5 мин
 - Добавляем кунжутное масло + лук + кунжут
+
+## Ссылки
+
+- https://www.youtube.com/watch?v=YWzAEKK5QPI

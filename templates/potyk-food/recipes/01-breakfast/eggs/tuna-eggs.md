@@ -1,7 +1,5 @@
 # Скрембл с тунцом
 
-https://www.youtube.com/watch?v=KY9q_TfgPcE
-
 ## Ингр
 
 - Хлеб
@@ -21,3 +19,7 @@ https://www.youtube.com/watch?v=KY9q_TfgPcE
 - Слегка жарим до скрэмбла
 - Подпекаем хлэб
 - Подаем с салатом, лимоном
+
+## Ссылки
+
+- https://www.youtube.com/watch?v=KY9q_TfgPcE

@@ -1,7 +1,5 @@
 # Мапо Тофу
 
-https://www.youtube.com/watch?v=kxI7aaofR7w&t=10s
-
 ## Ингредиенты:
 
 - Тофу - 300 г.
@@ -20,3 +18,7 @@ https://www.youtube.com/watch?v=kxI7aaofR7w&t=10s
 - Кунжутное масло - 1 ч.л.
 - Рисовый уксус 4-6% - 1 ч.л.
 - Сахар - 1 ч.л.
+
+## Ссылки
+
+- https://www.youtube.com/watch?v=kxI7aaofR7w&t=10s

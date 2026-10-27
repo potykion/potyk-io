@@ -57,6 +57,7 @@
     "Write-Output",
     "Write-Host",
     "Get-ChildItem",
+    "Measure-Object",
     "Get-Content",
     "Get-Date",
     "Get-Item",

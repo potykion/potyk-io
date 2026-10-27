@@ -1,8 +1,5 @@
 # Куриные окорочка с овощами
 
-- https://vk.com/wall-39128795_105655
-- https://www.youtube.com/watch?v=FHi2u7mdInY
-
 ## Ингредиенты:
 
 ![glazed-chicken-w-veggies.png](../_img/glazed-chicken-w-veggies.png)
@@ -49,3 +46,8 @@
 * На сервировочную тарелку переложить окорочок и овощи с соусом.
 
 Приятного аппетита!
+
+## Ссылки
+
+- https://vk.com/wall-39128795_105655
+- https://www.youtube.com/watch?v=FHi2u7mdInY

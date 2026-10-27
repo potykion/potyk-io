@@ -1,7 +1,5 @@
 # Сысники
 
-## [Сысники от Васька](https://youtube.com/shorts/AwtttO_48NE?si=GsR1-lFbJkzUYYn2)
-
 ### Ингрелиенты
 
 - 280 гр твopora 5%
@@ -20,7 +18,8 @@
 - Обжарить можно на сливочном+растительном/ кокосовом масле, до корочки.
 - В духовку 180° на 4-5 минут.
 
-## Еще
+## Ссылки
 
+- https://youtube.com/shorts/AwtttO_48NE?si=GsR1-lFbJkzUYYn2
 - https://youtu.be/IZGbxXhhlKw?si=xrjElsHnuNEou8Ne
 - https://youtu.be/PgTzL56j-BE?si=SJdIGw76CBVu42Xy

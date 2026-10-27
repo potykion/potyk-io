@@ -1,9 +1,5 @@
 # Курица в соевом соусе с рисом
 
-- https://www.youtube.com/watch?v=wvNTAtxUxps
-- https://chat.deepseek.com/a/chat/s/c3f17414-cdc6-473a-bdf0-30772f3ceed1
-  https://www.youtube.com/watch?v=7yXgrA6fQT0
-
 ## ИНГРЕДИЕНТЫ:
 
 - Бедра куриные без косточки - 700 г
@@ -41,3 +37,8 @@
 - заливаем соус
 - добавляем чеснок, кунжут 
 
+## Ссылки
+
+- https://www.youtube.com/watch?v=wvNTAtxUxps
+- https://chat.deepseek.com/a/chat/s/c3f17414-cdc6-473a-bdf0-30772f3ceed1
+- https://www.youtube.com/watch?v=7yXgrA6fQT0
