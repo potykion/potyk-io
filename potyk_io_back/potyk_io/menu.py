@@ -620,9 +620,9 @@ FOOD_MENU_GROUPS: list[MenuGroup] = [
                 "description": "",
             },
             {
-                "icon": "🧪",
-                "title": "Эксперименты",
-                "url": "/food/experiments",
+                "icon": "💡",
+                "title": "Идеи",
+                "url": "/food/ideas",
                 "description": "",
             },
         ],

@@ -1,7 +1,5 @@
 # Бургундская яблочная запеканка
 
-- https://www.russianfood.com/recipes/recipe.php?rid=142945
-
 ![Бургундская яблочная запеканка](https://www.russianfood.com/dycontent/images_upl/219/big_218252.jpg)
 
 ## Ингредиенты:
@@ -31,3 +29,7 @@
 ## Выводы
 
 вышла хуйня
+
+## Ссылки
+
+- https://www.russianfood.com/recipes/recipe.php?rid=142945

@@ -659,7 +659,7 @@ def findings_delete(finding_id: int):
 @potyk_io_bp.route("/food")
 @potyk_io_bp.route("/food/")
 def food_index():
-    return render_food_markdown(FOOD_TEMPLATES_DIR / "index.md")
+    return render_template("potyk-food/index.html")
 
 
 @potyk_io_bp.get("/food/rest")

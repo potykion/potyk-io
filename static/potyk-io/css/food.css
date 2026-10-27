@@ -1,0 +1,38 @@
+/* /food index: категории рецептов как островки */
+
+.food-index .food-cats {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.food-index .food-cat {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 20px 24px;
+}
+
+.food-index .food-cat > h2 {
+    margin: 0 0 12px;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.food-index .food-cat > h3 {
+    margin: 16px 0 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.food-index .food-cat > h3:first-of-type {
+    margin-top: 4px;
+}
+
+.food-index .food-cat > ul {
+    margin: 0 0 4px;
+}
+
+.food-index .food-cat > ul:last-child {
+    margin-bottom: 0;
+}
