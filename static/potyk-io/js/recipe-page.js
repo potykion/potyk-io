@@ -214,7 +214,156 @@
     });
   }
 
+  function isTableHeaderRow(cells) {
+    const joined = cells.join(" ").toLowerCase();
+    return /(?:^|\s)(name|amount|unit|ингредиент|количество|кол-во|ед\.?)(?:\s|$)/.test(
+      joined
+    );
+  }
+
+  function compact(text) {
+    return String(text || "").replace(/\s+/g, " ").trim();
+  }
+
+  function tableToText(table) {
+    const lines = [];
+    table.querySelectorAll("tr").forEach((row, index) => {
+      const cells = [...row.querySelectorAll("th, td")]
+        .map((cell) => compact(cell.textContent))
+        .filter(Boolean);
+      if (!cells.length) return;
+      if (index === 0 && isTableHeaderRow(cells)) return;
+      if (cells.length >= 2) {
+        lines.push(`• ${cells[0]} — ${cells.slice(1).join(" ")}`);
+      } else {
+        lines.push(`• ${cells[0]}`);
+      }
+    });
+    return lines.join("\n");
+  }
+
+  function listToText(list) {
+    return [...list.querySelectorAll(":scope > li")]
+      .map((li) => {
+        const text = compact(li.innerText);
+        return text ? `• ${text}` : "";
+      })
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  function blockToText(el) {
+    const tag = el.tagName;
+    if (/^H[1-6]$/i.test(tag)) return compact(el.textContent);
+    if (tag === "TABLE") return tableToText(el);
+    if (tag === "UL" || tag === "OL") return listToText(el);
+    if (tag === "P" || tag === "PRE" || tag === "BLOCKQUOTE") {
+      return compact(el.innerText);
+    }
+    return "";
+  }
+
+  function shouldSkipForCopy(el) {
+    if (
+      el.classList.contains("recipe-scale") ||
+      el.classList.contains("recipe-copy") ||
+      el.classList.contains("note-created") ||
+      el.classList.contains("md-toc") ||
+      el.classList.contains("album-props")
+    ) {
+      return true;
+    }
+    if (/^(IMG|PICTURE|VIDEO|SCRIPT|STYLE|HR)$/i.test(el.tagName)) {
+      return true;
+    }
+    if (
+      el.tagName === "P" &&
+      el.querySelector("img, picture, video") &&
+      !compact(el.textContent)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function recipePlainText() {
+    const parts = [];
+    [...root.children].forEach((child) => {
+      if (shouldSkipForCopy(child)) return;
+      const text = blockToText(child);
+      if (text) parts.push(text);
+    });
+    return parts.join("\n\n").replace(/\n{3,}/g, "\n\n").trim();
+  }
+
+  async function writeClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  }
+
+  function initCopy() {
+    const h1 = root.querySelector("h1");
+    if (!h1) return;
+
+    const looksLikeRecipe = [...root.querySelectorAll("h2, h3, h4")].some(
+      (h) => headingKind(h) === "ingredients" || headingKind(h) === "steps"
+    );
+    if (!looksLikeRecipe) return;
+
+    const wrap = document.createElement("div");
+    wrap.className = "recipe-copy";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "recipe-copy-btn";
+    btn.textContent = "Копировать";
+    btn.setAttribute("aria-label", "Скопировать рецепт");
+
+    let resetTimer = 0;
+    btn.addEventListener("click", async () => {
+      const text = recipePlainText();
+      if (!text) return;
+      try {
+        await writeClipboard(text);
+        btn.textContent = "Скопировано";
+        btn.classList.add("is-done");
+        window.clearTimeout(resetTimer);
+        resetTimer = window.setTimeout(() => {
+          btn.textContent = "Копировать";
+          btn.classList.remove("is-done");
+        }, 1600);
+      } catch (_) {
+        btn.textContent = "Не вышло";
+        window.clearTimeout(resetTimer);
+        resetTimer = window.setTimeout(() => {
+          btn.textContent = "Копировать";
+        }, 1600);
+      }
+    });
+
+    wrap.appendChild(btn);
+
+    const after = h1.nextElementSibling;
+    if (after && after.classList.contains("note-created")) {
+      after.insertAdjacentElement("afterend", wrap);
+    } else {
+      h1.insertAdjacentElement("afterend", wrap);
+    }
+  }
+
   initScale();
   initIngredients();
   initSteps();
+  initCopy();
 })();

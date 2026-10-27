@@ -180,7 +180,8 @@
     margin: -0.35rem 0 1rem;
 }
 
-.md-content .recipe-scale-btn {
+.md-content .recipe-scale-btn,
+.md-content .recipe-copy-btn {
     appearance: none;
     border: 1px solid #ccc;
     background: #fff;
@@ -193,13 +194,19 @@
     cursor: pointer;
 }
 
-.md-content .recipe-scale-btn:hover {
+.md-content .recipe-scale-btn:hover,
+.md-content .recipe-copy-btn:hover {
     border-color: #999;
 }
 
-.md-content .recipe-scale-btn.is-active {
+.md-content .recipe-scale-btn.is-active,
+.md-content .recipe-copy-btn.is-done {
     border-color: #333;
     background: #f0f0f0;
+}
+
+.md-content .recipe-copy {
+    margin: -0.2rem 0 1.1rem;
 }
 
 .md-content .recipe-ingredient,
