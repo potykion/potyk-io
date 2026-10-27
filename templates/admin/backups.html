@@ -1,0 +1,101 @@
+{% extends "admin/_base.html" %}
+{% import "jinja/forms.html" as forms %}
+
+{% block title %}Бекапы{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    .admin-wrap.admin-backups {
+        max-width: 48rem;
+    }
+
+    .admin-backup-actions {
+        margin: 0 0 1.25rem;
+    }
+
+    .admin-backups-meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin: 0 0 0.75rem;
+    }
+
+    .admin-backups-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+        font-size: 0.9rem;
+    }
+
+    .admin-backups-table th,
+    .admin-backups-table td {
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+    }
+
+    .admin-backups-table th {
+        background: #f7f5f0;
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+
+    .admin-backups-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .admin-backups-table .key {
+        font-family: "Source Sans 3", system-ui, sans-serif;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-backups-table .num {
+        white-space: nowrap;
+        color: var(--muted);
+    }
+</style>
+{% endblock %}
+
+{% block admin_main %}
+<div class="admin-backups">
+<h1>Бекапы</h1>
+
+<form class="admin-backup-actions" method="post" action="{{ url_for('admin.backups') }}">
+    {{ form.hidden_tag() }}
+    {{ forms.submit_row(form.submit) }}
+</form>
+
+{% if backups %}
+<p class="admin-backups-meta">В бакете: {{ backups|length }}</p>
+<table class="admin-backups-table">
+    <thead>
+        <tr>
+            <th>Файл</th>
+            <th>ПК</th>
+            <th>Размер</th>
+            <th>Когда</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in backups %}
+        <tr>
+            <td class="key">{{ item.key }}</td>
+            <td>{{ item.pc_name or "—" }}</td>
+            <td class="num">{{ item.size_label }}</td>
+            <td class="num">{{ item.last_modified.strftime('%Y-%m-%d %H:%M') }} UTC</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="admin-empty">В бакете пока нет бекапов.</p>
+{% endif %}
+</div>
+{% endblock %}

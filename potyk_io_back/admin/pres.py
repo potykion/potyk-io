@@ -10,7 +10,7 @@ from flask import (
 )
 from flask_login import login_required
 
-from potyk_io_back.admin.backup import upload_main_db
+from potyk_io_back.admin.backup import list_backups, upload_main_db
 from potyk_io_back.admin.forms import BackupForm, CommitPushForm, NewPostForm
 from potyk_io_back.admin.git_ops import commit_and_push, list_uncommitted
 from potyk_io_back.admin.posts import create_post
@@ -50,15 +50,29 @@ def flash_form_errors(form) -> None:
             flash(message, "error")
 
 
-@admin_bp.route("/", methods=["GET", "POST"])
+@admin_bp.route("/")
 @login_required
 def index():
+    return render_template("admin/index.html")
+
+
+@admin_bp.route("/backups", methods=["GET", "POST"])
+@login_required
+def backups():
     form = BackupForm()
     if form.validate_on_submit():
         result = upload_main_db()
         flash(result.message, "success" if result.ok else "error")
-        return redirect(url_for("admin.index"))
-    return render_template("admin/index.html", form=form)
+        return redirect(url_for("admin.backups"))
+
+    objects, list_error = list_backups()
+    if list_error:
+        flash(list_error, "error")
+    return render_template(
+        "admin/backups.html",
+        form=form,
+        backups=objects,
+    )
 
 
 @admin_bp.route("/posts/new", methods=["GET", "POST"])

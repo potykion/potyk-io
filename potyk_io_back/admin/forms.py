@@ -42,4 +42,4 @@ class CommitPushForm(FlaskForm):
 
 
 class BackupForm(FlaskForm):
-    submit = SubmitField("Бекап")
+    submit = SubmitField("Создать бекап")

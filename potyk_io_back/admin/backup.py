@@ -30,6 +30,31 @@ class BackupResult:
     object_key: str = ""
 
 
+@dataclass(frozen=True)
+class BackupObject:
+    key: str
+    size: int
+    last_modified: datetime
+    pc_name: str
+    stamp: str
+
+    @property
+    def size_label(self) -> str:
+        size = float(self.size)
+        for unit in ("B", "KB", "MB", "GB"):
+            if size < 1024 or unit == "GB":
+                if unit == "B":
+                    return f"{int(size)} {unit}"
+                return f"{size:.1f} {unit}"
+            size /= 1024
+        return f"{self.size} B"
+
+
+_KEY_RE = re.compile(
+    r"^main-(.+)-(\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})\.db$"
+)
+
+
 def pc_name() -> str:
     raw = (
         (os.environ.get("BACKUP_PC_NAME") or "").strip()
@@ -77,6 +102,41 @@ def _consistent_db_copy(src: Path, dest: Path) -> None:
             dest_conn.close()
     finally:
         src_conn.close()
+
+
+def list_backups(*, prefix: str = "main-") -> tuple[list[BackupObject], str | None]:
+    """Список бекапов в бакете (новые сверху). Второй элемент — ошибка или None."""
+    try:
+        client, bucket = _s3_client_and_bucket()
+    except RuntimeError as exc:
+        return [], str(exc)
+
+    items: list[BackupObject] = []
+    try:
+        paginator = client.get_paginator("list_objects_v2")
+        for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
+            for obj in page.get("Contents") or []:
+                key = obj.get("Key") or ""
+                last_modified = obj.get("LastModified")
+                if not key or last_modified is None:
+                    continue
+                if last_modified.tzinfo is None:
+                    last_modified = last_modified.replace(tzinfo=timezone.utc)
+                match = _KEY_RE.match(key)
+                items.append(
+                    BackupObject(
+                        key=key,
+                        size=int(obj.get("Size") or 0),
+                        last_modified=last_modified,
+                        pc_name=match.group(1) if match else "",
+                        stamp=match.group(2) if match else "",
+                    )
+                )
+    except (BotoCoreError, ClientError, OSError) as exc:
+        return [], f"Не удалось получить список: {exc}"
+
+    items.sort(key=lambda item: item.last_modified, reverse=True)
+    return items, None
 
 
 def rotate_backups(

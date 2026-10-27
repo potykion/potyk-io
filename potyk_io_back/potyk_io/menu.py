@@ -743,6 +743,12 @@ def admin_menu_groups(*, local: bool) -> list[MenuGroup]:
             "description": "",
         },
         {
+            "icon": "💾",
+            "title": "Бекапы",
+            "url": "/admin/backups",
+            "description": "",
+        },
+        {
             "icon": "🎬",
             "title": "Кино",
             "url": "/admin/cinema",
