@@ -84,5 +84,5 @@ sudo systemctl reload caddy
 ### Load db from prod to local 
 
 ```sh 
-scp leybovich-nikita@84.201.131.244:/home/leybovich-nikita/potyk-io/instance/main.db instance/main.db
+scp leybovich-nikita@84.201.131.244:/home/leybovich-nikita/potyk-io/instance/main.db instance/prod.db
 ```
