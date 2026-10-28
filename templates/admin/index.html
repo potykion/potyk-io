@@ -4,4 +4,8 @@
 
 {% block admin_main %}
 <h1>Админка</h1>
+
+<p>
+    <a class="btn" href="{{ url_for('admin.download_content') }}">Скачать контент</a>
+</p>
 {% endblock %}
