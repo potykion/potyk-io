@@ -2,7 +2,7 @@
 
 ## Ингредиенты
 
-![croissant-camembert-turkey.png](../../_img/croissant-camembert-turkey.png)
+![croissant-camembert-turkey.png](/static/potyk-io/img/food/croissant-camembert-turkey.png)
 
 ## Приготовление
 

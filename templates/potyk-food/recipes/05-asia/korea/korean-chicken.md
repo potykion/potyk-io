@@ -1,6 +1,6 @@
 # Корейский чикен в соусе Яннём (+ закуски)
 
-![korean-chicken.png](../../_img/korean-chicken.png)
+![korean-chicken.png](/static/potyk-io/img/food/korean-chicken.png)
 
 ## Ингредиенты:
 

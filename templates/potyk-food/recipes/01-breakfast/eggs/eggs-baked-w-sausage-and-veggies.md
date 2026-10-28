@@ -4,7 +4,7 @@
 
 ### Ингредиенты
 
-![eggs-baked-w-sausage-and-veggies.png](../../_img/eggs-baked-w-sausage-and-veggies.png)
+![eggs-baked-w-sausage-and-veggies.png](/static/potyk-io/img/food/eggs-baked-w-sausage-and-veggies.png)
 
 ### Приготовление
 

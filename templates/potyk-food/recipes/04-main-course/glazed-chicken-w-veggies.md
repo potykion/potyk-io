@@ -2,7 +2,7 @@
 
 ## Ингредиенты:
 
-![glazed-chicken-w-veggies.png](../_img/glazed-chicken-w-veggies.png)
+![glazed-chicken-w-veggies.png](/static/potyk-io/img/food/glazed-chicken-w-veggies.png)
 
 - Куриные окорочка (бедро и голень с кожей) 3 шт.
 - Болгарский перец жёлтый 1,5 шт.

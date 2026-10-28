@@ -1,6 +1,6 @@
 # Тефтели с овощами в одной сковороде
 
-![meatballs-w-veggies.png](../_img/meatballs-w-veggies.png)
+![meatballs-w-veggies.png](/static/potyk-io/img/food/meatballs-w-veggies.png)
 
 ## Ингредиенты:
 

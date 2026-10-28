@@ -2,7 +2,7 @@
 
 ## Ингредиенты:
 
-![pasta-ground-beef-spinach.png](../../_img/pasta-ground-beef-spinach.png)
+![pasta-ground-beef-spinach.png](/static/potyk-io/img/food/pasta-ground-beef-spinach.png)
 
 - Свиная шея охлаждённая 550 г
 - Тортильони паста 400 г

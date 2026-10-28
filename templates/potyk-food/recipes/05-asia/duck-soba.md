@@ -1,6 +1,6 @@
 # Соба с утиной грудкой и соусом терияки
 
-![duck-soba.png](../_img/duck-soba.png)
+![duck-soba.png](/static/potyk-io/img/food/duck-soba.png)
 
 ## Ингредиенты:
 - Соба гречневая 150 г

@@ -2,7 +2,7 @@
 
 ## Ингредиенты
 
-![shakshouka.jpg](../../_img/shakshouka.jpg)
+![shakshouka.jpg](/static/potyk-io/img/food/shakshouka.jpg)
 
 | Name                           | Amount Unit |
 |--------------------------------|-------------|

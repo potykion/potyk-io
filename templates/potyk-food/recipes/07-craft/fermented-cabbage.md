@@ -1,6 +1,6 @@
 # Квашеная капуста / Капуста по-гурьевски
 
-![fermented-cabbage.webp](../_img/fermented-cabbage.webp)
+![fermented-cabbage.webp](/static/potyk-io/img/food/fermented-cabbage.webp)
 
 ## Классический вариант
 

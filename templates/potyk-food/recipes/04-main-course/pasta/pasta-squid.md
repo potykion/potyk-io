@@ -2,7 +2,7 @@
 
 ## Ингредиенты
 
-![pasta-squid.png](../../_img/pasta-squid.png)
+![pasta-squid.png](/static/potyk-io/img/food/pasta-squid.png)
 
 ## Ссылки
 
