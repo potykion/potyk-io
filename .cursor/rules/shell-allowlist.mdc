@@ -1,0 +1,34 @@
+---
+description: Почему Pending approval лезет при полном allowlist и как не провоцировать апрув/Confirm в Shell
+alwaysApply: true
+---
+
+# Shell allowlist ≠ «никогда не спросит»
+
+В репо уже жирный `terminalAllowlist` (`.cursor/permissions.json` + `~/.cursor`). Это **не** значит, что любая команда пройдёт без карточки Pending approval / без Confirm.
+
+## Как Cursor матчит
+
+- Матч по **первому слову** сегмента команды (бинарь/cmdlet), не по префиксу с аргументами и не по пути к `.py`/`.ps1`.
+- Строка с `;` режется на **несколько** команд. Апрув, если **хоть один** сегмент не в allowlist.
+- `autoRun.allow_instructions` — только намёк Auto-review, **не** enforcement. Не рассчитывать на них.
+
+Подробности и как дописать allowlist — skill `shell-no-approval`.
+
+## Почему «всё в allowlist», а всё равно просит
+
+1. **Хвост `;`-цепочки** — забытый бинарь (`Remove-Item`, `pytest`, `if`, …) валит весь вызов.
+2. **Парсер режет неожиданно** — пайпы/вложенные `{ … }`, кавычки, `git mv -- path` в середине ForEach; сегмент начинается не с того, что в allowlist.
+3. **Не Cursor, а PowerShell Confirm** — `Remove-Item` на непустой каталог без `-Recurse -Force` / `-Confirm:$false` в NonInteractive орёт про Read/Prompt. Выглядит как «спросил апрув», хотя это Confirm шелла.
+
+## Как писать Shell (чтобы в других чатах не ловить)
+
+- **Один бинарь — один Shell-вызов.** Не склеивать `git …; Remove-Item …; Get-ChildItem …`.
+- Удаление папок/файлов: сразу `Remove-Item -Recurse -Force -Confirm:$false` (или `-ErrorAction SilentlyContinue` только когда реально ок проглотить отсутствие).
+- Не надеяться, что «уже в allowlist → можно длинную кашу». Короткий вызов проще и реже ломает матч.
+- Если карточка всё же вылезла — не ныть юзеру про Windows; по skill `shell-no-approval` дописать **конкретный** недостающий бинарь и/или разбить команду.
+
+## Чего не делать
+
+- Не объяснять каждый раз «allowlist уже полный» и параллельно слать `;`-простыни.
+- Не звать `/shell-no-approval` вместо того, чтобы сначала упростить команду.
