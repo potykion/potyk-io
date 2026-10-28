@@ -1,0 +1,16 @@
+{% extends "potyk-io/_base.html" %}
+
+{% block title %}Оффлайн — potyk-food{% endblock %}
+
+{% block head_stylesheets %}
+{{ super() }}
+<link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+<link rel="stylesheet" href="/static/potyk-io/css/food.css">
+{% endblock %}
+
+{% block main_class %}main-m md-content{% endblock %}
+
+{% block main %}
+<h1>Оффлайн</h1>
+<p>Нет сети. Открой <a href="/food">рецепты</a> из кэша — если уже заходил в potyk-food онлайн, они должны быть здесь.</p>
+{% endblock %}

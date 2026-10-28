@@ -66,6 +66,7 @@ from potyk_io_back.potyk_io.md_rendering.hashtags import linkify_hashtags
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
 from potyk_io_back.potyk_io.md_rendering.render import MD_EXTENSIONS, MD_EXTENSION_CONFIGS
 from potyk_io_back.potyk_io.menu import FOOD_MENU_GROUPS, MENU_GROUPS
+from potyk_io_back.potyk_io.offline import REPO_ROOT, build_offline_manifest
 
 potyk_io_bp = Blueprint("potyk_io", __name__)
 
@@ -660,6 +661,33 @@ def findings_delete(finding_id: int):
 @potyk_io_bp.route("/food/")
 def food_index():
     return render_template("potyk-food/index.html")
+
+
+@potyk_io_bp.get("/food/offline")
+@potyk_io_bp.get("/food/offline/")
+def food_offline():
+    return render_template("potyk-food/offline.html")
+
+
+@potyk_io_bp.get("/food/offline.json")
+def food_offline_json():
+    payload = build_offline_manifest()
+    response = flask.jsonify(payload)
+    response.headers["Cache-Control"] = "no-cache"
+    return response
+
+
+@potyk_io_bp.get("/sw.js")
+def food_service_worker():
+    manifest = build_offline_manifest()
+    sw_path = REPO_ROOT / "static" / "potyk-io" / "sw.js"
+    body = sw_path.read_text(encoding="utf-8").replace(
+        "__CACHE_VERSION__", str(manifest["version"])
+    )
+    response = flask.Response(body, mimetype="application/javascript; charset=utf-8")
+    response.headers["Cache-Control"] = "no-cache"
+    response.headers["Service-Worker-Allowed"] = "/"
+    return response
 
 
 @potyk_io_bp.get("/food/rest")

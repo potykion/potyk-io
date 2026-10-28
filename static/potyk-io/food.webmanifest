@@ -1,0 +1,22 @@
+{
+  "name": "potyk-food",
+  "short_name": "food",
+  "description": "Рецепты potyk-food",
+  "start_url": "/food",
+  "scope": "/food",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/static/potyk-io/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/potyk-io/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
