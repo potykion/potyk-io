@@ -2,6 +2,19 @@
 const CACHE_VERSION = "__CACHE_VERSION__";
 const CACHE_NAME = "potyk-io-" + CACHE_VERSION;
 
+const APP_PREFIXES = [
+  "/food",
+  "/travel",
+  "/tech",
+  "/culture",
+  "/mu",
+  "/findings",
+  "/prikols",
+  "/docs",
+  "/money",
+  "/invest",
+];
+
 async function precacheFromManifest() {
   const res = await fetch("/offline.json", { cache: "no-store" });
   if (!res.ok) {
@@ -13,10 +26,18 @@ async function precacheFromManifest() {
   await Promise.all(
     urls.map(async (url) => {
       try {
-        const response = await fetch(url, { cache: "reload" });
-        if (response.ok) {
-          await cache.put(url, response);
+        const response = await fetch(url, { cache: "reload", redirect: "follow" });
+        if (!response.ok) {
+          return;
         }
+        // Redirected responses can't always be put() as-is — rebuild.
+        const body = await response.blob();
+        const cached = new Response(body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: response.headers,
+        });
+        await cache.put(url, cached);
       } catch (e) {
         /* skip failed URL — don't fail whole install */
       }
@@ -50,16 +71,25 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-function isHomePath(pathname) {
-  return pathname === "/";
-}
-
-function isFoodPath(pathname) {
-  return pathname === "/food" || pathname.startsWith("/food/");
+function isBlockedPath(pathname) {
+  return (
+    pathname === "/fin" ||
+    pathname.startsWith("/fin/") ||
+    pathname === "/invest/deals" ||
+    pathname.startsWith("/invest/deals/")
+  );
 }
 
 function isAppPath(pathname) {
-  return isHomePath(pathname) || isFoodPath(pathname);
+  if (isBlockedPath(pathname)) {
+    return false;
+  }
+  if (pathname === "/") {
+    return true;
+  }
+  return APP_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+  );
 }
 
 function isStaticPath(pathname) {

@@ -59,5 +59,10 @@
     {% block layout_script %}{% endblock %}
     {% block script %}{% endblock %}
     {# font-picker: /static/jinja/js/font-picker.js — подключить сюда, чтобы снова включить #}
+    <script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js").catch(function () {});
+    }
+    </script>
 </body>
 </html>
