@@ -669,16 +669,25 @@ def food_offline():
     return render_template("potyk-food/offline.html")
 
 
-@potyk_io_bp.get("/food/offline.json")
-def food_offline_json():
+def _offline_json_response():
     payload = build_offline_manifest()
     response = flask.jsonify(payload)
     response.headers["Cache-Control"] = "no-cache"
     return response
 
 
+@potyk_io_bp.get("/offline.json")
+def offline_json():
+    return _offline_json_response()
+
+
+@potyk_io_bp.get("/food/offline.json")
+def food_offline_json():
+    return _offline_json_response()
+
+
 @potyk_io_bp.get("/sw.js")
-def food_service_worker():
+def service_worker():
     manifest = build_offline_manifest()
     sw_path = REPO_ROOT / "static" / "potyk-io" / "sw.js"
     body = sw_path.read_text(encoding="utf-8").replace(

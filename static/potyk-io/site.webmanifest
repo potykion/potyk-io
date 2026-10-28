@@ -1,6 +1,9 @@
 {
   "name": "potyk.io",
   "short_name": "potyk.io",
+  "description": "potyk.io оффлайн",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "/static/potyk-io/android-chrome-192x192.png",

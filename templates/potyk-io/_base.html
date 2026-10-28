@@ -66,11 +66,9 @@
 {% block layout_script %}
     {% include "jinja/_menu_script.html" %}
     {% include "jinja/_search_script.html" %}
-    {% if request.path.startswith('/food') %}
     <script>
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/sw.js").catch(function () {});
     }
     </script>
-    {% endif %}
 {% endblock %}

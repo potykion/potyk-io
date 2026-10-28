@@ -1,4 +1,4 @@
-"""Оффлайн-precache для potyk-food (рецепты + shell)."""
+"""Оффлайн-precache: главная potyk.io + potyk-food (рецепты)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import hashlib
 from pathlib import Path, PurePosixPath
 from urllib.parse import quote
 
-from potyk_io_back.potyk_io.md_rendering.templates import FOOD_TEMPLATES_DIR
+from potyk_io_back.potyk_io.md_rendering.templates import FOOD_TEMPLATES_DIR, TEMPLATES_DIR
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 STATIC_ROOT = REPO_ROOT / "static"
@@ -17,19 +17,25 @@ SHELL_URLS = [
     "/static/jinja/js/side-panel.js",
     "/static/potyk-io/css/sidebar.css",
     "/static/potyk-io/css/index.css",
+    "/static/potyk-io/css/index_v2.css",
+    "/static/potyk-io/css/card-grid.css",
     "/static/potyk-io/css/md-content.css",
     "/static/potyk-io/css/food.css",
     "/static/potyk-io/js/recipe-page.js",
+    "/static/potyk-io/img/potyk-io-logo.png",
+    "/static/potyk-io/img/globe.gif",
     "/static/potyk-io/favicon.ico",
     "/static/potyk-io/favicon-16x16.png",
     "/static/potyk-io/favicon-32x32.png",
     "/static/potyk-io/apple-touch-icon.png",
     "/static/potyk-io/android-chrome-192x192.png",
     "/static/potyk-io/android-chrome-512x512.png",
+    "/static/potyk-io/site.webmanifest",
     "/static/potyk-io/food.webmanifest",
 ]
 
 CORE_PAGES = [
+    "/",
     "/food",
     "/food/offline",
 ]
@@ -80,6 +86,10 @@ def _food_image_urls() -> list[str]:
 def _fingerprint(urls: list[str]) -> str:
     h = hashlib.sha256()
     h.update("\n".join(urls).encode("utf-8"))
+    home = TEMPLATES_DIR / "index.html"
+    if home.is_file():
+        st = home.stat()
+        h.update(f"home:{st.st_mtime_ns}:{st.st_size}\n".encode("utf-8"))
     recipes = FOOD_TEMPLATES_DIR / "recipes"
     if recipes.is_dir():
         for path in sorted(recipes.rglob("*")):
@@ -90,10 +100,10 @@ def _fingerprint(urls: list[str]) -> str:
             st = path.stat()
             rel = path.relative_to(FOOD_TEMPLATES_DIR).as_posix()
             h.update(f"{rel}:{st.st_mtime_ns}:{st.st_size}\n".encode("utf-8"))
-    index = FOOD_TEMPLATES_DIR / "index.html"
-    if index.is_file():
-        st = index.stat()
-        h.update(f"index.html:{st.st_mtime_ns}:{st.st_size}\n".encode("utf-8"))
+    food_index = FOOD_TEMPLATES_DIR / "index.html"
+    if food_index.is_file():
+        st = food_index.stat()
+        h.update(f"food-index:{st.st_mtime_ns}:{st.st_size}\n".encode("utf-8"))
     for url in SHELL_URLS:
         disk = STATIC_ROOT / url.removeprefix("/static/")
         if disk.is_file():
@@ -109,7 +119,6 @@ def build_offline_manifest() -> dict[str, str | list[str]]:
         *_recipe_page_urls(),
         *_food_image_urls(),
     ]
-    # stable unique order
     deduped = sorted(set(urls))
     version = _fingerprint(deduped)
     return {"version": version, "urls": deduped}

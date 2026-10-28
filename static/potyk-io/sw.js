@@ -1,9 +1,9 @@
-/* potyk-food offline service worker — version injected as __CACHE_VERSION__ */
+/* potyk.io offline service worker — version injected as __CACHE_VERSION__ */
 const CACHE_VERSION = "__CACHE_VERSION__";
-const CACHE_NAME = "potyk-food-" + CACHE_VERSION;
+const CACHE_NAME = "potyk-io-" + CACHE_VERSION;
 
 async function precacheFromManifest() {
-  const res = await fetch("/food/offline.json", { cache: "no-store" });
+  const res = await fetch("/offline.json", { cache: "no-store" });
   if (!res.ok) {
     throw new Error("offline.json " + res.status);
   }
@@ -38,7 +38,11 @@ self.addEventListener("activate", (event) => {
       const keys = await caches.keys();
       await Promise.all(
         keys
-          .filter((key) => key.startsWith("potyk-food-") && key !== CACHE_NAME)
+          .filter(
+            (key) =>
+              (key.startsWith("potyk-io-") || key.startsWith("potyk-food-")) &&
+              key !== CACHE_NAME
+          )
           .map((key) => caches.delete(key))
       );
       await self.clients.claim();
@@ -46,8 +50,16 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+function isHomePath(pathname) {
+  return pathname === "/";
+}
+
 function isFoodPath(pathname) {
   return pathname === "/food" || pathname.startsWith("/food/");
+}
+
+function isAppPath(pathname) {
+  return isHomePath(pathname) || isFoodPath(pathname);
 }
 
 function isStaticPath(pathname) {
@@ -83,9 +95,9 @@ self.addEventListener("fetch", (event) => {
   }
 
   const path = url.pathname;
-  const food = isFoodPath(path);
+  const app = isAppPath(path);
   const stat = isStaticPath(path);
-  if (!food && !stat) {
+  if (!app && !stat) {
     return;
   }
 
@@ -116,6 +128,7 @@ self.addEventListener("fetch", (event) => {
       } catch (e) {
         if (request.mode === "navigate") {
           const fallback =
+            (await cache.match("/")) ||
             (await cache.match("/food/offline")) ||
             (await cache.match("/food"));
           if (fallback) {
