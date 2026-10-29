@@ -660,7 +660,12 @@ def findings_delete(finding_id: int):
 @potyk_io_bp.route("/food")
 @potyk_io_bp.route("/food/")
 def food_index():
-    return render_template("potyk-food/index.html")
+    from potyk_io_back.potyk_io.food_recipes import load_recipe_sections
+
+    return render_template(
+        "potyk-food/index.html",
+        recipe_sections=load_recipe_sections(),
+    )
 
 
 @potyk_io_bp.get("/food/offline")

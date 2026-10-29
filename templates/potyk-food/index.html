@@ -15,160 +15,27 @@
     <h1>potyk-food</h1>
 
     <div class="food-cats">
+        {% for section in recipe_sections %}
         <section class="card food-cat">
-            <h2>🍳 Завтраки</h2>
+            <h2>{% if section.icon %}{{ section.icon }} {% endif %}{{ section.title }}</h2>
 
-            <h3>🍞 Хлеб</h3>
+            {% if section.pages %}
             <ul>
-                <li><a href="/food/recipes/01-breakfast/bread/tuna-riet">Риет из тунца ака Тунцовая намазка</a></li>
-                <li><a href="/food/recipes/01-breakfast/bread/salmon-riet">Риет из горбуши</a></li>
-                <li><a href="/food/recipes/01-breakfast/bread/shrimp-saganaki">Тост Креветки Саганаки</a></li>
-                <li><a href="/food/recipes/01-breakfast/bread/croissant-camembert-turkey">Круассан с индейкой, сыром камамбер и брусничным вареньем</a></li>
-                <li><a href="/food/recipes/01-breakfast/bread/mintai-avocado-toast">Бутерброд с минтаем и авокадо</a></li>
-                <li><a href="/food/recipes/01-breakfast/bread/hot-sandwich-ketchup-sausage-cheese">Горячий бутер с кетчупом, колбасой и сыром</a></li>
-                <li><a href="/food/recipes/01-breakfast/bread/benedict">Яйца Бенедикт</a></li>
-                <li><a href="/food/recipes/01-breakfast/bread/breakfast-burrito">Завтрак-буррито (Breakfast Burrito)</a></li>
+                {% for page in section.pages %}
+                <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                {% endfor %}
             </ul>
+            {% endif %}
 
-            <h3>🥚 Яйца</h3>
+            {% for sub in section.subsections %}
+            <h3>{% if sub.icon %}{{ sub.icon }} {% endif %}{{ sub.title }}</h3>
             <ul>
-                <li><a href="/food/recipes/guides/eggs">Гайд на яйца</a></li>
-                <li><a href="/food/recipes/01-breakfast/eggs/shakshouka">Шакшука</a></li>
-                <li><a href="/food/recipes/01-breakfast/eggs/huevos-rancheros">Уэвос Ранчерос (Huevos Rancheros)</a></li>
-                <li><a href="/food/recipes/01-breakfast/eggs/eggs-baked-w-sausage-and-veggies">Глазунья/Омлет запеченая с колбасками/овощами/сыром / Фриратта</a></li>
-                <li><a href="/food/recipes/01-breakfast/eggs/tuna-eggs">Скрембл с тунцом</a></li>
+                {% for page in sub.pages %}
+                <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                {% endfor %}
             </ul>
-
-            <h3>🥞 Сырники / Блинбчики и тд</h3>
-            <ul>
-                <li><a href="/food/recipes/01-breakfast/pancakes/syrniki">Сырники</a></li>
-                <li><a href="/food/recipes/01-breakfast/pancakes/blyni">Блины</a></li>
-                <li><a href="/food/recipes/01-breakfast/pancakes/pancakes">Оладьи</a></li>
-                <li><a href="/food/recipes/01-breakfast/pancakes/zapekanka">Запеканка</a></li>
-            </ul>
-
-            <h3>🥣 Каши</h3>
-            <ul>
-                <li><a href="/food/recipes/01-breakfast/rice-porridge-pumpkin">Рисовая каша с тыквой</a></li>
-            </ul>
+            {% endfor %}
         </section>
-
-        <section class="card food-cat">
-            <h2>🥗 Салаты</h2>
-            <ul>
-                <li><a href="/food/recipes/02-salad/celery-apples">Салат с сельдереем с яблоками</a></li>
-                <li><a href="/food/recipes/02-salad/salad-duck">Салат с уткой</a></li>
-                <li><a href="/food/recipes/02-salad/cabbage-vitamin">Салат из капусты «Витаминный»</a></li>
-            </ul>
-        </section>
-
-        <section class="card food-cat">
-            <h2>🍲 Супы</h2>
-            <ul>
-                <li><a href="/food/recipes/03-soup/chicken-soup">Куриный суп</a></li>
-                <li><a href="/food/recipes/03-soup/borsh">Борщ</a></li>
-            </ul>
-        </section>
-
-        <section class="card food-cat">
-            <h2>🍽️ Основные блюда</h2>
-            <ul>
-                <li><a href="/food/recipes/04-main-course/meatballs-w-veggies">Тефтели с овощами в одной сковороде</a></li>
-                <li><a href="/food/recipes/04-main-course/chicken-w-rice-spain">Курица с рисом по-испански</a></li>
-                <li><a href="/food/recipes/04-main-course/glazed-chicken-w-veggies">Куриные окорочка с овощами</a></li>
-                <li><a href="/food/recipes/04-main-course/rabbit">Кролик с розмарином и розовым перцем</a></li>
-                <li><a href="/food/recipes/04-main-course/pork-w-apples">Свиные медальоны с яблочно-горчичным соусом</a></li>
-                <li><a href="/food/recipes/04-main-course/ragout-celery-root">Рагу с говядиной и корнем сельдерея</a></li>
-                <li><a href="/food/recipes/04-main-course/bigus">Бигус</a></li>
-                <li><a href="/food/recipes/04-main-course/ezhiki">Ёжики</a></li>
-                <li><a href="/food/recipes/04-main-course/chicken-w-potato">Жаркое из курицы с картошкой</a></li>
-                <li><a href="/food/recipes/04-main-course/chicken-cordon-bleu">Кордон блю</a></li>
-                <li><a href="/food/recipes/04-main-course/beshbarmak">Бешбармак</a></li>
-                <li><a href="/food/recipes/04-main-course/plov">Плов, который всегда получается</a></li>
-                <li><a href="/food/recipes/04-main-course/buckwheat-w-chicken">Гречка с куриным филе</a></li>
-                <li><a href="/food/recipes/04-main-course/baked-chicken-w-buckwheat-mushrooms">Запечённая курица с гречкой и грибами</a></li>
-                <li><a href="/food/recipes/04-main-course/fish-w-tomatoes-olives">Рыба, запеченная с помидорами и оливками по-средиземноморски</a></li>
-                <li><a href="/food/recipes/04-main-course/lazy-golubtsy">Ленивые голубцы в духовке</a></li>
-                <li><a href="/food/recipes/04-main-course/ratatouille">Рататуй (овощное рагу)</a></li>
-                <li><a href="/food/recipes/04-main-course/shepherds-pie">Пастуший пирог (Shepherd's Pie)</a></li>
-                <li><a href="/food/recipes/04-main-course/stuffed-pepper">Фаршированный болгарский перец</a></li>
-            </ul>
-
-            <h3>Субпродукты</h3>
-            <ul>
-                <li><a href="/food/recipes/04-main-course/offal/liver-w-apples">Печень с яблоками по-берлински</a></li>
-                <li><a href="/food/recipes/04-main-course/offal/liver-stroganoff">Печень говяжья по-строгановски</a></li>
-                <li><a href="/food/recipes/04-main-course/offal/heart-stroganoff">Сердечки по-строгоновски</a></li>
-            </ul>
-
-            <h3>Грузинская</h3>
-            <ul>
-                <li><a href="/food/recipes/04-main-course/georgian/chashushuli">Чашушули</a></li>
-                <li><a href="/food/recipes/04-main-course/georgian/chkmeruli">Чкмерули (курица по-грузински)</a></li>
-            </ul>
-
-            <h3>🍝 Паста</h3>
-            <ul>
-                <li><a href="/food/recipes/04-main-course/pasta/pasta-carbonara">Карбонара</a></li>
-                <li><a href="/food/recipes/04-main-course/pasta/pasta-ground-beef-spinach">Паста с мясным рагу и шпинатом</a></li>
-                <li><a href="/food/recipes/04-main-course/pasta/pasta-squid">Паста по-французски с кальмарами</a></li>
-                <li><a href="/food/recipes/04-main-course/pasta/pasta-w-pork-tomato">Макароны с мясом в томатном соусе</a></li>
-            </ul>
-
-            <h3>💨 Аэрогриль</h3>
-            <ul>
-                <li><a href="/food/recipes/04-main-course/air-fryer/air-fryer-chicken">Куриные крылья в аэрогрилле</a></li>
-                <li><a href="/food/recipes/04-main-course/air-fryer/air-fryer-turkey-cutlets">Котлеты из индейки в аэрогриле</a></li>
-            </ul>
-        </section>
-
-        <section class="card food-cat">
-            <h2>🌏 Азия</h2>
-            <ul>
-                <li><a href="/food/recipes/05-asia/beef-yaki-udon">Яки удон с говядиной</a></li>
-                <li><a href="/food/recipes/05-asia/duck-soba">Соба с утиной грудкой и соусом терияки</a></li>
-                <li><a href="/food/recipes/05-asia/glass-noodles-shrimp">Стеклянная лапша с креветками</a></li>
-                <li><a href="/food/recipes/05-asia/japanese-curry">Японский карри (S&B Torokeru)</a></li>
-            </ul>
-
-            <h3>🇨🇳 Китайская кухня</h3>
-            <ul>
-                <li><a href="/food/recipes/05-asia/china/chicken-rice">Курица в соевом соусе с рисом</a></li>
-                <li><a href="/food/recipes/05-asia/china/mapo-tofu">Мапо Тофу</a></li>
-            </ul>
-
-            <h3>🇰🇷 Корейская кухня</h3>
-            <ul>
-                <li><a href="/food/recipes/05-asia/korea/korean-chicken">Корейский чикен в соусе Яннём</a></li>
-                <li><a href="/food/recipes/05-asia/korea/bulgogi">Пульгоги</a></li>
-                <li><a href="https://www.youtube.com/watch?v=mvsUjHd0Na4">Кимчи</a></li>
-            </ul>
-        </section>
-
-        <section class="card food-cat">
-            <h2>🥧 Десерты</h2>
-            <ul>
-                <li><a href="/food/recipes/06-dessert/brownie">Брауни с вишней</a></li>
-                <li><a href="/food/recipes/06-dessert/charlotte-w-apples">Шарлотка с яблоками</a></li>
-                <li><a href="/food/recipes/06-dessert/french-toast">Гренки с сахаром</a></li>
-                <li><a href="/food/recipes/06-dessert/chocolate-sausage">Кондитерская колбаска</a></li>
-                <li><a href="/food/recipes/06-dessert/pumpkin-cottage-zapekanka">Пряная тыквенная запеканка с манкой</a></li>
-            </ul>
-        </section>
-
-        <section class="card food-cat">
-            <h2>🪓 Крафт</h2>
-
-            <h3>🫙 Ферментация</h3>
-            <ul>
-                <li><a href="/food/recipes/07-craft/fermented-cabbage">Квашеная капуста / Капуста по-гурьевски</a></li>
-                <li><a href="https://www.youtube.com/watch?v=mvsUjHd0Na4">Кимчи</a></li>
-            </ul>
-
-            <h3>🌭 Колбасные изделия</h3>
-            <ul>
-                <li><a href="/food/recipes/07-craft/sausage-turkey">Колбаски из индейки</a></li>
-            </ul>
-        </section>
+        {% endfor %}
     </div>
 {% endblock %}
