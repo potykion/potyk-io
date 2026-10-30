@@ -5,7 +5,9 @@
 {% block style %}
 {{ super() }}
 <link rel="stylesheet" href="/static/potyk-io/css/index.css">
+<link rel="stylesheet" href="/static/potyk-io/css/index_v2.css">
 <link rel="stylesheet" href="/static/potyk-io/css/md-content.css">
+<link rel="stylesheet" href="/static/potyk-io/css/meditation.css">
 {% endblock %}
 
 {% block main %}
@@ -13,4 +15,22 @@
 <div class="flex-center" style="color: #9f9f9f; margin-bottom: 24px;">
     <span>здоровье</span>
 </div>
+
+<div class="flex-center">
+    <div class="card index-v2-widget index-v2-widget--meditation">
+        <div class="flex-center">
+            <a class="index-v2-widget__title-link" href="/health/meditation">
+                <h3 class="index-v2-widget__title">Медитировал?</h3>
+            </a>
+        </div>
+        <div class="flex-center">
+            <button type="button" class="meditation-check meditation-check--widget" aria-label="Отметить медитацию">✓</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script src="/static/potyk-io/js/meditation.js"></script>
 {% endblock %}

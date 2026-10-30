@@ -16,6 +16,7 @@ import potyk_io_back.potyk_io.note_votes.entities  # noqa: F401 — register mod
 import potyk_io_back.culture.entities  # noqa: F401 — register models
 import potyk_io_back.potyk_io.restaurants.entities  # noqa: F401 — register models
 import potyk_io_back.game.entities  # noqa: F401 — register models
+import potyk_io_back.health.entities  # noqa: F401 — register models
 
 config = context.config
 

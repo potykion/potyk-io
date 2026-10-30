@@ -195,7 +195,11 @@ def _index_fin_context() -> dict:
 
 @potyk_io_bp.route("/")
 def index():
-    ctx = _index_fin_context() if current_user.is_authenticated else {}
+    if current_user.is_authenticated:
+        ctx = _index_fin_context()
+        ctx["show_meditation_widget"] = True
+    else:
+        ctx = {}
     return flask.render_template("potyk-io/index.html", **ctx)
 
 

@@ -1,8 +1,9 @@
 from pathlib import Path, PurePosixPath
 
-from flask import Blueprint, abort, render_template, request, send_file
+from flask import Blueprint, abort, jsonify, render_template, request, send_file
 from flask_login import login_required
 
+from potyk_io_back.health.entities import add_meditation, meditation_stats
 from potyk_io_back.potyk_io.md_rendering import (
     list_folder_pages,
     render_body_html,
@@ -85,6 +86,19 @@ def render_health_markdown(file: Path):
 @health_bp.get("/")
 def index():
     return render_template("potyk-health/index.html")
+
+
+@health_bp.get("/meditation")
+def meditation_page():
+    return render_template(
+        "potyk-health/meditation.html",
+        stats=meditation_stats(),
+    )
+
+
+@health_bp.post("/meditation")
+def meditation_add():
+    return jsonify({"ok": True, **add_meditation()})
 
 
 @health_bp.route("/<path:page_path>")

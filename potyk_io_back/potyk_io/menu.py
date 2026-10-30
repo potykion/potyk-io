@@ -204,6 +204,12 @@ HEALTH_MENU_GROUPS: list[MenuGroup] = [
         "title": "potyk-health",
         "links": [
             {
+                "icon": "🧘",
+                "title": "Медитации",
+                "url": "/health/meditation",
+                "description": "",
+            },
+            {
                 "icon": "🏃",
                 "title": "Спорт",
                 "url": "/health/sport",

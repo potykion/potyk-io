@@ -3,6 +3,9 @@
 {% block style %}
     <link rel="stylesheet" href="/static/potyk-io/css/index.css">
     <link rel="stylesheet" href="/static/potyk-io/css/index_v2.css">
+    {% if show_meditation_widget %}
+    <link rel="stylesheet" href="/static/potyk-io/css/meditation.css">
+    {% endif %}
 {% endblock %}
 
 {% block main %}
@@ -34,8 +37,27 @@
             </dl>
         </a>
         {% endif %}
+        {% if show_meditation_widget %}
+        <div class="card index-v2-widget index-v2-widget--meditation">
+            <div class="flex-center">
+                <a class="index-v2-widget__title-link" href="/health/meditation">
+                    <h3 class="index-v2-widget__title">Медитировал?</h3>
+                </a>
+            </div>
+            <div class="flex-center">
+                <button type="button" class="meditation-check meditation-check--widget" aria-label="Отметить медитацию">✓</button>
+            </div>
+        </div>
+        {% endif %}
         <a class="card card-text" href="/mu/blog/2026">
             <h3>Музыка в 2026: что в тренде, что слушать</h3>
         </a>
     </div>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+{% if show_meditation_widget %}
+<script src="/static/potyk-io/js/meditation.js"></script>
+{% endif %}
 {% endblock %}
