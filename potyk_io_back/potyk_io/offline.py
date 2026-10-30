@@ -274,13 +274,9 @@ def _content_static_urls() -> list[str]:
 def _fingerprint(urls: list[str]) -> str:
     h = hashlib.sha256()
     h.update("\n".join(urls).encode("utf-8"))
-    for path in sorted(_iter_content_files(), key=lambda p: p.as_posix()):
-        try:
-            st = path.stat()
-        except OSError:
+    for url in urls:
+        if not url.startswith("/static/"):
             continue
-        h.update(f"{path.as_posix()}:{st.st_mtime_ns}:{st.st_size}\n".encode("utf-8"))
-    for url in SHELL_URLS:
         disk = STATIC_ROOT / url.removeprefix("/static/")
         if disk.is_file():
             st = disk.stat()
@@ -296,24 +292,36 @@ def _with_slash_variants(urls: list[str]) -> list[str]:
     return sorted(out)
 
 
-def build_offline_manifest() -> dict[str, str | list[str]]:
-    urls = [
-        *CORE_PAGES,
-        *SHELL_URLS,
-        *_recipe_page_urls(),
-        *_food_image_urls(),
-        *_rglob_page_urls(TRAVEL_TEMPLATES_DIR, "/travel"),
-        *_rglob_page_urls(TECH_TEMPLATES_DIR, "/tech"),
-        *_rglob_page_urls(CULTURE_TEMPLATES_DIR, "/culture"),
-        *_rglob_page_urls(MU_TEMPLATES_DIR, "/mu"),
-        *_rglob_page_urls(DOCS_TEMPLATES_DIR, "/docs"),
-        *_docs_folder_urls(),
-        *_content_static_urls(),
-    ]
-    # encode non-ascii page paths (e.g. /travel/plans/Грузия)
-    normalized = [
+def _encode_list(urls: list[str]) -> list[str]:
+    return [
         _encode_url(u) if any(ord(ch) > 127 for ch in u) else u for u in urls
     ]
-    deduped = _with_slash_variants(normalized)
-    version = _fingerprint(deduped)
-    return {"version": version, "urls": deduped}
+
+
+def build_shell_urls() -> list[str]:
+    """Лёгкий набор для install SW — без массового обхода разделов."""
+    return sorted(set(_encode_list(["/", *SHELL_URLS])))
+
+
+def build_offline_manifest() -> dict[str, str | list[str]]:
+    shell = build_shell_urls()
+    urls = _with_slash_variants(
+        _encode_list(
+            [
+                *CORE_PAGES,
+                *SHELL_URLS,
+                *_recipe_page_urls(),
+                *_food_image_urls(),
+                *_rglob_page_urls(TRAVEL_TEMPLATES_DIR, "/travel"),
+                *_rglob_page_urls(TECH_TEMPLATES_DIR, "/tech"),
+                *_rglob_page_urls(CULTURE_TEMPLATES_DIR, "/culture"),
+                *_rglob_page_urls(MU_TEMPLATES_DIR, "/mu"),
+                *_rglob_page_urls(DOCS_TEMPLATES_DIR, "/docs"),
+                *_docs_folder_urls(),
+                *_content_static_urls(),
+            ]
+        )
+    )
+    # version только от shell — иначе каждый правленый md сбрасывал бы SW-кэш
+    version = _fingerprint(shell)
+    return {"version": version, "shell": shell, "urls": urls}

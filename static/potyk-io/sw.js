@@ -1,6 +1,7 @@
 /* potyk.io offline service worker — version injected as __CACHE_VERSION__ */
 const CACHE_VERSION = "__CACHE_VERSION__";
-const CACHE_NAME = "potyk-io-" + CACHE_VERSION;
+const SHELL_CACHE = "potyk-io-shell-" + CACHE_VERSION;
+const RUNTIME_CACHE = "potyk-io-runtime";
 
 const APP_PREFIXES = [
   "/food",
@@ -15,31 +16,37 @@ const APP_PREFIXES = [
   "/invest",
 ];
 
-async function precacheFromManifest() {
+async function putInCache(cache, url, response) {
+  const body = await response.blob();
+  const cached = new Response(body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+  await cache.put(url, cached);
+}
+
+async function precacheShell() {
   const res = await fetch("/offline.json", { cache: "no-store" });
   if (!res.ok) {
     throw new Error("offline.json " + res.status);
   }
   const data = await res.json();
-  const urls = Array.isArray(data.urls) ? data.urls : [];
-  const cache = await caches.open(CACHE_NAME);
+  const urls = Array.isArray(data.shell)
+    ? data.shell
+    : Array.isArray(data.urls)
+      ? data.urls
+      : [];
+  const cache = await caches.open(SHELL_CACHE);
   await Promise.all(
     urls.map(async (url) => {
       try {
         const response = await fetch(url, { cache: "reload", redirect: "follow" });
-        if (!response.ok) {
-          return;
+        if (response.ok) {
+          await putInCache(cache, url, response);
         }
-        // Redirected responses can't always be put() as-is — rebuild.
-        const body = await response.blob();
-        const cached = new Response(body, {
-          status: response.status,
-          statusText: response.statusText,
-          headers: response.headers,
-        });
-        await cache.put(url, cached);
       } catch (e) {
-        /* skip failed URL — don't fail whole install */
+        /* skip failed URL */
       }
     })
   );
@@ -47,7 +54,7 @@ async function precacheFromManifest() {
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    precacheFromManifest()
+    precacheShell()
       .then(() => self.skipWaiting())
       .catch(() => self.skipWaiting())
   );
@@ -61,9 +68,25 @@ self.addEventListener("activate", (event) => {
         keys
           .filter(
             (key) =>
-              (key.startsWith("potyk-io-") || key.startsWith("potyk-food-")) &&
-              key !== CACHE_NAME
+              key.startsWith("potyk-io-shell-") &&
+              key !== SHELL_CACHE
           )
+          .map((key) => caches.delete(key))
+      );
+      // legacy full-precache caches
+      await Promise.all(
+        keys
+          .filter(
+            (key) =>
+              key.startsWith("potyk-io-") &&
+              !key.startsWith("potyk-io-shell-") &&
+              key !== RUNTIME_CACHE
+          )
+          .map((key) => caches.delete(key))
+      );
+      await Promise.all(
+        keys
+          .filter((key) => key.startsWith("potyk-food-"))
           .map((key) => caches.delete(key))
       );
       await self.clients.claim();
@@ -96,11 +119,27 @@ function isStaticPath(pathname) {
   return pathname.startsWith("/static/");
 }
 
-async function revalidate(cache, request) {
+async function matchCaches(request, ignoreSearch) {
+  const opts = ignoreSearch ? { ignoreSearch: true } : undefined;
+  const shell = await caches.open(SHELL_CACHE);
+  const fromShell = await shell.match(request, opts);
+  if (fromShell) {
+    return fromShell;
+  }
+  const runtime = await caches.open(RUNTIME_CACHE);
+  return runtime.match(request, opts);
+}
+
+async function putRuntime(request, response) {
+  const runtime = await caches.open(RUNTIME_CACHE);
+  await runtime.put(request, response);
+}
+
+async function revalidate(request) {
   try {
     const fresh = await fetch(request);
     if (fresh && fresh.ok) {
-      await cache.put(request, fresh.clone());
+      await putRuntime(request, fresh.clone());
     }
   } catch (e) {
     /* ignore */
@@ -133,34 +172,36 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     (async () => {
-      const cache = await caches.open(CACHE_NAME);
-
       if (stat) {
-        const cachedStatic = await cache.match(request);
+        const cachedStatic = await matchCaches(request, false);
         if (cachedStatic) {
           return cachedStatic;
         }
-        return fetch(request);
+        const fresh = await fetch(request);
+        if (fresh && fresh.ok) {
+          await putRuntime(request, fresh.clone());
+        }
+        return fresh;
       }
 
-      const cached = await cache.match(request, { ignoreSearch: true });
+      const cached = await matchCaches(request, true);
       if (cached) {
-        event.waitUntil(revalidate(cache, request));
+        event.waitUntil(revalidate(request));
         return cached;
       }
 
       try {
         const fresh = await fetch(request);
         if (fresh && fresh.ok) {
-          await cache.put(request, fresh.clone());
+          await putRuntime(request, fresh.clone());
         }
         return fresh;
       } catch (e) {
         if (request.mode === "navigate") {
           const fallback =
-            (await cache.match("/")) ||
-            (await cache.match("/food/offline")) ||
-            (await cache.match("/food"));
+            (await matchCaches(new Request("/"), true)) ||
+            (await matchCaches(new Request("/food/offline"), true)) ||
+            (await matchCaches(new Request("/food"), true));
           if (fallback) {
             return fallback;
           }
