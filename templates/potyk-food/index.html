@@ -14,9 +14,26 @@
 {% block main %}
     <h1>potyk-food</h1>
 
+    <div class="toc md-toc">
+        <ul>
+            {% for section in recipe_sections %}
+            <li>
+                <a href="#{{ section.anchor }}">{% if section.icon %}{{ section.icon }} {% endif %}{{ section.title }}</a>
+                {% if section.subsections %}
+                <ul>
+                    {% for sub in section.subsections %}
+                    <li><a href="#{{ sub.anchor }}">{% if sub.icon %}{{ sub.icon }} {% endif %}{{ sub.title }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <div class="food-cats">
         {% for section in recipe_sections %}
-        <section class="card food-cat">
+        <section class="card food-cat" id="{{ section.anchor }}">
             <h2>{% if section.icon %}{{ section.icon }} {% endif %}{{ section.title }}</h2>
 
             {% if section.pages %}
@@ -28,7 +45,7 @@
             {% endif %}
 
             {% for sub in section.subsections %}
-            <h3>{% if sub.icon %}{{ sub.icon }} {% endif %}{{ sub.title }}</h3>
+            <h3 id="{{ sub.anchor }}">{% if sub.icon %}{{ sub.icon }} {% endif %}{{ sub.title }}</h3>
             <ul>
                 {% for page in sub.pages %}
                 <li><a href="{{ page.url }}">{{ page.title }}</a></li>

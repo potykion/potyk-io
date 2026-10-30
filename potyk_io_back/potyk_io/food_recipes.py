@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
+from markdown.extensions.toc import slugify_unicode
 
 from potyk_io_back.potyk_io.md_rendering import extract_h1, split_frontmatter
 from potyk_io_back.potyk_io.md_rendering.templates import FOOD_TEMPLATES_DIR
@@ -25,6 +26,7 @@ class RecipeLink:
 class RecipeSubsection:
     title: str
     icon: str
+    anchor: str
     pages: list[RecipeLink]
 
 
@@ -32,8 +34,13 @@ class RecipeSubsection:
 class RecipeSection:
     title: str
     icon: str
+    anchor: str
     pages: list[RecipeLink] = field(default_factory=list)
     subsections: list[RecipeSubsection] = field(default_factory=list)
+
+
+def _anchor(title: str) -> str:
+    return slugify_unicode(title, "-")
 
 
 def _read_nav(folder: Path) -> dict:
@@ -121,19 +128,23 @@ def load_recipe_sections(*, root: Path | None = None) -> list[RecipeSection]:
             sub_pages = _page_links(sub, url_prefix=f"{cat_prefix}/{sub.name}")
             if not sub_pages:
                 continue
+            sub_title = _folder_title(sub)
             subsections.append(
                 RecipeSubsection(
-                    title=_folder_title(sub),
+                    title=sub_title,
                     icon=_folder_icon(sub),
+                    anchor=_anchor(sub_title),
                     pages=sub_pages,
                 )
             )
         if not pages and not subsections:
             continue
+        title = _folder_title(category)
         sections.append(
             RecipeSection(
-                title=_folder_title(category),
+                title=title,
                 icon=_folder_icon(category),
+                anchor=_anchor(title),
                 pages=pages,
                 subsections=subsections,
             )
