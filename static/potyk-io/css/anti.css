@@ -95,3 +95,31 @@
 .anti-post-form__actions input[type="submit"]:hover {
     background: #000;
 }
+
+.index-v2-grid .card.index-v2-widget.index-v2-widget--anti {
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.anti-post-btn {
+    appearance: none;
+    border: 1.5px solid #222;
+    border-radius: 999px;
+    padding: 0.45rem 1.1rem;
+    background: #fff;
+    color: #222;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.anti-post-btn:hover {
+    background: #222;
+    color: #fff;
+}
+
+.anti-post-btn--widget {
+    flex-shrink: 0;
+}

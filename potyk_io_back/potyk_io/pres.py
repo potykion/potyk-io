@@ -8,6 +8,7 @@ from flask import Blueprint, abort, flash, jsonify, redirect, request, render_te
 from flask_login import current_user, login_required
 from sqlalchemy import func, select
 
+from potyk_io_back.anti.forms import AntiPostForm
 from potyk_io_back.core.db import db
 from potyk_io_back.fin.entities import Expense, Saving
 from potyk_io_back.game import (
@@ -198,6 +199,8 @@ def index():
     if current_user.is_authenticated:
         ctx = _index_fin_context()
         ctx["show_meditation_widget"] = True
+        ctx["show_anti_widget"] = True
+        ctx["anti_post_form"] = AntiPostForm()
     else:
         ctx = {}
     return flask.render_template("potyk-io/index.html", **ctx)

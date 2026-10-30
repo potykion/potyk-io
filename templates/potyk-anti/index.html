@@ -1,5 +1,4 @@
 {% extends "potyk-io/_base.html" %}
-{% import "jinja/forms.html" as forms %}
 
 {% block title %}Анти социальная сеть — potyk-anti{% endblock %}
 
@@ -30,20 +29,7 @@
 <p class="anti-empty">Пока тихо. Нажми «Пост» в меню.</p>
 {% endif %}
 
-{% set modal_id = "anti-post" %}
-{% set modal_title = "Пост" %}
-{% set modal_wide = false %}
-{% set modal_body %}
-<form class="anti-post-form" method="post" action="{{ url_for('anti.create_post') }}">
-    {{ form.hidden_tag() }}
-    {% call forms.field(form.body.label.text) %}
-        {{ form.body() }}
-        {{ forms.field_errors(form.body) }}
-    {% endcall %}
-    {{ forms.submit_row(form.submit, class_name='anti-post-form__actions') }}
-</form>
-{% endset %}
-{% include "jinja/_modal.html" %}
+{% include "potyk-anti/_post_modal.html" %}
 {% endblock %}
 
 {% block script %}

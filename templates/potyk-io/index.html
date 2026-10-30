@@ -6,6 +6,10 @@
     {% if show_meditation_widget %}
     <link rel="stylesheet" href="/static/potyk-io/css/meditation.css">
     {% endif %}
+    {% if show_anti_widget %}
+    <link rel="stylesheet" href="/static/potyk-io/css/modal.css">
+    <link rel="stylesheet" href="/static/potyk-io/css/anti.css">
+    {% endif %}
 {% endblock %}
 
 {% block main %}
@@ -49,15 +53,38 @@
             </div>
         </div>
         {% endif %}
+        {% if show_anti_widget %}
+        <div class="card index-v2-widget index-v2-widget--anti">
+            <div class="flex-center">
+                <a class="index-v2-widget__title-link" href="/anti/">
+                    <h3 class="index-v2-widget__title">Антисоцсеть</h3>
+                </a>
+            </div>
+            <div class="flex-center">
+                <button type="button"
+                        class="anti-post-btn anti-post-btn--widget"
+                        data-modal-open="anti-post">Пост</button>
+            </div>
+        </div>
+        {% endif %}
         <a class="card card-text" href="/mu/blog/2026">
             <h3>Музыка в 2026: что в тренде, что слушать</h3>
         </a>
     </div>
+
+    {% if show_anti_widget %}
+    {% with form=anti_post_form %}
+    {% include "potyk-anti/_post_modal.html" %}
+    {% endwith %}
+    {% endif %}
 {% endblock %}
 
 {% block script %}
 {{ super() }}
 {% if show_meditation_widget %}
 <script src="/static/potyk-io/js/meditation.js"></script>
+{% endif %}
+{% if show_anti_widget %}
+<script src="/static/potyk-io/js/modal.js"></script>
 {% endif %}
 {% endblock %}
