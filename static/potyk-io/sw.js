@@ -35,7 +35,9 @@ async function precacheShell() {
   const urls = Array.isArray(data.shell)
     ? data.shell
     : Array.isArray(data.urls)
-      ? data.urls
+      ? data.urls.filter(function (u) {
+          return u.indexOf("/static/") === 0;
+        })
       : [];
   const cache = await caches.open(SHELL_CACHE);
   await Promise.all(
@@ -73,20 +75,15 @@ self.addEventListener("activate", (event) => {
           )
           .map((key) => caches.delete(key))
       );
-      // legacy full-precache caches
+      // legacy full-precache caches + drop stale HTML that ignored auth
       await Promise.all(
         keys
           .filter(
             (key) =>
-              key.startsWith("potyk-io-") &&
-              !key.startsWith("potyk-io-shell-") &&
-              key !== RUNTIME_CACHE
+              (key.startsWith("potyk-io-") &&
+                !key.startsWith("potyk-io-shell-")) ||
+              key.startsWith("potyk-food-")
           )
-          .map((key) => caches.delete(key))
-      );
-      await Promise.all(
-        keys
-          .filter((key) => key.startsWith("potyk-food-"))
           .map((key) => caches.delete(key))
       );
       await self.clients.claim();
@@ -135,17 +132,6 @@ async function putRuntime(request, response) {
   await runtime.put(request, response);
 }
 
-async function revalidate(request) {
-  try {
-    const fresh = await fetch(request);
-    if (fresh && fresh.ok) {
-      await putRuntime(request, fresh.clone());
-    }
-  } catch (e) {
-    /* ignore */
-  }
-}
-
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") {
@@ -172,31 +158,31 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     (async () => {
+      // Static: cache-first
       if (stat) {
         const cachedStatic = await matchCaches(request, false);
         if (cachedStatic) {
           return cachedStatic;
         }
-        const fresh = await fetch(request);
-        if (fresh && fresh.ok) {
-          await putRuntime(request, fresh.clone());
+        const freshStatic = await fetch(request);
+        if (freshStatic && freshStatic.ok) {
+          await putRuntime(request, freshStatic.clone());
         }
-        return fresh;
+        return freshStatic;
       }
 
-      const cached = await matchCaches(request, true);
-      if (cached) {
-        event.waitUntil(revalidate(request));
-        return cached;
-      }
-
+      // HTML / app pages: network-first (login widgets on / must not stick as guest)
       try {
-        const fresh = await fetch(request);
+        const fresh = await fetch(request, { cache: "no-store" });
         if (fresh && fresh.ok) {
           await putRuntime(request, fresh.clone());
         }
         return fresh;
       } catch (e) {
+        const cached = await matchCaches(request, true);
+        if (cached) {
+          return cached;
+        }
         if (request.mode === "navigate") {
           const fallback =
             (await matchCaches(new Request("/"), true)) ||

@@ -299,8 +299,8 @@ def _encode_list(urls: list[str]) -> list[str]:
 
 
 def build_shell_urls() -> list[str]:
-    """Лёгкий набор для install SW — без массового обхода разделов."""
-    return sorted(set(_encode_list(["/", *SHELL_URLS])))
+    """Лёгкий набор для install SW — только статика, без HTML (главная зависит от логина)."""
+    return sorted(set(_encode_list(list(SHELL_URLS))))
 
 
 def build_offline_manifest() -> dict[str, str | list[str]]:
