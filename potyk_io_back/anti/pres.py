@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, url_for
+from flask import Blueprint, jsonify, render_template
 from flask_login import login_required
 from sqlalchemy import select
 
@@ -41,18 +41,21 @@ def index():
 def create_post():
     form = AntiPostForm()
     if not form.validate_on_submit():
-        posts = db.session.scalars(
-            select(AntiPost).order_by(AntiPost.created_at.desc(), AntiPost.id.desc())
-        ).all()
-        return render_template(
-            "potyk-anti/index.html",
-            posts=posts,
-            form=form,
-            open_post_modal=True,
-        ), 400
+        error = (form.body.errors or form.errors.get("csrf_token") or ["Не вышло запостить"])[0]
+        return jsonify({"ok": False, "error": error}), 400
 
     body = (form.body.data or "").strip()
-    db.session.add(AntiPost(body=body))
+    post = AntiPost(body=body)
+    db.session.add(post)
     db.session.commit()
-    flash("Запостил", "success")
-    return redirect(url_for("anti.index"))
+    return jsonify(
+        {
+            "ok": True,
+            "post": {
+                "id": post.id,
+                "body": post.body,
+                "created_at": post.created_at.isoformat(timespec="seconds"),
+                "created_at_display": post.created_at.strftime("%d.%m.%Y %H:%M"),
+            },
+        }
+    )

@@ -9,6 +9,7 @@
         {{ form.body() }}
         {{ forms.field_errors(form.body) }}
     {% endcall %}
+    <p class="anti-post-form__error" data-anti-post-error hidden></p>
     {{ forms.submit_row(form.submit, class_name='anti-post-form__actions') }}
 </form>
 {% endset %}

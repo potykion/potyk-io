@@ -35,11 +35,5 @@
 {% block script %}
 {{ super() }}
 <script src="/static/potyk-io/js/modal.js"></script>
-{% if open_post_modal %}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    if (window.PotykModal) window.PotykModal.open("anti-post");
-});
-</script>
-{% endif %}
+<script src="/static/potyk-io/js/anti-post.js"></script>
 {% endblock %}

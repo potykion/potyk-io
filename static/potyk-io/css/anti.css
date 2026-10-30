@@ -69,9 +69,11 @@
     border-color: #222;
 }
 
-.anti-post-form .field-error {
+.anti-post-form .field-error,
+.anti-post-form__error {
     color: #c0392b;
     font-size: 0.85rem;
+    margin: 0.5rem 0 0;
 }
 
 .anti-post-form__actions {
