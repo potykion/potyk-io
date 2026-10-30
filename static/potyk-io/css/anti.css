@@ -1,0 +1,97 @@
+.anti-page h1 {
+    margin: 0.5rem 0 0.35rem;
+}
+
+.anti-tagline {
+    margin: 0 0 1.5rem;
+    color: #888;
+    line-height: 1.4;
+}
+
+.anti-feed {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 36rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.anti-post {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+}
+
+.anti-post__time {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+}
+
+.anti-post__body {
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.45;
+    color: #222;
+}
+
+.anti-empty {
+    color: #888;
+}
+
+.anti-post-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.anti-post-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 7rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font: inherit;
+    line-height: 1.4;
+}
+
+.anti-post-form textarea:focus {
+    outline: 2px solid #222;
+    outline-offset: 1px;
+    border-color: #222;
+}
+
+.anti-post-form .field-error {
+    color: #c0392b;
+    font-size: 0.85rem;
+}
+
+.anti-post-form__actions {
+    margin-top: 0.85rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.anti-post-form__actions input[type="submit"] {
+    appearance: none;
+    border: none;
+    border-radius: 10px;
+    padding: 0.55rem 1rem;
+    background: #222;
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.anti-post-form__actions input[type="submit"]:hover {
+    background: #000;
+}

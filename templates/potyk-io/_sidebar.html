@@ -14,6 +14,15 @@
 </a>
 {%- endmacro %}
 
+{% macro nav_modal(icon, title, modal_id) -%}
+<button type="button"
+        class="sidebar-link sidebar-link--button"
+        data-modal-open="{{ modal_id }}">
+    <span class="sidebar-link-icon" aria-hidden="true">{{ icon }}</span>
+    <span class="sidebar-link-title">{{ title }}</span>
+</button>
+{%- endmacro %}
+
 {%- set active_url = resolve_active_menu_url(request.path, menu_groups) -%}
 <div class="side-panel side-panel--left sidebar-shell"
      id="sidebar"
@@ -28,7 +37,12 @@
             {% endif %}
             <div class="sidebar-group-links">
                 {% for item in group.links %}
-                    {{ nav_link(item.icon, item.title, item.url, item.get('badge'), item.get('lock'), active_url) }}
+                    {% if item.get('auth_only') and not current_user.is_authenticated %}
+                    {% elif item.get('modal') %}
+                        {{ nav_modal(item.icon, item.title, item.modal) }}
+                    {% else %}
+                        {{ nav_link(item.icon, item.title, item.url, item.get('badge'), item.get('lock'), active_url) }}
+                    {% endif %}
                 {% endfor %}
             </div>
         </section>

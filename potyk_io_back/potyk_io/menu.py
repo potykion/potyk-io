@@ -8,6 +8,8 @@ class MenuItem(TypedDict):
     description: str
     badge: NotRequired[int]
     lock: NotRequired[bool]
+    auth_only: NotRequired[bool]
+    modal: NotRequired[str]
 
 
 class MenuGroup(TypedDict):
@@ -56,6 +58,13 @@ MENU_GROUPS: list[MenuGroup] = [
                 "title": "Культур",
                 "url": "/culture/",
                 "description": "",
+            },
+            {
+                "icon": "🚫",
+                "title": "Антисоцсеть",
+                "url": "/anti/",
+                "description": "Свой тви",
+                "lock": True,
             },
             {
                 "icon": "🎵",
@@ -570,6 +579,39 @@ MU_MENU_GROUPS: list[MenuGroup] = [
 ]
 
 
+ANTI_MENU_GROUPS: list[MenuGroup] = [
+    {
+        "title": "potyk-anti",
+        "links": [
+            {
+                "icon": "🏠",
+                "title": "Лента",
+                "url": "/anti/",
+                "description": "",
+            },
+            {
+                "icon": "✏️",
+                "title": "Пост",
+                "url": "#",
+                "description": "",
+                "modal": "anti-post",
+            },
+        ],
+    },
+    {
+        "title": "",
+        "links": [
+            {
+                "icon": "←",
+                "title": "potyk-io",
+                "url": "/",
+                "description": "",
+            },
+        ],
+    },
+]
+
+
 CULTURE_MENU_GROUPS: list[MenuGroup] = [
     {
         "title": "potyk-culture",
@@ -835,7 +877,7 @@ def active_menu_url(path: str, menu_groups: list[MenuGroup]) -> str | None:
     for group in menu_groups:
         for item in group["links"]:
             item_url = item["url"]
-            if is_external_url(item_url):
+            if is_external_url(item_url) or item.get("modal") or item_url.startswith("#"):
                 continue
             if normalize_menu_path(item_url) == path_n:
                 return path_n

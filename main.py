@@ -9,6 +9,7 @@ load_dotenv()
 from potyk_io_back.admin import admin_bp
 from potyk_io_back.admin.backup import startup_backup_if_local
 from potyk_io_back.admin.migrate import startup_migrate_if_local
+from potyk_io_back.anti import anti_bp
 from potyk_io_back.art import art_bp
 from potyk_io_back.auth import auth_bp, setup_login
 from potyk_io_back.cinema import cinema_bp
@@ -70,6 +71,7 @@ def create_app():
     app.register_blueprint(cinema_bp)
     app.register_blueprint(reads_bp)
     app.register_blueprint(culture_bp)
+    app.register_blueprint(anti_bp)
     app.register_blueprint(money_bp)
     app.register_blueprint(prikols_bp)
     app.register_blueprint(tech_bp)
