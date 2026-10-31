@@ -80,22 +80,6 @@ body > .ts-dropdown {
     z-index: 1100;
 }
 
-/* iOS / узкий экран: модалки /game на всю ширину (как #69) */
-@media screen and (max-width: 600px) {
-    #game-eat.modal,
-    #game-book.modal {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    #game-eat .modal__panel,
-    #game-book .modal__panel {
-        width: 100%;
-        max-width: none;
-        border-radius: 0;
-    }
-}
-
 .game-eat-form__actions {
     display: flex;
     justify-content: flex-end;
