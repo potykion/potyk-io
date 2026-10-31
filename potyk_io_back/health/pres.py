@@ -1,9 +1,9 @@
 from pathlib import Path, PurePosixPath
 
-from flask import Blueprint, abort, jsonify, render_template, request, send_file
+from flask import Blueprint, abort, jsonify, redirect, render_template, request, send_file
 from flask_login import login_required
 
-from potyk_io_back.health.entities import add_meditation, meditation_stats
+from potyk_io_back.health.entities import add_stata_entries, list_stata_items, stata_stats
 from potyk_io_back.potyk_io.md_rendering import (
     list_folder_pages,
     render_body_html,
@@ -85,20 +85,39 @@ def render_health_markdown(file: Path):
 
 @health_bp.get("/")
 def index():
-    return render_template("potyk-health/index.html")
-
-
-@health_bp.get("/meditation")
-def meditation_page():
     return render_template(
-        "potyk-health/meditation.html",
-        stats=meditation_stats(),
+        "potyk-health/index.html",
+        stata_items=list_stata_items(),
+        stats=stata_stats(),
     )
 
 
-@health_bp.post("/meditation")
-def meditation_add():
-    return jsonify({"ok": True, **add_meditation()})
+@health_bp.get("/stata")
+def stata_page():
+    return render_template(
+        "potyk-health/stata.html",
+        stata_items=list_stata_items(),
+        stats=stata_stats(),
+    )
+
+
+@health_bp.post("/stata")
+def stata_add():
+    payload = request.get_json(silent=True) or {}
+    names = payload.get("items") or []
+    if isinstance(names, str):
+        names = [names]
+    if not isinstance(names, list):
+        return jsonify({"ok": False, "error": "bad items"}), 400
+    cleaned = [str(n).strip() for n in names if str(n).strip()]
+    if not cleaned:
+        return jsonify({"ok": False, "error": "выбери хотя бы одно дело"}), 400
+    return jsonify({"ok": True, "stats": add_stata_entries(cleaned)})
+
+
+@health_bp.get("/meditation")
+def meditation_redirect():
+    return redirect("/health/stata", code=301)
 
 
 @health_bp.route("/<path:page_path>")

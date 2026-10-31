@@ -1,0 +1,8 @@
+{% set modal_id = "health-stata" %}
+{% set modal_title = "Отметить" %}
+{% set modal_wide = false %}
+{% set modal_body %}
+    {% set stata_check_widget = false %}
+    {% include "potyk-health/_stata_form.html" %}
+{% endset %}
+{% include "jinja/_modal.html" %}

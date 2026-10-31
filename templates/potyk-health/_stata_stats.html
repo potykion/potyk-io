@@ -1,0 +1,29 @@
+<div class="stata-stats" data-stata-stats>
+    {% if stats %}
+        {% for s in stats %}
+        <section class="stata-stats__item"
+                 data-item-id="{{ s.id }}"
+                 data-name="{{ s.name }}"
+                 data-day="{{ s.day }}"
+                 data-week="{{ s.week }}"
+                 data-month="{{ s.month }}"
+                 data-year="{{ s.year }}"
+                 data-total="{{ s.total }}">
+            <h2 class="stata-stats__name">{{ s.name }}</h2>
+            <dl class="stata-stats__grid">
+                <div class="stata-stats__row">
+                    <div><dt>День</dt><dd data-k="day">{{ s.day }}</dd></div>
+                    <div><dt>Неделя</dt><dd data-k="week">{{ s.week }}</dd></div>
+                    <div><dt>Месяц</dt><dd data-k="month">{{ s.month }}</dd></div>
+                </div>
+                <div class="stata-stats__row">
+                    <div><dt>Год</dt><dd data-k="year">{{ s.year }}</dd></div>
+                    <div><dt>Всего</dt><dd data-k="total">{{ s.total }}</dd></div>
+                </div>
+            </dl>
+        </section>
+        {% endfor %}
+    {% else %}
+        <p class="stata-stats__empty muted">Пока нет дел — добавь через форму.</p>
+    {% endif %}
+</div>

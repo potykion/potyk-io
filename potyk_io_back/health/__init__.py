@@ -1,13 +1,17 @@
 from potyk_io_back.health.entities import (
-    HealthMeditation,
-    add_meditation,
-    meditation_stats,
+    HealthStataEntry,
+    HealthStataItem,
+    add_stata_entries,
+    list_stata_items,
+    stata_stats,
 )
 from potyk_io_back.health.pres import health_bp
 
 __all__ = [
-    "HealthMeditation",
-    "add_meditation",
+    "HealthStataEntry",
+    "HealthStataItem",
+    "add_stata_entries",
     "health_bp",
-    "meditation_stats",
+    "list_stata_items",
+    "stata_stats",
 ]

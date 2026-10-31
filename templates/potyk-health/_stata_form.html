@@ -1,0 +1,20 @@
+<form class="stata-form" data-stata-form>
+    <label>
+        Дела
+        <select name="items"
+                multiple
+                data-tom-select
+                data-create="true"
+                data-placeholder="выбери или добавь">
+            {% for item in stata_items %}
+            <option value="{{ item.name }}">{{ item.name }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <p class="stata-form__error" data-stata-error hidden></p>
+    <div class="stata-form__actions">
+        <button type="submit" class="stata-check{% if stata_check_widget %} stata-check--widget{% endif %}" aria-label="Отметить">
+            ✓
+        </button>
+    </div>
+</form>

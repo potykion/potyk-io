@@ -1,0 +1,209 @@
+.stata-page {
+    max-width: 28rem;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.stata-page h1 {
+    margin: 1.5rem 0 1.25rem;
+}
+
+.stata-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    text-align: left;
+    margin: 0 auto 1.75rem;
+    max-width: 22rem;
+}
+
+.stata-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+}
+
+.stata-form select {
+    font: inherit;
+    font-size: 16px;
+    padding: 0.35rem 0.5rem;
+}
+
+.stata-form .ts-wrapper {
+    width: 100%;
+}
+
+/* iOS: <16px на фокусе → зум */
+.stata-form .ts-control,
+.stata-form .ts-control input {
+    font-size: 16px;
+}
+
+body > .ts-dropdown {
+    z-index: 1100;
+}
+
+.stata-form__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.15rem;
+}
+
+.stata-form__error {
+    color: #b00020;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.stata-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 5.5rem;
+    height: 5.5rem;
+    margin: 0;
+    border: 2px solid #222;
+    border-radius: 50%;
+    background: #fff;
+    color: #222;
+    font-size: 2.4rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+
+.stata-check:hover {
+    background: #222;
+    color: #fff;
+}
+
+.stata-check:active {
+    transform: scale(0.94);
+}
+
+.stata-check:disabled {
+    opacity: 0.55;
+    cursor: wait;
+}
+
+.stata-check.is-pulse {
+    animation: stata-pulse 0.35s ease;
+}
+
+@keyframes stata-pulse {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.stata-check--widget {
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 1.15rem;
+    border-width: 1.5px;
+}
+
+.stata-stats {
+    margin: 0;
+    text-align: center;
+}
+
+.stata-stats__item {
+    margin: 0 0 1.5rem;
+}
+
+.stata-stats__item:last-child {
+    margin-bottom: 0;
+}
+
+.stata-stats__name {
+    margin: 0 0 0.75rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.stata-stats__grid {
+    margin: 0;
+}
+
+.stata-stats__row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.stata-stats__row:last-child {
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 0;
+}
+
+.stata-stats__row > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stata-stats__grid dt {
+    margin: 0;
+    color: #9f9f9f;
+    font-size: 0.85rem;
+    font-weight: normal;
+}
+
+.stata-stats__grid dd {
+    margin: 0;
+    font-size: 1.45rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
+.stata-stats__empty {
+    margin: 0;
+}
+
+.index-v2-grid .card.index-v2-widget.index-v2-widget--stata,
+.card.index-v2-widget.index-v2-widget--stata {
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.flex-center > .index-v2-widget--stata {
+    width: 100%;
+    max-width: 280px;
+}
+
+.index-v2-widget__title-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.index-v2-widget__title-link:hover .index-v2-widget__title {
+    text-decoration: underline;
+}
+
+.stata-widget-check {
+    width: 2.4rem;
+    height: 2.4rem;
+    margin: 0;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #222;
+    border-radius: 50%;
+    background: #fff;
+    color: #222;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.stata-widget-check:hover {
+    background: #222;
+    color: #fff;
+}
