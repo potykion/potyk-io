@@ -4,6 +4,7 @@
 
 {% block style %}
 {{ super() }}
+<link rel="stylesheet" href="/static/potyk-io/css/modal.css">
 <style>
     .ds-section {
         margin: 0 0 2rem;
@@ -31,12 +32,46 @@
     .ds-form {
         max-width: 24rem;
     }
+
+    .ds-menu-preview {
+        max-width: 16rem;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fafafa;
+        padding: 0.75rem;
+    }
+
+    .ds-menu-preview .sidebar-group-title {
+        margin: 0 0 0.35rem;
+        padding: 0 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: #888;
+    }
+
+    .ds-menu-preview .sidebar-group-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+
+    .ds-side-panel-demo {
+        padding: 1rem;
+    }
+
+    .ds-side-panel-demo p {
+        margin: 0 0 0.75rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
 </style>
 {% endblock %}
 
 {% block admin_main %}
 <h1>Дизайн-система</h1>
-<p class="ds-note">Общие UI-элементы из <code>forms.css</code>. Эталон — potyk-fin.</p>
+<p class="ds-note">Эталон UI: формы из <code>forms.css</code>, модалка / меню / боковая панель — общие компоненты. Доки: <a href="/docs/components/button">кнопка</a>, <a href="/docs/components/modal">модалка</a>, <a href="/docs/components/menu">меню</a>, <a href="/docs/components/side-panel">боковая панель</a>.</p>
 
 <section class="ds-section">
     <h2>Кнопки</h2>
@@ -97,4 +132,85 @@
         </div>
     </form>
 </section>
+
+<section class="ds-section">
+    <h2>Модалка</h2>
+    <p class="ds-note">Компонент <code>jinja/_modal.html</code> + <code>modal.css</code> / <code>modal.js</code>. На мобиле поля ≥16px — без зума iOS. Док: <a href="/docs/components/modal">модалка</a>.</p>
+    <div class="ds-row">
+        <button type="button" data-modal-open="ds-modal">Открыть модалку</button>
+    </div>
+    {% set modal_id = "ds-modal" %}
+    {% set modal_title = "Пример модалки" %}
+    {% set modal_wide = false %}
+    {% set modal_body %}
+    <form class="grid ds-form" onsubmit="return false;">
+        <label>
+            Текст
+            <input type="text" name="ds_modal_text" placeholder="Не зумит на iOS" value="">
+        </label>
+        <label>
+            Заметка
+            <textarea name="ds_modal_note" placeholder="font-size 16px" rows="3"></textarea>
+        </label>
+        <div class="full">
+            <button type="button" data-modal-close>Закрыть</button>
+        </div>
+    </form>
+    {% endset %}
+    {% include "jinja/_modal.html" %}
+</section>
+
+<section class="ds-section">
+    <h2>Меню</h2>
+    <p class="ds-note">Живое меню сайта — <code>#sidebar</code> (кнопка ≡ в шапке). На узком экране это боковая панель слева. Док: <a href="/docs/components/menu">меню</a>.</p>
+    <div class="ds-menu-preview" aria-label="Превью пунктов меню">
+        <h3 class="sidebar-group-title">Пример группы</h3>
+        <div class="sidebar-group-links">
+            <a class="sidebar-link is-active" href="#">
+                <span class="sidebar-link-icon" aria-hidden="true">🏠</span>
+                <span class="sidebar-link-title">Активный пункт</span>
+            </a>
+            <a class="sidebar-link" href="#">
+                <span class="sidebar-link-icon" aria-hidden="true">📄</span>
+                <span class="sidebar-link-title">Обычный пункт</span>
+            </a>
+            <a class="sidebar-link" href="#">
+                <span class="sidebar-link-icon" aria-hidden="true">🔒</span>
+                <span class="sidebar-link-title">Закрытый раздел</span>
+                <span class="sidebar-link-badge sidebar-link-badge--lock" title="нужен логин" aria-label="нужен логин">🔒</span>
+            </a>
+            <button type="button" class="sidebar-link sidebar-link--button" data-modal-open="ds-modal">
+                <span class="sidebar-link-icon" aria-hidden="true">✏️</span>
+                <span class="sidebar-link-title">Пункт-модалка</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="ds-section">
+    <h2>Боковая панель</h2>
+    <p class="ds-note">Компонент <code>jinja/_side_panel.html</code> + <code>side-panel.css</code> / <code>side-panel.js</code>. Как инвентарь на <a href="/game">/game</a> справа. Док: <a href="/docs/components/side-panel">боковая панель</a>.</p>
+    <div class="ds-row">
+        <button type="button"
+                data-side-panel-toggle="ds-side-panel"
+                aria-controls="ds-side-panel"
+                aria-expanded="false">Открыть панель справа</button>
+    </div>
+    {% set side_panel_id = "ds-side-panel" %}
+    {% set side_panel_side = "right" %}
+    {% set side_panel_label = "Пример панели" %}
+    {% set side_panel_class = "ds-side-panel-demo" %}
+    {% set side_panel_body %}
+    <div class="ds-side-panel-demo">
+        <p>Демо боковой панели (как инвентарь на /game).</p>
+        <button type="button" class="secondary" onclick="PotykSidePanel.close('ds-side-panel')">Закрыть</button>
+    </div>
+    {% endset %}
+    {% include "jinja/_side_panel.html" %}
+</section>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script src="/static/potyk-io/js/modal.js"></script>
 {% endblock %}

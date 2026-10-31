@@ -59,7 +59,9 @@
     padding: 0.6rem 0.75rem;
     border: 1px solid #ccc;
     border-radius: 10px;
-    font: inherit;
+    font-family: inherit;
+    /* iOS: <16px на фокусе → зум, который после сабмита не сбрасывается */
+    font-size: 16px;
     line-height: 1.4;
 }
 
