@@ -1,7 +1,7 @@
 <section class="day{% if day.date in closed_dates %} is-closed{% endif %}" id="day-{{ day.date.isoformat() }}">
     <details{% if day.date not in closed_dates %} open{% endif %}>
         <summary class="day-head">
-            <span class="date">{{ day.date.isoformat() }}{% if day.date == today %} · сегодня{% endif %}</span>
+            <span class="date">{{ day.date.isoformat() }} · {{ ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'][day.date.weekday()] }}{% if day.date == today %} · сегодня{% endif %}</span>
             <span class="meta">
                 старт {{ day.start_available | rub }}
                 {% if day.carry_in %}· долг вчера −{{ day.carry_in | rub }}{% endif %}
