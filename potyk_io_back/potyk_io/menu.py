@@ -472,6 +472,12 @@ _MU_SECTION_LINKS: list[MenuItem] = [
         "description": "",
     },
     {
+        "icon": "🧱",
+        "title": "Фундамент",
+        "url": "/mu/fundament",
+        "description": "",
+    },
+    {
         "icon": "⬇️",
         "title": "Скачать музыку",
         "url": "/mu/download",
