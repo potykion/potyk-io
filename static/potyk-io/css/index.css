@@ -26,7 +26,7 @@ h1.site-logo img {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    max-width: min(400px, 100%);
+    max-width: min(200px, 100%);
     height: auto;
 }
 
@@ -44,6 +44,39 @@ h1.site-logo img {
 
 .home-intro p:last-child {
     margin-bottom: 0;
+}
+
+.home-marks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.home-mark {
+    padding: 0.05em 0.2em;
+    border-radius: 0.2em;
+    color: inherit;
+}
+
+.home-mark--draw {
+    background: #ffd6e7;
+    color: #b0125a;
+}
+
+.home-mark--meditate {
+    background: #d8f0ff;
+    color: #0b5f8a;
+}
+
+.home-mark--cook {
+    background: #ffe8b8;
+    color: #8a4b00;
+}
+
+.home-mark--work {
+    background: #d9f5e4;
+    color: #176b45;
 }
 
 .home-tagline {
