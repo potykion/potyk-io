@@ -16,7 +16,12 @@
         {% for image in project.images %}
         <a class="card content-card" href="{{ image.url }}">
             <img class="note-cover" src="{{ image.url }}" alt="{{ image.alt }}" loading="lazy">
-            <div class="note-preview md-content"><h3>{{ project.title }}</h3></div>
+            <div class="note-preview md-content">
+                <h3>{{ project.title }}</h3>
+                {% if project.subtitle %}
+                <p class="card-subtitle">{{ project.subtitle }}</p>
+                {% endif %}
+            </div>
         </a>
         {% endfor %}
     {% else %}

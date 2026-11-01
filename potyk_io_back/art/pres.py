@@ -1,10 +1,12 @@
 from pathlib import Path
 
-from flask import Blueprint, abort, render_template, send_file
+import yaml
+from flask import Blueprint, render_template
 
 from potyk_io_back.potyk_io.menu import CULTURE_MENU_GROUPS
 
 ART_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "potyk-art"
+ART_PROJECTS_YML = ART_TEMPLATES_DIR / "projects.yml"
 
 art_bp = Blueprint("art", __name__, url_prefix="/art")
 
@@ -19,42 +21,37 @@ def art_nav_context():
 
 
 def list_art_projects() -> list[dict]:
-    if not ART_TEMPLATES_DIR.is_dir():
+    if not ART_PROJECTS_YML.is_file():
+        return []
+
+    try:
+        data = yaml.safe_load(ART_PROJECTS_YML.read_text(encoding="utf-8-sig")) or {}
+    except (OSError, yaml.YAMLError):
         return []
 
     projects: list[dict] = []
-    for folder in sorted(ART_TEMPLATES_DIR.iterdir(), key=lambda p: p.name.casefold()):
-        if not folder.is_dir():
+    for raw in data.get("projects") or []:
+        if not isinstance(raw, dict):
             continue
-        images = [
-            {
-                "url": f"/art/{folder.name}/{image.name}",
-                "alt": image.stem,
-            }
-            for image in sorted(folder.iterdir(), key=lambda p: p.name.casefold())
-            if image.is_file() and image.suffix.casefold() == ".jpg"
-        ]
-        projects.append(
-            {
-                "title": folder.name.replace("-", " "),
-                "images": images,
-            }
-        )
+        title = str(raw.get("title") or "").strip()
+        if not title:
+            continue
+        subtitle = str(raw.get("subtitle") or "").strip()
+        images = []
+        for url in raw.get("images") or []:
+            url = str(url).strip()
+            if not url:
+                continue
+            images.append(
+                {
+                    "url": url,
+                    "alt": Path(url).stem,
+                }
+            )
+        projects.append({"title": title, "subtitle": subtitle, "images": images})
     return projects
 
 
 @art_bp.get("/")
 def index():
     return render_template("potyk-art/index.html", projects=list_art_projects())
-
-
-@art_bp.get("/<path:asset_path>")
-def asset(asset_path: str):
-    file = (ART_TEMPLATES_DIR / asset_path).resolve()
-    try:
-        file.relative_to(ART_TEMPLATES_DIR.resolve())
-    except ValueError:
-        abort(404)
-    if not file.is_file() or file.suffix.casefold() != ".jpg":
-        abort(404)
-    return send_file(file)
