@@ -1,0 +1,39 @@
+<div class="stata-log" data-stata-log>
+    {% if log.entries %}
+    <div class="stata-log__wrap">
+        <table class="stata-log__table">
+            <thead>
+            <tr>
+                <th>Дело</th>
+                <th>Когда</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in log.entries %}
+            <tr>
+                <td data-label="Дело">{{ row.name }}</td>
+                <td data-label="Когда">{{ row.done_at_label }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if log.pages > 1 %}
+    <nav class="stata-log__pager" aria-label="Страницы">
+        {% if log.has_prev %}
+        <a class="stata-log__page" href="?page={{ log.page - 1 }}">←</a>
+        {% else %}
+        <span class="stata-log__page is-disabled">←</span>
+        {% endif %}
+        <span class="stata-log__page-info">{{ log.page }} / {{ log.pages }}</span>
+        {% if log.has_next %}
+        <a class="stata-log__page" href="?page={{ log.page + 1 }}">→</a>
+        {% else %}
+        <span class="stata-log__page is-disabled">→</span>
+        {% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <p class="stata-log__empty muted">Пока пусто — отметь дело выше.</p>
+    {% endif %}
+</div>

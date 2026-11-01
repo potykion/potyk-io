@@ -50,7 +50,7 @@
   function renderStats(root, stats) {
     if (!root) return;
     if (!stats || !stats.length) {
-      root.innerHTML = '<p class="stata-stats__empty muted">Пока нет дел — добавь через форму.</p>';
+      root.innerHTML = '<p class="stata-stats__empty muted">Пока пусто — добавь через форму.</p>';
       return;
     }
     root.innerHTML = stats.map(function (s) {
@@ -98,10 +98,13 @@
   }
 
   async function submitForm(form) {
-    const btn = form.querySelector(".stata-check, [type='submit']");
+    const btn = form.querySelector("[type='submit']");
     const errEl = form.querySelector("[data-stata-error]");
     const select = form.querySelector('select[name="items"]');
     if (!select) return;
+
+    const endpoint = form.dataset.stataEndpoint || "/health/stata";
+    const emptyError = form.dataset.stataEmptyError || "выбери хотя бы одно дело";
 
     if (errEl) {
       errEl.hidden = true;
@@ -114,7 +117,7 @@
 
     if (!items.length) {
       if (errEl) {
-        errEl.textContent = "выбери хотя бы одно дело";
+        errEl.textContent = emptyError;
         errEl.hidden = false;
       }
       return;
@@ -122,7 +125,7 @@
 
     if (btn) btn.disabled = true;
     try {
-      const res = await fetch("/health/stata", {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         credentials: "same-origin",
@@ -137,23 +140,20 @@
         return;
       }
 
-      document.querySelectorAll("[data-stata-stats]").forEach(function (root) {
-        renderStats(root, data.stats);
-      });
-      syncSelectOptions(data.stats);
+      if (data.reload) {
+        window.location.reload();
+        return;
+      }
+
+      if (Array.isArray(data.stats)) {
+        document.querySelectorAll("[data-stata-stats]").forEach(function (root) {
+          renderStats(root, data.stats);
+        });
+        syncSelectOptions(data.stats);
+      }
 
       if (select.tomselect) select.tomselect.clear();
       else Array.from(select.options).forEach(function (o) { o.selected = false; });
-
-      if (btn) {
-        btn.classList.remove("is-pulse");
-        void btn.offsetWidth;
-        btn.classList.add("is-pulse");
-      }
-
-      if (window.PotykModal) {
-        window.PotykModal.close("health-stata");
-      }
     } catch (e) {
       console.error(e);
       if (errEl) {

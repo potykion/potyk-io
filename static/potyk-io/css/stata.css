@@ -8,6 +8,11 @@
     margin: 1.5rem 0 1.25rem;
 }
 
+.stata-page__lead {
+    margin: -0.5rem 0 1.25rem;
+    font-size: 0.95rem;
+}
+
 .stata-form {
     display: flex;
     flex-direction: column;
@@ -46,62 +51,27 @@ body > .ts-dropdown {
 
 .stata-form__actions {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     margin-top: 0.15rem;
+}
+
+.stata-section {
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid #e6e6e6;
+    text-align: center;
+}
+
+.stata-section__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
 .stata-form__error {
     color: #b00020;
     font-size: 0.9rem;
     margin: 0;
-}
-
-.stata-check {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 5.5rem;
-    height: 5.5rem;
-    margin: 0;
-    border: 2px solid #222;
-    border-radius: 50%;
-    background: #fff;
-    color: #222;
-    font-size: 2.4rem;
-    line-height: 1;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
-}
-
-.stata-check:hover {
-    background: #222;
-    color: #fff;
-}
-
-.stata-check:active {
-    transform: scale(0.94);
-}
-
-.stata-check:disabled {
-    opacity: 0.55;
-    cursor: wait;
-}
-
-.stata-check.is-pulse {
-    animation: stata-pulse 0.35s ease;
-}
-
-@keyframes stata-pulse {
-    0% { transform: scale(1); }
-    40% { transform: scale(1.08); }
-    100% { transform: scale(1); }
-}
-
-.stata-check--widget {
-    width: 2.4rem;
-    height: 2.4rem;
-    font-size: 1.15rem;
-    border-width: 1.5px;
 }
 
 .stata-stats {
@@ -163,47 +133,73 @@ body > .ts-dropdown {
     margin: 0;
 }
 
-.index-v2-grid .card.index-v2-widget.index-v2-widget--stata,
-.card.index-v2-widget.index-v2-widget--stata {
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
-    gap: 12px;
+.stata-log {
+    margin: 0 auto;
+    text-align: left;
 }
 
-.flex-center > .index-v2-widget--stata {
+.stata-log__wrap {
+    overflow-x: auto;
+}
+
+.stata-log__table {
     width: 100%;
-    max-width: 280px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
 }
 
-.index-v2-widget__title-link {
+.stata-log__table th,
+.stata-log__table td {
+    padding: 0.55rem 0.4rem;
+    border-bottom: 1px solid #e6e6e6;
+    text-align: left;
+    vertical-align: top;
+}
+
+.stata-log__table th {
+    color: #9f9f9f;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.stata-log__table td:last-child {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    color: #555;
+}
+
+.stata-log__pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 1rem 0 0;
+}
+
+.stata-log__page {
     color: inherit;
     text-decoration: none;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0.2rem 0.35rem;
 }
 
-.index-v2-widget__title-link:hover .index-v2-widget__title {
+.stata-log__page:hover {
     text-decoration: underline;
 }
 
-.stata-widget-check {
-    width: 2.4rem;
-    height: 2.4rem;
-    margin: 0;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1.5px solid #222;
-    border-radius: 50%;
-    background: #fff;
-    color: #222;
-    font-size: 1.15rem;
-    line-height: 1;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+.stata-log__page.is-disabled {
+    opacity: 0.35;
+    pointer-events: none;
 }
 
-.stata-widget-check:hover {
-    background: #222;
-    color: #fff;
+.stata-log__page-info {
+    font-size: 0.9rem;
+    color: #9f9f9f;
+    font-variant-numeric: tabular-nums;
+}
+
+.stata-log__empty {
+    margin: 0;
+    text-align: center;
 }

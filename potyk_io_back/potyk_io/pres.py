@@ -11,7 +11,6 @@ from sqlalchemy import func, select
 from potyk_io_back.anti.forms import AntiPostForm
 from potyk_io_back.core.db import db
 from potyk_io_back.fin.entities import Expense, Saving
-from potyk_io_back.health.entities import list_stata_items
 from potyk_io_back.game import (
     MAX_HP,
     MEAL_TYPES,
@@ -199,8 +198,7 @@ def _index_fin_context() -> dict:
 def index():
     if current_user.is_authenticated:
         ctx = _index_fin_context()
-        ctx["show_stata_widget"] = True
-        ctx["stata_items"] = list_stata_items()
+        ctx["show_meditation_widget"] = True
         ctx["show_anti_widget"] = True
         ctx["anti_post_form"] = AntiPostForm()
     else:

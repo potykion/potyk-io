@@ -3,7 +3,16 @@ from pathlib import Path, PurePosixPath
 from flask import Blueprint, abort, jsonify, redirect, render_template, request, send_file
 from flask_login import login_required
 
-from potyk_io_back.health.entities import add_stata_entries, list_stata_items, stata_stats
+from potyk_io_back.health.entities import (
+    KIND_ACHIEVEMENT,
+    KIND_DEED,
+    add_meditation,
+    add_stata_entries,
+    list_stata_items,
+    list_stata_log,
+    meditation_stats,
+    stata_stats,
+)
 from potyk_io_back.potyk_io.md_rendering import (
     list_folder_pages,
     render_body_html,
@@ -83,21 +92,39 @@ def render_health_markdown(file: Path):
     )
 
 
+def _parse_page() -> int:
+    try:
+        return max(1, int(request.args.get("page", 1)))
+    except (TypeError, ValueError):
+        return 1
+
+
 @health_bp.get("/")
 def index():
+    return render_template("potyk-health/index.html")
+
+
+@health_bp.get("/meditation")
+def meditation_page():
     return render_template(
-        "potyk-health/index.html",
-        stata_items=list_stata_items(),
-        stats=stata_stats(),
+        "potyk-health/meditation.html",
+        stats=meditation_stats(),
     )
+
+
+@health_bp.post("/meditation")
+def meditation_add():
+    return jsonify({"ok": True, **add_meditation()})
 
 
 @health_bp.get("/stata")
 def stata_page():
     return render_template(
         "potyk-health/stata.html",
-        stata_items=list_stata_items(),
-        stats=stata_stats(),
+        stata_items=list_stata_items(KIND_DEED),
+        log=list_stata_log(kind=KIND_DEED, page=_parse_page()),
+        achievement_items=list_stata_items(KIND_ACHIEVEMENT),
+        achievement_stats=stata_stats(kind=KIND_ACHIEVEMENT),
     )
 
 
@@ -112,12 +139,32 @@ def stata_add():
     cleaned = [str(n).strip() for n in names if str(n).strip()]
     if not cleaned:
         return jsonify({"ok": False, "error": "выбери хотя бы одно дело"}), 400
-    return jsonify({"ok": True, "stats": add_stata_entries(cleaned)})
+    add_stata_entries(cleaned, kind=KIND_DEED)
+    return jsonify({"ok": True, "reload": True})
 
 
-@health_bp.get("/meditation")
-def meditation_redirect():
-    return redirect("/health/stata", code=301)
+@health_bp.get("/achievements")
+def achievements_redirect():
+    return redirect("/health/stata#achievements", code=301)
+
+
+@health_bp.post("/achievements")
+def achievements_add():
+    payload = request.get_json(silent=True) or {}
+    names = payload.get("items") or []
+    if isinstance(names, str):
+        names = [names]
+    if not isinstance(names, list):
+        return jsonify({"ok": False, "error": "bad items"}), 400
+    cleaned = [str(n).strip() for n in names if str(n).strip()]
+    if not cleaned:
+        return jsonify({"ok": False, "error": "выбери хотя бы одно достижение"}), 400
+    return jsonify(
+        {
+            "ok": True,
+            "stats": add_stata_entries(cleaned, kind=KIND_ACHIEVEMENT),
+        }
+    )
 
 
 @health_bp.route("/<path:page_path>")

@@ -3,10 +3,8 @@
 {% block style %}
     <link rel="stylesheet" href="/static/potyk-io/css/index.css">
     <link rel="stylesheet" href="/static/potyk-io/css/index_v2.css">
-    {% if show_stata_widget %}
-    <link rel="stylesheet" href="/static/potyk-io/css/modal.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css">
-    <link rel="stylesheet" href="/static/potyk-io/css/stata.css">
+    {% if show_meditation_widget %}
+    <link rel="stylesheet" href="/static/potyk-io/css/meditation.css">
     {% endif %}
     {% if show_anti_widget %}
     <link rel="stylesheet" href="/static/potyk-io/css/modal.css">
@@ -48,18 +46,15 @@
             </dl>
         </a>
         {% endif %}
-        {% if show_stata_widget %}
-        <div class="card index-v2-widget index-v2-widget--stata">
+        {% if show_meditation_widget %}
+        <div class="card index-v2-widget index-v2-widget--meditation">
             <div class="flex-center">
-                <a class="index-v2-widget__title-link" href="/health/stata">
-                    <h3 class="index-v2-widget__title">Стата</h3>
+                <a class="index-v2-widget__title-link" href="/health/meditation">
+                    <h3 class="index-v2-widget__title">Медитировал?</h3>
                 </a>
             </div>
             <div class="flex-center">
-                <button type="button"
-                        class="stata-widget-check"
-                        data-modal-open="health-stata"
-                        aria-label="Отметить дела">✓</button>
+                <button type="button" class="meditation-check meditation-check--widget" aria-label="Отметить медитацию">✓</button>
             </div>
         </div>
         {% endif %}
@@ -82,10 +77,6 @@
         </a>
     </div>
 
-    {% if show_stata_widget %}
-    {% include "potyk-health/_stata_modal.html" %}
-    {% endif %}
-
     {% if show_anti_widget %}
     {% with form=anti_post_form %}
     {% include "potyk-anti/_post_modal.html" %}
@@ -95,14 +86,11 @@
 
 {% block script %}
 {{ super() }}
-{% if show_stata_widget or show_anti_widget %}
-<script src="/static/potyk-io/js/modal.js"></script>
-{% endif %}
-{% if show_stata_widget %}
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
-<script src="/static/potyk-io/js/stata.js"></script>
+{% if show_meditation_widget %}
+<script src="/static/potyk-io/js/meditation.js"></script>
 {% endif %}
 {% if show_anti_widget %}
+<script src="/static/potyk-io/js/modal.js"></script>
 <script src="/static/potyk-io/js/anti-post.js"></script>
 {% endif %}
 {% endblock %}

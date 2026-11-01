@@ -5,6 +5,7 @@
 {% block style %}
 {{ super() }}
 <link rel="stylesheet" href="/static/potyk-io/css/index.css">
+<link rel="stylesheet" href="/static/jinja/css/forms.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css">
 <link rel="stylesheet" href="/static/potyk-io/css/stata.css">
 {% endblock %}
@@ -13,10 +14,25 @@
 <div class="stata-page">
     <h1>Стата</h1>
 
-    {% set stata_check_widget = false %}
+    {% set stata_endpoint = "/health/stata" %}
+    {% set stata_empty_error = "выбери хотя бы одно дело" %}
     {% include "potyk-health/_stata_form.html" %}
 
-    {% include "potyk-health/_stata_stats.html" %}
+    {% include "potyk-health/_stata_log.html" %}
+
+    <section class="stata-section" id="achievements">
+        <h2 class="stata-section__title">Достижения</h2>
+        <p class="stata-page__lead muted">Антипривычки — отмечай, когда удержался.</p>
+
+        {% set stata_items = achievement_items %}
+        {% set stata_endpoint = "/health/achievements" %}
+        {% set stata_empty_error = "выбери хотя бы одно достижение" %}
+        {% set stata_form_label = "Достижения" %}
+        {% include "potyk-health/_stata_form.html" %}
+
+        {% set stats = achievement_stats %}
+        {% include "potyk-health/_stata_stats.html" %}
+    </section>
 </div>
 {% endblock %}
 
