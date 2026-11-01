@@ -9,6 +9,7 @@ from potyk_io_back.potyk_io.md_rendering import split_frontmatter, unquote_meta
 from potyk_io_back.potyk_io.md_rendering.created import format_created_ru, parse_iso_date
 
 _PROP_FIELDS: tuple[tuple[str, str, tuple[str, ...]], ...] = (
+    ("tier", "Тир", ("tier",)),
     ("tags", "Теги", ("tags",)),
     ("maps", "Я.Карты", ("maps", "ЯКарты")),
     ("prices", "Цены", ("prices", "Цены")),
@@ -66,13 +67,20 @@ def _format_cell(key: str, raw: str) -> str:
 def restaurant_props_html(meta: dict[str, str]) -> str | None:
     rows: list[str] = []
     for key, label, aliases in _PROP_FIELDS:
-        raw = _meta_value(meta, aliases)
-        if not raw:
-            continue
+        if key == "tier":
+            tier = parse_restaurant_tier(meta)
+            if not tier:
+                continue
+            cell = html_module.escape(tier)
+        else:
+            raw = _meta_value(meta, aliases)
+            if not raw:
+                continue
+            cell = _format_cell(key, raw)
         rows.append(
             f'<div class="album-props-row">'
             f"<dt>{html_module.escape(label)}</dt>"
-            f"<dd>{_format_cell(key, raw)}</dd>"
+            f"<dd>{cell}</dd>"
             f"</div>"
         )
     if not rows:
