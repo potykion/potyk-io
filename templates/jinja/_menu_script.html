@@ -57,7 +57,8 @@
                 if (SidePanel) SidePanel.close('sidebar');
                 body.classList.toggle('menu-collapsed', !open);
             }
-            if (persist !== false) writeStored(open);
+            // На мобилке состояние не персистим — после reload меню закрыто.
+            if (persist !== false && !isMobile()) writeStored(open);
             syncAria();
         }
 
@@ -70,6 +71,10 @@
         }
 
         function applyStoredOrDefault() {
+            if (isMobile()) {
+                setVisible(defaultVisible(), false);
+                return;
+            }
             var stored = readStored();
             setVisible(stored === null ? defaultVisible() : stored, false);
         }
