@@ -15,7 +15,7 @@
     <h1>Стата</h1>
 
     {% set stata_endpoint = "/health/stata" %}
-    {% set stata_empty_error = "выбери хотя бы одно дело" %}
+    {% set stata_empty_error = "выбери дело" %}
     {% include "potyk-health/_stata_form.html" %}
 
     {% include "potyk-health/_stata_log.html" %}
@@ -26,7 +26,7 @@
 
         {% set stata_items = achievement_items %}
         {% set stata_endpoint = "/health/achievements" %}
-        {% set stata_empty_error = "выбери хотя бы одно достижение" %}
+        {% set stata_empty_error = "выбери достижение" %}
         {% set stata_form_label = "Достижения" %}
         {% include "potyk-health/_stata_form.html" %}
 

@@ -8,6 +8,7 @@ from potyk_io_back.health.entities import (
     KIND_DEED,
     add_meditation,
     add_stata_entries,
+    delete_stata_entry,
     list_stata_items,
     list_stata_log,
     meditation_stats,
@@ -101,7 +102,10 @@ def _parse_page() -> int:
 
 @health_bp.get("/")
 def index():
-    return render_template("potyk-health/index.html")
+    return render_template(
+        "potyk-health/index.html",
+        stata_items=list_stata_items(KIND_DEED),
+    )
 
 
 @health_bp.get("/meditation")
@@ -138,9 +142,16 @@ def stata_add():
         return jsonify({"ok": False, "error": "bad items"}), 400
     cleaned = [str(n).strip() for n in names if str(n).strip()]
     if not cleaned:
-        return jsonify({"ok": False, "error": "выбери хотя бы одно дело"}), 400
+        return jsonify({"ok": False, "error": "выбери дело"}), 400
     add_stata_entries(cleaned, kind=KIND_DEED)
     return jsonify({"ok": True, "reload": True})
+
+
+@health_bp.delete("/stata/entries/<int:entry_id>")
+def stata_delete(entry_id: int):
+    if not delete_stata_entry(entry_id, kind=KIND_DEED):
+        return jsonify({"ok": False, "error": "не найдено"}), 404
+    return jsonify({"ok": True})
 
 
 @health_bp.get("/achievements")
@@ -158,7 +169,7 @@ def achievements_add():
         return jsonify({"ok": False, "error": "bad items"}), 400
     cleaned = [str(n).strip() for n in names if str(n).strip()]
     if not cleaned:
-        return jsonify({"ok": False, "error": "выбери хотя бы одно достижение"}), 400
+        return jsonify({"ok": False, "error": "выбери достижение"}), 400
     return jsonify(
         {
             "ok": True,

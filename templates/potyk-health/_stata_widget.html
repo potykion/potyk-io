@@ -1,0 +1,12 @@
+<div class="card index-v2-widget index-v2-widget--stata">
+    <div class="flex-center">
+        <a class="index-v2-widget__title-link" href="/health/stata">
+            <h3 class="index-v2-widget__title">Стата</h3>
+        </a>
+    </div>
+    {% set stata_endpoint = "/health/stata" %}
+    {% set stata_empty_error = "выбери дело" %}
+    {% set stata_form_widget = true %}
+    {% set stata_form_label = "" %}
+    {% include "potyk-health/_stata_form.html" %}
+</div>

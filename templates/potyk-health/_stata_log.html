@@ -6,13 +6,21 @@
             <tr>
                 <th>Дело</th>
                 <th>Когда</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             {% for row in log.entries %}
-            <tr>
+            <tr data-stata-entry="{{ row.id }}">
                 <td data-label="Дело">{{ row.name }}</td>
                 <td data-label="Когда">{{ row.done_at_label }}</td>
+                <td class="stata-log__actions">
+                    <button type="button"
+                            class="danger"
+                            data-stata-delete="{{ row.id }}"
+                            aria-label="Удалить"
+                            title="Удалить">×</button>
+                </td>
             </tr>
             {% endfor %}
             </tbody>

@@ -171,6 +171,18 @@ def add_stata_entries(
     return stata_stats(now, kind=kind)
 
 
+def delete_stata_entry(entry_id: int, *, kind: str = KIND_DEED) -> bool:
+    entry = db.session.get(HealthStataEntry, entry_id)
+    if entry is None:
+        return False
+    item = db.session.get(HealthStataItem, entry.item_id)
+    if item is None or item.kind != kind:
+        return False
+    db.session.delete(entry)
+    db.session.commit()
+    return True
+
+
 def list_stata_log(
     *,
     kind: str = KIND_DEED,

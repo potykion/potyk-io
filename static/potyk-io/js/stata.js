@@ -3,13 +3,17 @@
     if (typeof TomSelect !== "function") return;
     (root || document).querySelectorAll("select[data-tom-select]").forEach(function (el) {
       if (el.tomselect) return;
+      var maxItems = el.dataset.maxItems ? parseInt(el.dataset.maxItems, 10) : (el.multiple ? null : 1);
+      if (!Number.isFinite(maxItems) || maxItems < 1) maxItems = el.multiple ? null : 1;
+      var single = maxItems === 1;
       new TomSelect(el, {
         create: el.dataset.create === "true",
         createOnBlur: true,
         persist: true,
+        maxItems: maxItems,
         maxOptions: 200,
-        closeAfterSelect: false,
-        plugins: ["remove_button"],
+        closeAfterSelect: single,
+        plugins: single ? [] : ["remove_button"],
         placeholder: el.dataset.placeholder || "",
         searchField: ["text", "value"],
         sortField: [{ field: "text", direction: "asc" }],
@@ -21,9 +25,9 @@
   function syncSelectOptions(stats) {
     if (!Array.isArray(stats)) return;
     document.querySelectorAll("select[data-tom-select]").forEach(function (el) {
-      const names = new Set(stats.map(function (s) { return s.name; }));
+      var names = new Set(stats.map(function (s) { return s.name; }));
       if (el.tomselect) {
-        const existing = new Set(Object.keys(el.tomselect.options));
+        var existing = new Set(Object.keys(el.tomselect.options));
         stats.forEach(function (s) {
           if (!existing.has(s.name)) {
             el.tomselect.addOption({ value: s.name, text: s.name });
@@ -35,10 +39,10 @@
       Array.from(el.options).forEach(function (opt) {
         if (!names.has(opt.value)) opt.remove();
       });
-      const have = new Set(Array.from(el.options).map(function (o) { return o.value; }));
+      var have = new Set(Array.from(el.options).map(function (o) { return o.value; }));
       stats.forEach(function (s) {
         if (!have.has(s.name)) {
-          const opt = document.createElement("option");
+          var opt = document.createElement("option");
           opt.value = s.name;
           opt.textContent = s.name;
           el.appendChild(opt);
@@ -97,23 +101,29 @@
     return escapeHtml(str).replace(/'/g, "&#39;");
   }
 
+  function selectedItems(select) {
+    var raw = select.tomselect
+      ? select.tomselect.getValue()
+      : Array.from(select.selectedOptions).map(function (o) { return o.value; });
+    if (Array.isArray(raw)) return raw.filter(Boolean);
+    return raw ? [raw] : [];
+  }
+
   async function submitForm(form) {
-    const btn = form.querySelector("[type='submit']");
-    const errEl = form.querySelector("[data-stata-error]");
-    const select = form.querySelector('select[name="items"]');
+    var btn = form.querySelector("[type='submit']");
+    var errEl = form.querySelector("[data-stata-error]");
+    var select = form.querySelector('select[name="items"]');
     if (!select) return;
 
-    const endpoint = form.dataset.stataEndpoint || "/health/stata";
-    const emptyError = form.dataset.stataEmptyError || "выбери хотя бы одно дело";
+    var endpoint = form.dataset.stataEndpoint || "/health/stata";
+    var emptyError = form.dataset.stataEmptyError || "выбери дело";
 
     if (errEl) {
       errEl.hidden = true;
       errEl.textContent = "";
     }
 
-    const items = select.tomselect
-      ? select.tomselect.getValue()
-      : Array.from(select.selectedOptions).map(function (o) { return o.value; });
+    var items = selectedItems(select);
 
     if (!items.length) {
       if (errEl) {
@@ -125,13 +135,13 @@
 
     if (btn) btn.disabled = true;
     try {
-      const res = await fetch(endpoint, {
+      var res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         credentials: "same-origin",
         body: JSON.stringify({ items: items }),
       });
-      const data = await res.json().catch(function () { return {}; });
+      var data = await res.json().catch(function () { return {}; });
       if (!res.ok || !data.ok) {
         if (errEl) {
           errEl.textContent = data.error || "не вышло отметить";
@@ -165,14 +175,47 @@
     }
   }
 
+  async function deleteEntry(btn) {
+    var id = btn.getAttribute("data-stata-delete");
+    if (!id) return;
+    if (!window.confirm("Удалить запись?")) return;
+
+    btn.disabled = true;
+    try {
+      var res = await fetch("/health/stata/entries/" + encodeURIComponent(id), {
+        method: "DELETE",
+        headers: { Accept: "application/json" },
+        credentials: "same-origin",
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok || !data.ok) {
+        window.alert(data.error || "не вышло удалить");
+        return;
+      }
+      window.location.reload();
+    } catch (e) {
+      console.error(e);
+      window.alert("не вышло удалить");
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
   function onReady() {
     initTomSelect(document);
 
     document.addEventListener("submit", function (ev) {
-      const form = ev.target.closest("[data-stata-form]");
+      var form = ev.target.closest("[data-stata-form]");
       if (!form) return;
       ev.preventDefault();
       submitForm(form);
+    });
+
+    document.addEventListener("click", function (ev) {
+      var btn = ev.target.closest("[data-stata-delete]");
+      if (!btn) return;
+      ev.preventDefault();
+      deleteEntry(btn);
     });
   }
 

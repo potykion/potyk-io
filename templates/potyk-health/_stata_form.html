@@ -1,13 +1,13 @@
-<form class="stata-form"
+<form class="stata-form{% if stata_form_widget %} stata-form--widget{% endif %}"
       data-stata-form
       data-stata-endpoint="{{ stata_endpoint|default('/health/stata') }}"
-      data-stata-empty-error="{{ stata_empty_error|default('выбери хотя бы одно дело') }}">
+      data-stata-empty-error="{{ stata_empty_error|default('выбери дело') }}">
     <label>
         {{ stata_form_label|default('Дела') }}
         <select name="items"
-                multiple
                 data-tom-select
                 data-create="true"
+                data-max-items="1"
                 data-placeholder="выбери или добавь">
             {% for item in stata_items %}
             <option value="{{ item.name }}">{{ item.name }}</option>
@@ -16,6 +16,6 @@
     </label>
     <p class="stata-form__error" data-stata-error hidden></p>
     <div class="stata-form__actions">
-        <button type="submit">{{ stata_submit_label|default('Отметить') }}</button>
+        <button type="submit"{% if stata_form_widget %} class="btn-s"{% endif %}>{{ stata_submit_label|default('Отметить') }}</button>
     </div>
 </form>
