@@ -61,7 +61,18 @@
     {# font-picker: /static/jinja/js/font-picker.js — подключить сюда, чтобы снова включить #}
     <script>
     if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/sw.js").catch(function () {});
+        navigator.serviceWorker.register("/sw.js").then(function (reg) {
+            function pingWarm() {
+                var worker = reg.active || (navigator.serviceWorker && navigator.serviceWorker.controller);
+                if (worker) {
+                    worker.postMessage({ type: "warm-shell" });
+                }
+            }
+            // После load + пауза — shell в кэш под капотом, не на критическом пути
+            window.addEventListener("load", function () {
+                setTimeout(pingWarm, 2500);
+            });
+        }).catch(function () {});
     }
     </script>
 </body>

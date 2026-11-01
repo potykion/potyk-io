@@ -16,6 +16,8 @@ const APP_PREFIXES = [
   "/invest",
 ];
 
+let shellWarmPromise = null;
+
 async function putInCache(cache, url, response) {
   const body = await response.blob();
   const cached = new Response(body, {
@@ -40,26 +42,46 @@ async function precacheShell() {
         })
       : [];
   const cache = await caches.open(SHELL_CACHE);
-  await Promise.all(
-    urls.map(async (url) => {
-      try {
-        const response = await fetch(url, { cache: "reload", redirect: "follow" });
-        if (response.ok) {
-          await putInCache(cache, url, response);
-        }
-      } catch (e) {
-        /* skip failed URL */
+  // По одному — не рвём канал на мобилке пачкой параллельных запросов
+  for (let i = 0; i < urls.length; i++) {
+    const url = urls[i];
+    try {
+      const existing = await cache.match(url);
+      if (existing) {
+        continue;
       }
-    })
-  );
+      const response = await fetch(url, {
+        cache: "force-cache",
+        redirect: "follow",
+      });
+      if (response.ok) {
+        await putInCache(cache, url, response);
+      }
+    } catch (e) {
+      /* skip failed URL */
+    }
+  }
 }
 
+function warmShellInBackground() {
+  if (!shellWarmPromise) {
+    shellWarmPromise = precacheShell().catch(function () {
+      shellWarmPromise = null;
+    });
+  }
+  return shellWarmPromise;
+}
+
+self.addEventListener("message", (event) => {
+  if (!event.data || event.data.type !== "warm-shell") {
+    return;
+  }
+  event.waitUntil(warmShellInBackground());
+});
+
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    precacheShell()
-      .then(() => self.skipWaiting())
-      .catch(() => self.skipWaiting())
-  );
+  // Сразу skipWaiting — не ждём precache (он был главной пробкой после деплоя)
+  event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", (event) => {
@@ -70,18 +92,18 @@ self.addEventListener("activate", (event) => {
         keys
           .filter(
             (key) =>
-              key.startsWith("potyk-io-shell-") &&
-              key !== SHELL_CACHE
+              key.startsWith("potyk-io-shell-") && key !== SHELL_CACHE
           )
           .map((key) => caches.delete(key))
       );
-      // legacy full-precache caches + drop stale HTML that ignored auth
+      // legacy full-precache / food; runtime не трогаем — HTML и так network-first
       await Promise.all(
         keys
           .filter(
             (key) =>
               (key.startsWith("potyk-io-") &&
-                !key.startsWith("potyk-io-shell-")) ||
+                !key.startsWith("potyk-io-shell-") &&
+                key !== RUNTIME_CACHE) ||
               key.startsWith("potyk-food-")
           )
           .map((key) => caches.delete(key))
@@ -132,6 +154,17 @@ async function putRuntime(request, response) {
   await runtime.put(request, response);
 }
 
+async function revalidateStatic(request) {
+  try {
+    const fresh = await fetch(request, { cache: "no-cache" });
+    if (fresh && fresh.ok) {
+      await putRuntime(request, fresh.clone());
+    }
+  } catch (e) {
+    /* ignore */
+  }
+}
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") {
@@ -158,24 +191,25 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     (async () => {
-      // Static: cache-first
+      // Static: cache-first + фоновый revalidate (ответ не ждёт put)
       if (stat) {
         const cachedStatic = await matchCaches(request, false);
         if (cachedStatic) {
+          event.waitUntil(revalidateStatic(request));
           return cachedStatic;
         }
         const freshStatic = await fetch(request);
         if (freshStatic && freshStatic.ok) {
-          await putRuntime(request, freshStatic.clone());
+          event.waitUntil(putRuntime(request, freshStatic.clone()));
         }
         return freshStatic;
       }
 
-      // HTML / app pages: network-first (login widgets on / must not stick as guest)
+      // HTML: network-first; кэш визита — строго в фоне
       try {
         const fresh = await fetch(request, { cache: "no-store" });
         if (fresh && fresh.ok) {
-          await putRuntime(request, fresh.clone());
+          event.waitUntil(putRuntime(request, fresh.clone()));
         }
         return fresh;
       } catch (e) {
