@@ -43,10 +43,33 @@
     animation: meditation-pulse 0.35s ease;
 }
 
+.meditation-check.is-saved {
+    background: #222;
+    color: #fff;
+}
+
 @keyframes meditation-pulse {
     0% { transform: scale(1); }
     40% { transform: scale(1.08); }
     100% { transform: scale(1); }
+}
+
+.meditation-feedback {
+    margin: -0.75rem 0 1.25rem;
+    color: #2a7a3a;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.meditation-feedback.is-visible {
+    opacity: 1;
+}
+
+.index-v2-widget__title.is-saved {
+    color: #2a7a3a;
 }
 
 .meditation-stats {
