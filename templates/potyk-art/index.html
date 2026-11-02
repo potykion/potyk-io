@@ -11,21 +11,63 @@
 {% block main %}
 <h1>potyk-art</h1>
 
-<div class="card-grid card-grid--feed">
-    {% for project in projects %}
-        {% for image in project.images %}
-        <a class="card content-card" href="{{ image.url }}">
-            <img class="note-cover" src="{{ image.url }}" alt="{{ image.alt }}" loading="lazy">
-            <div class="note-preview md-content">
-                <h3>{{ project.title }}</h3>
-                {% if project.subtitle %}
-                <p class="card-subtitle">{{ project.subtitle }}</p>
-                {% endif %}
+<section class="art-section">
+    <h2>В работе</h2>
+    <div class="card-grid card-grid--feed">
+        {% for project in in_progress %}
+            {% for image in project.images %}
+            <a class="card content-card" href="{{ image.url }}">
+                <img class="note-cover" src="{{ image.url }}" alt="{{ image.alt }}" loading="lazy">
+                <div class="note-preview md-content">
+                    <h3>{{ project.title }}</h3>
+                    {% if project.subtitle %}
+                    <p class="card-subtitle">{{ project.subtitle }}</p>
+                    {% endif %}
+                </div>
+            </a>
+            {% else %}
+            <div class="card content-card">
+                <div class="note-preview md-content">
+                    <h3>{{ project.title }}</h3>
+                    {% if project.subtitle %}
+                    <p class="card-subtitle">{{ project.subtitle }}</p>
+                    {% endif %}
+                </div>
             </div>
-        </a>
+            {% endfor %}
+        {% else %}
+            <p class="card-grid-empty">Пока пусто</p>
         {% endfor %}
-    {% else %}
-        <p class="card-grid-empty">Пока пусто</p>
-    {% endfor %}
-</div>
+    </div>
+</section>
+
+<section class="art-section">
+    <h2>Готово</h2>
+    <div class="card-grid card-grid--feed">
+        {% for project in projects %}
+            {% for image in project.images %}
+            <a class="card content-card" href="{{ image.url }}">
+                <img class="note-cover" src="{{ image.url }}" alt="{{ image.alt }}" loading="lazy">
+                <div class="note-preview md-content">
+                    <h3>{{ project.title }}</h3>
+                    {% if project.subtitle %}
+                    <p class="card-subtitle">{{ project.subtitle }}</p>
+                    {% endif %}
+                </div>
+            </a>
+            {% else %}
+            <div class="card content-card">
+                <div class="note-preview md-content">
+                    <h3>{{ project.title }}</h3>
+                    {% if project.subtitle %}
+                    <p class="card-subtitle">{{ project.subtitle }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="card-grid-empty">Пока пусто</p>
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}

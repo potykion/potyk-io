@@ -1,3 +1,7 @@
+# Готовые — в projects.
+# В работе — в in_progress (или status: wip у элемента в projects).
+in_progress: []
+
 projects:
   - title: Тихая война
     subtitle: 4 сент 2026
