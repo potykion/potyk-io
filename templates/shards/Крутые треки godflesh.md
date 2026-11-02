@@ -1,3 +1,5 @@
-- Hymns
+- Hymns 
 	- Paralyzed
 	- Vampires
+	- Defeated
+	- Альбом с ахуенными риффаками, сладж вайбс
