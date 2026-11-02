@@ -14,11 +14,16 @@
         maxOptions: 200,
         closeAfterSelect: single,
         plugins: single ? [] : ["remove_button"],
+        allowEmptyOption: true,
         placeholder: el.dataset.placeholder || "",
         searchField: ["text", "value"],
         sortField: [{ field: "text", direction: "asc" }],
         dropdownParent: "body",
       });
+      // Не автоподставлять первое дело — оставляем placeholder.
+      if (single && el.tomselect && !el.getAttribute("data-keep-value")) {
+        el.tomselect.clear(true);
+      }
     });
   }
 

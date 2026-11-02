@@ -9,6 +9,7 @@
                 data-create="true"
                 data-max-items="1"
                 data-placeholder="выбери или добавь">
+            <option value=""></option>
             {% for item in stata_items %}
             <option value="{{ item.name }}">{{ item.name }}</option>
             {% endfor %}
