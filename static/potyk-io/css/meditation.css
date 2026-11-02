@@ -9,17 +9,25 @@
 }
 
 .meditation-check {
+    /* перекрыть forms.css: min-height 44px + padding ломают 1:1 */
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     width: 5.5rem;
     height: 5.5rem;
+    min-width: 5.5rem;
+    min-height: 5.5rem;
+    max-width: 5.5rem;
+    max-height: 5.5rem;
+    padding: 0;
     margin: 0 0 1.5rem;
     border: 2px solid #222;
     border-radius: 50%;
     background: #fff;
     color: #222;
     font-size: 2.4rem;
+    font-weight: inherit;
     line-height: 1;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
@@ -132,12 +140,13 @@
 }
 
 .meditation-check--widget {
-    box-sizing: border-box;
     width: 2.4rem;
     height: 2.4rem;
     min-width: 2.4rem;
     min-height: 2.4rem;
-    aspect-ratio: 1 / 1;
+    max-width: 2.4rem;
+    max-height: 2.4rem;
+    padding: 0;
     margin: 0;
     flex: 0 0 2.4rem;
     font-size: 1.15rem;
