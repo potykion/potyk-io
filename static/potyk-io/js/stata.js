@@ -6,6 +6,7 @@
       var maxItems = el.dataset.maxItems ? parseInt(el.dataset.maxItems, 10) : (el.multiple ? null : 1);
       if (!Number.isFinite(maxItems) || maxItems < 1) maxItems = el.multiple ? null : 1;
       var single = maxItems === 1;
+      var blurAfterSelect = !!el.closest(".stata-form--widget");
       new TomSelect(el, {
         create: el.dataset.create === "true",
         createOnBlur: true,
@@ -19,6 +20,14 @@
         searchField: ["text", "value"],
         sortField: [{ field: "text", direction: "asc" }],
         dropdownParent: "body",
+        onItemAdd: function () {
+          if (!blurAfterSelect || !single) return;
+          var self = this;
+          // После выбора убрать фокус (клавиатура на мобилке / кольцо фокуса).
+          setTimeout(function () {
+            self.blur();
+          }, 0);
+        },
       });
       // Не автоподставлять первое дело — оставляем placeholder.
       if (single && el.tomselect && !el.getAttribute("data-keep-value")) {
