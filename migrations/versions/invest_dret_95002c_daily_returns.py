@@ -1,7 +1,7 @@
 """Таблица дневных доходностей акций (MOEX TQBR)
 
 Revision ID: invest_dret_95002c
-Revises: health_med_20261030
+Revises: health_stata_kind_20261101
 Create Date: 2026-11-03 14:45:00.000000
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 
 revision: str = "invest_dret_95002c"
-down_revision: Union[str, Sequence[str], None] = "health_med_20261030"
+down_revision: Union[str, Sequence[str], None] = "health_stata_kind_20261101"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
