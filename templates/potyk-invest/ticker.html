@@ -130,6 +130,19 @@
         color: var(--muted);
         margin-left: 0.35rem;
     }
+
+    .pct {
+        color: #166534;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .pct.is-neg {
+        color: #9b2c2c;
+    }
+
+    .pct.is-big {
+        font-weight: 700;
+    }
 </style>
 {% endblock %}
 
@@ -161,6 +174,62 @@
             {{ page.exit_level | invest_price if page.exit_level is not none else "—" }}
         </div>
     </div>
+
+    <h2>Доходности</h2>
+    {% if page.month_returns %}
+    <h3 style="font-size:1rem;margin:0.75rem 0 0.4rem;font-weight:600;">По месяцам</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Месяц</th>
+                    <th class="num">Итого</th>
+                    <th class="num">Дней</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in page.month_returns %}
+                <tr>
+                    <td>{{ row.title }}</td>
+                    <td class="num">
+                        <span class="pct{% if row.pct < 0 %} is-neg{% endif %}{% if row.pct|abs >= 3 %} is-big{% endif %}">{{ row.pct_label }}</span>
+                    </td>
+                    <td class="num">{{ row.days }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    {% if page.daily_returns %}
+    <h3 style="font-size:1rem;margin:1rem 0 0.4rem;font-weight:600;">По дням</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th class="num">День</th>
+                    <th class="num">Оборот, млн ₽</th>
+                    <th class="num">Закрытие</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in page.daily_returns %}
+                <tr>
+                    <td>{{ row.date_fmt }}</td>
+                    <td class="num">
+                        <span class="pct{% if row.pct < 0 %} is-neg{% endif %}{% if row.pct|abs >= 3 %} is-big{% endif %}">{{ row.pct_label }}</span>
+                    </td>
+                    <td class="num">{{ row.value_mln }}</td>
+                    <td class="num">{{ row.close_fmt }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Дневных доходностей пока нет (skill <code>daily-top-stocks</code>).</p>
+    {% endif %}
 
     <h2>Сделки</h2>
     {% if page.deals %}

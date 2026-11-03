@@ -375,9 +375,9 @@ _INVEST_SECTION_LINKS: list[MenuItem] = [
         "description": "",
     },
     {
-        "icon": "🔗",
-        "title": "Зависимости",
-        "url": "/invest/dependencies",
+        "icon": "🪙",
+        "title": "Акции",
+        "url": "/invest/stocks",
         "description": "",
     },
     {

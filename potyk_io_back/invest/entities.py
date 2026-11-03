@@ -105,6 +105,29 @@ class InvestFundReturn(db.Model):
     )
 
 
+class InvestDailyReturn(db.Model):
+    """Дневная доходность акции TQBR (снимок с MOEX ISS)."""
+
+    __tablename__ = "invest_daily_returns"
+
+    id = db.Column(db.Integer, primary_key=True)
+    trade_date = db.Column(db.Date, nullable=False, index=True)
+    ticker = db.Column(db.String(32), nullable=False, index=True)
+    pct = db.Column(db.Numeric(10, 4), nullable=False, index=True)
+    value = db.Column(db.Numeric(18, 2), nullable=False, default=0)
+    volume = db.Column(db.BigInteger, nullable=True)
+    close = db.Column(db.Numeric(18, 6), nullable=True)
+    sector = db.Column(db.String(255), nullable=False, default="", index=True)
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            "trade_date",
+            "ticker",
+            name="uq_invest_daily_returns_date_ticker",
+        ),
+    )
+
+
 class InvestNews(db.Model):
     __tablename__ = "invest_news"
 

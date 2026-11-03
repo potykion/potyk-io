@@ -11,8 +11,10 @@ import markdown
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
+from potyk_io_back.invest.daily_top import MONTH_RU_FULL, compound_pct, fmt_pct
 from potyk_io_back.invest.entities import (
     NEWS_FEED_ASSET_TYPES,
+    InvestDailyReturn,
     InvestDeal,
     InvestFundReturn,
     InvestNews,
@@ -136,6 +138,28 @@ class NewsPage:
 
 
 @dataclass
+class TickerDailyReturn:
+    trade_date: date
+    date_fmt: str
+    pct: float
+    pct_label: str
+    value: float
+    value_mln: str
+    close: float | None
+    close_fmt: str
+
+
+@dataclass
+class TickerMonthReturn:
+    year: int
+    month: int
+    title: str
+    pct: float
+    pct_label: str
+    days: int
+
+
+@dataclass
 class TickerPage:
     ticker: str
     name: str
@@ -146,6 +170,8 @@ class TickerPage:
     exit_level: Decimal | None
     deals: list[InvestDeal]
     news: list[NewsItem]
+    daily_returns: list[TickerDailyReturn] = field(default_factory=list)
+    month_returns: list[TickerMonthReturn] = field(default_factory=list)
 
 
 def load_news_page(slug: str) -> NewsPage | None:
@@ -180,6 +206,13 @@ def load_news_page(slug: str) -> NewsPage | None:
     )
 
 
+def _fmt_close(value) -> str:
+    if value is None:
+        return "—"
+    text = f"{Decimal(value):.6f}".rstrip("0").rstrip(".")
+    return text or "0"
+
+
 def load_ticker_page(ticker: str) -> TickerPage:
     code = (ticker or "").strip()
     row = db.session.scalars(
@@ -197,6 +230,11 @@ def load_ticker_page(ticker: str) -> TickerPage:
         select(InvestNews)
         .where(InvestNews.ticker == code)
         .order_by(InvestNews.datetime.desc(), InvestNews.id.desc())
+    ).all()
+    daily_rows = db.session.scalars(
+        select(InvestDailyReturn)
+        .where(InvestDailyReturn.ticker == code)
+        .order_by(InvestDailyReturn.trade_date.desc(), InvestDailyReturn.id.desc())
     ).all()
 
     news: list[NewsItem] = []
@@ -216,6 +254,42 @@ def load_ticker_page(ticker: str) -> TickerPage:
             )
         )
 
+    daily_returns: list[TickerDailyReturn] = []
+    by_month: dict[tuple[int, int], list[float]] = {}
+    for r in daily_rows:
+        pct = float(r.pct)
+        value = float(r.value or 0)
+        daily_returns.append(
+            TickerDailyReturn(
+                trade_date=r.trade_date,
+                date_fmt=r.trade_date.strftime("%d.%m.%Y"),
+                pct=pct,
+                pct_label=fmt_pct(pct),
+                value=value,
+                value_mln=f"{value / 1e6:.1f}",
+                close=float(r.close) if r.close is not None else None,
+                close_fmt=_fmt_close(r.close),
+            )
+        )
+        key = (r.trade_date.year, r.trade_date.month)
+        by_month.setdefault(key, []).append(pct)
+
+    month_returns: list[TickerMonthReturn] = []
+    for (year, month), pcts in sorted(by_month.items(), reverse=True):
+        # daily_rows приходят desc — для компаундинга нужен хронологический порядок
+        chron = list(reversed(pcts))
+        total = compound_pct(chron)
+        month_returns.append(
+            TickerMonthReturn(
+                year=year,
+                month=month,
+                title=f"{MONTH_RU_FULL[month]} {year}",
+                pct=total,
+                pct_label=fmt_pct(total),
+                days=len(chron),
+            )
+        )
+
     return TickerPage(
         ticker=code,
         name=(row.name if row else "") or "",
@@ -226,6 +300,8 @@ def load_ticker_page(ticker: str) -> TickerPage:
         exit_level=levels.exit_level if levels else None,
         deals=deals,
         news=news,
+        daily_returns=daily_returns,
+        month_returns=month_returns,
     )
 
 

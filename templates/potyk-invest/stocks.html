@@ -1,0 +1,657 @@
+{% extends "potyk-invest/_base.html" %}
+
+{% block title %}Акции — potyk-invest{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    body.site-invest .wrap {
+        max-width: none;
+        width: 100%;
+        margin: 0;
+    }
+
+    .note {
+        margin: 0 0 1.25rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.45;
+    }
+
+    .stocks-tabs {
+        margin: 0 0 1rem;
+    }
+
+    .stocks-panel[hidden] {
+        display: none;
+    }
+
+    .month-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin: 0 0 0.75rem;
+    }
+
+    .month-bar label {
+        font-size: 0.9rem;
+        color: var(--muted);
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 0 0 0.85rem;
+    }
+
+    .leg {
+        appearance: none;
+        -webkit-appearance: none;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.78rem;
+        border: 1px solid var(--none-border);
+        cursor: pointer;
+        color: inherit;
+        font-family: inherit;
+        line-height: 1.35;
+    }
+
+    .leg:hover {
+        border-color: var(--ink);
+    }
+
+    .leg.is-active {
+        outline: 2px solid var(--ink);
+        outline-offset: 1px;
+        font-weight: 600;
+    }
+
+    .table-wrap {
+        width: 100%;
+        max-height: calc(100vh - 14rem);
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 0 1.25rem;
+    }
+
+    table {
+        width: max-content;
+        min-width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--none-border);
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    th:first-child,
+    td.ticker-name {
+        min-width: 4.5rem;
+    }
+
+    th:nth-child(2),
+    td.sector {
+        min-width: 7rem;
+    }
+
+    th.flag,
+    td.flag {
+        min-width: 3.25rem;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: var(--bg);
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--muted);
+        box-shadow: 0 1px 0 var(--none-border);
+    }
+
+    th.col-sort {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    th.col-sort:hover {
+        color: var(--ink);
+    }
+
+    th.col-sort.is-active {
+        color: var(--ink);
+        font-weight: 600;
+    }
+
+    th.col-sort .sort-arrow {
+        display: none;
+        font-size: 0.85em;
+        line-height: 1;
+        opacity: 0.75;
+    }
+
+    th.col-sort.is-active .sort-arrow {
+        display: inline;
+    }
+
+    th.col-filter {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    th.col-filter:hover {
+        color: var(--ink);
+    }
+
+    th.col-filter.is-filtered {
+        color: var(--ink);
+        font-weight: 700;
+    }
+
+    th.flag, td.flag {
+        text-align: center;
+    }
+
+    td.ticker-name {
+        font-weight: 600;
+    }
+
+    td.sector {
+        color: var(--muted);
+        font-size: 0.88em;
+    }
+
+    .ticker-code.has-title {
+        border-bottom: 1px dotted var(--muted);
+        cursor: help;
+    }
+
+    td.flag .mark {
+        color: #1f6b4a;
+        font-weight: 600;
+    }
+
+    td.flag .empty {
+        color: var(--muted);
+        opacity: 0.45;
+    }
+
+    table.daily-top {
+        font-size: 0.82rem;
+    }
+
+    table.daily-top th,
+    table.daily-top td {
+        padding: 4px 6px;
+        border: 1px solid var(--none-border);
+    }
+
+    table.daily-top .t {
+        font-weight: 600;
+    }
+
+    table.daily-top .p {
+        color: #166534;
+    }
+
+    table.daily-top .p.is-neg {
+        color: #9b2c2c;
+    }
+
+    table.daily-top .p.is-big {
+        font-weight: 700;
+    }
+
+    table.daily-top a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    table.daily-top a:hover {
+        text-decoration: underline;
+    }
+
+    #sector-month-totals {
+        margin: 0 0 1rem;
+    }
+
+    #sector-month-totals[hidden] {
+        display: none;
+    }
+
+    #sector-month-totals h3 {
+        margin: 0 0 0.45rem;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    table.month-totals {
+        width: auto;
+        min-width: 16rem;
+        font-size: 0.9rem;
+    }
+
+    table.month-totals th,
+    table.month-totals td {
+        padding: 4px 10px;
+        border-bottom: 1px solid var(--none-border);
+    }
+
+    table.month-totals .num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="wrap">
+    <h1>Акции</h1>
+
+    <div class="tabs stocks-tabs" role="tablist" aria-label="Разделы акций">
+        <button type="button" class="tab" role="tab" id="tab-returns" aria-controls="panel-returns" aria-selected="true" data-panel="returns">Доходности</button>
+        <button type="button" class="tab" role="tab" id="tab-dependencies" aria-controls="panel-dependencies" aria-selected="false" data-panel="dependencies">Зависимости</button>
+    </div>
+
+    <section class="stocks-panel" id="panel-returns" role="tabpanel" aria-labelledby="tab-returns">
+        <p class="note" id="returns-note">
+            Топ-{{ daily_top.top_n if daily_top else 10 }} акций TQBR по дневной доходности
+            (оборот ≥ {{ ((daily_top.min_value if daily_top else 100000000) / 1000000)|int }} млн ₽).
+            Цвет ячейки — сектор; клик по сектору — все бумаги сектора.
+        </p>
+
+        {% if daily_top and daily_top.available_months %}
+        <form class="month-bar" method="get" action="/invest/stocks">
+            <label>
+                Месяц
+                <select name="ym" onchange="this.form.submit()">
+                    {% for y, m, title in daily_top.available_months %}
+                    <option value="{{ '%04d-%02d'|format(y, m) }}"{% if '%04d-%02d'|format(y, m) == ym %} selected{% endif %}>{{ title }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </form>
+        {% endif %}
+
+        {% if not daily_top or not daily_top.days %}
+        <p class="empty">Нет данных за выбранный месяц. Обнови через skill <code>daily-top-stocks</code>.</p>
+        {% else %}
+        {% if daily_top.legend %}
+        <div class="legend" id="sector-legend" role="group" aria-label="Фильтр по сектору">
+            {% for name, color in daily_top.legend %}
+            <button type="button" class="leg" style="background:{{ color }}" data-sector="{{ name }}">{{ name }}</button>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div id="sector-month-totals" hidden>
+            <h3>Итого за месяц</h3>
+            <div class="table-wrap">
+                <table class="month-totals">
+                    <thead>
+                        <tr>
+                            <th>Тикер</th>
+                            <th class="num">Месяц</th>
+                            <th class="num">Дней</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table class="daily-top" id="daily-top-table" data-ym="{{ ym }}">
+                <thead>
+                    <tr>
+                        {% for day in daily_top.days %}
+                        <th>{{ day.label }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in daily_top.ranks %}
+                    <tr>
+                        {% for cell in row %}
+                        {% if cell %}
+                        <td style="background:{{ cell.color }}" title="{{ cell.ticker }} · {{ cell.sector }} · оборот {{ (cell.value / 1000000)|round(0)|int }} млн ₽">
+                            <a href="/invest/tickers/{{ cell.ticker }}"><span class="t">{{ cell.ticker }}</span></a>
+                            <span class="p{% if cell.pct < 0 %} is-neg{% endif %}{% if cell.pct|abs >= 3 %} is-big{% endif %}">{{ cell.pct_label }}</span>
+                        </td>
+                        {% else %}
+                        <td></td>
+                        {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="stocks-panel" id="panel-dependencies" role="tabpanel" aria-labelledby="tab-dependencies" hidden>
+        <p class="note">
+            Строки — акции, столбцы — факторы. Галочка значит, что бумага чувствительна к фактору.
+            <strong>КС</strong>: рост от снижения ставки, падение от повышения/паузы.
+        </p>
+
+        {% if not rows %}
+        <p class="empty">Акций пока нет.</p>
+        {% else %}
+        <div class="table-wrap">
+            <table class="deps-table">
+                <thead>
+                    <tr>
+                        <th class="col-sort is-active" data-sort="ticker" title="Сортировать по тикеру">
+                            Тикер<span class="sort-arrow" aria-hidden="true"> ↑</span>
+                        </th>
+                        <th class="col-sort" data-sort="sector" title="Сортировать по сектору">
+                            Сектор<span class="sort-arrow" aria-hidden="true"> ↑</span>
+                        </th>
+                        {% for col in columns %}
+                        <th class="flag col-filter" data-dep="{{ col }}" title="Показать акции с зависимостью «{{ col }}»">{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr data-ticker="{{ row.ticker }}" data-sector="{{ row.sector }}" data-deps="{% for col in columns if row.flags.get(col) %}{{ col }}|{% endfor %}">
+                        <td class="ticker-name">
+                            <a href="/invest/tickers/{{ row.ticker }}" class="ticker-code{% if row.name and row.name != row.ticker %} has-title{% endif %}"{% if row.name and row.name != row.ticker %} title="{{ row.name }}"{% endif %}>{{ row.ticker }}</a>
+                        </td>
+                        <td class="sector">{{ row.sector or "—" }}</td>
+                        {% for col in columns %}
+                        <td class="flag">
+                            {% if row.flags.get(col) %}
+                            <span class="mark" aria-label="есть">✓</span>
+                            {% else %}
+                            <span class="empty" aria-hidden="true">—</span>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+(() => {
+  const tabs = Array.from(document.querySelectorAll(".stocks-tabs .tab"));
+  const panels = {
+    returns: document.getElementById("panel-returns"),
+    dependencies: document.getElementById("panel-dependencies"),
+  };
+
+  const activate = (name, pushHash) => {
+    const key = panels[name] ? name : "returns";
+    tabs.forEach((tab) => {
+      const on = tab.dataset.panel === key;
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    Object.entries(panels).forEach(([k, el]) => {
+      if (!el) return;
+      el.hidden = k !== key;
+    });
+    if (pushHash) {
+      const hash = key === "returns" ? "#returns" : "#dependencies";
+      if (location.hash !== hash) {
+        history.replaceState(null, "", hash);
+      }
+    }
+  };
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => activate(tab.dataset.panel, true));
+  });
+
+  const fromHash = () => {
+    const h = (location.hash || "").replace(/^#/, "");
+    if (h === "dependencies" || h === "deps") activate("dependencies", false);
+    else activate("returns", false);
+  };
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
+
+  // --- Доходности: фильтр по сектору (данные с /invest/stocks/daily-top.json) ---
+  const dailyTable = document.getElementById("daily-top-table");
+  const legend = document.getElementById("sector-legend");
+  const noteEl = document.getElementById("returns-note");
+  const monthTotalsBox = document.getElementById("sector-month-totals");
+  if (dailyTable && legend) {
+    let payload = null;
+    let payloadPromise = null;
+    let activeSector = null;
+    const defaultNote = noteEl ? noteEl.textContent : "";
+    const ym = dailyTable.dataset.ym || "";
+
+    const esc = (s) =>
+      String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/"/g, "&quot;");
+
+    const fmtPct = (x) => `${x > 0 ? "+" : ""}${x.toFixed(2)}%`;
+
+    const compoundPct = (pcts) => {
+      let factor = 1;
+      for (const p of pcts) factor *= 1 + p / 100;
+      return (factor - 1) * 100;
+    };
+
+    const pctClass = (pct) =>
+      `p${pct < 0 ? " is-neg" : ""}${Math.abs(pct) >= 3 ? " is-big" : ""}`;
+
+    const cellHtml = (e, paintSector) => {
+      if (!e) return "<td></td>";
+      const tip = `${e.ticker} · ${e.sector} · оборот ${Math.round(e.value / 1e6)} млн ₽`;
+      const bg = paintSector ? ` style="background:${esc(e.color)}"` : "";
+      return (
+        `<td${bg} title="${esc(tip)}">` +
+        `<a href="/invest/tickers/${encodeURIComponent(e.ticker)}">` +
+        `<span class="t">${esc(e.ticker)}</span></a> ` +
+        `<span class="${pctClass(e.pct)}">${esc(e.pct_label)}</span></td>`
+      );
+    };
+
+    const renderMonthTotals = (sector) => {
+      if (!monthTotalsBox) return;
+      const tbody = monthTotalsBox.querySelector("tbody");
+      if (!sector || !payload || !payload.days) {
+        monthTotalsBox.hidden = true;
+        if (tbody) tbody.innerHTML = "";
+        return;
+      }
+      const byTicker = new Map();
+      for (const day of payload.days) {
+        for (const e of day.entries) {
+          if (e.sector !== sector) continue;
+          if (!byTicker.has(e.ticker)) byTicker.set(e.ticker, []);
+          byTicker.get(e.ticker).push(e.pct);
+        }
+      }
+      const rows = Array.from(byTicker.entries()).map(([ticker, pcts]) => ({
+        ticker,
+        pct: compoundPct(pcts),
+        days: pcts.length,
+      }));
+      rows.sort((a, b) => b.pct - a.pct);
+      tbody.innerHTML = rows
+        .map(
+          (r) =>
+            `<tr>` +
+            `<td><a href="/invest/tickers/${encodeURIComponent(r.ticker)}">${esc(r.ticker)}</a></td>` +
+            `<td class="num"><span class="${pctClass(r.pct)}">${esc(fmtPct(r.pct))}</span></td>` +
+            `<td class="num">${r.days}</td>` +
+            `</tr>`
+        )
+        .join("");
+      monthTotalsBox.hidden = rows.length === 0;
+    };
+
+    const ensurePayload = () => {
+      if (payload) return Promise.resolve(payload);
+      if (payloadPromise) return payloadPromise;
+      const url = "/invest/stocks/daily-top.json" + (ym ? `?ym=${encodeURIComponent(ym)}` : "");
+      payloadPromise = fetch(url, { credentials: "same-origin", cache: "no-store" })
+        .then((r) => {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
+        .then((data) => {
+          payload = data;
+          return payload;
+        })
+        .catch((err) => {
+          console.error("daily-top.json", err);
+          payloadPromise = null;
+          throw err;
+        });
+      return payloadPromise;
+    };
+
+    const render = (sector) => {
+      if (!payload || !payload.days) return;
+      const topN = payload.top_n || 10;
+      const minValue = payload.min_value || 0;
+      const paintSector = !sector;
+      const columns = payload.days.map((day) => {
+        if (sector) {
+          return day.entries.filter((e) => e.sector === sector);
+        }
+        return day.entries.filter((e) => e.value >= minValue).slice(0, topN);
+      });
+      const height = columns.reduce((m, col) => Math.max(m, col.length), 0);
+      const tbody = dailyTable.querySelector("tbody");
+      const parts = [];
+      for (let r = 0; r < height; r++) {
+        parts.push("<tr>");
+        for (const col of columns) {
+          parts.push(cellHtml(col[r] || null, paintSector));
+        }
+        parts.push("</tr>");
+      }
+      tbody.innerHTML =
+        parts.join("") ||
+        `<tr><td colspan="${columns.length || 1}">Нет бумаг сектора</td></tr>`;
+      legend.querySelectorAll(".leg").forEach((btn) => {
+        btn.classList.toggle("is-active", btn.dataset.sector === sector);
+      });
+      renderMonthTotals(sector);
+      if (noteEl) {
+        noteEl.textContent = sector
+          ? `Все акции сектора «${sector}» по дням + итог за месяц (клик ещё раз — сброс).`
+          : defaultNote;
+      }
+    };
+
+    legend.addEventListener("click", (ev) => {
+      const btn = ev.target.closest(".leg");
+      if (!btn) return;
+      const sector = btn.dataset.sector;
+      const next = activeSector === sector ? null : sector;
+      ensurePayload()
+        .then(() => {
+          activeSector = next;
+          render(activeSector);
+        })
+        .catch(() => {
+          if (noteEl) noteEl.textContent = "Не удалось загрузить данные для фильтра.";
+        });
+    });
+
+    // прогрев кэша данных
+    ensurePayload().catch(() => {});
+  }
+
+  // --- Зависимости: сортировка / фильтр факторов ---
+  const table = document.querySelector(".deps-table");
+  if (!table) return;
+
+  const tbody = table.querySelector("tbody");
+  const sortHeaders = table.querySelectorAll(".col-sort");
+  const filterHeaders = table.querySelectorAll(".col-filter");
+  let sortKey = "ticker";
+  let sortDir = "asc";
+  let filterDep = null;
+
+  const applyFilter = () => {
+    filterHeaders.forEach((th) => {
+      th.classList.toggle("is-filtered", th.dataset.dep === filterDep);
+    });
+    tbody.querySelectorAll("tr").forEach((row) => {
+      if (!filterDep) {
+        row.hidden = false;
+        return;
+      }
+      const deps = (row.dataset.deps || "").split("|").filter(Boolean);
+      row.hidden = !deps.includes(filterDep);
+    });
+  };
+
+  const sortRows = (key, dir) => {
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const factor = dir === "asc" ? 1 : -1;
+    rows.sort((a, b) => {
+      const av = (a.getAttribute(`data-${key}`) || "").toLocaleLowerCase("ru");
+      const bv = (b.getAttribute(`data-${key}`) || "").toLocaleLowerCase("ru");
+      if (av < bv) return -1 * factor;
+      if (av > bv) return 1 * factor;
+      const at = (a.getAttribute("data-ticker") || "").toLocaleLowerCase("ru");
+      const bt = (b.getAttribute("data-ticker") || "").toLocaleLowerCase("ru");
+      if (at < bt) return -1;
+      if (at > bt) return 1;
+      return 0;
+    });
+    rows.forEach((row) => tbody.appendChild(row));
+
+    sortHeaders.forEach((th) => {
+      const active = th.dataset.sort === key;
+      th.classList.toggle("is-active", active);
+      const arrow = th.querySelector(".sort-arrow");
+      if (arrow) arrow.textContent = active ? (dir === "asc" ? " ↑" : " ↓") : " ↑";
+    });
+  };
+
+  sortHeaders.forEach((th) => {
+    th.addEventListener("click", () => {
+      const key = th.dataset.sort;
+      if (sortKey === key) {
+        sortDir = sortDir === "asc" ? "desc" : "asc";
+      } else {
+        sortKey = key;
+        sortDir = "asc";
+      }
+      sortRows(sortKey, sortDir);
+    });
+  });
+
+  filterHeaders.forEach((th) => {
+    th.addEventListener("click", () => {
+      const dep = th.dataset.dep;
+      filterDep = filterDep === dep ? null : dep;
+      applyFilter();
+    });
+  });
+})();
+</script>
+{% endblock %}

@@ -3,11 +3,17 @@ from pathlib import Path
 
 from datetime import date, timedelta
 
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import login_required
 from sqlalchemy import select
 
 from potyk_io_back.core.db import db
+from potyk_io_back.invest.daily_top import (
+    DEFAULT_MIN_VALUE,
+    DEFAULT_TOP,
+    build_daily_top_view,
+    default_year_month,
+)
 from potyk_io_back.invest.dashboard import (
     NewsFilters,
     build_dashboard,
@@ -393,14 +399,57 @@ def funds():
     )
 
 
-@invest_bp.route("/dependencies")
-def dependencies():
+def _parse_ym_arg() -> tuple[int, int]:
+    ym = (request.args.get("ym") or "").strip()
+    year, month = default_year_month()
+    if not ym:
+        return year, month
+    try:
+        y_s, m_s = ym.split("-", 1)
+        year, month = int(y_s), int(m_s)
+        if not (1 <= month <= 12):
+            raise ValueError
+        return year, month
+    except ValueError:
+        return default_year_month()
+
+
+@invest_bp.route("/stocks")
+def stocks():
     columns, rows = build_dependencies_matrix()
+    year, month = _parse_ym_arg()
+    daily_top = build_daily_top_view(
+        year,
+        month,
+        top_n=DEFAULT_TOP,
+        min_value=DEFAULT_MIN_VALUE,
+    )
     return render_template(
-        "potyk-invest/dependencies.html",
+        "potyk-invest/stocks.html",
         columns=columns,
         rows=rows,
+        daily_top=daily_top,
+        ym=f"{year:04d}-{month:02d}",
     )
+
+
+@invest_bp.route("/stocks/daily-top.json")
+def stocks_daily_top_json():
+    year, month = _parse_ym_arg()
+    daily_top = build_daily_top_view(
+        year,
+        month,
+        top_n=DEFAULT_TOP,
+        min_value=DEFAULT_MIN_VALUE,
+    )
+    if not daily_top:
+        return jsonify({"top_n": DEFAULT_TOP, "days": []})
+    return jsonify(daily_top.client_payload())
+
+
+@invest_bp.route("/dependencies")
+def dependencies_redirect():
+    return redirect("/invest/stocks#dependencies", code=301)
 
 
 @invest_bp.route("/deals")

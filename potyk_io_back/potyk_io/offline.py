@@ -63,7 +63,7 @@ CORE_PAGES = [
     "/money",
     "/invest",
     "/invest/funds",
-    "/invest/dependencies",
+    "/invest/stocks",
     "/invest/passive-income",
     "/invest/trading",
     "/invest/lore",
@@ -209,7 +209,7 @@ def _iter_content_files() -> list[Path]:
         TEMPLATES_ROOT / "potyk-invest" / "trading.md",
         TEMPLATES_ROOT / "potyk-invest" / "lore.md",
         TEMPLATES_ROOT / "potyk-invest" / "funds.html",
-        TEMPLATES_ROOT / "potyk-invest" / "dependencies.html",
+        TEMPLATES_ROOT / "potyk-invest" / "stocks.html",
         TEMPLATES_ROOT / "potyk-io" / "findings.html",
     ]
     files: list[Path] = []
