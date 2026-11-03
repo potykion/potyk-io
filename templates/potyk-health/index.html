@@ -20,6 +20,7 @@
 </div>
 
 <div class="flex-center health-home-widgets">
+    {% include "potyk-health/_stata_widget.html" %}
     <div class="card index-v2-widget index-v2-widget--meditation">
         <div class="flex-center">
             <a class="index-v2-widget__title-link" href="/health/meditation">
@@ -30,7 +31,6 @@
             <button type="button" class="meditation-check meditation-check--widget" aria-label="Отметить медитацию">✓</button>
         </div>
     </div>
-    {% include "potyk-health/_stata_widget.html" %}
 </div>
 {% endblock %}
 

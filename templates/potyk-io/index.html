@@ -35,6 +35,9 @@
     </div>
 
     <div class="card-grid card-grid--4 index-v2-grid">
+        {% if show_stata_widget %}
+        {% include "potyk-health/_stata_widget.html" %}
+        {% endif %}
         {% if fin_period_label is defined %}
         <a class="card index-v2-widget" href="/fin/">
             <h3 class="index-v2-widget__title">Финансы</h3>
@@ -62,9 +65,6 @@
                 <button type="button" class="meditation-check meditation-check--widget" aria-label="Отметить медитацию">✓</button>
             </div>
         </div>
-        {% endif %}
-        {% if show_stata_widget %}
-        {% include "potyk-health/_stata_widget.html" %}
         {% endif %}
         {% if show_anti_widget %}
         <div class="card index-v2-widget index-v2-widget--anti">
