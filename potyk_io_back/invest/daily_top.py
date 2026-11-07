@@ -7,7 +7,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 
 from sqlalchemy import delete, func, select
@@ -283,35 +283,42 @@ def fetch_share_tickers() -> set[str]:
     return {r[idx["SECID"]] for r in rows if r[idx["SECTYPE"]] in ("1", "2")}
 
 
-def _month_days(year: int, month: int) -> list[date]:
-    last = calendar.monthrange(year, month)[1]
-    return [date(year, month, d) for d in range(1, last + 1)]
+def _days_inclusive(start: date, end: date) -> list[date]:
+    if end < start:
+        return []
+    out: list[date] = []
+    cur = start
+    step = timedelta(days=1)
+    while cur <= end:
+        out.append(cur)
+        cur = cur + step
+    return out
 
 
-def replace_month_returns(
-    year: int,
-    month: int,
+def replace_returns_range(
+    start: date,
+    end: date,
     *,
     sectors: dict[str, str] | None = None,
     progress: bool = False,
 ) -> int:
-    """Скачать месяц с MOEX и перезаписать строки в SQL. Возвращает число строк."""
+    """Скачать диапазон дат с MOEX и перезаписать строки в SQL. Возвращает число строк."""
     sectors = sectors or load_sectors_map()
     shares = fetch_share_tickers()
-    first = date(year, month, 1)
-    last = date(year, month, calendar.monthrange(year, month)[1])
 
     db.session.execute(
         delete(InvestDailyReturn).where(
-            InvestDailyReturn.trade_date >= first,
-            InvestDailyReturn.trade_date <= last,
+            InvestDailyReturn.trade_date >= start,
+            InvestDailyReturn.trade_date <= end,
         )
     )
 
     inserted = 0
-    for day in _month_days(year, month):
+    for day in _days_inclusive(start, end):
         rows = fetch_day_rows(day)
         if not rows:
+            if progress:
+                print(f"  {day.isoformat()}: нет торгов", flush=True)
             continue
         day_n = 0
         for r in rows:
@@ -343,6 +350,21 @@ def replace_month_returns(
 
     db.session.commit()
     return inserted
+
+
+def replace_month_returns(
+    year: int,
+    month: int,
+    *,
+    sectors: dict[str, str] | None = None,
+    progress: bool = False,
+) -> int:
+    """Скачать месяц с MOEX и перезаписать строки в SQL. Возвращает число строк."""
+    first = date(year, month, 1)
+    last = date(year, month, calendar.monthrange(year, month)[1])
+    return replace_returns_range(
+        first, last, sectors=sectors, progress=progress
+    )
 
 
 def list_available_months() -> list[tuple[int, int]]:

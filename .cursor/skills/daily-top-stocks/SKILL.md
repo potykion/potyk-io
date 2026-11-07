@@ -19,21 +19,25 @@ TQBR с TRENDCLSPR за день: ticker, pct, value, volume, close, sector).
 ```powershell
 python .cursor/skills/daily-top-stocks/scripts/daily_top.py --month 10
 python .cursor/skills/daily-top-stocks/scripts/daily_top.py --year 2026 --month 11
+python .cursor/skills/daily-top-stocks/scripts/daily_top.py --from 2026-11-01 --to 2026-11-06
 ```
 
 Источник: MOEX ISS (без токена). Сектор — `invest_tickers` + fallback в
-`potyk_io_back/invest/daily_top.py`. Месяц перезаписывается целиком.
+`potyk_io_back/invest/daily_top.py`. Диапазон/месяц перезаписывается целиком.
 
 ## Workflow для агента
 
 ```
-- [ ] 1. Уточнить месяц/год
-- [ ] 2. Запустить daily_top.py (нужна миграция invest_dret_95002c)
-- [ ] 3. Открыть /invest/stocks?ym=YYYY-MM
-- [ ] 4. Не коммитить instance/main.db без просьбы
+- [ ] 1. Уточнить месяц/год или --from/--to
+- [ ] 2. Запустить daily_top.py (нужна таблица invest_daily_returns)
+- [ ] 3. Сделать **data-миграцию** с дампом строк (JSON в
+      migrations/versions/_data/ + upgrade INSERT) — иначе на прод не уедет
+- [ ] 4. Открыть /invest/stocks?ym=YYYY-MM
+- [ ] 5. Не коммитить instance/main.db без просьбы
 ```
 
 ## Не делать
 
 - Не тянуть свечи через T-Invest MCP по одной бумаге
-- Не писать отдельный JSON-кэш — только SQL
+- Не писать отдельный JSON-кэш приложения — только SQL + alembic seed
+- Не оставлять свежие дохи только в локальной БД без миграции
