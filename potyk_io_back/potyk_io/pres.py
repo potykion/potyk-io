@@ -9,6 +9,7 @@ from flask_login import current_user, login_required
 from sqlalchemy import func, select
 
 from potyk_io_back.anti.forms import AntiPostForm
+from potyk_io_back.art.pres import load_art_project_sections
 from potyk_io_back.core.db import db
 from potyk_io_back.fin.entities import Expense, Saving
 from potyk_io_back.health.entities import KIND_DEED, list_stata_items
@@ -206,6 +207,8 @@ def index():
         ctx["anti_post_form"] = AntiPostForm()
     else:
         ctx = {}
+    _done, art_in_progress = load_art_project_sections()
+    ctx["art_in_progress"] = art_in_progress
     return flask.render_template("potyk-io/index.html", **ctx)
 
 

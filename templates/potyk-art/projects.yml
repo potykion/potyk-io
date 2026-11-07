@@ -1,9 +1,12 @@
 # Готовые — в projects.
 # В работе — в in_progress (или status: wip у элемента в projects).
-in_progress: []
+in_progress:
+  - title: Aesthetic medicine
+    images:
+      - /static/potyk-art/img/aesthetic-medicine/wip.png
 
 projects:
   - title: Тихая война
     subtitle: 4 сент 2026
     images:
-      - /static/potyk-io/img/art/тихая-война/тихая-война-1.jpg
+      - /static/potyk-art/img/тихая-война/тихая-война-1.jpg
