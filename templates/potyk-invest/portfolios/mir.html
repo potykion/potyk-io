@@ -1,0 +1,356 @@
+{% extends "potyk-invest/_base.html" %}
+
+{% block title %}Мир — potyk-invest{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    body.site-invest .wrap {
+        max-width: 1400px;
+    }
+
+    .portfolio-lead {
+        color: var(--muted);
+        margin: -0.25rem 0 1.25rem;
+    }
+
+    .portfolio-note {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin: 0.5rem 0 1.5rem;
+    }
+
+    h2 {
+        margin: 1.75rem 0 0.6rem;
+        font-size: 1.2rem;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0.5rem 0 0.75rem;
+    }
+
+    table.geo-heat,
+    table.holdings,
+    table.reject {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    table.geo-heat th,
+    table.geo-heat td,
+    table.holdings th,
+    table.holdings td,
+    table.reject th,
+    table.reject td {
+        border: 1px solid var(--none-border);
+        padding: 8px 6px;
+        vertical-align: top;
+    }
+
+    table.geo-heat th,
+    table.holdings th,
+    table.reject th {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--muted);
+        text-align: center;
+        white-space: nowrap;
+        background: rgba(0, 0, 0, 0.02);
+    }
+
+    table.geo-heat th:first-child,
+    table.geo-heat td:first-child,
+    table.holdings th:first-child,
+    table.reject th:first-child {
+        text-align: left;
+    }
+
+    table.geo-heat td {
+        text-align: center;
+    }
+
+    table.holdings td.num,
+    table.holdings th.num {
+        text-align: right;
+    }
+
+    /* heat: чем больше плюс — тем зеленее */
+    .h-na { background: #f3f4f6; color: #6b7280; }
+    .h-0  { background: #f3f4f6; color: #6b7280; }
+    .h-1  { background: #f0fdf4; }
+    .h-2  { background: #dcfce7; }
+    .h-3  { background: #bbf7d0; }
+    .h-4  { background: #bbf7d0; }
+    .h-5  { background: #86efac; }
+    .h-6  { background: #86efac; }
+    .h-7  { background: #4ade80; }
+    .h-8  { background: #4ade80; }
+    .h-9  { background: #22c55e; color: #fff; }
+    .h-10 { background: #22c55e; color: #fff; }
+    .h-11 { background: #16a34a; color: #fff; }
+    .h-12 { background: #16a34a; color: #fff; }
+    .h-13 { background: #15803d; color: #fff; }
+    .h-14 { background: #15803d; color: #fff; }
+    .h-15 { background: #166534; color: #fff; }
+    .h-16 { background: #166534; color: #fff; }
+    .h-17 { background: #166534; color: #fff; }
+    .h-neg { background: #fca5a5; }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="wrap">
+    <h1>Мир</h1>
+    <p class="portfolio-lead">Счёт в Т-Инвестициях: <code>🤡 Мир (200к)</code> (~200к).</p>
+
+    <h2>Стратегия</h2>
+    <p>Покупать компании, которые сильнее всего растут на перемирии или хорошо растут на гео-позитив новостях («мир-коины»).</p>
+    <p>Горизонт — до явного мира / устойчивого гео-позитива. Это не core «хороший бизнес навсегда» и не ставка на снижение КС.</p>
+    <p>Тезис по бумаге должен отвечать: «почему именно на мир/гео+ эта акция должна выстрелить сильнее индекса?»</p>
+
+    <h2>Содержимое</h2>
+    <p class="portfolio-note">Снимок 2026-11-07, ~209к ₽, P/L ~+3.2%. Слоты ~равные (~20к / ~10%).</p>
+
+    <div class="table-wrap">
+        <table class="holdings">
+            <thead>
+                <tr>
+                    <th>Тикер</th>
+                    <th>Зачем в «Мире»</th>
+                    <th class="num">Qty</th>
+                    <th class="num">Ср.</th>
+                    <th class="num">P/L</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>SPBE</strong></td><td>Биржа под разморозку/иностранцев</td><td class="num">120</td><td class="num">166</td><td class="num">+9%</td></tr>
+                <tr><td><strong>AFLT</strong></td><td>Авиа: маршруты и спрос на мир</td><td class="num">580</td><td class="num">35.55</td><td class="num">+9%</td></tr>
+                <tr><td><strong>GAZP</strong></td><td>Дешёвый газ + мир/27</td><td class="num">180</td><td class="num">104</td><td class="num">+10%</td></tr>
+                <tr><td><strong>UPRO</strong></td><td>Юнипро — эталонный мир-коин</td><td class="num">18000</td><td class="num">1.09</td><td class="num">+6%</td></tr>
+                <tr><td><strong>NVTK</strong></td><td>Газ + мир</td><td class="num">18</td><td class="num">1077</td><td class="num">+6%</td></tr>
+                <tr><td><strong>SGZH</strong></td><td>Сегежа — мусор, гео-бета / Европа</td><td class="num">23800</td><td class="num">0.867</td><td class="num">~0%</td></tr>
+                <tr><td><strong>MAGN</strong></td><td>ММК — сталь/экспорт, прокси на мир</td><td class="num">1000</td><td class="num">22.56</td><td class="num">~0%</td></tr>
+                <tr><td><strong>ROSN</strong></td><td>Нефть / мир-коин</td><td class="num">54</td><td class="num">382</td><td class="num">−5%</td></tr>
+                <tr><td><strong>FLOT</strong></td><td>Флот / экспорт</td><td class="num">230</td><td class="num">87</td><td class="num">−2%</td></tr>
+                <tr><td><strong>VEON</strong></td><td>Высокий риск, гео-бета</td><td class="num">220</td><td class="num">89.2</td><td class="num">~0%</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="portfolio-note">Кэш: ~713 ₽. Вышли: OZON, FESH → вошли SGZH, MAGN.</p>
+
+    <h2>События гео-позитива</h2>
+    <p class="portfolio-note">День события, close→close %, свечи Т-Инвест. <code>—</code> — нет данных.</p>
+
+    <div class="table-wrap">
+        <table class="geo-heat">
+            <thead>
+                <tr>
+                    <th>Событие</th>
+                    <th>SPBE</th><th>ROSN</th><th>VEON</th><th>GAZP</th><th>LKOH</th><th>NVTK</th>
+                    <th>UPRO</th><th>AFLT</th><th>FLOT</th><th>SGZH</th><th>T</th><th>MAGN</th>
+                    <th>FESH</th><th>SIBN</th><th>YDEX</th><th>PHOR</th><th>SBER</th><th>OZON</th>
+                    <th>RAGR</th><th>SMLT</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>16.10.25 созвон</td>
+                    <td class="h-17">+17</td>
+                    <td class="h-6">+6</td>
+                    <td class="h-0">0</td>
+                    <td class="h-8">+8</td>
+                    <td class="h-6">+6</td>
+                    <td class="h-8">+8</td>
+                    <td class="h-10">+10</td>
+                    <td class="h-13">+13</td>
+                    <td class="h-8">+8</td>
+                    <td class="h-10">+10</td>
+                    <td class="h-8">+8</td>
+                    <td class="h-9">+9</td>
+                    <td class="h-11">+11</td>
+                    <td class="h-6">+6</td>
+                    <td class="h-7">+7</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-7">+7</td>
+                    <td class="h-na">—</td>
+                    <td class="h-4">+4</td>
+                    <td class="h-9">+9</td>
+                </tr>
+                <tr>
+                    <td>19.11.25 мирплан</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-4">+4</td>
+                    <td class="h-10">+10</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-4">+4</td>
+                    <td class="h-4">+4</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-4">+4</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-0">0</td>
+                    <td class="h-3">+3</td>
+                </tr>
+                <tr>
+                    <td>26.12.25 переговоры</td>
+                    <td class="h-6">+6</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-4">+4</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-0">0</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-3">+3</td>
+                </tr>
+                <tr>
+                    <td>22.07.26 Лавров–Рубио</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-7">+7</td>
+                    <td class="h-8">+8</td>
+                    <td class="h-5">+5</td>
+                    <td class="h-5">+5</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-0">0</td>
+                    <td class="h-0">0</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-0">0</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-0">0</td>
+                    <td class="h-neg">−4</td>
+                    <td class="h-0">0</td>
+                    <td class="h-neg">−7</td>
+                </tr>
+                <tr>
+                    <td>14.09.26 энергоперемирие</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-6">+6</td>
+                    <td class="h-7">+7</td>
+                    <td class="h-5">+5</td>
+                    <td class="h-4">+4</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-4">+4</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-0">0</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-7">+7</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-neg">−6</td>
+                </tr>
+                <tr>
+                    <td>09.10.26 дизель</td>
+                    <td class="h-6">+6</td>
+                    <td class="h-10">+10</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-6">+6</td>
+                    <td class="h-8">+8</td>
+                    <td class="h-5">+5</td>
+                    <td class="h-6">+6</td>
+                    <td class="h-4">+4</td>
+                    <td class="h-9">+9</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-7">+7</td>
+                    <td class="h-neg">−3</td>
+                    <td class="h-3">+3</td>
+                    <td class="h-2">+2</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-1">+1</td>
+                    <td class="h-1">+1</td>
+                </tr>
+                <tr>
+                    <td><strong>среднее</strong></td>
+                    <td class="h-6"><strong>+6</strong></td>
+                    <td class="h-6"><strong>+6</strong></td>
+                    <td class="h-5"><strong>+5</strong></td>
+                    <td class="h-5"><strong>+5</strong></td>
+                    <td class="h-5"><strong>+5</strong></td>
+                    <td class="h-5"><strong>+5</strong></td>
+                    <td class="h-4"><strong>+4</strong></td>
+                    <td class="h-4"><strong>+4</strong></td>
+                    <td class="h-4"><strong>+4</strong></td>
+                    <td class="h-4"><strong>+4</strong></td>
+                    <td class="h-3"><strong>+3</strong></td>
+                    <td class="h-3"><strong>+3</strong></td>
+                    <td class="h-3"><strong>+3</strong></td>
+                    <td class="h-3"><strong>+3</strong></td>
+                    <td class="h-2"><strong>+2</strong></td>
+                    <td class="h-2"><strong>+2</strong></td>
+                    <td class="h-2"><strong>+2</strong></td>
+                    <td class="h-2"><strong>+2</strong></td>
+                    <td class="h-1"><strong>+1</strong></td>
+                    <td class="h-1"><strong>+1</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="portfolio-note">Строка среднее — по событиям (без <code>—</code>). Лидер: <strong>SPBE / ROSN +6</strong>; слабее всех <strong>RAGR / SMLT +1</strong>.</p>
+
+    <h2>Кандидаты</h2>
+    <p>Классика ДнС / консенсуса мир-коинов (часть уже в портфеле): <strong>UPRO, GAZP, NVTK, SPBE, LKOH, ROSN, SGZH, MAGN</strong>, плюс «широкий мир» через банки/Яндекс — но те логичнее в других корзинах.</p>
+
+    <h2>Не брать сюда</h2>
+    <div class="table-wrap">
+        <table class="reject">
+            <thead>
+                <tr>
+                    <th>Тикер</th>
+                    <th>Почему нет</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>SMLT</strong> Самолёт</td>
+                    <td>Не мир-коин: зависимость от <strong>КС</strong>/ипотеки, недвига мёртвая, в анти-топе ДнС, облигации в говне. Отдельная спекуляция на ставку, не этот портфель.</td>
+                </tr>
+                <tr>
+                    <td><strong>OZON</strong></td>
+                    <td>Слабая гео-бета (+2 ср., на Лавров–Рубио −4). Скорее «хорошая компания», не чистый прокси на мир — вышли.</td>
+                </tr>
+                <tr>
+                    <td><strong>FESH</strong></td>
+                    <td>Средняя реакция (+3), слабее SGZH. Вышли в пользу Сегежи/ММК.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

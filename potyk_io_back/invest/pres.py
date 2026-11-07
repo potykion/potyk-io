@@ -46,11 +46,12 @@ from potyk_io_back.invest.forms import (
     TickerLevelForm,
     compute_pnl,
 )
-from potyk_io_back.potyk_io.md_rendering import render_body_html, split_frontmatter
+from potyk_io_back.potyk_io.md_rendering import extract_h1, render_body_html, split_frontmatter
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
 from potyk_io_back.potyk_io.menu import MONEY_MENU_GROUPS
 
 INVEST_TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates" / "potyk-invest"
+PORTFOLIOS_DIR = INVEST_TEMPLATES_DIR / "portfolios"
 
 invest_bp = Blueprint("invest", __name__, url_prefix="/invest")
 
@@ -232,6 +233,91 @@ def lore():
         body,
         meta,
         title="Лор",
+        created=created,
+    )
+
+
+# HTML-портфели: title + strategy для списка (md берёт из frontmatter).
+_HTML_PORTFOLIO_META: dict[str, dict[str, str]] = {
+    "mir": {
+        "title": "Мир",
+        "strategy": (
+            "Покупать компании, которые сильнее всего растут на перемирии "
+            "или на гео-позитив новостях"
+        ),
+    },
+}
+
+
+def load_portfolio_pages() -> list[dict[str, str]]:
+    pages: list[dict[str, str]] = []
+    if not PORTFOLIOS_DIR.is_dir():
+        return pages
+
+    seen: set[str] = set()
+    files = sorted(
+        [
+            p
+            for p in PORTFOLIOS_DIR.iterdir()
+            if p.is_file()
+            and p.suffix.lower() in {".html", ".md"}
+            and not p.name.startswith(("_", "."))
+        ],
+        key=lambda p: (p.stem.casefold(), 0 if p.suffix.lower() == ".html" else 1),
+    )
+    for path in files:
+        slug = path.stem
+        if slug in seen:
+            continue
+        seen.add(slug)
+        if path.suffix.lower() == ".html":
+            meta = _HTML_PORTFOLIO_META.get(slug, {})
+            title = meta.get("title") or slug
+            strategy = meta.get("strategy", "")
+        else:
+            fm, body = split_frontmatter(path.read_text(encoding="utf-8-sig"))
+            title = extract_h1(body) or slug
+            strategy = (fm.get("strategy") or "").strip()
+        pages.append(
+            {
+                "title": title,
+                "strategy": strategy,
+                "url": url_for("invest.portfolio_page", slug=slug),
+            }
+        )
+    pages.sort(key=lambda p: str(p["title"]).casefold())
+    return pages
+
+
+@invest_bp.get("/portfolios")
+@invest_bp.get("/portfolios/")
+@login_required
+def portfolios():
+    return render_template(
+        "potyk-invest/portfolios.html",
+        pages=load_portfolio_pages(),
+    )
+
+
+@invest_bp.get("/portfolios/<slug>")
+@invest_bp.get("/portfolios/<slug>/")
+@login_required
+def portfolio_page(slug: str):
+    if "/" in slug or "\\" in slug or slug.startswith("."):
+        abort(404)
+    html = PORTFOLIOS_DIR / f"{slug}.html"
+    if html.is_file():
+        return render_template(f"potyk-invest/portfolios/{slug}.html")
+    file = PORTFOLIOS_DIR / f"{slug}.md"
+    if not file.is_file():
+        abort(404)
+    meta, body = split_frontmatter(file.read_text(encoding="utf-8-sig"))
+    created = resolve_created(file, meta)
+    title = extract_h1(body) or slug
+    return render_body_html(
+        body,
+        meta,
+        title=title,
         created=created,
     )
 

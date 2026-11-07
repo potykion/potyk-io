@@ -369,6 +369,13 @@ _INVEST_SECTION_LINKS: list[MenuItem] = [
         "lock": True,
     },
     {
+        "icon": "💼",
+        "title": "Портфели",
+        "url": "/invest/portfolios",
+        "description": "",
+        "lock": True,
+    },
+    {
         "icon": "📊",
         "title": "Фонды",
         "url": "/invest/funds",

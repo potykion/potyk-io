@@ -1,0 +1,85 @@
+{% extends "potyk-invest/_base.html" %}
+
+{% block title %}Портфели — potyk-invest{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+    body.site-invest .wrap {
+        max-width: 900px;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0.5rem 0 1.25rem;
+    }
+
+    table.portfolios {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+    }
+
+    table.portfolios th,
+    table.portfolios td {
+        text-align: left;
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--none-border);
+        vertical-align: top;
+    }
+
+    table.portfolios th {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--muted);
+        white-space: nowrap;
+    }
+
+    table.portfolios td.name a {
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    table.portfolios td.strategy {
+        color: var(--muted);
+        max-width: 36rem;
+    }
+
+    .portfolios-empty {
+        color: var(--muted);
+        margin: 1rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="wrap">
+    <h1>Портфели</h1>
+    <p style="color: var(--muted); margin-top: -0.25rem;">Название, стратегия, содержимое</p>
+
+    {% if pages %}
+    <div class="table-wrap">
+        <table class="portfolios">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Стратегия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for page in pages %}
+                <tr>
+                    <td class="name"><a href="{{ page.url }}">{{ page.title }}</a></td>
+                    <td class="strategy">{{ page.strategy or "—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="portfolios-empty">Пока пусто</p>
+    {% endif %}
+</div>
+{% endblock %}
