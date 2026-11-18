@@ -14,6 +14,11 @@ potyk.io {
 62tattoo.potyk.io {
 	encode gzip
 
+	handle_path /media/* {
+		root * /home/leybovich-nikita/62tattoo/Картинки/Вставлены
+		file_server
+	}
+
 	handle /api* {
 		reverse_proxy 127.0.0.1:8010
 	}
