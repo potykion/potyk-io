@@ -10,22 +10,5 @@ potyk.io {
 	}
 }
 
-# 62tattoo admin — SPA (frontend/dist) + API (:8010)
-62tattoo.potyk.io {
-	encode gzip
-
-	handle_path /media/* {
-		root * /home/leybovich-nikita/62tattoo/Картинки/Вставлены
-		file_server
-	}
-
-	handle /api* {
-		reverse_proxy 127.0.0.1:8010
-	}
-
-	handle {
-		root * /home/leybovich-nikita/62tattoo-web/frontend/dist
-		try_files {path} /index.html
-		file_server
-	}
-}
+# 62tattoo — конфиг в соседнем репо
+import /home/leybovich-nikita/62tattoo-web/ops/Caddyfile
