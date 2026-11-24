@@ -43,8 +43,18 @@ class PlaylistTrack:
     video_id: str
 
 
+# `(Official Video)`, `[Official Music Video]`, `(Official Audio)` и т.п. в конце
+_OFFICIAL_SUFFIX_RE = re.compile(
+    r"\s*[\(\[\{]\s*official(?:\s+music)?(?:\s+(?:video|audio|lyric(?:s)?(?:\s+video)?))?\s*[\)\]\}]\s*$",
+    re.I,
+)
+
+
+_QUOTE_CHARS = "\"'«»“”„‟"
+
+
 def parse_track_title(raw: str) -> str:
-    """`GODFLESH - Wake` → `Wake`; без разделителя — как есть."""
+    """`GODFLESH - "Wake" (Official Video)` → `Wake`; без разделителя — как есть."""
     title = (raw or "").strip()
     if not title:
         return title
@@ -52,8 +62,11 @@ def parse_track_title(raw: str) -> str:
         if sep in title:
             tail = title.rsplit(sep, 1)[-1].strip()
             if tail:
-                return tail
-    return title
+                title = tail
+                break
+    title = _OFFICIAL_SUFFIX_RE.sub("", title).strip(" -–—")
+    title = title.strip(_QUOTE_CHARS + " ").strip(" -–—")
+    return title or (raw or "").strip()
 
 
 _YEAR_IN_PARENS_RE = re.compile(r"^(?P<body>.*)\((?P<year>(?:19|20)\d{2})\)\s*$")
@@ -154,21 +167,91 @@ def safe_zip_stem(artist: str, album: str) -> str:
     return safe_filename(raw) or "album"
 
 
+def _url_is_image(url: str, *, timeout: float = 8) -> bool:
+    """HEAD/GET: живая ли картинка (OLAK s_p/maxres часто 404)."""
+    url = (url or "").strip()
+    if not url:
+        return False
+    req = urllib.request.Request(
+        url,
+        method="HEAD",
+        headers={"User-Agent": "Mozilla/5.0"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            code = getattr(resp, "status", None) or resp.getcode()
+            ctype = (resp.headers.get("Content-Type") or "").lower()
+            if code == 200 and ("image" in ctype or not ctype):
+                return True
+    except Exception:
+        pass
+    # часть CDN не любит HEAD — короткий GET
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            chunk = resp.read(16)
+            ctype = (resp.headers.get("Content-Type") or "").lower()
+            if chunk[:3] == b"\xff\xd8\xff":  # jpeg
+                return True
+            if chunk[:8] == b"\x89PNG\r\n\x1a\n":
+                return True
+            if chunk[:6] in (b"GIF87a", b"GIF89a"):
+                return True
+            return "image" in ctype and len(chunk) > 0
+    except Exception:
+        return False
+
+
+def _artist_from_entries(entries: list[dict]) -> str:
+    """У OLAK/альбомных плейлистов uploader на корне None — берём с треков."""
+    counts: dict[str, int] = {}
+    for entry in entries:
+        name = (
+            (entry.get("artist") or entry.get("uploader") or entry.get("channel") or "")
+            .strip()
+        )
+        if not name:
+            continue
+        counts[name] = counts.get(name, 0) + 1
+    if not counts:
+        return ""
+    return max(counts.items(), key=lambda kv: (kv[1], len(kv[0])))[0]
+
+
 def _pick_cover_url(data: dict, list_id: str | None) -> str:
+    candidates: list[str] = []
     thumbs = data.get("thumbnails") or []
     if thumbs:
-        best = max(thumbs, key=lambda t: (t.get("height") or 0) * (t.get("width") or 0))
-        url = best.get("url") or ""
-        if url:
-            return url
-    if list_id and list_id.startswith("OLAK"):
-        return f"https://i9.ytimg.com/s_p/{list_id}/maxresdefault.jpg"
+        for t in sorted(
+            thumbs,
+            key=lambda x: (x.get("height") or 0) * (x.get("width") or 0),
+            reverse=True,
+        ):
+            url = (t.get("url") or "").strip()
+            if url and url not in candidates:
+                candidates.append(url)
+    if list_id and str(list_id).startswith("OLAK"):
+        for name in ("maxresdefault.jpg", "hqdefault.jpg", "sddefault.jpg"):
+            url = f"https://i9.ytimg.com/s_p/{list_id}/{name}"
+            if url not in candidates:
+                candidates.append(url)
     entries = [e for e in (data.get("entries") or []) if e]
     if entries:
-        vid = entries[0].get("id")
+        vid = (entries[0].get("id") or "").strip()
         if vid:
-            return f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"
-    return ""
+            for name in ("maxresdefault.jpg", "hqdefault.jpg", "sddefault.jpg"):
+                url = f"https://i.ytimg.com/vi/{vid}/{name}"
+                if url not in candidates:
+                    candidates.append(url)
+        for t in entries[0].get("thumbnails") or []:
+            url = (t.get("url") or "").strip()
+            if url and url not in candidates:
+                candidates.append(url)
+
+    for url in candidates:
+        if _url_is_image(url):
+            return url
+    return candidates[0] if candidates else ""
 
 
 def fetch_playlist_meta(url: str) -> PlaylistMeta:
@@ -195,7 +278,9 @@ def fetch_playlist_meta(url: str) -> PlaylistMeta:
     raw_album = (data.get("title") or "").strip() or "Album"
     album, year_from_title = parse_album_title_and_year(raw_album)
     artist = (
-        (data.get("uploader") or data.get("channel") or "").strip() or "Unknown"
+        (data.get("uploader") or data.get("channel") or "").strip()
+        or _artist_from_entries(entries)
+        or "Unknown"
     )
     list_id = playlist_list_id(url) or data.get("id")
     cover_url = _pick_cover_url(data, list_id)

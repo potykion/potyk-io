@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import re
+import time
 from collections.abc import Callable
 from pathlib import Path
 
@@ -133,6 +134,58 @@ def fetch_album_meta(url: str) -> PlaylistMeta:
     )
 
 
+_TRACK_DOWNLOAD_TIMEOUT = 60
+_TRACK_DOWNLOAD_TRIES = 3
+# (codec, bitrate) — fallback если 192 mp3 недоступен
+_DOWNLOAD_VARIANTS: tuple[tuple[str, int], ...] = (
+    ("mp3", 192),
+    ("mp3", 128),
+    ("mp3", 320),
+)
+
+
+def _download_track_with_retries(
+    ym_track: object,
+    dest: Path,
+    meta_track: PlaylistTrack,
+    *,
+    on_heartbeat: Callable[[str], None] | None = None,
+) -> None:
+    last_err: Exception | None = None
+    for attempt in range(1, _TRACK_DOWNLOAD_TRIES + 1):
+        if dest.exists():
+            try:
+                dest.unlink()
+            except OSError:
+                pass
+        for codec, bitrate in _DOWNLOAD_VARIANTS:
+            if on_heartbeat:
+                on_heartbeat(
+                    f"Трек {meta_track.index}: {meta_track.title} "
+                    f"({codec} {bitrate}, попытка {attempt})"
+                )
+            try:
+                ym_track.download(  # type: ignore[attr-defined]
+                    str(dest),
+                    codec=codec,
+                    bitrate_in_kbps=bitrate,
+                    timeout=_TRACK_DOWNLOAD_TIMEOUT,
+                )
+                if dest.is_file() and dest.stat().st_size >= 1024:
+                    return
+                last_err = DownloadError("пустой файл")
+            except YandexMusicError as exc:
+                last_err = exc
+            except Exception as exc:  # noqa: BLE001 — сеть/таймаут
+                last_err = exc
+        if attempt < _TRACK_DOWNLOAD_TRIES:
+            time.sleep(1.5 * attempt)
+
+    raise DownloadError(
+        f"Не скачался трек {meta_track.index} «{meta_track.title}»: {last_err}"
+    )
+
+
 def download_album_tracks(
     *,
     album_url: str,
@@ -183,20 +236,13 @@ def download_album_tracks(
             )
         emit(i, f"Трек {i}/{total}: {meta_track.title}", 0)
         dest = dest_dir / f"{meta_track.index:02d}. {safe_filename(meta_track.title)}.mp3"
-        try:
-            ym_track.download(str(dest))  # type: ignore[attr-defined]
-        except YandexMusicError as exc:
-            raise DownloadError(
-                f"Не скачался трек {meta_track.index} «{meta_track.title}»: {exc}"
-            ) from exc
-        except Exception as exc:
-            raise DownloadError(
-                f"Не скачался трек {meta_track.index} «{meta_track.title}»: {exc}"
-            ) from exc
-        if not dest.is_file() or dest.stat().st_size < 1024:
-            raise DownloadError(
-                f"Пустой файл трека {meta_track.index} «{meta_track.title}»"
-            )
+
+        def _hb(msg: str, _i: int = i) -> None:
+            emit(_i, msg, 0)
+
+        _download_track_with_retries(
+            ym_track, dest, meta_track, on_heartbeat=_hb
+        )
         emit(i, f"Трек {i}/{total}: {meta_track.title}", 100)
         result.append((meta_track, dest))
 

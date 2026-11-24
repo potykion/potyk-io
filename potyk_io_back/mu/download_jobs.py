@@ -29,6 +29,9 @@ from potyk_io_back.mu.download_yandex import (
 REPO_ROOT = Path(__file__).resolve().parents[2]
 JOBS_DIR = REPO_ROOT / "instance" / "mu_dl_jobs"
 JOB_TTL_SEC = 60 * 60
+# Если стейдж не финальный и state не обновлялся — поток умер (reloader/kill/hang).
+STALE_JOB_SEC = 180
+_ACTIVE_STAGES = frozenset({"queued", "download", "tag", "zip"})
 
 _write_lock = threading.Lock()
 _last_write_at: dict[str, float] = {}
@@ -143,7 +146,7 @@ def read_job(job_id: str) -> JobRecord | None:
     except (OSError, json.JSONDecodeError):
         return None
     prog = data.get("progress") or {}
-    return JobRecord(
+    record = JobRecord(
         id=data["id"],
         progress=JobProgress(
             stage=prog.get("stage") or "queued",
@@ -160,6 +163,35 @@ def read_job(job_id: str) -> JobRecord | None:
         created_at=float(data.get("created_at") or 0),
         updated_at=float(data.get("updated_at") or 0),
     )
+    return _mark_stale_if_needed(record)
+
+
+def _mark_stale_if_needed(record: JobRecord) -> JobRecord:
+    """Пометить зависшую джобу ошибкой, чтобы UI не крутил поллинг вечно."""
+    if record.progress.stage not in _ACTIVE_STAGES:
+        return record
+    age = time.time() - float(record.updated_at or 0)
+    if age < STALE_JOB_SEC:
+        return record
+    record.progress = JobProgress(
+        stage="error",
+        message="Ошибка",
+        current=record.progress.current,
+        total=record.progress.total,
+        file_percent=record.progress.file_percent,
+        overall_percent=record.progress.overall_percent,
+        error=(
+            "Скачивание прервалось (нет прогресса "
+            f"{int(age)} с). Перезапусти — после рестарта Flask "
+            "фоновый поток умирает."
+        ),
+        download_name=record.progress.download_name,
+    )
+    try:
+        _write_state(record, force=True)
+    except OSError:
+        pass
+    return record
 
 
 def cleanup_job(job_id: str) -> None:
