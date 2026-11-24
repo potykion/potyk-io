@@ -16,14 +16,14 @@
 {% block style %}
 {{ super() }}
 <style>
-    .mu-download-form {
+    #mu-download-form {
         --ink: #1c1b19;
         --muted: #6b6860;
         --line: #c8c4bc;
         --form-line: #c8c4bc;
     }
 
-    .mu-download-meta {
+    #playlist-meta {
         display: grid;
         grid-template-columns: 1fr;
         gap: 10px;
@@ -49,6 +49,12 @@
 
     .mu-download-cover[hidden] {
         display: none;
+    }
+
+    .mu-download-hint {
+        margin: 0 0 4px;
+        font-size: 0.9rem;
+        color: #6b6860;
     }
 
     .mu-download-error {
@@ -158,76 +164,42 @@
 {% block main %}
     <h1>Скачать музыку</h1>
 
-    <h2><a href="https://github.com/MarshalX/yandex-music-api" target="_blank" rel="noopener noreferrer">Яндекс Музыка</a></h2>
+    <p class="mu-download-hint">
+        YouTube-плейлист или альбом
+        <a href="https://music.yandex.ru" target="_blank" rel="noopener noreferrer">Яндекс Музыки</a>
+        —
+        <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer">yt-dlp</a>
+        /
+        <a href="https://github.com/MarshalX/yandex-music-api" target="_blank" rel="noopener noreferrer">yandex-music-api</a>
+    </p>
 
-    <form id="mu-ym-form"
-          class="grid mu-download-form"
-          method="post"
-          action="{{ url_for('mu.download_yandex_start') }}"
-          data-status-url="{{ url_for('mu.download_status', job_id='__ID__') }}"
-          data-file-url="{{ url_for('mu.download_file', job_id='__ID__') }}"
-          data-progress-id="ym-progress">
-        <div class="full">
-            <h3>Альбом</h3>
-        </div>
-
-        <label class="full">
-            URL
-            <input type="url"
-                   name="playlist_url"
-                   id="ym_album_url"
-                   required
-                   placeholder="https://music.yandex.ru/album/44831600"
-                   hx-get="{{ url_for('mu.download_yandex_meta') }}"
-                   hx-trigger="input changed delay:400ms"
-                   hx-sync="this:replace"
-                   hx-target="#ym-playlist-meta"
-                   hx-indicator="#ym-playlist-meta-spinner"
-                   hx-vals='{"uid": "ym"}'
-                   autocomplete="off">
-        </label>
-
-        <div id="ym-playlist-meta-spinner" class="mu-download-spinner htmx-indicator full">
-            Загружаю альбом…
-        </div>
-
-        <div id="ym-playlist-meta" class="mu-download-meta full"></div>
-    </form>
-
-    <h2><a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer">yt-dlp</a></h2>
-
-    <form id="mu-yt-form"
-          class="grid mu-download-form"
+    <form id="mu-download-form"
+          class="grid"
           method="post"
           action="{{ url_for('mu.download_start') }}"
           data-status-url="{{ url_for('mu.download_status', job_id='__ID__') }}"
           data-file-url="{{ url_for('mu.download_file', job_id='__ID__') }}"
-          data-progress-id="yt-progress">
-        <div class="full">
-            <h3>Плейлист</h3>
-        </div>
-
+          data-progress-id="dl-progress">
         <label class="full">
             URL
             <input type="url"
                    name="playlist_url"
                    id="playlist_url"
                    required
-                   placeholder="https://www.youtube.com/playlist?list=PLdSAw7dY_mu7bH6kHlg6O6vYePqdcBC32"
+                   placeholder="https://music.yandex.ru/album/… или youtube.com/playlist?list=…"
                    hx-get="{{ url_for('mu.download_meta') }}"
                    hx-trigger="input changed delay:400ms"
                    hx-sync="this:replace"
-                   hx-target="#yt-playlist-meta"
-                   hx-indicator="#yt-playlist-meta-spinner"
-                   hx-vals='{"uid": "yt"}'
+                   hx-target="#playlist-meta"
+                   hx-indicator="#playlist-meta-spinner"
                    autocomplete="off">
         </label>
 
-        <div id="yt-playlist-meta-spinner" class="mu-download-spinner htmx-indicator full">
-            Загружаю плейлист…
+        <div id="playlist-meta-spinner" class="mu-download-spinner htmx-indicator full">
+            Загружаю…
         </div>
 
-        <div id="yt-playlist-meta" class="mu-download-meta full">
+        <div id="playlist-meta" class="full">
             {% if download_error %}
             <p class="mu-download-error">{{ download_error }}</p>
             {% endif %}
@@ -239,6 +211,9 @@
 {{ super() }}
 <script>
 (function () {
+  const form = document.getElementById("mu-download-form");
+  if (!form) return;
+
   const STAGE_LABELS = {
     queued: "В очереди",
     download: "Скачивание",
@@ -248,9 +223,8 @@
     error: "Ошибка",
   };
 
-  function progressEls(form) {
-    const id = form.dataset.progressId;
-    const box = document.getElementById(id);
+  function progressEls() {
+    const box = document.getElementById(form.dataset.progressId);
     if (!box) return null;
     return {
       box,
@@ -261,8 +235,8 @@
     };
   }
 
-  function renderProgress(form, data) {
-    const els = progressEls(form);
+  function renderProgress(data) {
+    const els = progressEls();
     if (!els) return;
     els.box.hidden = false;
     const pct = Math.max(0, Math.min(100, Number(data.overall_percent) || 0));
@@ -276,78 +250,64 @@
     return new Promise((r) => setTimeout(r, ms));
   }
 
-  function bindForm(form) {
-    form.addEventListener("submit", async (ev) => {
-      ev.preventDefault();
-      const btn = form.querySelector('button[type="submit"]');
-      if (btn) btn.disabled = true;
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) btn.disabled = true;
 
-      renderProgress(form, {
-        stage: "queued",
-        overall_percent: 0,
-        message: "Стартую…",
-      });
-
-      try {
-        const startRes = await fetch(form.action, {
-          method: "POST",
-          body: new FormData(form),
-          credentials: "same-origin",
-        });
-        const startData = await startRes.json().catch(() => ({}));
-        if (!startRes.ok || !startData.job_id) {
-          throw new Error(startData.error || "Не удалось запустить скачивание");
-        }
-
-        const jobId = startData.job_id;
-        const statusUrl = form.dataset.statusUrl.replace("__ID__", jobId);
-        const fileUrl = form.dataset.fileUrl.replace("__ID__", jobId);
-
-        while (true) {
-          const stRes = await fetch(statusUrl, { credentials: "same-origin" });
-          if (!stRes.ok) throw new Error("Статус джобы недоступен");
-          const st = await stRes.json();
-          renderProgress(form, st);
-
-          if (st.stage === "error") {
-            throw new Error(st.error || "Ошибка скачивания");
-          }
-          if (st.stage === "done" && st.zip_ready) {
-            const a = document.createElement("a");
-            a.href = fileUrl;
-            a.download = st.download_name || "album.zip";
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            break;
-          }
-          await sleep(500);
-        }
-      } catch (e) {
-        const els = progressEls(form);
-        renderProgress(form, {
-          stage: "error",
-          overall_percent: els && els.fill
-            ? parseFloat(els.fill.style.width) || 0
-            : 0,
-          error: e.message || "Ошибка скачивания",
-        });
-      } finally {
-        if (btn) btn.disabled = false;
-      }
+    renderProgress({
+      stage: "queued",
+      overall_percent: 0,
+      message: "Стартую…",
     });
-  }
 
-  document.querySelectorAll("form.mu-download-form").forEach(bindForm);
+    try {
+      const startRes = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        credentials: "same-origin",
+      });
+      const startData = await startRes.json().catch(() => ({}));
+      if (!startRes.ok || !startData.job_id) {
+        throw new Error(startData.error || "Не удалось запустить скачивание");
+      }
 
-  // hx-vals на инпуте не прокидывает uid в GET как query — докидываем через htmx:configRequest
-  document.body.addEventListener("htmx:configRequest", function (ev) {
-    const elt = ev.detail.elt;
-    if (!elt || elt.name !== "playlist_url") return;
-    const form = elt.closest("form");
-    if (!form) return;
-    if (form.id === "mu-ym-form") ev.detail.parameters.uid = "ym";
-    if (form.id === "mu-yt-form") ev.detail.parameters.uid = "yt";
+      const jobId = startData.job_id;
+      const statusUrl = form.dataset.statusUrl.replace("__ID__", jobId);
+      const fileUrl = form.dataset.fileUrl.replace("__ID__", jobId);
+
+      while (true) {
+        const stRes = await fetch(statusUrl, { credentials: "same-origin" });
+        if (!stRes.ok) throw new Error("Статус джобы недоступен");
+        const st = await stRes.json();
+        renderProgress(st);
+
+        if (st.stage === "error") {
+          throw new Error(st.error || "Ошибка скачивания");
+        }
+        if (st.stage === "done" && st.zip_ready) {
+          const a = document.createElement("a");
+          a.href = fileUrl;
+          a.download = st.download_name || "album.zip";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          break;
+        }
+        await sleep(500);
+      }
+    } catch (e) {
+      const els = progressEls();
+      renderProgress({
+        stage: "error",
+        overall_percent: els && els.fill
+          ? parseFloat(els.fill.style.width) || 0
+          : 0,
+        error: e.message || "Ошибка скачивания",
+      });
+    } finally {
+      if (btn) btn.disabled = false;
+    }
   });
 })();
 </script>

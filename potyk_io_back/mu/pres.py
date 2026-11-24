@@ -20,6 +20,7 @@ from potyk_io_back.mu.artists import (
 from potyk_io_back.mu.download_album import (
     DownloadError,
     PlaylistTrack,
+    detect_download_source,
     fetch_playlist_meta,
 )
 from potyk_io_back.mu.download_jobs import (
@@ -195,55 +196,6 @@ def download_page():
     return render_template("potyk-mu/download.html")
 
 
-def _download_meta_uid(default: str) -> str:
-    uid = (request.args.get("uid") or "").strip()
-    return uid if uid in {"yt", "ym"} else default
-
-
-@mu_bp.get("/download/meta")
-def download_meta():
-    url = (request.args.get("url") or request.args.get("playlist_url") or "").strip()
-    if not url:
-        return "", 204
-    uid = _download_meta_uid("yt")
-    try:
-        meta = fetch_playlist_meta(url)
-    except DownloadError as exc:
-        return render_template(
-            "potyk-mu/partials/_playlist_meta.html",
-            error=str(exc),
-            uid=uid,
-        )
-    return render_template(
-        "potyk-mu/partials/_playlist_meta.html",
-        meta=meta,
-        error=None,
-        uid=uid,
-    )
-
-
-@mu_bp.get("/download/yandex/meta")
-def download_yandex_meta():
-    url = (request.args.get("url") or request.args.get("playlist_url") or "").strip()
-    if not url:
-        return "", 204
-    uid = _download_meta_uid("ym")
-    try:
-        meta = fetch_album_meta(url)
-    except DownloadError as exc:
-        return render_template(
-            "potyk-mu/partials/_playlist_meta.html",
-            error=str(exc),
-            uid=uid,
-        )
-    return render_template(
-        "potyk-mu/partials/_playlist_meta.html",
-        meta=meta,
-        error=None,
-        uid=uid,
-    )
-
-
 def _tracks_from_form() -> list[PlaylistTrack]:
     indexes = request.form.getlist("track_index")
     titles = request.form.getlist("track_title")
@@ -263,6 +215,51 @@ def _tracks_from_form() -> list[PlaylistTrack]:
     return tracks
 
 
+def _render_download_meta(*, url: str, source: str, uid: str = "dl"):
+    try:
+        if source == "ym":
+            meta = fetch_album_meta(url)
+        else:
+            meta = fetch_playlist_meta(url)
+    except DownloadError as exc:
+        return render_template(
+            "potyk-mu/partials/_playlist_meta.html",
+            error=str(exc),
+            uid=uid,
+        )
+    return render_template(
+        "potyk-mu/partials/_playlist_meta.html",
+        meta=meta,
+        error=None,
+        uid=uid,
+        source=source,
+    )
+
+
+@mu_bp.get("/download/meta")
+def download_meta():
+    url = (request.args.get("url") or request.args.get("playlist_url") or "").strip()
+    if not url:
+        return "", 204
+    source = detect_download_source(url)
+    if source is None:
+        return render_template(
+            "potyk-mu/partials/_playlist_meta.html",
+            error=(
+                "Нужна ссылка на YouTube-плейлист (list=…) "
+                "или альбом Яндекс Музыки (/album/…)"
+            ),
+            uid="dl",
+        )
+    return _render_download_meta(url=url, source=source)
+
+
+@mu_bp.get("/download/yandex/meta")
+def download_yandex_meta():
+    """Совместимость: тот же smart meta."""
+    return download_meta()
+
+
 @mu_bp.post("/download/start")
 def download_start():
     url = (request.form.get("playlist_url") or "").strip()
@@ -270,12 +267,16 @@ def download_start():
     artist = (request.form.get("artist") or "").strip()
     year = (request.form.get("year") or "").strip()
     cover_url = (request.form.get("cover_url") or "").strip()
+    source = (request.form.get("source") or "").strip() or detect_download_source(url)
     tracks = _tracks_from_form()
     if not url or not album or not artist:
         return jsonify({"error": "Нужны URL, альбом и исполнитель"}), 400
     if not tracks:
         return jsonify({"error": "Нет треков"}), 400
-    job_id = start_download_job(
+    if source not in {"yt", "ym"}:
+        return jsonify({"error": "Неизвестный источник ссылки"}), 400
+    starter = start_yandex_download_job if source == "ym" else start_download_job
+    job_id = starter(
         url=url,
         artist=artist,
         album=album,
@@ -283,30 +284,13 @@ def download_start():
         cover_url=cover_url,
         tracks=tracks,
     )
-    return jsonify({"job_id": job_id})
+    return jsonify({"job_id": job_id, "source": source})
 
 
 @mu_bp.post("/download/yandex/start")
 def download_yandex_start():
-    url = (request.form.get("playlist_url") or "").strip()
-    album = (request.form.get("album") or "").strip()
-    artist = (request.form.get("artist") or "").strip()
-    year = (request.form.get("year") or "").strip()
-    cover_url = (request.form.get("cover_url") or "").strip()
-    tracks = _tracks_from_form()
-    if not url or not album or not artist:
-        return jsonify({"error": "Нужны URL, альбом и исполнитель"}), 400
-    if not tracks:
-        return jsonify({"error": "Нет треков"}), 400
-    job_id = start_yandex_download_job(
-        url=url,
-        artist=artist,
-        album=album,
-        year=year,
-        cover_url=cover_url,
-        tracks=tracks,
-    )
-    return jsonify({"job_id": job_id})
+    """Совместимость: тот же smart start."""
+    return download_start()
 
 
 @mu_bp.get("/download/status/<job_id>")

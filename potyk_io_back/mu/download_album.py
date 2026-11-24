@@ -30,6 +30,11 @@ YTDLP_EXE = REPO_ROOT / "static" / "potyk-mu" / "yt-dlp.exe"
 WIN_BAD = '<>:"/\\|?*？'
 ID_RE = re.compile(r"\[([^\]]+)\]\.mp3$", re.IGNORECASE)
 LIST_ID_RE = re.compile(r"[?&]list=([a-zA-Z0-9_-]+)")
+_YM_ALBUM_RE = re.compile(
+    r"(?:music\.yandex\.(?:ru|com|by|kz)|music\.yandex\.ua)/album/(\d+)",
+    re.I,
+)
+_YT_HOST_RE = re.compile(r"(?:youtube\.com|youtu\.be)", re.I)
 ITEM_RE = re.compile(r"Downloading item (\d+) of (\d+)", re.I)
 PCT_RE = re.compile(r"\[download\]\s+([\d.]+)%")
 DEST_RE = re.compile(r"Destination:\s*(.+)$", re.I)
@@ -153,6 +158,21 @@ def _run(cmd: list[str], *, timeout: int = 120) -> str:
 def playlist_list_id(url: str) -> str | None:
     m = LIST_ID_RE.search(url)
     return m.group(1) if m else None
+
+
+def detect_download_source(url: str) -> str | None:
+    """`yt` | `ym` | None — по ссылке (YouTube playlist / Яндекс Музыка album)."""
+    url = (url or "").strip()
+    if not url:
+        return None
+    if _YM_ALBUM_RE.search(url):
+        return "ym"
+    if "list=" in url or _YT_HOST_RE.search(url):
+        return "yt"
+    # голый id альбома ЯМ
+    if url.isdigit() and len(url) >= 4:
+        return "ym"
+    return None
 
 
 def safe_filename(title: str) -> str:

@@ -2,6 +2,7 @@
 {% if error %}
 <p class="mu-download-error full">{{ error }}</p>
 {% else %}
+<input type="hidden" name="source" value="{{ source|default('yt') }}">
 <label class="full">
     Исполнитель
     <input type="text" name="artist" value="{{ meta.artist }}" required autocomplete="off">
