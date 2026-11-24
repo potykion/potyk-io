@@ -26,7 +26,9 @@ from potyk_io_back.mu.download_jobs import (
     cleanup_job,
     read_job,
     start_download_job,
+    start_yandex_download_job,
 )
+from potyk_io_back.mu.download_yandex import fetch_album_meta
 from potyk_io_back.potyk_io.feed import BATCH_SIZE, FeedSpec, feed_batch, feed_more_url
 from potyk_io_back.potyk_io.md_rendering import render_body_html, resolve_page, split_frontmatter
 from potyk_io_back.potyk_io.md_rendering.created import resolve_created
@@ -193,22 +195,52 @@ def download_page():
     return render_template("potyk-mu/download.html")
 
 
+def _download_meta_uid(default: str) -> str:
+    uid = (request.args.get("uid") or "").strip()
+    return uid if uid in {"yt", "ym"} else default
+
+
 @mu_bp.get("/download/meta")
 def download_meta():
     url = (request.args.get("url") or request.args.get("playlist_url") or "").strip()
     if not url:
         return "", 204
+    uid = _download_meta_uid("yt")
     try:
         meta = fetch_playlist_meta(url)
     except DownloadError as exc:
         return render_template(
             "potyk-mu/partials/_playlist_meta.html",
             error=str(exc),
+            uid=uid,
         )
     return render_template(
         "potyk-mu/partials/_playlist_meta.html",
         meta=meta,
         error=None,
+        uid=uid,
+    )
+
+
+@mu_bp.get("/download/yandex/meta")
+def download_yandex_meta():
+    url = (request.args.get("url") or request.args.get("playlist_url") or "").strip()
+    if not url:
+        return "", 204
+    uid = _download_meta_uid("ym")
+    try:
+        meta = fetch_album_meta(url)
+    except DownloadError as exc:
+        return render_template(
+            "potyk-mu/partials/_playlist_meta.html",
+            error=str(exc),
+            uid=uid,
+        )
+    return render_template(
+        "potyk-mu/partials/_playlist_meta.html",
+        meta=meta,
+        error=None,
+        uid=uid,
     )
 
 
@@ -244,6 +276,29 @@ def download_start():
     if not tracks:
         return jsonify({"error": "Нет треков"}), 400
     job_id = start_download_job(
+        url=url,
+        artist=artist,
+        album=album,
+        year=year,
+        cover_url=cover_url,
+        tracks=tracks,
+    )
+    return jsonify({"job_id": job_id})
+
+
+@mu_bp.post("/download/yandex/start")
+def download_yandex_start():
+    url = (request.form.get("playlist_url") or "").strip()
+    album = (request.form.get("album") or "").strip()
+    artist = (request.form.get("artist") or "").strip()
+    year = (request.form.get("year") or "").strip()
+    cover_url = (request.form.get("cover_url") or "").strip()
+    tracks = _tracks_from_form()
+    if not url or not album or not artist:
+        return jsonify({"error": "Нужны URL, альбом и исполнитель"}), 400
+    if not tracks:
+        return jsonify({"error": "Нет треков"}), 400
+    job_id = start_yandex_download_job(
         url=url,
         artist=artist,
         album=album,

@@ -21,6 +21,10 @@ from potyk_io_back.mu.download_album import (
     rename_and_tag,
     safe_zip_stem,
 )
+from potyk_io_back.mu.download_yandex import (
+    download_album_tracks,
+    tag_downloaded_tracks,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 JOBS_DIR = REPO_ROOT / "instance" / "mu_dl_jobs"
@@ -369,6 +373,197 @@ def start_download_job(
             "tracks": tracks,
         },
         name=f"mu-dl-{job_id[:8]}",
+        daemon=True,
+    )
+    thread.start()
+    return job_id
+
+
+def _run_yandex_job(
+    job_id: str,
+    *,
+    url: str,
+    artist: str,
+    album: str,
+    year: str,
+    cover_url: str,
+    tracks: list[PlaylistTrack],
+) -> None:
+    record = read_job(job_id)
+    if record is None:
+        return
+
+    def on_progress(p: JobProgress, *, force: bool = False) -> None:
+        _set_progress(record, p, force=force)
+
+    work_dir = _job_dir(job_id) / "work"
+    work_dir.mkdir(parents=True, exist_ok=True)
+    record.work_dir = str(work_dir)
+    _write_state(record, force=True)
+
+    try:
+        artist = artist.strip() or "Unknown"
+        album = album.strip() or "Album"
+        year = year.strip()
+        if not tracks:
+            raise DownloadError("Нет треков")
+
+        total = len(tracks)
+
+        cover = None
+        if cover_url.strip():
+            on_progress(
+                JobProgress(
+                    stage="download",
+                    message="Обложка…",
+                    total=total,
+                    overall_percent=3,
+                ),
+                force=True,
+            )
+            cover = fetch_cover_bytes(cover_url)
+
+        def dl_cb(p: DownloadProgress) -> None:
+            overall = 5.0
+            if p.total and p.current:
+                overall = 5 + 75 * (
+                    ((p.current - 1) + (p.file_percent or 0) / 100.0) / p.total
+                )
+            on_progress(
+                JobProgress(
+                    stage="download",
+                    message=p.message,
+                    current=p.current,
+                    total=p.total or total,
+                    file_percent=p.file_percent,
+                    overall_percent=min(80.0, max(5.0, overall)),
+                )
+            )
+
+        on_progress(
+            JobProgress(
+                stage="download",
+                message="Яндекс Музыка…",
+                total=total,
+                overall_percent=5,
+            ),
+            force=True,
+        )
+        pairs = download_album_tracks(
+            album_url=url,
+            dest_dir=work_dir,
+            tracks=tracks,
+            on_progress=dl_cb,
+        )
+
+        on_progress(
+            JobProgress(
+                stage="tag",
+                message="Теги и имена файлов…",
+                total=total,
+                overall_percent=82,
+            ),
+            force=True,
+        )
+
+        def tag_cb(current: int, title: str) -> None:
+            pct = 82 + 13 * (current / max(total, 1))
+            on_progress(
+                JobProgress(
+                    stage="tag",
+                    message=f"Тег {current}/{total}: {title}",
+                    current=current,
+                    total=total,
+                    overall_percent=min(95.0, pct),
+                ),
+                force=True,
+            )
+
+        files = tag_downloaded_tracks(
+            pairs,
+            artist=artist,
+            album=album,
+            year=year,
+            cover=cover,
+            on_track=tag_cb,
+        )
+
+        on_progress(
+            JobProgress(
+                stage="zip",
+                message="Собираю архив…",
+                total=total,
+                overall_percent=96,
+            ),
+            force=True,
+        )
+        zip_name = f"{safe_zip_stem(artist, album)}.zip"
+        zip_path = _job_dir(job_id) / zip_name
+        build_zip(files, zip_path)
+        record.zip_path = str(zip_path)
+        _write_state(record, force=True)
+
+        on_progress(
+            JobProgress(
+                stage="done",
+                message="Готово",
+                current=total,
+                total=total,
+                overall_percent=100,
+                download_name=zip_name,
+            ),
+            force=True,
+        )
+    except DownloadError as exc:
+        on_progress(
+            JobProgress(
+                stage="error",
+                message="Ошибка",
+                error=str(exc),
+                overall_percent=record.progress.overall_percent,
+            ),
+            force=True,
+        )
+    except Exception as exc:
+        on_progress(
+            JobProgress(
+                stage="error",
+                message="Ошибка",
+                error=str(exc),
+                overall_percent=record.progress.overall_percent,
+            ),
+            force=True,
+        )
+
+
+def start_yandex_download_job(
+    *,
+    url: str,
+    artist: str,
+    album: str,
+    year: str,
+    cover_url: str,
+    tracks: list[PlaylistTrack],
+) -> str:
+    cleanup_stale_jobs()
+    job_id = uuid.uuid4().hex
+    record = JobRecord(
+        id=job_id,
+        progress=JobProgress(stage="queued", message="В очереди…", overall_percent=0),
+    )
+    _write_state(record, force=True)
+    thread = threading.Thread(
+        target=_run_yandex_job,
+        kwargs={
+            "job_id": job_id,
+            "url": url,
+            "artist": artist,
+            "album": album,
+            "year": year,
+            "cover_url": cover_url,
+            "tracks": tracks,
+        },
+        name=f"mu-ym-{job_id[:8]}",
         daemon=True,
     )
     thread.start()

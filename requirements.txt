@@ -12,3 +12,4 @@ python-telegram-bot
 tzdata
 boto3
 mutagen
+yandex-music

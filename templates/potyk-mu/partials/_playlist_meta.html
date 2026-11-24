@@ -1,3 +1,4 @@
+{% set uid = uid|default('dl') %}
 {% if error %}
 <p class="mu-download-error full">{{ error }}</p>
 {% else %}
@@ -17,13 +18,14 @@
     Обложка (URL)
     <input type="url"
            name="cover_url"
-           id="cover_url"
+           id="{{ uid }}-cover-url"
            value="{{ meta.cover_url }}"
            autocomplete="off"
-           oninput="var img=document.getElementById('cover-preview'); if(img){ img.src=this.value; img.hidden=!this.value; }">
+           data-cover-preview="{{ uid }}-cover-preview"
+           oninput="var img=document.getElementById(this.dataset.coverPreview); if(img){ img.src=this.value; img.hidden=!this.value; }">
 </label>
 <div class="full">
-    <img id="cover-preview"
+    <img id="{{ uid }}-cover-preview"
          class="mu-download-cover"
          src="{{ meta.cover_url }}"
          alt="Обложка"
@@ -50,14 +52,14 @@
 <div class="full mu-download-actions">
     <button type="submit">Скачать</button>
 </div>
-<div id="mu-download-progress" class="full mu-download-progress" hidden>
-    <div class="mu-download-progress-stage" id="mu-download-progress-stage">Скачивание</div>
+<div id="{{ uid }}-progress" class="full mu-download-progress" hidden>
+    <div class="mu-download-progress-stage" data-role="stage">Скачивание</div>
     <div class="mu-download-progress-bar" aria-hidden="true">
-        <div class="mu-download-progress-fill" id="mu-download-progress-fill"></div>
+        <div class="mu-download-progress-fill" data-role="fill"></div>
     </div>
     <div class="mu-download-progress-meta">
-        <span id="mu-download-progress-pct">0%</span>
-        <span id="mu-download-progress-msg">…</span>
+        <span data-role="pct">0%</span>
+        <span data-role="msg">…</span>
     </div>
 </div>
 {% endif %}
