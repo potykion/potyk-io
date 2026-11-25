@@ -13,3 +13,7 @@ __pycache__/
 *.pyc
 logs/
 templates/.obsidian/workspace.json
+# potyk-io-front
+potyk-io-front/node_modules/
+potyk-io-front/dist/
+

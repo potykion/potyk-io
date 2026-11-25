@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 
 from potyk_io_back.auth.forms import LoginForm
@@ -24,6 +24,12 @@ def setup_login(app):
 
     @login_manager.unauthorized_handler
     def unauthorized():
+        wants_json = (
+            request.path.startswith("/v2/api/")
+            or request.accept_mimetypes.best == "application/json"
+        )
+        if wants_json:
+            return jsonify({"error": "unauthorized"}), 401
         return redirect(url_for("auth.login", next=request.path))
 
     login_manager.init_app(app)

@@ -30,6 +30,7 @@ from potyk_io_back.health import health_bp
 from potyk_io_back.people import people_bp
 from potyk_io_back.tech import tech_bp
 from potyk_io_back.travel import travel_bp
+from potyk_io_back.v2 import v2_bp
 
 
 def create_app():
@@ -80,6 +81,7 @@ def create_app():
     app.register_blueprint(people_bp)
     app.register_blueprint(docs_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(v2_bp)
     app.register_blueprint(potyk_io_bp)
     return app
 

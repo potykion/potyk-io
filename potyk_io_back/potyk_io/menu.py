@@ -351,6 +351,13 @@ _FIN_SECTION_LINKS: list[MenuItem] = [
         "description": "Простой учет расходов и сбережений",
         "lock": True,
     },
+    {
+        "icon": "✨",
+        "title": "Учёт v2",
+        "url": "/v2/fin",
+        "description": "Новый фронтенд учёта",
+        "lock": True,
+    },
 ]
 
 
