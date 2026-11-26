@@ -130,6 +130,7 @@ function submitSingle(): void {
     emit("create", payload);
     single.amount = null;
     single.formula = "";
+    single.category = "";
     single.description = "";
     single.optional = false;
   }

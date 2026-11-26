@@ -91,6 +91,7 @@ function submitExpense(): void {
   });
   expense.amount = null;
   expense.formula = "";
+  expense.category = "";
   expense.description = "";
 }
 
