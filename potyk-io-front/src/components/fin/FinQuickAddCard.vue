@@ -5,14 +5,18 @@ import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import SelectButton from "primevue/selectbutton";
 import { reactive, ref, watch } from "vue";
-import type { ExpensePayload, SavingPayload } from "@/api/fin";
+import type { ExpensePayload, FinDay, SavingPayload } from "@/api/fin";
 import AmountField from "@/components/fin/AmountField.vue";
 import { evalAmountExpression } from "@/utils/calc";
+import { formatRub } from "@/utils/money";
+import { calcSavingFromRemainders, type SavingCalcPart } from "@/utils/savingCalc";
 
 const props = defineProps<{
   categories: string[];
   expenseDefaultDate: string;
   savingDefaultDate: string;
+  today: string;
+  days: FinDay[];
   todayClosed: boolean;
   busy?: boolean;
 }>();
@@ -42,6 +46,9 @@ const saving = reactive({
   amount: null as number | null,
   formula: "",
 });
+const savingCalcParts = ref<SavingCalcPart[]>([]);
+const savingCalcSum = ref<number | null>(null);
+const savingCalcRounded = ref<number | null>(null);
 
 function parseIso(iso: string): Date {
   return new Date(`${iso}T12:00:00`);
@@ -105,6 +112,25 @@ function submitSaving(): void {
   });
   saving.amount = null;
   saving.formula = "";
+  savingCalcParts.value = [];
+  savingCalcSum.value = null;
+  savingCalcRounded.value = null;
+}
+
+/** Остатки после последнего сейфа → сумма в инпут, разбивка по датам ниже. */
+function calcSaving(): void {
+  const result = calcSavingFromRemainders(props.days, props.today);
+  if (!result) {
+    savingCalcParts.value = [];
+    savingCalcSum.value = null;
+    savingCalcRounded.value = null;
+    return;
+  }
+  saving.amount = result.rounded;
+  saving.formula = String(result.rounded);
+  savingCalcParts.value = result.parts;
+  savingCalcSum.value = result.sum;
+  savingCalcRounded.value = result.rounded;
 }
 </script>
 
@@ -162,7 +188,30 @@ function submitSaving(): void {
         large
         placeholder="Сумма, ₽"
       />
-      <Button type="submit" label="Зафиксировать" :loading="busy" />
+      <div class="actions">
+        <Button type="button" label="Посчитать" severity="secondary" @click="calcSaving" />
+        <Button type="submit" class="submit-wide" label="Зафиксировать" :loading="busy" />
+      </div>
+      <details v-if="savingCalcParts.length" class="calc-spoiler">
+        <summary>Как считал</summary>
+        <ul class="calc-breakdown">
+          <li v-for="p in savingCalcParts" :key="p.date">
+            <span class="calc-date">{{ p.date }}</span>
+            <span class="calc-amount">{{ formatRub(p.amount) }}</span>
+          </li>
+          <li class="calc-total">
+            <span>сумма</span>
+            <span>{{ formatRub(savingCalcSum ?? 0) }}</span>
+          </li>
+          <li
+            v-if="savingCalcRounded != null && savingCalcRounded !== savingCalcSum"
+            class="calc-total"
+          >
+            <span>округл.</span>
+            <span>{{ formatRub(savingCalcRounded) }}</span>
+          </li>
+        </ul>
+      </details>
     </form>
   </div>
 </template>
@@ -206,6 +255,61 @@ function submitSaving(): void {
 .form {
   display: grid;
   gap: 0.65rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.actions .submit-wide {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.calc-spoiler {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.calc-spoiler summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+.calc-breakdown {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0.5rem 0.65rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  color: #475569;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.calc-breakdown li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.calc-date {
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-amount {
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-total {
+  margin-top: 0.15rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid #e2e8f0;
+  font-weight: 600;
+  color: #0f172a;
 }
 
 .row {

@@ -187,6 +187,8 @@ function confirmPick(): void {
         :categories="state.categories"
         :expense-default-date="expenseDefaultDate || state.defaults.expense_date"
         :saving-default-date="savingDefaultDate || state.defaults.saving_date"
+        :today="state.today"
+        :days="state.days"
         :today-closed="state.today_closed"
         :busy="store.saving"
         @create-expense="onExpenseCreate"

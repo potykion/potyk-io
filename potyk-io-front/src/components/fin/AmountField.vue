@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref } from "vue";
 import { evalAmountExpression } from "@/utils/calc";
 
 const amount = defineModel<number | null>("amount", { required: true });
@@ -22,32 +22,31 @@ const showCalc = ref(false);
 const calcInput = ref("");
 let formulaTimer: ReturnType<typeof setTimeout> | null = null;
 
-watch(
-  () => formula.value,
-  (value) => {
-    if (!props.allowFormula) return;
-    if (formulaTimer) clearTimeout(formulaTimer);
-    formulaTimer = setTimeout(() => {
-      if (!value) return;
-      const result = evalAmountExpression(value);
-      if (result != null) {
-        amount.value = result;
-        formula.value = String(result);
-      }
-    }, 1000);
-  },
-);
-
 onBeforeUnmount(() => {
   if (formulaTimer) clearTimeout(formulaTimer);
 });
+
+/** Сворачивание формулы в число — только после ручного ввода, не при программной подстановке. */
+function scheduleCollapse(): void {
+  if (!props.allowFormula) return;
+  if (formulaTimer) clearTimeout(formulaTimer);
+  formulaTimer = setTimeout(() => {
+    const value = formula.value;
+    if (!value) return;
+    const result = evalAmountExpression(value);
+    if (result != null) {
+      amount.value = result;
+      formula.value = String(result);
+    }
+  }, 1000);
+}
 
 function onAmountInput(event: Event): void {
   const raw = (event.target as HTMLInputElement).value;
   if (props.allowFormula) {
     formula.value = raw;
-    const result = evalAmountExpression(raw);
-    amount.value = result;
+    amount.value = evalAmountExpression(raw);
+    scheduleCollapse();
     return;
   }
   const n = Number.parseInt(raw.replace(/\s/g, ""), 10);
