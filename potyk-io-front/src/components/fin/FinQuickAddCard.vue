@@ -208,7 +208,7 @@ function calcSaving(): void {
         <ul class="calc-breakdown">
           <li v-for="p in savingCalcParts" :key="p.date">
             <span class="calc-date">{{ p.date }}</span>
-            <span class="calc-amount">{{ formatRub(p.amount) }}</span>
+            <span class="calc-amount" :class="{ debt: p.amount < 0 }">{{ formatRub(p.amount) }}</span>
           </li>
           <li class="calc-total">
             <span>сумма</span>
@@ -313,6 +313,10 @@ function calcSaving(): void {
 
 .calc-amount {
   font-variant-numeric: tabular-nums;
+}
+
+.calc-amount.debt {
+  color: #b91c1c;
 }
 
 .calc-total {
