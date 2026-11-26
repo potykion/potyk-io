@@ -9,6 +9,7 @@ import FinBudgetPanel from "@/components/fin/FinBudgetPanel.vue";
 import FinExpensePanel from "@/components/fin/FinExpensePanel.vue";
 import FinFeed from "@/components/fin/FinFeed.vue";
 import FinQuickAddCard from "@/components/fin/FinQuickAddCard.vue";
+import FinRecentOpsCard from "@/components/fin/FinRecentOpsCard.vue";
 import FinSavingPanel from "@/components/fin/FinSavingPanel.vue";
 import FinStatsPanel from "@/components/fin/FinStatsPanel.vue";
 import { useFinStore } from "@/stores/fin";
@@ -191,6 +192,7 @@ function confirmPick(): void {
         @create-expense="onExpenseCreate"
         @create-saving="onSavingCreate"
       />
+      <FinRecentOpsCard :days="state.days" />
 
       <h1>Сегодня, {{ state.today }}</h1>
       <p class="summary-line">

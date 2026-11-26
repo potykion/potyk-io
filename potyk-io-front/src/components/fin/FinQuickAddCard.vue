@@ -174,7 +174,7 @@ function submitSaving(): void {
   border-radius: 0.75rem;
   padding: 0.75rem;
   margin-top: 25vh;
-  margin-bottom: 25vh;
+  margin-bottom: 0.75rem;
 }
 
 .ops-link {
