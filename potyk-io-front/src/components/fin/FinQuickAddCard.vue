@@ -109,6 +109,16 @@ function submitSaving(): void {
 
 <template>
   <div v-if="!todayClosed" class="quick-card">
+    <a
+      class="ops-link"
+      href="https://www.tbank.ru/mybank/operations/"
+      target="_blank"
+      rel="noopener noreferrer"
+      title="где смотреть траты"
+      aria-label="где смотреть траты"
+    >
+      <i class="pi pi-external-link" aria-hidden="true" />
+    </a>
     <div class="mode-wrap">
       <SelectButton
         v-model="mode"
@@ -158,12 +168,32 @@ function submitSaving(): void {
 
 <style scoped>
 .quick-card {
+  position: relative;
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 0.75rem;
   padding: 0.75rem;
   margin-top: 25vh;
   margin-bottom: 25vh;
+}
+
+.ops-link {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: #64748b;
+  text-decoration: none;
+  border-radius: 0.4rem;
+}
+
+.ops-link:hover {
+  color: #0f172a;
+  background: #f1f5f9;
 }
 
 .mode-wrap {
