@@ -1,0 +1,184 @@
+<script setup lang="ts">
+import AutoComplete from "primevue/autocomplete";
+import Button from "primevue/button";
+import DatePicker from "primevue/datepicker";
+import InputText from "primevue/inputtext";
+import Tab from "primevue/tab";
+import TabList from "primevue/tablist";
+import TabPanel from "primevue/tabpanel";
+import TabPanels from "primevue/tabpanels";
+import Tabs from "primevue/tabs";
+import { reactive, ref, watch } from "vue";
+import type { ExpensePayload, SavingPayload } from "@/api/fin";
+import AmountField from "@/components/fin/AmountField.vue";
+import { evalAmountExpression } from "@/utils/calc";
+
+const props = defineProps<{
+  categories: string[];
+  expenseDefaultDate: string;
+  savingDefaultDate: string;
+  todayClosed: boolean;
+  busy?: boolean;
+}>();
+
+const emit = defineEmits<{
+  createExpense: [payload: ExpensePayload];
+  createSaving: [payload: SavingPayload];
+}>();
+
+const tab = ref<"expense" | "saving">("expense");
+const categorySuggestions = ref<string[]>([]);
+
+const expense = reactive({
+  date: null as Date | null,
+  amount: null as number | null,
+  formula: "",
+  category: "",
+  description: "",
+});
+
+const saving = reactive({
+  amount: null as number | null,
+  formula: "",
+});
+
+function parseIso(iso: string): Date {
+  return new Date(`${iso}T12:00:00`);
+}
+
+function toIso(d: Date | null): string {
+  if (!d) return "";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+watch(
+  () => props.expenseDefaultDate,
+  (iso) => {
+    if (iso) expense.date = parseIso(iso);
+  },
+  { immediate: true },
+);
+
+function searchCategory(event: { query: string }): void {
+  const q = event.query.trim().toLowerCase();
+  categorySuggestions.value = props.categories.filter((c) => c.toLowerCase().includes(q));
+  if (q && !categorySuggestions.value.some((c) => c.toLowerCase() === q)) {
+    categorySuggestions.value = [event.query.trim(), ...categorySuggestions.value];
+  }
+}
+
+function resolveAmount(amount: number | null, formula: string): number | null {
+  if (amount != null) return amount;
+  if (formula) return evalAmountExpression(formula);
+  return null;
+}
+
+function submitExpense(): void {
+  const date = toIso(expense.date);
+  const amount = resolveAmount(expense.amount, expense.formula);
+  const category = expense.category.trim();
+  if (!date || amount == null || amount < 1 || !category) return;
+  emit("createExpense", {
+    date,
+    amount,
+    category,
+    description: expense.description.trim(),
+    optional: false,
+  });
+  expense.amount = null;
+  expense.formula = "";
+  expense.description = "";
+}
+
+function submitSaving(): void {
+  const amount = resolveAmount(saving.amount, saving.formula);
+  if (!props.savingDefaultDate || amount == null || amount < 1) return;
+  emit("createSaving", {
+    date: props.savingDefaultDate,
+    amount,
+    note: "",
+  });
+  saving.amount = null;
+  saving.formula = "";
+}
+</script>
+
+<template>
+  <div v-if="!todayClosed" class="quick-card">
+    <Tabs v-model:value="tab">
+      <TabList>
+        <Tab value="expense">Трата</Tab>
+        <Tab value="saving">Сейф</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel value="expense">
+          <form class="form" @submit.prevent="submitExpense">
+            <AmountField v-model:amount="expense.amount" v-model:formula="expense.formula" />
+            <div class="row">
+              <DatePicker v-model="expense.date" date-format="yy-mm-dd" show-icon class="date" />
+              <AutoComplete
+                v-model="expense.category"
+                class="category"
+                :suggestions="categorySuggestions"
+                dropdown
+                :force-selection="false"
+                placeholder="категория"
+                @complete="searchCategory"
+              />
+            </div>
+            <InputText v-model="expense.description" placeholder="описание" />
+            <Button type="submit" label="Добавить трату" :loading="busy" />
+          </form>
+        </TabPanel>
+        <TabPanel value="saving">
+          <form class="form" @submit.prevent="submitSaving">
+            <AmountField
+              v-model:amount="saving.amount"
+              v-model:formula="saving.formula"
+              allow-formula
+            />
+            <Button type="submit" label="Зафиксировать" :loading="busy" />
+          </form>
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
+  </div>
+</template>
+
+<style scoped>
+.quick-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.form {
+  display: grid;
+  gap: 0.65rem;
+  padding-top: 0.35rem;
+}
+
+.row {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(9rem, 11rem) 1fr;
+}
+
+.row :deep(.date),
+.row :deep(.category),
+.row :deep(.p-datepicker),
+.row :deep(.p-autocomplete) {
+  width: 100%;
+}
+
+@media (max-width: 520px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
