@@ -45,10 +45,7 @@ type RecentOp =
       note: string;
     };
 
-type Editing =
-  | { kind: "expense"; id: number }
-  | { kind: "saving"; id: number }
-  | null;
+type Editing = { kind: "expense"; id: number } | { kind: "saving"; id: number } | null;
 
 const visibleCount = ref(PAGE);
 const editing = ref<Editing>(null);
@@ -191,7 +188,7 @@ function resolveAmount(amount: number | null, formula: string): number | null {
 }
 
 function submitExpense(): void {
-  if (!editing.value || editing.value.kind !== "expense") return;
+  if (editing.value?.kind !== "expense") return;
   const date = toIso(expenseForm.date);
   const amount = resolveAmount(expenseForm.amount, expenseForm.formula);
   const category = expenseForm.category.trim();
@@ -207,7 +204,7 @@ function submitExpense(): void {
 }
 
 function submitSaving(): void {
-  if (!editing.value || editing.value.kind !== "saving") return;
+  if (editing.value?.kind !== "saving") return;
   const date = toIso(savingForm.date);
   const amount = resolveAmount(savingForm.amount, savingForm.formula);
   if (!date || amount == null || amount < 1) return;
