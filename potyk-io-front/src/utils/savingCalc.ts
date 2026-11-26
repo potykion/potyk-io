@@ -9,7 +9,7 @@ export type SavingCalcPart = {
   amount: number;
 };
 
-/** Остатки после даты последнего сейфа (до today), сумма и округление до 1к. */
+/** Остатки с даты последнего сейфа включительно (до today), сумма и округление до 1к. */
 export function calcSavingFromRemainders(
   days: readonly RemainderDay[],
   today: string,
@@ -21,11 +21,12 @@ export function calcSavingFromRemainders(
     }
   }
 
+  // Дата последнего сейфа включительно: если сейф был 21.11 — остаток/траты 21.11 тоже в расчёте.
   const parts = days
     .filter(
       (d) =>
         d.date < today &&
-        (lastSavingDate == null || d.date > lastSavingDate) &&
+        (lastSavingDate == null || d.date >= lastSavingDate) &&
         d.eod_remainder > 0,
     )
     .slice()

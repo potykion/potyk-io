@@ -43,6 +43,7 @@ const expense = reactive({
 });
 
 const saving = reactive({
+  date: null as Date | null,
   amount: null as number | null,
   formula: "",
 });
@@ -66,6 +67,14 @@ watch(
   () => props.expenseDefaultDate,
   (iso) => {
     if (iso) expense.date = parseIso(iso);
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.savingDefaultDate,
+  (iso) => {
+    if (iso) saving.date = parseIso(iso);
   },
   { immediate: true },
 );
@@ -103,10 +112,11 @@ function submitExpense(): void {
 }
 
 function submitSaving(): void {
+  const date = toIso(saving.date);
   const amount = resolveAmount(saving.amount, saving.formula);
-  if (!props.savingDefaultDate || amount == null || amount < 1) return;
+  if (!date || amount == null || amount < 1) return;
   emit("createSaving", {
-    date: props.savingDefaultDate,
+    date,
     amount,
     note: "",
   });
@@ -188,6 +198,7 @@ function calcSaving(): void {
         large
         placeholder="Сумма, ₽"
       />
+      <DatePicker v-model="saving.date" date-format="yy-mm-dd" show-icon class="saving-date" />
       <div class="actions">
         <Button type="button" label="Посчитать" severity="secondary" @click="calcSaving" />
         <Button type="submit" class="submit-wide" label="Зафиксировать" :loading="busy" />
@@ -319,6 +330,7 @@ function calcSaving(): void {
 }
 
 .category,
+.saving-date,
 .row :deep(.date),
 .row :deep(.description),
 .row :deep(.p-datepicker),
