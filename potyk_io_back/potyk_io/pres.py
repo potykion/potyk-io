@@ -548,17 +548,6 @@ def food_thoughts_index_redirect():
     return redirect("/food", code=301)
 
 
-@potyk_io_bp.route("/food/recipes/05-asia/china")
-@potyk_io_bp.route("/food/recipes/05-asia/china/")
-def china_recipes_moved():
-    return redirect("/food#китайская-кухня", code=301)
-
-
-@potyk_io_bp.route("/food/recipes/05-asia/china/<path:page_path>")
-def china_recipe_moved(page_path: str):
-    return redirect(f"/food/recipes/05-china/{page_path}", code=301)
-
-
 def _findings_archive_html() -> str:
     archive = TEMPLATES_DIR / "findings.md"
     if not archive.is_file():
