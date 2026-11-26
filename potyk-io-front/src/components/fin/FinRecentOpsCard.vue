@@ -88,7 +88,7 @@ function loadMore(): void {
           <span class="amount">{{ formatRub(op.amount) }}</span>
           <span class="category">{{ op.category }}</span>
           <span class="date">{{ op.date }}</span>
-          <span class="desc">{{ op.description || "—" }}</span>
+          <span v-if="op.description" class="desc">{{ op.description }}</span>
         </template>
         <template v-else>
           <span class="amount saving">{{ formatRub(op.amount) }}</span>
