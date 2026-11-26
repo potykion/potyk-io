@@ -12,6 +12,23 @@
 python -m flask run --debug 
 ```
 
+## Frontend (v2)
+
+Vue SPA живёт в `potyk-io-front/` и раздаётся с префикса `/v2`.
+
+```sh
+cd potyk-io-front
+npm install
+npm run dev   # http://127.0.0.1:5173/v2/fin, Flask на :5000
+```
+
+QA: `npm run qa` — `vue-tsc`, Biome, Vitest и `npm audit`.
+
+`@emnapi/core` и `@emnapi/runtime` в `devDependencies` не импортируются в коде: они держат
+`package-lock.json` валидным для `npm ci` на Linux. Без них npm 11 на Windows вырезает эти
+пакеты из лока как транзитивные зависимости опционального `@rolldown/binding-wasm32-wasi`,
+и CI падает на `npm ci`. Не удалять.
+
 ## Prod 
 
 - ВМ (Yandex Cloud): 2 vCPU (100%), 2 ГБ RAM, 20 ГБ диск, Intel Ice Lake.  
