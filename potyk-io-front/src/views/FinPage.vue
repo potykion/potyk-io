@@ -192,7 +192,16 @@ function confirmPick(): void {
         @create-expense="onExpenseCreate"
         @create-saving="onSavingCreate"
       />
-      <FinRecentOpsCard :days="state.days" />
+      <FinRecentOpsCard
+        :days="state.days"
+        :categories="state.categories"
+        :busy="store.saving"
+        :error="store.error"
+        @update-expense="onExpenseUpdate"
+        @delete-expense="onDeleteExpense"
+        @update-saving="onSavingUpdate"
+        @delete-saving="onDeleteSaving"
+      />
 
       <h1>Сегодня, {{ state.today }}</h1>
       <p class="summary-line">
