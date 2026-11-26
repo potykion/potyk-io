@@ -3,11 +3,7 @@ import AutoComplete from "primevue/autocomplete";
 import Button from "primevue/button";
 import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
-import Tab from "primevue/tab";
-import TabList from "primevue/tablist";
-import TabPanel from "primevue/tabpanel";
-import TabPanels from "primevue/tabpanels";
-import Tabs from "primevue/tabs";
+import SelectButton from "primevue/selectbutton";
 import { reactive, ref, watch } from "vue";
 import type { ExpensePayload, SavingPayload } from "@/api/fin";
 import AmountField from "@/components/fin/AmountField.vue";
@@ -26,7 +22,12 @@ const emit = defineEmits<{
   createSaving: [payload: SavingPayload];
 }>();
 
-const tab = ref<"expense" | "saving">("expense");
+type Mode = "expense" | "saving";
+const mode = ref<Mode>("expense");
+const modeOptions = [
+  { label: "Трата", value: "expense" as const },
+  { label: "Сейф", value: "saving" as const },
+];
 const categorySuggestions = ref<string[]>([]);
 
 const expense = reactive({
@@ -108,43 +109,50 @@ function submitSaving(): void {
 
 <template>
   <div v-if="!todayClosed" class="quick-card">
-    <Tabs v-model:value="tab">
-      <TabList>
-        <Tab value="expense">Трата</Tab>
-        <Tab value="saving">Сейф</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel value="expense">
-          <form class="form" @submit.prevent="submitExpense">
-            <AmountField v-model:amount="expense.amount" v-model:formula="expense.formula" />
-            <div class="row">
-              <DatePicker v-model="expense.date" date-format="yy-mm-dd" show-icon class="date" />
-              <AutoComplete
-                v-model="expense.category"
-                class="category"
-                :suggestions="categorySuggestions"
-                dropdown
-                :force-selection="false"
-                placeholder="категория"
-                @complete="searchCategory"
-              />
-            </div>
-            <InputText v-model="expense.description" placeholder="описание" />
-            <Button type="submit" label="Добавить трату" :loading="busy" />
-          </form>
-        </TabPanel>
-        <TabPanel value="saving">
-          <form class="form" @submit.prevent="submitSaving">
-            <AmountField
-              v-model:amount="saving.amount"
-              v-model:formula="saving.formula"
-              allow-formula
-            />
-            <Button type="submit" label="Зафиксировать" :loading="busy" />
-          </form>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+    <div class="mode-wrap">
+      <SelectButton
+        v-model="mode"
+        :options="modeOptions"
+        option-label="label"
+        option-value="value"
+        :allow-empty="false"
+      />
+    </div>
+
+    <form v-if="mode === 'expense'" class="form" @submit.prevent="submitExpense">
+      <AmountField
+        v-model:amount="expense.amount"
+        v-model:formula="expense.formula"
+        allow-formula
+        large
+        placeholder="Сумма, ₽"
+      />
+      <AutoComplete
+        v-model="expense.category"
+        class="category"
+        :suggestions="categorySuggestions"
+        dropdown
+        :force-selection="false"
+        placeholder="категория"
+        @complete="searchCategory"
+      />
+      <div class="row">
+        <DatePicker v-model="expense.date" date-format="yy-mm-dd" show-icon class="date" />
+        <InputText v-model="expense.description" class="description" placeholder="описание" />
+      </div>
+      <Button type="submit" label="Добавить трату" :loading="busy" />
+    </form>
+
+    <form v-else class="form" @submit.prevent="submitSaving">
+      <AmountField
+        v-model:amount="saving.amount"
+        v-model:formula="saving.formula"
+        allow-formula
+        large
+        placeholder="Сумма, ₽"
+      />
+      <Button type="submit" label="Зафиксировать" :loading="busy" />
+    </form>
   </div>
 </template>
 
@@ -153,14 +161,20 @@ function submitSaving(): void {
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 0.75rem;
-  padding: 0.5rem 0.75rem 0.85rem;
-  margin-bottom: 1rem;
+  padding: 0.75rem;
+  margin-top: 25vh;
+  margin-bottom: 25vh;
+}
+
+.mode-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.75rem;
 }
 
 .form {
   display: grid;
   gap: 0.65rem;
-  padding-top: 0.35rem;
 }
 
 .row {
@@ -169,16 +183,12 @@ function submitSaving(): void {
   grid-template-columns: minmax(9rem, 11rem) 1fr;
 }
 
+.category,
 .row :deep(.date),
-.row :deep(.category),
+.row :deep(.description),
 .row :deep(.p-datepicker),
-.row :deep(.p-autocomplete) {
+.row :deep(.p-autocomplete),
+.row :deep(.p-inputtext) {
   width: 100%;
-}
-
-@media (max-width: 520px) {
-  .row {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

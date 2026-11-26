@@ -8,6 +8,7 @@ import type { Expense, Saving } from "@/api/fin";
 import FinBudgetPanel from "@/components/fin/FinBudgetPanel.vue";
 import FinExpensePanel from "@/components/fin/FinExpensePanel.vue";
 import FinFeed from "@/components/fin/FinFeed.vue";
+import FinQuickAddCard from "@/components/fin/FinQuickAddCard.vue";
 import FinSavingPanel from "@/components/fin/FinSavingPanel.vue";
 import FinStatsPanel from "@/components/fin/FinStatsPanel.vue";
 import { useFinStore } from "@/stores/fin";
@@ -172,15 +173,6 @@ function confirmPick(): void {
 
 <template>
   <section class="fin-page">
-    <h1 v-if="state">Сегодня, {{ state.today }}</h1>
-    <h1 v-else>Учёт</h1>
-
-    <p v-if="state" class="summary-line">
-      Сейвы всего: <strong>{{ formatRub(state.total_saved) }}</strong>
-      · авто-остатки:
-      <strong>{{ formatRub(state.auto_remainder_total) }}</strong>
-    </p>
-
     <div v-if="store.loading && !state" class="state">
       <ProgressSpinner style="width: 2.5rem; height: 2.5rem" stroke-width="4" />
     </div>
@@ -190,6 +182,23 @@ function confirmPick(): void {
     </Message>
 
     <template v-else-if="state">
+      <FinQuickAddCard
+        :categories="state.categories"
+        :expense-default-date="expenseDefaultDate || state.defaults.expense_date"
+        :saving-default-date="savingDefaultDate || state.defaults.saving_date"
+        :today-closed="state.today_closed"
+        :busy="store.saving"
+        @create-expense="onExpenseCreate"
+        @create-saving="onSavingCreate"
+      />
+
+      <h1>Сегодня, {{ state.today }}</h1>
+      <p class="summary-line">
+        Сейвы всего: <strong>{{ formatRub(state.total_saved) }}</strong>
+        · авто-остатки:
+        <strong>{{ formatRub(state.auto_remainder_total) }}</strong>
+      </p>
+
       <FinStatsPanel :stats="state.stats" @change="onStatsChange" />
       <FinBudgetPanel
         :daily-budget="state.settings.daily_budget"
@@ -240,6 +249,8 @@ function confirmPick(): void {
         @toggle-remainder="toggleRemainder"
       />
     </template>
+
+    <h1 v-else>Учёт</h1>
   </section>
 </template>
 

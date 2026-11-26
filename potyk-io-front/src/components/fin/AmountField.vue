@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
-import { onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { evalAmountExpression } from "@/utils/calc";
 
 const amount = defineModel<number | null>("amount", { required: true });
@@ -9,8 +9,14 @@ const formula = defineModel<string>("formula", { default: "" });
 
 const props = defineProps<{
   allowFormula?: boolean;
+  /** Кнопка 1к. По умолчанию — только без allowFormula. */
+  showRound?: boolean;
+  large?: boolean;
+  placeholder?: string;
   inputId?: string;
 }>();
+
+const canRound = computed(() => props.showRound ?? !props.allowFormula);
 
 const showCalc = ref(false);
 const calcInput = ref("");
@@ -70,6 +76,8 @@ function roundToThousand(): void {
       <InputText
         :id="inputId"
         class="amount-input"
+        :class="{ large }"
+        :placeholder="placeholder"
         :model-value="
           allowFormula
             ? formula || (amount != null ? String(amount) : '')
@@ -90,7 +98,7 @@ function roundToThousand(): void {
         @click="showCalc = !showCalc"
       />
       <Button
-        v-if="!allowFormula"
+        v-if="canRound"
         type="button"
         text
         rounded
@@ -116,6 +124,12 @@ function roundToThousand(): void {
 .amount-input {
   flex: 1;
   min-width: 0;
+}
+
+.amount-input.large {
+  font-size: 1.5rem;
+  padding: 0.75rem 0.9rem;
+  font-weight: 600;
 }
 
 .calc-panel {
