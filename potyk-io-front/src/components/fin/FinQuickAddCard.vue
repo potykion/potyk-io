@@ -206,12 +206,15 @@ function calcSaving(): void {
       <details v-if="savingCalcParts.length" class="calc-spoiler">
         <summary>Как считал</summary>
         <ul class="calc-breakdown">
-          <li v-for="p in savingCalcParts" :key="p.date">
+          <li v-for="p in savingCalcParts" :key="p.date" :class="{ debt: p.amount < 0 }">
             <span class="calc-date">{{ p.date }}</span>
-            <span class="calc-amount" :class="{ debt: p.amount < 0 }">{{ formatRub(p.amount) }}</span>
+            <span class="calc-formula">
+              {{ p.available.toLocaleString("ru-RU") }} − {{ p.spent.toLocaleString("ru-RU") }} =
+              <span class="calc-amount">{{ formatRub(p.amount) }}</span>
+            </span>
           </li>
           <li class="calc-total">
-            <span>сумма</span>
+            <span>сумма (+)</span>
             <span>{{ formatRub(savingCalcSum ?? 0) }}</span>
           </li>
           <li
@@ -305,17 +308,25 @@ function calcSaving(): void {
   display: flex;
   justify-content: space-between;
   gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .calc-date {
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.calc-formula {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .calc-amount {
-  font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
 
-.calc-amount.debt {
+.calc-breakdown li.debt,
+.calc-breakdown li.debt .calc-amount {
   color: #b91c1c;
 }
 
