@@ -6,17 +6,19 @@ import InputText from "primevue/inputtext";
 import Message from "primevue/message";
 import ProgressSpinner from "primevue/progressspinner";
 import Select from "primevue/select";
+import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { ApiError } from "@/api/client";
-import { createRest, fetchRest, type RestRestaurant } from "@/api/rest";
+import { createRest, deleteRest, fetchRest, type RestRestaurant, updateRest } from "@/api/rest";
 
 const TIERS = ["S", "A", "B", "C", "D"];
 const LOGO_ACCEPT = "image/png,image/jpeg,image/webp,image/gif";
 
 const router = useRouter();
 const toast = useToast();
+const confirm = useConfirm();
 
 const loading = ref(true);
 const busy = ref(false);
@@ -26,7 +28,9 @@ const cuisines = ref<string[]>([]);
 const cuisineSuggestions = ref<string[]>([]);
 const logoFile = ref<File | null>(null);
 const logoPreviewUrl = ref("");
+const existingLogo = ref("");
 const fileUploadKey = ref(0);
+const editingId = ref<number | null>(null);
 
 const form = reactive({
   name: "",
@@ -35,7 +39,14 @@ const form = reactive({
   maps_url: "",
 });
 
-const logoLabel = computed(() => logoFile.value?.name || "Файл не выбран");
+const isEditing = computed(() => editingId.value !== null);
+const submitLabel = computed(() => (isEditing.value ? "Сохранить" : "Добавить"));
+const logoLabel = computed(() => {
+  if (logoFile.value) return logoFile.value.name;
+  if (existingLogo.value) return "текущее лого";
+  return "Файл не выбран";
+});
+const previewSrc = computed(() => logoPreviewUrl.value || existingLogo.value);
 
 onMounted(async () => {
   try {
@@ -52,6 +63,21 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   clearLogoPreview();
 });
+
+function applyState(state: { restaurants: RestRestaurant[]; cuisines: string[] }): void {
+  restaurants.value = state.restaurants;
+  cuisines.value = state.cuisines;
+}
+
+function resetForm(): void {
+  editingId.value = null;
+  form.name = "";
+  form.cuisine = "";
+  form.maps_url = "";
+  form.tier = "B";
+  existingLogo.value = "";
+  clearLogo();
+}
 
 function clearLogoPreview(): void {
   if (logoPreviewUrl.value) {
@@ -83,30 +109,73 @@ function searchCuisine(event: AutoCompleteCompleteEvent): void {
     : [...cuisines.value];
 }
 
+function startEdit(row: RestRestaurant): void {
+  editingId.value = row.id;
+  form.name = row.name;
+  form.cuisine = row.cuisine;
+  form.tier = row.tier || "B";
+  form.maps_url = row.maps_url;
+  existingLogo.value = row.logo || "";
+  clearLogo();
+  error.value = "";
+}
+
+function cancelEdit(): void {
+  resetForm();
+}
+
 async function submit(): Promise<void> {
   busy.value = true;
   error.value = "";
+  const payload = {
+    name: form.name.trim(),
+    cuisine: String(form.cuisine || "").trim(),
+    tier: form.tier,
+    maps_url: form.maps_url.trim(),
+    logo: logoFile.value,
+  };
   try {
-    const state = await createRest({
-      name: form.name.trim(),
-      cuisine: String(form.cuisine || "").trim(),
-      tier: form.tier,
-      maps_url: form.maps_url.trim(),
-      logo: logoFile.value,
-    });
-    restaurants.value = state.restaurants;
-    cuisines.value = state.cuisines;
-    form.name = "";
-    form.cuisine = "";
-    form.maps_url = "";
-    form.tier = "B";
-    clearLogo();
-    toast.add({ severity: "success", summary: "Ресторан добавлен", life: 2000 });
+    if (editingId.value !== null) {
+      const state = await updateRest(editingId.value, payload);
+      applyState(state);
+      resetForm();
+      toast.add({ severity: "success", summary: "Ресторан обновлён", life: 2000 });
+    } else {
+      const state = await createRest(payload);
+      applyState(state);
+      resetForm();
+      toast.add({ severity: "success", summary: "Ресторан добавлен", life: 2000 });
+    }
   } catch (err) {
     error.value = err instanceof ApiError ? err.message : "Не удалось сохранить";
   } finally {
     busy.value = false;
   }
+}
+
+function askDelete(row: RestRestaurant): void {
+  confirm.require({
+    message: `Удалить «${row.name}»?`,
+    header: "Подтверждение",
+    icon: "pi pi-exclamation-triangle",
+    acceptLabel: "Удалить",
+    rejectLabel: "Отмена",
+    acceptClass: "p-button-danger",
+    accept: async () => {
+      busy.value = true;
+      error.value = "";
+      try {
+        const state = await deleteRest(row.id);
+        applyState(state);
+        if (editingId.value === row.id) resetForm();
+        toast.add({ severity: "success", summary: "Ресторан удалён", life: 2000 });
+      } catch (err) {
+        error.value = err instanceof ApiError ? err.message : "Не удалось удалить";
+      } finally {
+        busy.value = false;
+      }
+    },
+  });
 }
 
 function openRest(): void {
@@ -178,19 +247,23 @@ function openRest(): void {
             />
           </div>
           <p class="logo-name">{{ logoLabel }}</p>
-          <img
-            v-if="logoPreviewUrl"
-            class="logo-preview"
-            :src="logoPreviewUrl"
-            alt="Превью лого"
-          />
+          <img v-if="previewSrc" class="logo-preview" :src="previewSrc" alt="Превью лого" />
         </div>
         <label class="field full">
           <span>Я.Карты</span>
           <InputText v-model="form.maps_url" placeholder="https://yandex.ru/maps/-/…" />
         </label>
         <div class="actions">
-          <Button type="submit" label="Добавить" :loading="busy" />
+          <Button type="submit" :label="submitLabel" :loading="busy" />
+          <Button
+            v-if="isEditing"
+            type="button"
+            label="Отмена"
+            severity="secondary"
+            text
+            :disabled="busy"
+            @click="cancelEdit"
+          />
         </div>
       </form>
 
@@ -198,9 +271,32 @@ function openRest(): void {
       <ul v-if="restaurants.length" class="list">
         <li v-for="r in restaurants" :key="r.id" class="list-item">
           <img v-if="r.logo" class="thumb" :src="r.logo" :alt="r.name" />
+          <span v-else class="thumb thumb--empty" aria-hidden="true" />
           <div class="meta">
             <strong>{{ r.name }}</strong>
             <span>{{ r.cuisine }} · {{ r.tier || "—" }}</span>
+          </div>
+          <div class="row-actions">
+            <Button
+              type="button"
+              icon="pi pi-pencil"
+              severity="secondary"
+              text
+              rounded
+              aria-label="Редактировать"
+              :disabled="busy"
+              @click="startEdit(r)"
+            />
+            <Button
+              type="button"
+              icon="pi pi-trash"
+              severity="danger"
+              text
+              rounded
+              aria-label="Удалить"
+              :disabled="busy"
+              @click="askDelete(r)"
+            />
           </div>
         </li>
       </ul>
@@ -286,6 +382,10 @@ function openRest(): void {
 
 .actions {
   grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .list-title {
@@ -316,6 +416,11 @@ function openRest(): void {
   object-fit: cover;
   border-radius: 4px;
   flex: 0 0 auto;
+  background: #e2e8f0;
+}
+
+.thumb--empty {
+  display: block;
 }
 
 .meta {
@@ -323,11 +428,18 @@ function openRest(): void {
   flex-direction: column;
   gap: 0.15rem;
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .meta span {
   color: #64748b;
   font-size: 0.85rem;
+}
+
+.row-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.15rem;
 }
 
 .empty {

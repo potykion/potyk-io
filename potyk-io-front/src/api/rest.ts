@@ -13,9 +13,10 @@ export type RestState = {
   restaurants: RestRestaurant[];
   cuisines: string[];
   created?: RestRestaurant;
+  updated?: RestRestaurant;
 };
 
-export type RestCreatePayload = {
+export type RestWritePayload = {
   name: string;
   cuisine: string;
   tier: string;
@@ -23,11 +24,7 @@ export type RestCreatePayload = {
   logo?: File | null;
 };
 
-export function fetchRest(): Promise<RestState> {
-  return apiJson<RestState>("/v2/api/rest");
-}
-
-export function createRest(payload: RestCreatePayload): Promise<RestState> {
+function toFormData(payload: RestWritePayload): FormData {
   const body = new FormData();
   body.append("name", payload.name);
   body.append("cuisine", payload.cuisine);
@@ -36,8 +33,29 @@ export function createRest(payload: RestCreatePayload): Promise<RestState> {
   if (payload.logo) {
     body.append("logo", payload.logo);
   }
+  return body;
+}
+
+export function fetchRest(): Promise<RestState> {
+  return apiJson<RestState>("/v2/api/rest");
+}
+
+export function createRest(payload: RestWritePayload): Promise<RestState> {
   return apiJson<RestState>("/v2/api/rest", {
     method: "POST",
-    body,
+    body: toFormData(payload),
+  });
+}
+
+export function updateRest(id: number, payload: RestWritePayload): Promise<RestState> {
+  return apiJson<RestState>(`/v2/api/rest/${id}`, {
+    method: "PUT",
+    body: toFormData(payload),
+  });
+}
+
+export function deleteRest(id: number): Promise<RestState> {
+  return apiJson<RestState>(`/v2/api/rest/${id}`, {
+    method: "DELETE",
   });
 }

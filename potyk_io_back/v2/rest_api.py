@@ -53,6 +53,41 @@ def _save_logo(file: FileStorage, name: str) -> str:
     return f"{LOGO_URL_PREFIX}/{filename}"
 
 
+def _read_fields() -> tuple[str, str, str, str, FileStorage | None]:
+    if request.content_type and "multipart/form-data" in request.content_type:
+        name = str(request.form.get("name") or "").strip()
+        cuisine = str(request.form.get("cuisine") or "").strip()
+        tier = normalize_tier(str(request.form.get("tier") or ""))
+        maps_url = str(request.form.get("maps_url") or "").strip()
+        logo_file = request.files.get("logo")
+    else:
+        data = request.get_json(silent=True) or {}
+        name = str(data.get("name") or "").strip()
+        cuisine = str(data.get("cuisine") or "").strip()
+        tier = normalize_tier(str(data.get("tier") or ""))
+        maps_url = str(data.get("maps_url") or "").strip()
+        logo_file = None
+    return name, cuisine, tier, maps_url, logo_file
+
+
+def _validate_fields(
+    name: str, cuisine: str, tier: str, maps_url: str
+) -> str | None:
+    if not name:
+        return "Укажи название"
+    if len(name) > 255:
+        return "Название слишком длинное"
+    if not cuisine:
+        return "Укажи кухню"
+    if len(cuisine) > 128:
+        return "Кухня слишком длинная"
+    if not tier:
+        return "Укажи тир (S/A/B/C/D)"
+    if len(maps_url) > 1024:
+        return "Ссылка на карты слишком длинная"
+    return None
+
+
 def register_rest_api(bp: Blueprint) -> None:
     @bp.get("/api/rest")
     def api_rest_list():
@@ -61,32 +96,10 @@ def register_rest_api(bp: Blueprint) -> None:
     @bp.post("/api/rest")
     @login_required
     def api_rest_create():
-        if request.content_type and "multipart/form-data" in request.content_type:
-            name = str(request.form.get("name") or "").strip()
-            cuisine = str(request.form.get("cuisine") or "").strip()
-            tier = normalize_tier(str(request.form.get("tier") or ""))
-            maps_url = str(request.form.get("maps_url") or "").strip()
-            logo_file = request.files.get("logo")
-        else:
-            data = request.get_json(silent=True) or {}
-            name = str(data.get("name") or "").strip()
-            cuisine = str(data.get("cuisine") or "").strip()
-            tier = normalize_tier(str(data.get("tier") or ""))
-            maps_url = str(data.get("maps_url") or "").strip()
-            logo_file = None
-
-        if not name:
-            return _error("Укажи название")
-        if len(name) > 255:
-            return _error("Название слишком длинное")
-        if not cuisine:
-            return _error("Укажи кухню")
-        if len(cuisine) > 128:
-            return _error("Кухня слишком длинная")
-        if not tier:
-            return _error("Укажи тир (S/A/B/C/D)")
-        if len(maps_url) > 1024:
-            return _error("Ссылка на карты слишком длинная")
+        name, cuisine, tier, maps_url, logo_file = _read_fields()
+        err = _validate_fields(name, cuisine, tier, maps_url)
+        if err:
+            return _error(err)
 
         try:
             logo = _save_logo(logo_file, name) if logo_file else ""
@@ -107,3 +120,44 @@ def register_rest_api(bp: Blueprint) -> None:
         body = _payload()
         body["created"] = food_rest_to_dict(row)
         return jsonify(body)
+
+    @bp.put("/api/rest/<int:rest_id>")
+    @login_required
+    def api_rest_update(rest_id: int):
+        row = db.session.get(FoodRest, rest_id)
+        if row is None:
+            return _error("Ресторан не найден", 404)
+
+        name, cuisine, tier, maps_url, logo_file = _read_fields()
+        err = _validate_fields(name, cuisine, tier, maps_url)
+        if err:
+            return _error(err)
+
+        row.name = name
+        row.cuisine = cuisine
+        row.tier = tier
+        row.maps_url = maps_url
+
+        if logo_file and logo_file.filename:
+            try:
+                logo = _save_logo(logo_file, name)
+            except ValueError as exc:
+                return _error(str(exc))
+            except OSError:
+                return _error("Не удалось сохранить лого", 500)
+            row.logo = logo
+
+        db.session.commit()
+        body = _payload()
+        body["updated"] = food_rest_to_dict(row)
+        return jsonify(body)
+
+    @bp.delete("/api/rest/<int:rest_id>")
+    @login_required
+    def api_rest_delete(rest_id: int):
+        row = db.session.get(FoodRest, rest_id)
+        if row is None:
+            return _error("Ресторан не найден", 404)
+        db.session.delete(row)
+        db.session.commit()
+        return jsonify(_payload())
