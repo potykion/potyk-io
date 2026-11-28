@@ -12,7 +12,7 @@ if errorlevel 1 goto :fail
 
 echo [potyk-io] Installing frontend deps (potyk-io-front) ...
 pushd potyk-io-front
-call npm install
+call npm ci
 if errorlevel 1 (
     popd
     goto :fail
