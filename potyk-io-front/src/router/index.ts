@@ -12,7 +12,7 @@ const router = createRouter({
       path: "/",
       name: "index",
       component: IndexPage,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: false },
     },
     {
       path: "/fin",
@@ -24,7 +24,7 @@ const router = createRouter({
       path: "/rest",
       name: "rest",
       component: RestPage,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: false },
     },
     {
       path: "/admin/rest",

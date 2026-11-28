@@ -23,8 +23,8 @@ register_rest_api(v2_bp)
 
 @v2_bp.route("/", defaults={"asset_path": ""})
 @v2_bp.route("/<path:asset_path>")
-@login_required
 def spa(asset_path: str):
+    """SPA shell публичный: закрытые разделы режет vue-router + API login_required."""
     if asset_path.startswith("api/"):
         abort(404)
 

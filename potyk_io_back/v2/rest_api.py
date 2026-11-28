@@ -55,7 +55,6 @@ def _save_logo(file: FileStorage, name: str) -> str:
 
 def register_rest_api(bp: Blueprint) -> None:
     @bp.get("/api/rest")
-    @login_required
     def api_rest_list():
         return jsonify(_payload())
 

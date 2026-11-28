@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import Card from "primevue/card";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { fetchMe } from "@/api/auth";
 
 const router = useRouter();
+const loggedIn = ref(false);
 
 type Section = {
   name: string;
@@ -10,9 +13,10 @@ type Section = {
   subtitle: string;
   path: string;
   lock: boolean;
+  authOnly?: boolean;
 };
 
-const sections: Section[] = [
+const allSections: Section[] = [
   {
     name: "fin",
     title: "Учёт",
@@ -25,7 +29,7 @@ const sections: Section[] = [
     title: "Рестораны",
     subtitle: "Кухни и тирлист",
     path: "/v2/rest",
-    lock: true,
+    lock: false,
   },
   {
     name: "rest-admin",
@@ -33,8 +37,17 @@ const sections: Section[] = [
     subtitle: "Добавить ресторан",
     path: "/v2/admin/rest",
     lock: true,
+    authOnly: true,
   },
 ];
+
+const sections = computed(() =>
+  allSections.filter((section) => !section.authOnly || loggedIn.value),
+);
+
+onMounted(async () => {
+  loggedIn.value = (await fetchMe()) !== null;
+});
 
 function open(name: string): void {
   void router.push({ name });
@@ -74,7 +87,8 @@ function onCardKeydown(event: KeyboardEvent, name: string): void {
               class="nav-card__lock"
               title="нужен логин"
               aria-label="нужен логин"
-            >🔒</span>
+              >🔒</span
+            >
           </span>
         </template>
         <template #subtitle>{{ section.subtitle }}</template>
