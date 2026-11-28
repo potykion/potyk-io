@@ -7,7 +7,7 @@ import { computed, reactive, ref, watch } from "vue";
 import type { ExpensePayload, FinDay, SavingPayload } from "@/api/fin";
 import AmountField from "@/components/fin/AmountField.vue";
 import { evalAmountExpression } from "@/utils/calc";
-import { formatRub } from "@/utils/money";
+import { formatDayLabel, formatRub } from "@/utils/money";
 
 const PAGE = 5;
 
@@ -146,6 +146,20 @@ watch(
 const visible = computed(() => operations.value.slice(0, visibleCount.value));
 const hasMore = computed(() => visibleCount.value < operations.value.length);
 
+type OpGroup = { date: string; ops: RecentOp[] };
+
+const todayIso = toIso(new Date());
+
+const groups = computed<OpGroup[]>(() => {
+  const byDate = new Map<string, RecentOp[]>();
+  for (const op of visible.value) {
+    const list = byDate.get(op.date);
+    if (list) list.push(op);
+    else byDate.set(op.date, [op]);
+  }
+  return [...byDate.entries()].map(([date, ops]) => ({ date, ops }));
+});
+
 function loadMore(): void {
   visibleCount.value += PAGE;
 }
@@ -281,51 +295,57 @@ function isEditing(op: RecentOp): boolean {
 
     <p v-if="!operations.length" class="empty">Пока нет операций.</p>
 
-    <ul v-else class="list">
-      <li
-        v-for="op in visible"
-        :key="op.key"
-        class="row"
-        :class="[op.kind, { active: isEditing(op) }]"
-      >
-        <template v-if="op.kind === 'expense'">
-          <span class="amount">{{ formatRub(op.amount) }}</span>
-          <span class="category">{{ op.category }}</span>
-          <span class="date">{{ op.date }}</span>
-          <span v-if="op.description" class="desc">{{ op.description }}</span>
-        </template>
-        <template v-else>
-          <span class="amount saving">{{ formatRub(op.amount) }}</span>
-          <span class="kind-label">Сейф</span>
-          <span class="date">{{ op.date }}</span>
-        </template>
+    <div v-else class="list">
+      <section v-for="group in groups" :key="group.date" class="day-group">
+        <h3 class="day-label">{{ formatDayLabel(group.date, todayIso) }}</h3>
+        <ul class="day-ops">
+          <li
+            v-for="op in group.ops"
+            :key="op.key"
+            class="row"
+            :class="[op.kind, { active: isEditing(op) }]"
+          >
+            <template v-if="op.kind === 'expense'">
+              <span class="amount">{{ formatRub(op.amount) }}</span>
+              <span class="category">{{ op.category }}</span>
+              <span v-if="op.description" class="desc">{{ op.description }}</span>
+            </template>
+            <template v-else>
+              <span class="amount saving">{{ formatRub(op.amount) }}</span>
+              <span class="kind-label">Сейф</span>
+              <span v-if="op.note" class="desc">{{ op.note }}</span>
+            </template>
 
-        <div class="actions">
-          <Button
-            type="button"
-            icon="pi pi-pencil"
-            text
-            rounded
-            size="small"
-            aria-label="Изменить"
-            @click="startEdit(op)"
-          />
-          <Button
-            type="button"
-            icon="pi pi-times"
-            text
-            rounded
-            size="small"
-            severity="danger"
-            aria-label="Удалить"
-            :disabled="busy"
-            @click="
-              op.kind === 'expense' ? emit('deleteExpense', op.id) : emit('deleteSaving', op.id)
-            "
-          />
-        </div>
-      </li>
-    </ul>
+            <div class="actions">
+              <Button
+                type="button"
+                icon="pi pi-pencil"
+                text
+                rounded
+                size="small"
+                aria-label="Изменить"
+                @click="startEdit(op)"
+              />
+              <Button
+                type="button"
+                icon="pi pi-times"
+                text
+                rounded
+                size="small"
+                severity="danger"
+                aria-label="Удалить"
+                :disabled="busy"
+                @click="
+                  op.kind === 'expense'
+                    ? emit('deleteExpense', op.id)
+                    : emit('deleteSaving', op.id)
+                "
+              />
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
 
     <Button
       v-if="hasMore"
@@ -347,6 +367,10 @@ function isEditing(op: RecentOp): boolean {
   border-radius: 0.75rem;
   padding: 0.75rem;
   margin-bottom: 25vh;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-x: clip;
 }
 
 h2 {
@@ -366,15 +390,31 @@ h2 {
 .edit-row {
   display: grid;
   gap: 0.5rem;
-  grid-template-columns: minmax(9rem, 11rem) 1fr;
+  grid-template-columns: 1fr;
+  min-width: 0;
+}
+
+@media (min-width: 420px) {
+  .edit-row {
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  }
 }
 
 .edit-row :deep(.date),
 .edit-row :deep(.description),
 .edit-row :deep(.p-datepicker),
 .edit-row :deep(.p-inputtext),
-.edit-form :deep(.p-autocomplete) {
+.edit-form :deep(.p-autocomplete),
+.edit-form :deep(.p-datepicker),
+.edit-form :deep(.p-inputtext) {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.edit-form :deep(.p-datepicker),
+.edit-form :deep(.p-autocomplete) {
+  display: flex;
 }
 
 .edit-actions {
@@ -384,11 +424,28 @@ h2 {
 }
 
 .list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.day-group {
+  margin: 0;
+}
+
+.day-label {
+  margin: 0 0 0.25rem;
+  padding: 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.day-ops {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.35rem;
+  gap: 0.15rem;
 }
 
 .row {
@@ -400,7 +457,7 @@ h2 {
   font-size: 0.95rem;
 }
 
-.row:last-child {
+.day-ops .row:last-child {
   border-bottom: none;
 }
 
@@ -410,15 +467,17 @@ h2 {
 }
 
 .row.expense {
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
   grid-template-areas:
-    "amount category date actions"
-    "desc desc desc actions";
+    "amount category actions"
+    "desc desc actions";
 }
 
 .row.saving {
-  grid-template-columns: auto 1fr auto auto;
-  grid-template-areas: "amount kind date actions";
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+  grid-template-areas:
+    "amount kind actions"
+    "desc desc actions";
 }
 
 .amount {
@@ -443,13 +502,6 @@ h2 {
   grid-area: kind;
   color: #64748b;
   font-size: 0.85rem;
-}
-
-.date {
-  grid-area: date;
-  color: #64748b;
-  font-size: 0.85rem;
-  white-space: nowrap;
 }
 
 .desc {
@@ -482,14 +534,14 @@ h2 {
 
 @media (min-width: 560px) {
   .row.expense {
-    grid-template-columns: 7rem minmax(6rem, 10rem) 7rem 1fr auto;
-    grid-template-areas: "amount category date desc actions";
+    grid-template-columns: 7rem minmax(6rem, 10rem) 1fr auto;
+    grid-template-areas: "amount category desc actions";
     align-items: center;
   }
 
   .row.saving {
-    grid-template-columns: 7rem minmax(6rem, 10rem) 7rem 1fr auto;
-    grid-template-areas: "amount kind date . actions";
+    grid-template-columns: 7rem minmax(6rem, 10rem) 1fr auto;
+    grid-template-areas: "amount kind desc actions";
     align-items: center;
   }
 }
