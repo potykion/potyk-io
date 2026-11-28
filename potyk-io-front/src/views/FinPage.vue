@@ -50,7 +50,8 @@ async function onBudgetSave(value: number): Promise<void> {
 async function onExpenseCreate(payload: Parameters<typeof store.addExpense>[0]): Promise<void> {
   if (await store.addExpense(payload)) {
     toast.add({ severity: "success", summary: "Трата добавлена", life: 2000 });
-    expenseDefaultDate.value = store.state?.defaults.expense_date || expenseDefaultDate.value;
+    // Оставляем дату только что добавленной траты — несколько записей за один день.
+    expenseDefaultDate.value = payload.date;
   }
 }
 
@@ -61,7 +62,8 @@ async function onExpenseBulk(payloads: Parameters<typeof store.addExpensesBulk>[
       summary: `Добавлено трат: ${payloads.length}`,
       life: 2000,
     });
-    expenseDefaultDate.value = store.state?.defaults.expense_date || expenseDefaultDate.value;
+    const lastDate = payloads.at(-1)?.date;
+    if (lastDate) expenseDefaultDate.value = lastDate;
   }
 }
 

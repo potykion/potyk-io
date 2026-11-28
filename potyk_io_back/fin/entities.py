@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from potyk_io_back.core.db import db
 
@@ -13,17 +13,20 @@ def normalize_expense_category(category: str) -> str:
 
 
 def next_unfilled_expense_date(
-    closed_dates: set[date] | None = None,
     *,
     today: date | None = None,
+    last_operation_date: date | None = None,
 ) -> date:
-    """Первый день после последнего закрытого; не позже сегодня. Без закрытых — вчера."""
+    """Дата последней операции (трата/сейв) + 1 день; не позже сегодня. Без операций — вчера."""
     today = today or date.today()
-    if closed_dates is None:
-        closed_dates = set(db.session.scalars(select(ClosedDay.date)).all())
-    if not closed_dates:
+    if last_operation_date is None:
+        last_expense = db.session.scalar(select(func.max(Expense.date)))
+        last_saving = db.session.scalar(select(func.max(Saving.date)))
+        candidates = [d for d in (last_expense, last_saving) if d is not None]
+        last_operation_date = max(candidates) if candidates else None
+    if last_operation_date is None:
         return today - timedelta(days=1)
-    nxt = max(closed_dates) + timedelta(days=1)
+    nxt = last_operation_date + timedelta(days=1)
     return nxt if nxt <= today else today
 
 

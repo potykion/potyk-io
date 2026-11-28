@@ -141,7 +141,14 @@ def build_fin_state(
         "settings": {"daily_budget": settings.daily_budget},
         "categories": categories,
         "defaults": {
-            "expense_date": next_unfilled_expense_date(closed_dates, today=today).isoformat(),
+            "expense_date": next_unfilled_expense_date(
+                today=today,
+                last_operation_date=(
+                    max([e.date for e in expenses] + [s.date for s in savings])
+                    if (expenses or savings)
+                    else None
+                ),
+            ).isoformat(),
             "saving_date": (today - timedelta(days=1)).isoformat(),
         },
         "today_closed": today in closed_dates,
