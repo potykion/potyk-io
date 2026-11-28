@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import ConfirmDialog from "primevue/confirmdialog";
 import Toast from "primevue/toast";
-import { RouterView } from "vue-router";
+import { computed } from "vue";
+import { RouterLink, RouterView, useRoute } from "vue-router";
+
+const route = useRoute();
+const isFin = computed(() => route.name === "fin");
+const isRestAdmin = computed(() => route.name === "rest-admin");
 </script>
 
 <template>
   <div class="app-shell">
     <header class="app-header">
-      <a class="brand" href="/money/">potyk-money</a>
-      <a class="legacy" href="/fin/">← старый учёт</a>
+      <RouterLink class="brand" :to="{ name: 'index' }">potyk-io</RouterLink>
+      <a v-if="isFin" class="legacy" href="/fin/">← старый учёт</a>
+      <RouterLink v-else-if="isRestAdmin" class="legacy" :to="{ name: 'rest' }"
+        >← рестораны</RouterLink
+      >
     </header>
     <main class="app-main">
       <RouterView />

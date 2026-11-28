@@ -64,6 +64,67 @@ class Restaurant(db.Model):
     tags = db.Column(db.JSON, nullable=False, default=list)
 
 
+TIERS = ("S", "A", "B", "C", "D")
+
+
+class FoodRest(db.Model):
+    """Ресторан для v2 тирлиста (продолжение md-подхода: кухня + тир + лого)."""
+
+    __tablename__ = "food_rest"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    cuisine = db.Column(db.String(128), nullable=False, default="", index=True)
+    tier = db.Column(db.String(1), nullable=False, default="")
+    logo = db.Column(db.String(1024), nullable=False, default="")
+    maps_url = db.Column(db.String(1024), nullable=False, default="")
+
+
+def normalize_tier(raw: str | None) -> str:
+    v = (raw or "").strip().upper()
+    return v if v in TIERS else ""
+
+
+def food_rest_to_dict(row: FoodRest) -> dict:
+    return {
+        "id": row.id,
+        "name": row.name,
+        "cuisine": row.cuisine,
+        "tier": row.tier,
+        "logo": row.logo,
+        "maps_url": row.maps_url,
+    }
+
+
+def list_food_rest() -> list[FoodRest]:
+    return list(
+        db.session.scalars(
+            select(FoodRest).order_by(
+                FoodRest.cuisine.asc(),
+                FoodRest.tier.asc(),
+                FoodRest.name.asc(),
+                FoodRest.id.asc(),
+            )
+        ).all()
+    )
+
+
+def food_rest_cuisines(rows: list[FoodRest] | None = None) -> list[str]:
+    items = rows if rows is not None else list_food_rest()
+    seen: set[str] = set()
+    result: list[str] = []
+    for row in items:
+        cuisine = (row.cuisine or "").strip()
+        if not cuisine:
+            continue
+        key = cuisine.casefold()
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(cuisine)
+    return sorted(result, key=str.casefold)
+
+
 def seed_restaurants_if_empty() -> None:
     if db.session.scalar(select(Restaurant.id).limit(1)) is not None:
         return

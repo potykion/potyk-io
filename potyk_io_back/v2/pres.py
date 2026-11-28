@@ -4,6 +4,7 @@ from flask import Blueprint, abort, current_app, jsonify, send_from_directory
 from flask_login import current_user, login_required
 
 from potyk_io_back.v2.fin_api import register_fin_api
+from potyk_io_back.v2.rest_api import register_rest_api
 
 v2_bp = Blueprint("v2", __name__, url_prefix="/v2")
 
@@ -17,6 +18,7 @@ def api_me():
 
 
 register_fin_api(v2_bp)
+register_rest_api(v2_bp)
 
 
 @v2_bp.route("/", defaults={"asset_path": ""})
