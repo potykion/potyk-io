@@ -262,8 +262,15 @@
         text-align: right;
     }
 
+    table.weekly-returns th.num {
+        white-space: normal;
+        min-width: 4.5rem;
+        line-height: 1.25;
+        font-size: 0.85rem;
+    }
+
     table.weekly-returns .p.is-neg {
-        color: #b91c1c;
+        color: #991b1b;
     }
 
     table.weekly-returns .p.is-big {
@@ -272,6 +279,11 @@
 
     table.weekly-returns td.total {
         font-weight: 600;
+    }
+
+    table.weekly-returns th.col-sort {
+        cursor: pointer;
+        user-select: none;
     }
 </style>
 {% endblock %}
@@ -368,16 +380,23 @@
             <table class="weekly-returns" id="weekly-returns-table">
                 <thead>
                     <tr>
-                        <th>Тикер</th>
+                        <th class="col-sort" data-sort="ticker" title="Сортировать по тикеру">
+                            Тикер<span class="sort-arrow"> ↑</span>
+                        </th>
                         {% for week_end, label in weekly.weeks %}
-                        <th class="num" title="Неделя до {{ week_end.isoformat() }}">{{ label }}</th>
+                        <th class="num col-sort" data-sort="w{{ loop.index0 }}" title="Сортировать по дохе за неделю до {{ week_end.isoformat() }}">
+                            {{ label }}<span class="sort-arrow"> ↑</span>
+                        </th>
                         {% endfor %}
-                        <th class="num">Итого</th>
+                        <th class="num col-sort is-active" data-sort="total" title="Сортировать по итоговой дохе">
+                            Итого<span class="sort-arrow"> ↓</span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ticker, cells, total_pct, total_label in weekly.rows %}
-                    <tr>
+                    {% for ticker, cells, total_pct, total_label, total_color in weekly.rows %}
+                    <tr data-ticker="{{ ticker }}" data-total="{{ '%.4f'|format(total_pct) }}"
+                        {% for cell in cells %}data-w{{ loop.index0 }}="{% if cell %}{{ '%.4f'|format(cell.pct) }}{% else %}{% endif %}" {% endfor %}>
                         <td class="ticker-name">
                             <a href="/invest/tickers/{{ ticker }}">{{ ticker }}</a>
                         </td>
@@ -390,7 +409,7 @@
                         <td class="num"></td>
                         {% endif %}
                         {% endfor %}
-                        <td class="num total">
+                        <td class="num total" style="background:{{ total_color }}">
                             <span class="p{% if total_pct < 0 %} is-neg{% endif %}{% if total_pct|abs >= 3 %} is-big{% endif %}">{{ total_label }}</span>
                         </td>
                     </tr>
@@ -644,6 +663,61 @@
 
     // прогрев кэша данных
     ensurePayload().catch(() => {});
+  }
+
+  // --- Дохи по неделям: сортировка по колонке ---
+  const weeklyTable = document.getElementById("weekly-returns-table");
+  if (weeklyTable) {
+    const weeklyBody = weeklyTable.querySelector("tbody");
+    const weeklyHeaders = weeklyTable.querySelectorAll("th.col-sort");
+    let weeklySortKey = "total";
+    let weeklySortDir = "desc";
+
+    const sortWeekly = (key, dir) => {
+      const rows = Array.from(weeklyBody.querySelectorAll("tr"));
+      const factor = dir === "asc" ? 1 : -1;
+      const isTicker = key === "ticker";
+      rows.sort((a, b) => {
+        if (isTicker) {
+          const at = (a.dataset.ticker || "").toLocaleLowerCase("ru");
+          const bt = (b.dataset.ticker || "").toLocaleLowerCase("ru");
+          if (at < bt) return -1 * factor;
+          if (at > bt) return 1 * factor;
+          return 0;
+        }
+        const av = a.getAttribute(`data-${key}`);
+        const bv = b.getAttribute(`data-${key}`);
+        const an = av === null || av === "" ? Number.NEGATIVE_INFINITY : Number(av);
+        const bn = bv === null || bv === "" ? Number.NEGATIVE_INFINITY : Number(bv);
+        if (an < bn) return -1 * factor;
+        if (an > bn) return 1 * factor;
+        const at = (a.dataset.ticker || "").toLocaleLowerCase("ru");
+        const bt = (b.dataset.ticker || "").toLocaleLowerCase("ru");
+        if (at < bt) return -1;
+        if (at > bt) return 1;
+        return 0;
+      });
+      rows.forEach((row) => weeklyBody.appendChild(row));
+      weeklyHeaders.forEach((th) => {
+        const active = th.dataset.sort === key;
+        th.classList.toggle("is-active", active);
+        const arrow = th.querySelector(".sort-arrow");
+        if (arrow) arrow.textContent = active ? (dir === "asc" ? " ↑" : " ↓") : " ↑";
+      });
+    };
+
+    weeklyHeaders.forEach((th) => {
+      th.addEventListener("click", () => {
+        const key = th.dataset.sort;
+        if (weeklySortKey === key) {
+          weeklySortDir = weeklySortDir === "asc" ? "desc" : "asc";
+        } else {
+          weeklySortKey = key;
+          weeklySortDir = key === "ticker" ? "asc" : "desc";
+        }
+        sortWeekly(weeklySortKey, weeklySortDir);
+      });
+    });
   }
 
   // --- Зависимости: сортировка / фильтр факторов ---
