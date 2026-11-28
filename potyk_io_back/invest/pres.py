@@ -14,6 +14,7 @@ from potyk_io_back.invest.daily_top import (
     build_daily_top_view,
     default_year_month,
 )
+from potyk_io_back.invest.weekly_returns import build_weekly_returns_view
 from potyk_io_back.invest.dashboard import (
     NewsFilters,
     build_dashboard,
@@ -510,11 +511,13 @@ def stocks():
         top_n=DEFAULT_TOP,
         min_value=DEFAULT_MIN_VALUE,
     )
+    weekly = build_weekly_returns_view()
     return render_template(
         "potyk-invest/stocks.html",
         columns=columns,
         rows=rows,
         daily_top=daily_top,
+        weekly=weekly,
         ym=f"{year:04d}-{month:02d}",
     )
 

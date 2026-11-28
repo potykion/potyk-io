@@ -128,6 +128,29 @@ class InvestDailyReturn(db.Model):
     )
 
 
+class InvestWeeklyReturn(db.Model):
+    """Недельная доходность акции TQBR (закрытие к закрытию ISO-недели)."""
+
+    __tablename__ = "invest_weekly_returns"
+
+    id = db.Column(db.Integer, primary_key=True)
+    week_end = db.Column(db.Date, nullable=False, index=True)
+    ticker = db.Column(db.String(32), nullable=False, index=True)
+    pct = db.Column(db.Numeric(10, 4), nullable=False, index=True)
+    value = db.Column(db.Numeric(18, 2), nullable=False, default=0)
+    volume = db.Column(db.BigInteger, nullable=True)
+    close = db.Column(db.Numeric(18, 6), nullable=True)
+    sector = db.Column(db.String(255), nullable=False, default="", index=True)
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            "week_end",
+            "ticker",
+            name="uq_invest_weekly_returns_week_ticker",
+        ),
+    )
+
+
 class InvestNews(db.Model):
     __tablename__ = "invest_news"
 

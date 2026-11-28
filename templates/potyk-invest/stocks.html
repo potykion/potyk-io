@@ -256,6 +256,23 @@
         text-align: right;
         font-variant-numeric: tabular-nums;
     }
+
+    table.weekly-returns th.num,
+    table.weekly-returns td.num {
+        text-align: right;
+    }
+
+    table.weekly-returns .p.is-neg {
+        color: #b91c1c;
+    }
+
+    table.weekly-returns .p.is-big {
+        font-weight: 600;
+    }
+
+    table.weekly-returns td.total {
+        font-weight: 600;
+    }
 </style>
 {% endblock %}
 
@@ -265,6 +282,7 @@
 
     <div class="tabs stocks-tabs" role="tablist" aria-label="Разделы акций">
         <button type="button" class="tab" role="tab" id="tab-returns" aria-controls="panel-returns" aria-selected="true" data-panel="returns">Доходности</button>
+        <button type="button" class="tab" role="tab" id="tab-weekly" aria-controls="panel-weekly" aria-selected="false" data-panel="weekly">Дохи по неделям</button>
         <button type="button" class="tab" role="tab" id="tab-dependencies" aria-controls="panel-dependencies" aria-selected="false" data-panel="dependencies">Зависимости</button>
     </div>
 
@@ -343,6 +361,48 @@
         {% endif %}
     </section>
 
+    <section class="stocks-panel" id="panel-weekly" role="tabpanel" aria-labelledby="tab-weekly" hidden>
+        {% if weekly %}
+        <p class="note">{{ weekly.note }}</p>
+        <div class="table-wrap">
+            <table class="weekly-returns" id="weekly-returns-table">
+                <thead>
+                    <tr>
+                        <th>Тикер</th>
+                        {% for week_end, label in weekly.weeks %}
+                        <th class="num" title="Неделя до {{ week_end.isoformat() }}">{{ label }}</th>
+                        {% endfor %}
+                        <th class="num">Итого</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticker, cells, total_pct, total_label in weekly.rows %}
+                    <tr>
+                        <td class="ticker-name">
+                            <a href="/invest/tickers/{{ ticker }}">{{ ticker }}</a>
+                        </td>
+                        {% for cell in cells %}
+                        {% if cell %}
+                        <td class="num" style="background:{{ cell.color }}" title="{{ cell.ticker }} · {{ cell.sector }}{% if cell.close %} · {{ cell.close }}{% endif %}">
+                            <span class="p{% if cell.pct < 0 %} is-neg{% endif %}{% if cell.pct|abs >= 3 %} is-big{% endif %}">{{ cell.pct_label }}</span>
+                        </td>
+                        {% else %}
+                        <td class="num"></td>
+                        {% endif %}
+                        {% endfor %}
+                        <td class="num total">
+                            <span class="p{% if total_pct < 0 %} is-neg{% endif %}{% if total_pct|abs >= 3 %} is-big{% endif %}">{{ total_label }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty">Нет недельных доходностей в SQL.</p>
+        {% endif %}
+    </section>
+
     <section class="stocks-panel" id="panel-dependencies" role="tabpanel" aria-labelledby="tab-dependencies" hidden>
         <p class="note">
             Строки — акции, столбцы — факторы. Галочка значит, что бумага чувствительна к фактору.
@@ -399,6 +459,7 @@
   const tabs = Array.from(document.querySelectorAll(".stocks-tabs .tab"));
   const panels = {
     returns: document.getElementById("panel-returns"),
+    weekly: document.getElementById("panel-weekly"),
     dependencies: document.getElementById("panel-dependencies"),
   };
 
@@ -413,7 +474,8 @@
       el.hidden = k !== key;
     });
     if (pushHash) {
-      const hash = key === "returns" ? "#returns" : "#dependencies";
+      const hash =
+        key === "returns" ? "#returns" : key === "weekly" ? "#weekly" : "#dependencies";
       if (location.hash !== hash) {
         history.replaceState(null, "", hash);
       }
@@ -427,6 +489,7 @@
   const fromHash = () => {
     const h = (location.hash || "").replace(/^#/, "");
     if (h === "dependencies" || h === "deps") activate("dependencies", false);
+    else if (h === "weekly" || h === "weeks") activate("weekly", false);
     else activate("returns", false);
   };
   window.addEventListener("hashchange", fromHash);
