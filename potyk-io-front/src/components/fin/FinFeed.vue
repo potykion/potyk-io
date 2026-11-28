@@ -121,89 +121,93 @@ function balanceClass(value: number): string {
           </div>
         </AccordionHeader>
         <AccordionContent>
-          <table v-if="day.expenses.length" class="table">
-            <thead>
-              <tr>
-                <th>Сумма</th>
-                <th>Категория</th>
-                <th>Описание</th>
-                <th>Баланс</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="e in day.expenses"
-                :key="e.id"
-                :class="{ optional: e.optional }"
-              >
-                <td>{{ formatRub(e.amount) }}</td>
-                <td>{{ e.category }}</td>
-                <td class="muted">{{ e.description || "—" }}</td>
-                <td :class="balanceClass(e.running_balance ?? 0)">
-                  {{ formatRub(e.running_balance ?? 0) }}
-                </td>
-                <td v-if="!day.closed" class="actions">
-                  <Button
-                    type="button"
-                    icon="pi pi-pencil"
-                    text
-                    rounded
-                    size="small"
-                    @click="emit('editExpense', e.id)"
-                  />
-                  <Button
-                    type="button"
-                    icon="pi pi-times"
-                    text
-                    rounded
-                    size="small"
-                    severity="danger"
-                    :disabled="busy"
-                    @click="emit('deleteExpense', e.id)"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-if="day.expenses.length" class="table-wrap">
+            <table class="table table--expenses">
+              <thead>
+                <tr>
+                  <th>Сумма</th>
+                  <th>Категория</th>
+                  <th>Описание</th>
+                  <th>Баланс</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="e in day.expenses"
+                  :key="e.id"
+                  :class="{ optional: e.optional }"
+                >
+                  <td>{{ formatRub(e.amount) }}</td>
+                  <td>{{ e.category }}</td>
+                  <td class="muted">{{ e.description || "—" }}</td>
+                  <td :class="balanceClass(e.running_balance ?? 0)">
+                    {{ formatRub(e.running_balance ?? 0) }}
+                  </td>
+                  <td v-if="!day.closed" class="actions">
+                    <Button
+                      type="button"
+                      icon="pi pi-pencil"
+                      text
+                      rounded
+                      size="small"
+                      @click="emit('editExpense', e.id)"
+                    />
+                    <Button
+                      type="button"
+                      icon="pi pi-times"
+                      text
+                      rounded
+                      size="small"
+                      severity="danger"
+                      :disabled="busy"
+                      @click="emit('deleteExpense', e.id)"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <p v-else class="empty">Трат нет</p>
 
-          <table v-if="day.savings.length" class="table">
-            <thead>
-              <tr>
-                <th>Сейв</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="s in day.savings" :key="s.id">
-                <td>
-                  {{ formatRub(s.amount) }}
-                  <span v-if="s.note" class="muted"> · {{ s.note }}</span>
-                </td>
-                <td v-if="!day.closed" class="actions">
-                  <Button
-                    type="button"
-                    icon="pi pi-pencil"
-                    text
-                    rounded
-                    size="small"
-                    @click="emit('editSaving', s.id)"
-                  />
-                  <Button
-                    type="button"
-                    icon="pi pi-times"
-                    text
-                    rounded
-                    size="small"
-                    severity="danger"
-                    :disabled="busy"
-                    @click="emit('deleteSaving', s.id)"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-if="day.savings.length" class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Сейв</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="s in day.savings" :key="s.id">
+                  <td>
+                    {{ formatRub(s.amount) }}
+                    <span v-if="s.note" class="muted"> · {{ s.note }}</span>
+                  </td>
+                  <td v-if="!day.closed" class="actions">
+                    <Button
+                      type="button"
+                      icon="pi pi-pencil"
+                      text
+                      rounded
+                      size="small"
+                      @click="emit('editSaving', s.id)"
+                    />
+                    <Button
+                      type="button"
+                      icon="pi pi-times"
+                      text
+                      rounded
+                      size="small"
+                      severity="danger"
+                      :disabled="busy"
+                      @click="emit('deleteSaving', s.id)"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <label class="close-day">
             <Checkbox
@@ -282,11 +286,22 @@ h2 {
   box-shadow: 0 0 0 1px #0f172a;
 }
 
+.table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 0.75rem;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 0.75rem;
   font-size: 0.95rem;
+}
+
+.table--expenses {
+  min-width: 28rem;
 }
 
 .table th,

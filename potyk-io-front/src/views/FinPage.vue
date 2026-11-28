@@ -270,6 +270,11 @@ function confirmPick(): void {
 </template>
 
 <style scoped>
+.fin-page {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .fin-page h1 {
   margin: 0 0 0.35rem;
   font-size: 1.75rem;

@@ -239,6 +239,9 @@ function calcSaving(): void {
   padding: 0.75rem;
   margin-top: 25vh;
   margin-bottom: 0.75rem;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .ops-link {
@@ -264,6 +267,13 @@ function calcSaving(): void {
   display: flex;
   justify-content: center;
   margin-bottom: 0.75rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.mode-wrap :deep(.p-selectbutton) {
+  max-width: 100%;
+  flex-wrap: wrap;
 }
 
 .form {
@@ -341,16 +351,35 @@ function calcSaving(): void {
 .row {
   display: grid;
   gap: 0.5rem;
-  grid-template-columns: minmax(9rem, 11rem) 1fr;
+  grid-template-columns: 1fr;
+  min-width: 0;
+}
+
+@media (min-width: 420px) {
+  .row {
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  }
 }
 
 .category,
 .saving-date,
+.form :deep(.p-selectbutton),
+.form :deep(.p-datepicker),
+.form :deep(.p-autocomplete),
+.form :deep(.p-inputtext),
 .row :deep(.date),
 .row :deep(.description),
 .row :deep(.p-datepicker),
 .row :deep(.p-autocomplete),
 .row :deep(.p-inputtext) {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.form :deep(.p-datepicker),
+.form :deep(.p-autocomplete),
+.row :deep(.p-datepicker) {
+  display: flex;
 }
 </style>

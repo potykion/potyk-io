@@ -216,6 +216,23 @@ summary {
   margin-bottom: 0.75rem;
 }
 
+.ops {
+  min-width: 18rem;
+}
+
+:deep(.p-accordioncontent-content) {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+.period :deep(.p-datepicker) {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: flex;
+}
+
 .totals th,
 .totals td,
 .ops th,

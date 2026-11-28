@@ -20,9 +20,13 @@ import { RouterView } from "vue-router";
 
 <style scoped>
 .app-shell {
+  width: 100%;
   max-width: 56rem;
   margin: 0 auto;
   padding: 1.25rem 1rem 3rem;
+  box-sizing: border-box;
+  overflow-x: clip;
+  min-width: 0;
 }
 
 .app-header {
